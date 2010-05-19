@@ -4,8 +4,8 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using NUnit.Framework;
-using QuackInterface;
-namespace TestQuackInteraface
+using ImpromptuInterface;
+namespace TestImpromtuInterface
 {
     public class Tests
     {

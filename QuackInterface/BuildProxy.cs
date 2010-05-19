@@ -1,6 +1,6 @@
 ﻿
 
-namespace QuackInterface
+namespace ImpromptuInterface
 {
     using System;
     using System.Collections.Generic;
@@ -62,7 +62,7 @@ namespace QuackInterface
 
         public static Type BuildType(Type wrappedType, Type mainInterface, params Type[] otherInterfaces)
         {
-            lock ("com.quackinterface.typecache")
+            lock ("com.ImpromtuInterface.typecache")
             {
                 var tNewHash = new TypeHash(wrappedType, mainInterface, otherInterfaces);
 
@@ -114,7 +114,7 @@ namespace QuackInterface
             var tReturnType = info.ReturnParameter.ParameterType;
 
 
-            var tCallSiteInvokeName = string.Format("Quack_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
+            var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
             var tCStp = Builder.DefineType(tCallSiteInvokeName,
                                             TypeAttributes.NotPublic
                                             | TypeAttributes.Sealed
@@ -262,7 +262,7 @@ namespace QuackInterface
 
 
 
-            var tCallSiteInvokeName = string.Format("Quack_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
+            var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
             var tCStp = Builder.DefineType(tCallSiteInvokeName,
                                             TypeAttributes.NotPublic | TypeAttributes.Sealed |
                                             TypeAttributes.Class);
@@ -435,7 +435,7 @@ namespace QuackInterface
             {
                 if (_builder == null)
                 {
-                    var tPlainName = "QuackInterfaceDynamicAssembly";
+                    var tPlainName = "ImpromptuInterfaceDynamicAssembly";
                     var tName = new AssemblyName(tPlainName);
 
 

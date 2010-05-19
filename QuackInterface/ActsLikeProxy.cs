@@ -1,4 +1,4 @@
-﻿namespace QuackInterface
+﻿namespace ImpromptuInterface
 {
     public interface IActsLikeProxy
     {

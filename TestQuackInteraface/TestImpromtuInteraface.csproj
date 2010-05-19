@@ -8,8 +8,8 @@
     <ProjectGuid>{D4F36086-FA0D-422F-AAFF-64F53C0A3C98}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestQuackInteraface</RootNamespace>
-    <AssemblyName>TestQuackInteraface</AssemblyName>
+    <RootNamespace>TestImpromtuInterface</RootNamespace>
+    <AssemblyName>TestImpromtuInterface</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -48,9 +48,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuackInterface\QuackInterface.csproj">
+    <ProjectReference Include="..\QuackInterface\ImpromtuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
-      <Name>QuackInterface</Name>
+      <Name>ImpromtuInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

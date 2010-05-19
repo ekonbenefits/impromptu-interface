@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuackInterface", "QuackInterface\QuackInterface.csproj", "{DAB7C056-660A-4153-8FF2-B80A41310AD7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromtuInterface", "QuackInterface\ImpromtuInterface.csproj", "{DAB7C056-660A-4153-8FF2-B80A41310AD7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestQuackInteraface", "TestQuackInteraface\TestQuackInteraface.csproj", "{D4F36086-FA0D-422F-AAFF-64F53C0A3C98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestImpromtuInteraface", "TestQuackInteraface\TestImpromtuInteraface.csproj", "{D4F36086-FA0D-422F-AAFF-64F53C0A3C98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

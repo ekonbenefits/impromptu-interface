@@ -8,8 +8,8 @@
     <ProjectGuid>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>QuackInterface</RootNamespace>
-    <AssemblyName>QuackInterface</AssemblyName>
+    <RootNamespace>ImpromtuInterface</RootNamespace>
+    <AssemblyName>ImpromtuInterface</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

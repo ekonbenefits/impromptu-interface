@@ -1,6 +1,6 @@
 ﻿
 
-namespace QuackInterface
+namespace ImpromptuInterface
 {
     using System;
     using System.Collections.Generic;

@@ -17,7 +17,7 @@ namespace QuackInterface
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(other.Types, Types);
+                return Types.SequenceEqual(other.Types);
             }
 
             public override bool Equals(object obj)

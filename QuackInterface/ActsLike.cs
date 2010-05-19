@@ -25,7 +25,7 @@ namespace QuackInterface
 
     public static class Dynamic
     {
-        public static TInterface ActsLike<TInterface>(dynamic originalDynamic, params Type[] otherInterfaces) where TInterface : class
+        public static TInterface ActsLike<TInterface>(Object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
             var tType = originalDynamic.GetType();
 

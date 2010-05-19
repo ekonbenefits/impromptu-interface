@@ -7,7 +7,7 @@ namespace TestQuackInteraface
 {
 
 
-    public interface SimpeleAnnoymousClassProps
+    public interface SimpeleClassProps
     {
         string Prop1 { get;  }
 
@@ -28,11 +28,11 @@ namespace TestQuackInteraface
 
     }
 
-    public interface SimpleTest0
+    public interface SimpeleClassMeth
     {
-        string Test0Prop1 { get; set; }
-
-        bool Test0Meth1();
+        void Action1();
+        void Action2(bool value);
+        string Action3();
     }
 
     public interface ComplexTest1

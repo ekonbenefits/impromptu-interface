@@ -14,7 +14,7 @@ namespace TestQuackInteraface
         {
             var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
 
-            var tActsLike = tAnon.ActsLike<SimpeleClassProps>();
+            var tActsLike = tAnon.ActsLike<ISimpeleClassProps>();
 
 
             Assert.AreEqual(tAnon.Prop1,tActsLike.Prop1);
@@ -28,8 +28,8 @@ namespace TestQuackInteraface
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
             var tAnon2 = new { Prop1 = "Test 2", Prop2 = 43L, Prop3 = Guid.NewGuid() };
 
-            var tActsLike = tAnon.ActsLike<SimpeleClassProps>();
-            var tActsLike2 = tAnon2.ActsLike<SimpeleClassProps>();
+            var tActsLike = tAnon.ActsLike<ISimpeleClassProps>();
+            var tActsLike2 = tAnon2.ActsLike<ISimpeleClassProps>();
 
            Assert.AreEqual(tActsLike.GetType(), tActsLike2.GetType());
 
@@ -53,7 +53,7 @@ namespace TestQuackInteraface
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
-            var tActsLike = Dynamic.ActsLike<SimpeleClassProps>(tNew);
+            var tActsLike = Dynamic.ActsLike<ISimpeleClassProps>(tNew);
    
 
 
@@ -73,7 +73,7 @@ namespace TestQuackInteraface
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
             tNew.Action3 = new Func<string>(()=> "test");
 
-            SimpeleClassMeth tActsLike = Dynamic.ActsLike<SimpeleClassMeth>(tNew);
+            ISimpeleClassMeth tActsLike = Dynamic.ActsLike<ISimpeleClassMeth>(tNew);
 
             Assert.Throws<AssertionException>(tActsLike.Action1);
             Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
@@ -82,10 +82,29 @@ namespace TestQuackInteraface
         }
 
         [Test]
+        public void TestGeneric()
+        {
+
+            GenericHelper(3,"3");
+            GenericHelper(4,"4");
+            GenericHelper(true,"True");
+        }
+
+        public void GenericHelper<T>(T param, string expected)
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Action = new Func<T,string>(it=>it.ToString());
+            IGenericMeth tActsLike = Dynamic.ActsLike<IGenericMeth>(tNew);
+
+            Assert.AreEqual(expected, tActsLike.Action(param));
+        }
+
+
+        [Test]
         public void StringPropertyTest()
         {
             var tAnon = "Test 123";
-            var tActsLike = tAnon.ActsLike<SimpleStringProperty>();
+            var tActsLike = tAnon.ActsLike<ISimpleStringProperty>();
    
 
             Assert.AreEqual(tAnon.Length, tActsLike.Length);
@@ -95,7 +114,7 @@ namespace TestQuackInteraface
         public void StringMethodTest()
         {
             var tAnon = "Test 123";
-            var tActsLike = tAnon.ActsLike<SimpleStringMethod>();
+            var tActsLike = tAnon.ActsLike<ISimpleStringMethod>();
       
 
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));

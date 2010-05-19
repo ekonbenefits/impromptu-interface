@@ -7,7 +7,7 @@ namespace TestQuackInteraface
 {
 
 
-    public interface SimpeleClassProps
+    public interface ISimpeleClassProps
     {
         string Prop1 { get;  }
 
@@ -16,23 +16,28 @@ namespace TestQuackInteraface
         Guid Prop3 { get; }
     }
 
-    public interface SimpleStringProperty
+    public interface ISimpleStringProperty
     {
         int Length { get; }
 
     }
 
-    public interface SimpleStringMethod
+    public interface ISimpleStringMethod
     {
         bool StartsWith(string value);
 
     }
 
-    public interface SimpeleClassMeth
+    public interface ISimpeleClassMeth
     {
         void Action1();
         void Action2(bool value);
         string Action3();
+    }
+
+    public interface IGenericMeth
+    {
+        string Action<T>(T arg);
     }
 
   

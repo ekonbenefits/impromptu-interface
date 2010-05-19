@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
+﻿
 
 namespace QuackInterface
 {
+    using System;
+
     public interface IActsLike
     {
         TInterface ActsLike<TInterface>(params Type[] otherInterfaces);
@@ -25,7 +23,7 @@ namespace QuackInterface
 
     public static class Dynamic
     {
-        public static TInterface ActsLike<TInterface>(Object originalDynamic, params Type[] otherInterfaces) where TInterface : class
+        public static TInterface ActsLike<TInterface>(dynamic originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
             var tType = originalDynamic.GetType();
 

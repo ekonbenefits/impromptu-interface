@@ -35,25 +35,5 @@ namespace TestQuackInteraface
         string Action3();
     }
 
-    public interface ComplexTest1
-    {
-        string Test1Prop1 { get; set; }
-
-        void Test1VoidMeth();
-
-        void Test1VoidMeth(string arg1);
-
-        Guid Test1GuidMeth();
-
-        Guid Test1GuidLong();
-
-        TR Test1Generic<TR,T>();
-    }
-
-    public interface ComplexTest2<T>
-    {
-        T Test2Prop1 { get; set; }
-
-        TR Test2Generic<TR>(T test);
-    }
+  
 }

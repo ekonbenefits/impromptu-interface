@@ -1,14 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using Microsoft.CSharp.RuntimeBinder;
-using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
+﻿
 
 namespace QuackInterface
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Runtime.CompilerServices;
+    using Microsoft.CSharp.RuntimeBinder;
+    using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
+
     public static class EmitExtensions
     {
         public class BranchTrueOverBlock : IDisposable

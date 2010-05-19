@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
-using System.Text;
-using Microsoft.CSharp.RuntimeBinder;
+﻿
 
 namespace QuackInterface
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Reflection;
+    using System.Reflection.Emit;
+    using System.Runtime.CompilerServices;
+    using Microsoft.CSharp.RuntimeBinder;
+
     public static class BuildProxy
     {
         public class TypeHash

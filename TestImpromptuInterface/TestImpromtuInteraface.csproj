@@ -48,7 +48,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuackInterface\ImpromtuInterface.csproj">
+    <ProjectReference Include="..\ImpromptuInterface\ImpromtuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromtuInterface</Name>
     </ProjectReference>

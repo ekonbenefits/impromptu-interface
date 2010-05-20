@@ -50,7 +50,7 @@ namespace TestImpromtuInterface
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
-            var tActsLike = Dynamic.ActsLike<ISimpeleClassProps>(tNew);
+            var tActsLike = Impromptu.ActsLike<ISimpeleClassProps>(tNew);
    
 
 
@@ -70,7 +70,7 @@ namespace TestImpromtuInterface
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
             tNew.Action3 = new Func<string>(()=> "test");
 
-            ISimpeleClassMeth tActsLike = Dynamic.ActsLike<ISimpeleClassMeth>(tNew);
+            ISimpeleClassMeth tActsLike = Impromptu.ActsLike<ISimpeleClassMeth>(tNew);
 
             Assert.Throws<AssertionException>(tActsLike.Action1);
             Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
@@ -91,7 +91,7 @@ namespace TestImpromtuInterface
         {
             dynamic tNew = new ExpandoObject();
             tNew.Action = new Func<T,string>(it=>it.ToString());
-            IGenericMeth tActsLike = Dynamic.ActsLike<IGenericMeth>(tNew);
+            IGenericMeth tActsLike = Impromptu.ActsLike<IGenericMeth>(tNew);
 
             Assert.AreEqual(expected, tActsLike.Action(param));
         }

@@ -34,7 +34,7 @@ namespace TestImpromtuInterface
 
             var tExposed =tTest.ActsLike<IExposePrivateMethod>();
 
-            Assert.AreEqual(3,tExposed.Test());
+            Assert.AreEqual(3,tExposed.Test());//Works
         }
     }
 }

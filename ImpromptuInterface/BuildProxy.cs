@@ -60,15 +60,15 @@ namespace ImpromptuInterface
 
       
 
-        public static Type BuildType(Type wrappedType, Type mainInterface, params Type[] otherInterfaces)
+        public static Type BuildType(Type contextType, Type mainInterface, params Type[] otherInterfaces)
         {
             lock ("com.ImpromtuInterface.typecache")
             {
-                var tNewHash = new TypeHash(wrappedType, mainInterface, otherInterfaces);
+                var tNewHash = new TypeHash(contextType, mainInterface, otherInterfaces);
 
                 if (!_typeHash.ContainsKey(tNewHash))
                 {
-                    _typeHash[tNewHash] = BuildTypeHelper(wrappedType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
+                    _typeHash[tNewHash] = BuildTypeHelper(contextType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
                 }
 
                 return _typeHash[tNewHash];

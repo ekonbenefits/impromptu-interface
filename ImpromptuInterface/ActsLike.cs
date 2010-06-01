@@ -22,7 +22,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <param name="originalDynamic">The original object can be annoymous type, System.DynamicObject as well as any others.</param>
-        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <param name="otherInterfaces">Optional other interfaces.</param>
         /// <returns></returns>
         public static TInterface ActsLike<TInterface>(this Object originalDynamic, params Type[]otherInterfaces)where TInterface:class
         {

@@ -8,15 +8,21 @@ namespace ImpromptuInterface
 {
     /// <summary>
     /// Dynamic Object that knows about the Impromtu Interface return types;
+    /// Override Typical Dynamic Object methods, and use TypeForName to get the return type of an interface member.
     /// </summary>
     public abstract class ImpromptuObject : DynamicObject, IDynamicKnowsLike, IActsLike
     {
-        private static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
+        protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
 
-        private TypeHash _hash;
+        protected TypeHash _hash;
 
-        public IEnumerable<Type> KnownInterfaces
+        /// <summary>
+        /// Gets or sets the known interfaces.
+        /// Set should only be called be the factory methood
+        /// </summary>
+        /// <value>The known interfaces.</value>
+        public virtual IEnumerable<Type> KnownInterfaces
         {
             get
             {

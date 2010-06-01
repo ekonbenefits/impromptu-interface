@@ -1,5 +1,6 @@
 ﻿
 
+
 namespace ImpromptuInterface
 {
     using System;
@@ -9,50 +10,11 @@ namespace ImpromptuInterface
     using System.Reflection.Emit;
     using System.Runtime.CompilerServices;
     using Microsoft.CSharp.RuntimeBinder;
+  
 
     public static class BuildProxy
     {
-        public class TypeHash
-        {
-            public bool Equals(TypeHash other)
-            {
-                if (ReferenceEquals(null, other)) return false;
-                if (ReferenceEquals(this, other)) return true;
-                return Types.SequenceEqual(other.Types);
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != typeof(TypeHash)) return false;
-                return Equals((TypeHash)obj);
-            }
-
-            public override int GetHashCode()
-            {
-                unchecked
-                {
-                    return Types.Aggregate(1, (current, type) => (current * 397) ^ type.GetHashCode());
-                }
-            }
-
-            public static bool operator ==(TypeHash left, TypeHash right)
-            {
-                return Equals(left, right);
-            }
-
-            public static bool operator !=(TypeHash left, TypeHash right)
-            {
-                return !Equals(left, right);
-            }
-
-            public readonly Type[] Types;
-            public TypeHash(Type type1, Type type2, params Type[] moreTypes)
-            {
-                Types = new[] { type1,type2 }.Concat(moreTypes).OrderBy(it => it.Name).ToArray();
-            }
-        }
+       
 
         private static ModuleBuilder _builder;
         private static AssemblyBuilder _ab;
@@ -64,7 +26,7 @@ namespace ImpromptuInterface
         {
             lock ("com.ImpromtuInterface.typecache")
             {
-                var tNewHash = new TypeHash(contextType, mainInterface, otherInterfaces);
+                var tNewHash = new TypeHash(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
 
                 if (!_typeHash.ContainsKey(tNewHash))
                 {
@@ -84,13 +46,15 @@ namespace ImpromptuInterface
                 string.Format("ActsLike_{0}_{1}", interfaces.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActsLikeProxy), interfaces);
 
-            var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object) });
+            var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object), typeof(Type[]) });
             tC.DefineParameter(1, ParameterAttributes.None, "original");
-            var tConstInfo = typeof(ActsLikeProxy).GetConstructor(new[] { typeof(object) });
+            tC.DefineParameter(2, ParameterAttributes.None, "interfaces");
+            var tConstInfo = typeof(ActsLikeProxy).GetConstructor(BindingFlags.NonPublic |BindingFlags.Instance, null,new[] { typeof(object), typeof(Type[])},null);
 
             var tCIl = tC.GetILGenerator();
             tCIl.Emit(OpCodes.Ldarg_0);
             tCIl.Emit(OpCodes.Ldarg_1);
+            tCIl.Emit(OpCodes.Ldarg_2);
             tCIl.Emit(OpCodes.Call, tConstInfo);
             tCIl.Emit(OpCodes.Ret);
 

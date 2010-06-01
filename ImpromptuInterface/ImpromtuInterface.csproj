@@ -8,7 +8,7 @@
     <ProjectGuid>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ImpromtuInterface</RootNamespace>
+    <RootNamespace>ImpromptuInterface</RootNamespace>
     <AssemblyName>ImpromtuInterface</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -44,7 +44,9 @@
     <Compile Include="ActsLikeProxy.cs" />
     <Compile Include="BuildProxy.cs" />
     <Compile Include="EmitExtensions.cs" />
+    <Compile Include="ImpromptuObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TypeHash.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

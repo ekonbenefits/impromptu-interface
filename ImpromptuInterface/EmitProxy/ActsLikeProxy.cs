@@ -16,7 +16,7 @@ namespace ImpromptuInterface
     /// </summary>
     public interface IDynamicKnowsLike
     {
-        void SetKnownInterfaces(IEnumerable<Type> interfaces);
+        IEnumerable<Type> KnownInterfaces { set; }
     }
 
 
@@ -32,7 +32,7 @@ namespace ImpromptuInterface
             Original = original;
             var tKnowOriginal = Original as IDynamicKnowsLike;
             if (tKnowOriginal != null)
-                tKnowOriginal.SetKnownInterfaces(interfaces);
+                tKnowOriginal.KnownInterfaces =interfaces;
             
         }
     }

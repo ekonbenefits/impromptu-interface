@@ -16,27 +16,33 @@ namespace ImpromptuInterface
 
         private TypeHash _hash;
 
+        public IEnumerable<Type> KnownInterfaces
+        {
+            get
+            {
+                return _hash.Types;
+            }
+            set
+            {
+                lock ("com.ImpromptuInterface.DynamicReturnTypeHash")
+                {
+                    _hash = new TypeHash(value);
+                    if (_returnTypHash.ContainsKey(_hash)) return;
+                    var tDict = value.SelectMany(@interface => @interface.GetProperties())
+                        .ToDictionary(info => info.Name, info => info.GetGetMethod().ReturnType);
+                    _returnTypHash.Add(_hash, tDict);
+                }
+            }
+        }
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return _returnTypHash[_hash].Select(it => it.Key);
         }
 
-
         protected virtual Type TypeForName(string name)
         {
             return _returnTypHash[_hash][name];
-        }
-
-        public virtual void SetKnownInterfaces(IEnumerable<Type> interfaces)
-        {
-            lock ("com.ImpromptuInterface.DynamicReturnTypeHash")
-            {
-                _hash = new TypeHash(interfaces);
-                if (_returnTypHash.ContainsKey(_hash)) return;
-                var tDict = interfaces.SelectMany(@interface => @interface.GetProperties())
-                    .ToDictionary(info => info.Name, info => info.GetGetMethod().ReturnType);
-                _returnTypHash.Add(_hash, tDict);
-            }
         }
 
         public virtual TInterface ActsLike<TInterface>(params Type[] otherInterfaces) where TInterface:class

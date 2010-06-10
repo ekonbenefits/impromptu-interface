@@ -41,12 +41,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActsLike.cs" />
-    <Compile Include="ActsLikeProxy.cs" />
-    <Compile Include="BuildProxy.cs" />
-    <Compile Include="EmitExtensions.cs" />
-    <Compile Include="ImpromptuObject.cs" />
+    <Compile Include="EmitProxy\ActsLikeProxy.cs" />
+    <Compile Include="EmitProxy\BuildProxy.cs" />
+    <Compile Include="EmitProxy\EmitExtensions.cs" />
+    <Compile Include="Dynamic\ImpromptuObject.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TypeHash.cs" />
+    <Compile Include="EmitProxy\TypeHash.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

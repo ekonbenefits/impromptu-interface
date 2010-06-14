@@ -14,7 +14,7 @@ namespace ImpromptuInterface
     {
         protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
-
+        private static readonly object TypeHashLock = new object();
         protected TypeHash _hash;
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace ImpromptuInterface
             }
             set
             {
-                lock ("com.ImpromptuInterface.DynamicReturnTypeHash")
+                lock (TypeHashLock)
                 {
                     _hash = new TypeHash(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;

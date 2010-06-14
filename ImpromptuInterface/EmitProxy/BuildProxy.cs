@@ -19,12 +19,12 @@ namespace ImpromptuInterface
         private static ModuleBuilder _builder;
         private static AssemblyBuilder _ab;
         private static readonly Dictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
-
+        private static readonly object TypeCacheLock = new object();
       
 
         public static Type BuildType(Type contextType, Type mainInterface, params Type[] otherInterfaces)
         {
-            lock ("com.ImpromtuInterface.typecache")
+            lock (TypeCacheLock)
             {
                 var tNewHash = new TypeHash(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
 

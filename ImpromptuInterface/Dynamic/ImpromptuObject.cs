@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -10,7 +10,7 @@ namespace ImpromptuInterface
     /// Dynamic Object that knows about the Impromtu Interface return types;
     /// Override Typical Dynamic Object methods, and use TypeForName to get the return type of an interface member.
     /// </summary>
-    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowsLike, IActsLike
+    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike
     {
         protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
@@ -51,9 +51,9 @@ namespace ImpromptuInterface
             return _returnTypHash[_hash][name];
         }
 
-        public virtual TInterface ActsLike<TInterface>(params Type[] otherInterfaces) where TInterface:class
+        public virtual TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface:class
         {
-            return Impromptu.ActsLike<TInterface>(this, otherInterfaces);
+            return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
     }
 }

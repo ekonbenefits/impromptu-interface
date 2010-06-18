@@ -6,7 +6,7 @@ namespace ImpromptuInterface
     /// <summary>
     /// This interface can be used to access the original content of your emitted type;
     /// </summary>
-    public interface IActsLikeProxy
+    public interface IActLikeProxy
     {
         dynamic Original { get; }
     }
@@ -14,7 +14,7 @@ namespace ImpromptuInterface
     /// <summary>
     /// This interface can be used on your custom dynamic objects if you want to know the interface you are implementing
     /// </summary>
-    public interface IDynamicKnowsLike
+    public interface IDynamicKnowLike
     {
         IEnumerable<Type> KnownInterfaces { set; }
     }
@@ -23,14 +23,14 @@ namespace ImpromptuInterface
     /// <summary>
     /// Base class of Emited Proxies
     /// </summary>
-    public abstract class ActsLikeProxy : IActsLikeProxy
+    public abstract class ActLikeProxy : IActLikeProxy
     {
         public dynamic Original{ get; private set;}
 
-        protected ActsLikeProxy(dynamic original, Type[] interfaces)
+        protected ActLikeProxy(dynamic original, IEnumerable<Type> interfaces)
         {
             Original = original;
-            var tKnowOriginal = Original as IDynamicKnowsLike;
+            var tKnowOriginal = Original as IDynamicKnowLike;
             if (tKnowOriginal != null)
                 tKnowOriginal.KnownInterfaces =interfaces;
             

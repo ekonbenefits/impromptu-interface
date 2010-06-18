@@ -43,13 +43,13 @@ namespace ImpromptuInterface
 
 
             var tB = Builder.DefineType(
-                string.Format("ActsLike_{0}_{1}", interfaces.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
-                typeof(ActsLikeProxy), interfaces);
+                string.Format("ActLike_{0}_{1}", interfaces.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
+                typeof(ActLikeProxy), interfaces);
 
             var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object), typeof(Type[]) });
             tC.DefineParameter(1, ParameterAttributes.None, "original");
             tC.DefineParameter(2, ParameterAttributes.None, "interfaces");
-            var tConstInfo = typeof(ActsLikeProxy).GetConstructor(BindingFlags.NonPublic |BindingFlags.Instance, null,new[] { typeof(object), typeof(Type[])},null);
+            var tConstInfo = typeof(ActLikeProxy).GetConstructor(BindingFlags.NonPublic |BindingFlags.Instance, null,new[] { typeof(object), typeof(Type[])},null);
 
             var tCIl = tC.GetILGenerator();
             tCIl.Emit(OpCodes.Ldarg_0);
@@ -62,8 +62,14 @@ namespace ImpromptuInterface
 
             foreach (var tInterface in tInterfaces)
             {
-                CreateProperties(tB, tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance), contextType);
-                CreateMethods(tB, tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance),contextType);
+                foreach (var tInfo in tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
+                {
+                    MakeProperty(tInfo, tB, contextType);
+                }
+                foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
+                {
+                    MakeMethod(tInfo, tB, contextType);
+                }
             }
             var tType = tB.CreateType();
             return tType;
@@ -177,7 +183,7 @@ namespace ImpromptuInterface
             tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(tInvokeFuncType).GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActsLikeProxy).GetProperty("Original").GetGetMethod());
+            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
             for (var i = 1; i <= tParamTypes.Length; i++)
             {
 
@@ -190,24 +196,6 @@ namespace ImpromptuInterface
             }
 
             tIlGen.Emit(OpCodes.Ret);
-        }
-
-        private static void CreateMethods(TypeBuilder tB, MethodInfo[] methodInfo, Type contextType)
-        {
-            foreach (var tInfo in methodInfo.Where(it => !it.IsSpecialName))
-            {
-                MakeMethod(tInfo, tB, contextType);
-            }
-        }
-
-
-
-        private static void CreateProperties(TypeBuilder tB, IEnumerable<PropertyInfo> propertyInfo, Type contextType)
-        {
-            foreach (var tInfo in propertyInfo)
-            {
-                MakeProperty(tInfo, tB, contextType);
-            }
         }
 
 
@@ -296,7 +284,7 @@ namespace ImpromptuInterface
             tIlGen.Emit(OpCodes.Ldfld, tInvokeGetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActsLikeProxy).GetProperty("Original").GetGetMethod());
+            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
             for (var i = 1; i <= tIndexParamTypes.Length; i++)
             {
                 tIlGen.EmitLoadArgument(i);
@@ -338,7 +326,7 @@ namespace ImpromptuInterface
                 tIlGen.Emit(OpCodes.Ldfld, tSetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tSetCallsiteField);
                 tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof (ActsLikeProxy).GetProperty("Original").GetGetMethod());
+                tIlGen.Emit(OpCodes.Call, typeof (ActLikeProxy).GetProperty("Original").GetGetMethod());
                 for (var i = 1; i <= tSetParamTypes.Length; i++)
                 {
                     tIlGen.EmitLoadArgument(i);

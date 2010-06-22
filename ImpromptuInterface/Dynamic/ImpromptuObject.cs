@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
 
 namespace ImpromptuInterface
 {
@@ -46,10 +45,18 @@ namespace ImpromptuInterface
             return _returnTypHash[_hash].Select(it => it.Key);
         }
 
-        protected virtual Type TypeForName(string name)
+        protected virtual bool TryTypeForName(string name, out Type returnType)
         {
-            return _returnTypHash[_hash][name];
+            if (!_returnTypHash[_hash].ContainsKey(name))
+            {
+                returnType = null;
+                return false;
+            }
+
+            returnType =_returnTypHash[_hash][name];
+            return true;
         }
+
 
         public virtual TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface:class
         {

@@ -40,8 +40,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActsLike.cs" />
-    <Compile Include="EmitProxy\ActsLikeProxy.cs" />
+    <Compile Include="ActLike.cs" />
+    <Compile Include="EmitProxy\ActLikeProxy.cs" />
     <Compile Include="EmitProxy\BuildProxy.cs" />
     <Compile Include="EmitProxy\EmitExtensions.cs" />
     <Compile Include="Dynamic\ImpromptuObject.cs" />

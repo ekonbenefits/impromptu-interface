@@ -75,6 +75,31 @@ namespace ImpromptuInterface
             return tType;
         }
 
+        private static IEnumerable<Type> FlattenGenericParameters(Type type)
+        {
+            if (type.IsGenericParameter)
+                return new[] {type};
+            if(type.ContainsGenericParameters)
+            {
+                return type.GetGenericArguments().SelectMany(FlattenGenericParameters);
+            }
+            return new Type[]{};
+        }
+
+        private static Type ReplaceTypeWithGenericBuilder(Type type, IDictionary<Type,GenericTypeParameterBuilder> dict)
+        {
+            if(type.IsGenericTypeDefinition)
+            {
+                var tArgs = type.GetGenericArguments().Select(it=>ReplaceTypeWithGenericBuilder(it,dict));
+                return type.MakeGenericType(tArgs.ToArray());
+            }
+            if(dict.ContainsKey(type))
+            {
+                return dict[type];
+            }
+            return type;
+        }
+
         private static void MakeMethod(MethodInfo info, TypeBuilder typeBuilder, Type contextType)
         {
             var tName = info.Name;
@@ -89,19 +114,25 @@ namespace ImpromptuInterface
                                             TypeAttributes.NotPublic
                                             | TypeAttributes.Sealed
                                             | TypeAttributes.Class);
-            var tGenericParams = tParamTypes.Where(it => it.IsGenericParameter).Distinct().ToDictionary(it => it.GenericParameterPosition, it => new { Type = it, Gen = default(GenericTypeParameterBuilder) });
-            if (tReturnType.IsGenericParameter && !tGenericParams.ContainsKey(tReturnType.GenericParameterPosition))
-                tGenericParams.Add(tReturnType.GenericParameterPosition, new { Type = tReturnType, Gen = default(GenericTypeParameterBuilder) });
+            var tGenericParams = tParamTypes
+                .SelectMany(FlattenGenericParameters)
+                .Distinct().ToDictionary(it => it.GenericParameterPosition, it => new { Type = it, Gen = default(GenericTypeParameterBuilder) });
+            var tParams = tGenericParams;
+            var tReturnParameters = FlattenGenericParameters(tReturnType).Where(it => !tParams.ContainsKey(it.GenericParameterPosition));
+            foreach(var tReParm in tReturnParameters)
+                tGenericParams.Add(tReParm.GenericParameterPosition, new { Type = tReParm, Gen = default(GenericTypeParameterBuilder) });
             var tGenParams = tGenericParams.OrderBy(it => it.Key).Select(it => it.Value.Type.Name);
             if (tGenParams.Any())
             {
                 var tBuilders = tCStp.DefineGenericParameters(tGenParams.ToArray());
                 var tDict = tGenericParams.ToDictionary(param => param.Value.Type, param => tBuilders[param.Key]);
+
+                tReturnType = ReplaceTypeWithGenericBuilder(tReturnType, tDict);
                 if (tDict.ContainsKey(tReturnType))
                 {
                     tReturnType = tDict[tReturnType];
                 }
-                tParamTypes = tParamTypes.Select(it => tDict.ContainsKey(it) ? tDict[it] : it).ToArray();
+                tParamTypes = tParamTypes.Select(it => ReplaceTypeWithGenericBuilder(it,tDict)).ToArray();
             }
 
             var tConvert = "Convert_Method";
@@ -135,8 +166,8 @@ namespace ImpromptuInterface
 
                 tCallSite = tCallSite.MakeGenericType(tMethodGenerics);
 
-                tConvertFuncType = UpdateGenericParametesr(tConvertFuncType, tDict);
-                tInvokeFuncType = UpdateGenericParametesr(tInvokeFuncType, tDict);
+                tConvertFuncType = ReplaceTypeWithGenericBuilder(tConvertFuncType, tDict);
+                tInvokeFuncType = ReplaceTypeWithGenericBuilder(tInvokeFuncType, tDict);
             }
             tMethodBuilder.SetReturnType(tReturnType);
             tMethodBuilder.SetParameters(tParamTypes);

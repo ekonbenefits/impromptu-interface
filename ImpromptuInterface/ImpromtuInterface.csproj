@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ActLike.cs" />
+    <Compile Include="Dynamic\ImpromptuDictionary.cs" />
     <Compile Include="Dynamic\ImpromptuFactory.cs" />
     <Compile Include="EmitProxy\ActLikeProxy.cs" />
     <Compile Include="EmitProxy\BuildProxy.cs" />

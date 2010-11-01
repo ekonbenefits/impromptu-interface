@@ -25,6 +25,7 @@ namespace ImpromptuInterface
         {
             get
             {
+
                 return _hash.Types;
             }
             set
@@ -42,18 +43,25 @@ namespace ImpromptuInterface
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return _returnTypHash[_hash].Select(it => it.Key);
+            return HashForThisType().Select(it => it.Key);
+        }
+
+        private IDictionary<string, Type> HashForThisType()
+        {
+            return _hash == null || !_returnTypHash.ContainsKey(_hash)
+                ? new Dictionary<string, Type>() 
+                : _returnTypHash[_hash];
         }
 
         protected virtual bool TryTypeForName(string name, out Type returnType)
         {
-            if (!_returnTypHash[_hash].ContainsKey(name))
+            if (!HashForThisType().ContainsKey(name))
             {
                 returnType = null;
                 return false;
             }
 
-            returnType =_returnTypHash[_hash][name];
+            returnType = HashForThisType()[name];
             return true;
         }
 

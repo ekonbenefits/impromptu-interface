@@ -28,6 +28,9 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static TInterface ActLike<TInterface>(this object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
+            if (originalDynamic == null)
+                return null;
+
             var tType = originalDynamic.GetType();
 
             var tProxy = BuildProxy.BuildType(tType,typeof(TInterface), otherInterfaces);
@@ -42,6 +45,8 @@ namespace ImpromptuInterface
 
         public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
         {
+            if (originalDynamic == null)
+                return null;
             var tType = originalDynamic.GetType();
 
             var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());

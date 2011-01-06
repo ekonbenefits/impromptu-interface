@@ -4,19 +4,13 @@ using System.Linq;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
-using NUnit.Framework;
 
-namespace TestImpromtuInterface
+namespace Test
 {
 
 
-
-  
-
-    [TestFixture]
     public class PrivateTest:AssertionHelper
     {
-        [Test]
         public void Test()
         {
 			

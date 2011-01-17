@@ -3,3 +3,7 @@ relre:_ReSharper.*
 relre:.*/obj/.*
 relre:.*/bin/.*
 relre:.*\.suo$
+glob:*test-results*
+glob:.DS_Store
+relre:.*\.pidb$
+relre:.*\.userprefs$

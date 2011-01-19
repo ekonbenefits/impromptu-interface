@@ -21,6 +21,19 @@ namespace UnitTestImpromptuInterface
 	[TestFixture()]
 	public class Test:AssertionHelper
 	{
+	    private IDisposable Builder;
+
+        [TestFixtureSetUp]
+        public void Setup()
+        {
+            Builder = BuildProxy.WriteOutDll("ImpromptuEmit");
+        }
+        [TestFixtureTearDown]
+        public void TearDown()
+        {
+            Builder.Dispose();
+        }
+
 		[Test]
         public void AnonPropertyTest()
         {
@@ -90,26 +103,25 @@ namespace UnitTestImpromptuInterface
             ISimpeleClassMeth tActsLike = Impromptu.ActLike<ISimpeleClassMeth>(tNew);
 
 			
-			/* need 2.5 nunit
-			
+		
             Assert.Throws<AssertionException>(tActsLike.Action1);
             Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
-          	*/
+        
             Assert.AreEqual("test",tActsLike.Action3());
 			Console.Write("test");
           
         }
 
         [Test]
-        public void TestGeneric()
+        public void TestGenericMeth()
         {
 
-            GenericHelper(3,"3");
-            GenericHelper(4,"4");
-            GenericHelper(true,"True");
+            GenericMethHelper(3, "3");
+            GenericMethHelper(4, "4");
+            GenericMethHelper(true, "True");
         }
 
-        private void GenericHelper<T>(T param, string expected)
+        private void GenericMethHelper<T>(T param, string expected)
         {
             dynamic tNew = new ExpandoObject();
             tNew.Action = new Func<T,string>(it=>it.ToString());
@@ -118,6 +130,59 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(expected, tActsLike.Action(param));
         }
 
+
+        [Test]
+        public void TestGenericType()
+        {
+
+            GenericHelper(3, "3");
+            GenericHelper(4, "4");
+            GenericHelper(true, "True");
+        }
+
+        private void GenericHelper<T>(T param, string expected)
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Funct = new Func<T, string>(it => it.ToString());
+            IGenericType<T> tActsLike = Impromptu.ActLike<IGenericType<T>>(tNew);
+
+            Assert.AreEqual(expected, tActsLike.Funct(param));
+        }
+
+        [Test]
+        public void TestGenericTypeConstraints()
+        {
+
+            var tObj = new Object();
+            GenericHelperConstraints(tObj, tObj.ToString());
+        }
+
+        private void GenericHelperConstraints<T>(T param, string expected) where T: class 
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Funct = new Func<T, string>(it => it.ToString());
+            var tActsLike = Impromptu.ActLike<IGenericTypeConstraints<T>>(tNew);
+
+            Assert.AreEqual(expected, tActsLike.Funct(param));
+        }
+
+        [Test]
+        public void TestConstraintsMethGeneric()
+        {
+            var tObj = new Object();
+            GenericMethConstraintsHelper(tObj, tObj.ToString());
+        }
+
+        private void GenericMethConstraintsHelper<T>(T param, string expected) where T: class 
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Action = new Func<T, string>(it => it.ToString());
+            var tActsLike = Impromptu.ActLike<IGenericMethWithConstraints>(tNew);
+
+            Assert.AreEqual(expected, tActsLike.Action(param));
+        }
+
+  
 
         [Test]
         public void StringPropertyTest()

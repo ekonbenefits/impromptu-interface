@@ -47,7 +47,7 @@ namespace ImpromptuInterface
 
         public static FieldInfo GetFieldEvenIfGeneric(this Type type, string fieldName)
         {
-            if (type is TypeBuilder)
+            if (type is TypeBuilder || type.GetType().Name.Contains("TypeBuilder"))
             {
                 var tGenDef = type.GetGenericTypeDefinition();
                 var tField = tGenDef.GetField(fieldName);
@@ -58,7 +58,7 @@ namespace ImpromptuInterface
 
         public static MethodInfo GetMethodEvenIfGeneric(this Type type, string methodName, Type[] argTypes)
         {
-            if (type is TypeBuilder)
+            if (type is TypeBuilder || type.GetType().Name.Contains("TypeBuilder"))
             {
                 var tGenDef = type.GetGenericTypeDefinition();
                 var tMethodInfo = tGenDef.GetMethod(methodName, argTypes);
@@ -70,7 +70,7 @@ namespace ImpromptuInterface
 
         public static MethodInfo GetMethodEvenIfGeneric(this Type type, string methodName)
         {
-            if (type is TypeBuilder)
+            if (type is TypeBuilder || type.GetType().Name.Contains("TypeBuilder")) 
             {
                 var tGenDef = type.GetGenericTypeDefinition();
                 var tMethodInfo = tGenDef.GetMethod(methodName);

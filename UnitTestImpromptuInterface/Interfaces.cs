@@ -63,9 +63,15 @@ namespace UnitTestImpromptuInterface
 	
 	 public interface IGenericType<T>
     {
-		T Funct(string arg);
+		string Funct(T arg);
 		
-        string Action<T2>(T2 arg);
+     
     }
-  
+
+
+     public interface IGenericTypeConstraints<T> where T:class
+     {
+         string Funct(T arg);
+
+     }
 }

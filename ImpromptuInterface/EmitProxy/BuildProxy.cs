@@ -520,6 +520,23 @@ namespace ImpromptuInterface
 
         private static Type DefineCallsiteField(this TypeBuilder builder, string name, Type returnType, params Type[] argTypes)
         {
+            Type tReturnType;
+            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType);
+            tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+
+            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
+           return tFuncType;
+            
+        }
+
+        internal static Type GenerateCallSiteType(IEnumerable<Type> argTypes, Type returnType)
+        {
+            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType);
+            return typeof(CallSite<>).MakeGenericType(tFuncType);
+        }
+
+        private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType)
+        {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
             tList.AddRange(argTypes);
             if (returnType != typeof(void))
@@ -536,11 +553,9 @@ namespace ImpromptuInterface
 
             var tFuncGeneric = Type.GetType(tTypeName);
 
-                var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
-                var tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
-                builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
-                return tFuncType;
+            var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
             
+            return tFuncType;
         }
 
         private static ParameterAttributes AttributesForParam(ParameterInfo param)

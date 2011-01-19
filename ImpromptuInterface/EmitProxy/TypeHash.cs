@@ -75,7 +75,7 @@ namespace ImpromptuInterface
         /// <param name="moreTypes">The more types.</param>
         public TypeHash(Type type1, params Type[] moreTypes)
         {
-            Types = new[] { type1}.Concat(moreTypes).OrderBy(it => it.Name).ToArray();
+            Types = new[] { type1 }.Concat(moreTypes.OrderBy(it => it.Name)).ToArray();
         }
     }
 }

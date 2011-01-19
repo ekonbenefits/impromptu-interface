@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace UnitTestImpromptuInterface
@@ -53,12 +54,15 @@ namespace UnitTestImpromptuInterface
     public interface IGenericMeth
     {
         string Action<T>(T arg);
+
+        T Action2<T>(T arg);
     }
 
 	
 	 public interface IGenericMethWithConstraints
     {
         string Action<T>(T arg) where T:class;
+        string Action2<T>(T arg) where T : ISerializable;
     }
 	
 	 public interface IGenericType<T>

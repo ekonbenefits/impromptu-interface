@@ -141,7 +141,12 @@ namespace ImpromptuInterface
                 var tAttributes = type.GenericParameterAttributes;
                 tNewType.SetGenericParameterAttributes(tAttributes);
                 foreach (var tConstraint in type.GetGenericParameterConstraints())
-                    tNewType.SetBaseTypeConstraint(tConstraint);
+                {
+                    if(tConstraint.IsInterface)
+                        tNewType.SetInterfaceConstraints(tConstraint);
+                    else
+                        tNewType.SetBaseTypeConstraint(tConstraint);
+                }
                 return tNewType;
             }
             return type;

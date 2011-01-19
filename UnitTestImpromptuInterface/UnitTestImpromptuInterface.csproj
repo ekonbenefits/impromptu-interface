@@ -38,8 +38,11 @@
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="FixtureSetup.cs" />
+    <Compile Include="Generics.cs" />
+    <Compile Include="ImpromptuDynamic.cs" />
     <Compile Include="Interfaces.cs" />
-    <Compile Include="Tests.cs" />
+    <Compile Include="Basic.cs" />
     <Compile Include="PrivateTest.cs" />
   </ItemGroup>
   <ItemGroup>

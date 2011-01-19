@@ -7,36 +7,29 @@ using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using NUnit.Framework;
 
-namespace TestImpromtuInterface
+namespace UnitTestImpromptuInterface
 {
-
-
-
-  
-
     [TestFixture]
-    public class PrivateTest:AssertionHelper
+    public class PrivateTest : AssertionHelper
     {
         [Test]
-        public void Test()
+        public void TestExposePrivateMethod()
         {
-			
-			
-            var tTest =new TestWithPrivateMethod();
+            var tTest = new TestWithPrivateMethod();
+            var tExposed = tTest.ActLike<IExposePrivateMethod>();
+            Assert.AreEqual(3, tExposed.Test()); 
+        }
 
-            //tTest.Test(); //Doesn't work cuz it's private
-
-			
-            var tExposed =tTest.ActLike<IExposePrivateMethod>();
-            Assert.AreEqual(3,tExposed.Test());//Works
-
-            var tNonExposed =this.CallActLike<IExposePrivateMethod>(tTest);
+        [Test]
+        public void TestDoNotExposePrivateMethod()
+        {
+            var tTest = new TestWithPrivateMethod();
+            var tNonExposed = this.CallActLike<IExposePrivateMethod>(tTest);
             Assert.Throws<RuntimeBinderException>(() => tNonExposed.Test());
-
         }
     }
-	
-		 public class TestWithPrivateMethod
+
+    public class TestWithPrivateMethod
     {
         private int Test()
         {
@@ -44,8 +37,8 @@ namespace TestImpromtuInterface
         }
     }
 
-	
-	public interface  IExposePrivateMethod
+
+    public interface IExposePrivateMethod
     {
         int Test();
     }

@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ImpromptuInterface.Dynamic
@@ -57,7 +58,16 @@ namespace ImpromptuInterface.Dynamic
                 var tFunc = _dictionary[binder.Name] as Delegate;
                 if (tFunc !=null)
                 {
-                    result =tFunc.DynamicInvoke(args);
+                    try
+                    {
+                        result = tFunc.DynamicInvoke(args);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        if(ex.InnerException !=null)
+                            throw ex.InnerException;
+                        throw ex;
+                    }
                 }
                 return false;
             }
@@ -104,7 +114,7 @@ namespace ImpromptuInterface.Dynamic
 
             foreach (var tKey in tKeys)
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(tKey));
+                OnPropertyChanged(tKey);
             }
         }
 
@@ -154,7 +164,7 @@ namespace ImpromptuInterface.Dynamic
         public bool Remove(string key)
         {
            var tReturn = _dictionary.Remove(key);
-           PropertyChanged(this, new PropertyChangedEventArgs(key));
+           OnPropertyChanged(key);
            return tReturn;
         }
 
@@ -166,10 +176,17 @@ namespace ImpromptuInterface.Dynamic
         public object this[string key]
         {
             get { return _dictionary[key]; }
-            set { 
+            set
+            {
                 _dictionary[key] = value;
-                PropertyChanged(this,new PropertyChangedEventArgs(key));
+                OnPropertyChanged(key);
             }
+        }
+
+        protected virtual void OnPropertyChanged(string key)
+        {
+            if(PropertyChanged !=null)
+             PropertyChanged(this,new PropertyChangedEventArgs(key));
         }
 
         public ICollection<string> Keys

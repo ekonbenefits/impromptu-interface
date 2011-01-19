@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using Microsoft.CSharp.RuntimeBinder;
 using NUnit.Framework;
 
 namespace TestImpromtuInterface
@@ -28,6 +29,10 @@ namespace TestImpromtuInterface
 			
             var tExposed =tTest.ActLike<IExposePrivateMethod>();
             Assert.AreEqual(3,tExposed.Test());//Works
+
+            var tNonExposed =this.CallActLike<IExposePrivateMethod>(tTest);
+            Assert.Throws<RuntimeBinderException>(() => tNonExposed.Test());
+
         }
     }
 	

@@ -62,6 +62,30 @@ namespace ImpromptuInterface
             return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
         }
 
+        public static dynamic CallDynamicActLike(this object caller, object originalDynamic, params Type[] otherInterfaces)
+        {
+            var tType = caller.GetType();
+
+            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+
+            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
+        }
+
+        public static TInterface CallActLike<TInterface>(this object caller, object originalDynamic, params Type[] otherInterfaces) where TInterface : class
+        {
+            var tType = caller.GetType();
+
+            var tProxy = BuildProxy.BuildType(tType, typeof(TInterface), otherInterfaces);
+
+            return (TInterface)Activator.CreateInstance(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces).ToArray());
+        }
+
+        public static IEnumerable<TInterface> AllActLikeCall<TInterface>(this IEnumerable<object> originalDynamic, object caller, params Type[] otherInterfaces) where TInterface : class
+        {
+            return originalDynamic.Select(it => caller.CallActLike<TInterface>(it,otherInterfaces));
+        }
+
+
     }
 
 }

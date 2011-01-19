@@ -36,6 +36,8 @@ namespace ImpromptuInterface
         private static readonly Dictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
         private static readonly object TypeCacheLock = new object();
 
+     
+
         internal class TempBuilder : IDisposable
         {
             private string _name;
@@ -155,10 +157,7 @@ namespace ImpromptuInterface
 
 
             var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
-            var tCStp = builder.DefineType(tCallSiteInvokeName,
-                                            TypeAttributes.NotPublic
-                                            | TypeAttributes.Sealed
-                                            | TypeAttributes.Class);
+            var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
            
 
@@ -212,6 +211,18 @@ namespace ImpromptuInterface
             }
 
             EmitMethodBody(tName, tParamTypes, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+        }
+
+        private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
+        {
+            return builder.DefineType(tCallSiteInvokeName,
+
+                                      TypeAttributes.NotPublic
+                                      | TypeAttributes.Sealed
+                                      | TypeAttributes.AutoClass
+                                      |TypeAttributes.BeforeFieldInit 
+                                      | TypeAttributes.Abstract
+                );
         }
 
         private static Tuple<Type, Type[]> GetParamTypes(dynamic builder, MethodInfo info)
@@ -323,9 +334,7 @@ namespace ImpromptuInterface
 
 
             var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
-            var tCStp = builder.DefineType(tCallSiteInvokeName,
-                                            TypeAttributes.NotPublic | TypeAttributes.Sealed |
-                                            TypeAttributes.Class);
+            var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
 
             var tConvertGet = "Convert_Get";

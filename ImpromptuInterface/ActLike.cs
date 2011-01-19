@@ -48,29 +48,14 @@ namespace ImpromptuInterface
             return (TInterface)Activator.CreateInstance(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces).ToArray());
         }
 
-        public static IEnumerable<TInterface> AllActLike<TInterface>(this IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class
-        {
-            return originalDynamic.Select(it => it.ActLike<TInterface>(otherInterfaces));
-        }
-
-        public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
-        {
-            var tType = originalDynamic.GetType();
-
-            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
-
-            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
-        }
-
-        public static dynamic CallDynamicActLike(this object caller, object originalDynamic, params Type[] otherInterfaces)
-        {
-            var tType = caller.GetType();
-
-            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
-
-            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
-        }
-
+        /// <summary>
+        /// This Extension method is called off the calling context to perserve permissions with the object wrapped with an explicit interface definition.
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <param name="caller">The caller.</param>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
         public static TInterface CallActLike<TInterface>(this object caller, object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
             var tType = caller.GetType();
@@ -80,7 +65,59 @@ namespace ImpromptuInterface
             return (TInterface)Activator.CreateInstance(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces).ToArray());
         }
 
-        public static IEnumerable<TInterface> AllActLikeCall<TInterface>(this IEnumerable<object> originalDynamic, object caller, params Type[] otherInterfaces) where TInterface : class
+        /// <summary>
+        /// Chainable Linq to Objects Method, allows you to wrap a list of objects with an Explict interface defintion
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
+        public static IEnumerable<TInterface> AllActLike<TInterface>(this IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class
+        {
+            return originalDynamic.Select(it => it.ActLike<TInterface>(otherInterfaces));
+        }
+
+        /// <summary>
+        /// Static Method that wraps an existing dyanmic object with a explicit interface type
+        /// </summary>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
+        public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
+        {
+            var tType = originalDynamic.GetType();
+
+            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+
+            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
+        }
+
+        /// <summary>
+        /// This Extension method is called off the calling context to perserve permissions with the object wrapped with an explicit interface definition.
+        /// </summary>
+        /// <param name="caller">The caller.</param>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
+        public static dynamic CallDynamicActLike(this object caller, object originalDynamic, params Type[] otherInterfaces)
+        {
+            var tType = caller.GetType();
+
+            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+
+            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
+        }
+
+
+        /// <summary>
+        /// Chainable Linq to Objects Method, allows you to wrap a list of objects, and preserve method permissions with a caller, with an Explict interface defintion
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="caller">The caller.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
+        public static IEnumerable<TInterface> AllCallActLike<TInterface>(this IEnumerable<object> originalDynamic, object caller, params Type[] otherInterfaces) where TInterface : class
         {
             return originalDynamic.Select(it => caller.CallActLike<TInterface>(it,otherInterfaces));
         }

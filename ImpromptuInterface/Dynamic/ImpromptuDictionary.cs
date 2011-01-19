@@ -16,13 +16,14 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
 
 namespace ImpromptuInterface.Dynamic
 {
-    public class ImpromptuDictionary:ImpromptuObject,IDictionary<string,object>
+    public class ImpromptuDictionary:ImpromptuObject,IDictionary<string,object>,INotifyPropertyChanged
     {
         protected readonly IDictionary<string,object> _dictionary = new Dictionary<string, object>();
 
@@ -48,9 +49,34 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
+        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+        {
+            result = null;
+            if (_dictionary.ContainsKey(binder.Name))
+            {
+                var tFunc = _dictionary[binder.Name] as Delegate;
+                if (tFunc !=null)
+                {
+                    result =tFunc.DynamicInvoke(args);
+                }
+                return false;
+            }
+            Type tType;
+            if (!TryTypeForName(binder.Name, out tType))
+            {
+
+                return false;
+            }
+            if (tType.IsValueType)
+            {
+                result = Activator.CreateInstance(tType);
+            }
+            return true;
+        }
+
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            _dictionary[binder.Name] = value;
+            this[binder.Name] = value;
             return true;
         }
 
@@ -66,12 +92,20 @@ namespace ImpromptuInterface.Dynamic
 
         public void Add(KeyValuePair<string, object> item)
         {
-           _dictionary.Add(item);
+           this[item.Key]=item.Value;
         }
 
         public void Clear()
         {
+            var tKeys = Keys;
+           
+
             _dictionary.Clear();
+
+            foreach (var tKey in tKeys)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(tKey));
+            }
         }
 
         public bool Contains(KeyValuePair<string, object> item)
@@ -86,7 +120,15 @@ namespace ImpromptuInterface.Dynamic
 
         public bool Remove(KeyValuePair<string, object> item)
         {
-            return _dictionary.Remove(item);
+            object tValue;
+            if (TryGetValue(item.Key, out tValue))
+            {
+                if (item.Value == tValue)
+                {
+                    Remove(item.Key);
+                }
+            }
+            return false;
         }
 
         public int Count
@@ -106,12 +148,14 @@ namespace ImpromptuInterface.Dynamic
 
         public void Add(string key, object value)
         {
-            _dictionary.Add(key,value);
+            this[key]=value;
         }
 
         public bool Remove(string key)
         {
-           return _dictionary.Remove(key);
+           var tReturn = _dictionary.Remove(key);
+           PropertyChanged(this, new PropertyChangedEventArgs(key));
+           return tReturn;
         }
 
         public bool TryGetValue(string key, out object value)
@@ -122,7 +166,10 @@ namespace ImpromptuInterface.Dynamic
         public object this[string key]
         {
             get { return _dictionary[key]; }
-            set { _dictionary[key] = value; }
+            set { 
+                _dictionary[key] = value;
+                PropertyChanged(this,new PropertyChangedEventArgs(key));
+            }
         }
 
         public ICollection<string> Keys
@@ -134,5 +181,7 @@ namespace ImpromptuInterface.Dynamic
         {
             get { return _dictionary.Values; }
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
     }
 }

@@ -28,6 +28,8 @@ namespace ImpromptuInterface
     {
         protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
+
+
         private static readonly object TypeHashLock = new object();
         protected TypeHash _hash;
 
@@ -49,8 +51,17 @@ namespace ImpromptuInterface
                 {
                     _hash = new TypeHash(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;
-                    var tDict = value.SelectMany(@interface => @interface.GetProperties())
-                        .ToDictionary(info => info.Name, info => info.GetGetMethod().ReturnType);
+
+                    var tPropReturType = value.SelectMany(@interface => @interface.GetProperties())
+                        .Where(property=>property.GetGetMethod() !=null)
+                        .Select(property=>new{property.Name, property.GetGetMethod().ReturnType});
+
+                    var tMethodReturnType = value.SelectMany(@interface => @interface.GetMethods())
+                      .Select(property => new { property.Name, property.ReturnType });
+
+                    var tDict = tPropReturType.Concat(tMethodReturnType)
+                        .ToDictionary(info => info.Name, info => info.ReturnType);
+                    
                     _returnTypHash.Add(_hash, tDict);
                 }
             }

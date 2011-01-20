@@ -79,6 +79,12 @@ namespace ImpromptuInterface
                 : _returnTypHash[_hash];
         }
 
+        /// <summary>
+        /// Tries to get the type for the property name from the interface.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="returnType">The return Type.</param>
+        /// <returns></returns>
         protected virtual bool TryTypeForName(string name, out Type returnType)
         {
             if (!HashForThisType().ContainsKey(name))
@@ -92,6 +98,12 @@ namespace ImpromptuInterface
         }
 
 
+        /// <summary>
+        /// Allows ActLike to be called via dyanmic invocation
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
         public virtual TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface:class
         {
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);

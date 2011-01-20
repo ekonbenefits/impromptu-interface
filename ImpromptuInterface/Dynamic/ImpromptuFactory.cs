@@ -20,6 +20,9 @@ using System.Text;
 
 namespace ImpromptuInterface
 {
+    /// <summary>
+    /// Base Class for making a fluent factory using an Impromptu Interface return type.
+    /// </summary>
     public class ImpromptuFactory:ImpromptuObject
     {
 
@@ -29,11 +32,21 @@ namespace ImpromptuInterface
             return result != null;
         }
 
+        /// <summary>
+        /// Constructs the type. Override for changing type intialization property changes.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         protected virtual object CreateType(Type type)
         {
             return Activator.CreateInstance(type);
         }
 
+        /// <summary>
+        /// Gets the instance for a dynamic member. Override for type constrcution behavoir changes based on property name.
+        /// </summary>
+        /// <param name="memberName">Name of the member.</param>
+        /// <returns></returns>
         public virtual object GetInstanceForDynamicMember(string memberName)
         {
             Type type;
@@ -45,6 +58,10 @@ namespace ImpromptuInterface
         }
     }
 
+
+    /// <summary>
+    /// Base Class for making a singleton fluent factory using an Impromptu Interface return type.
+    /// </summary>
     public class ImpromptuSingleInstancesFactory : ImpromptuFactory
     {
         protected readonly Dictionary<string, dynamic> _hashFactoryTypes= new Dictionary<string, dynamic>();

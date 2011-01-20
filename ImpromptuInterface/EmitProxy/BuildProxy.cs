@@ -54,6 +54,11 @@ namespace ImpromptuInterface
             }
         }
 
+        /// <summary>
+        /// Writes the out DLL of types created between this call and dispose used for debugging of emitted IL code
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static IDisposable WriteOutDll(string name)
         {
              GenerateAssembly(name, AssemblyBuilderAccess.RunAndSave,ref _tempSaveAssembly,ref  _tempBuilder);
@@ -61,6 +66,13 @@ namespace ImpromptuInterface
         }
 
 
+        /// <summary>
+        /// Builds the type for the static proxy or returns from cache
+        /// </summary>
+        /// <param name="contextType">Type of the context.</param>
+        /// <param name="mainInterface">The main interface.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
         public static Type BuildType(Type contextType, Type mainInterface, params Type[] otherInterfaces)
         {
             lock (TypeCacheLock)

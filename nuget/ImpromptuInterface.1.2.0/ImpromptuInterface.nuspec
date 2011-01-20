@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<package> 
+  <metadata> 
+    <id>ImpromptuInterface</id> 
+    <version>1.2.0</version> 
+    <authors>Jay Tuley</authors> 
+    <owners>Jay Tuley</owners>
+    <description>A Lightweight Duck Casting Framework for dynamic C#</description> 
+    <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
+    <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
+    <tags>ducktyping duckcasting dynamic .net40</tags>
+    <language>en-US</language> 
+  </metadata> 
+</package>
+

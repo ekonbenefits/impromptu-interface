@@ -44,6 +44,7 @@
     <Compile Include="Interfaces.cs" />
     <Compile Include="Basic.cs" />
     <Compile Include="PrivateTest.cs" />
+    <Compile Include="SingleMethodInvoke.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImpromptuInterface\ImpromtuInterface.csproj">

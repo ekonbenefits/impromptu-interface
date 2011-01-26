@@ -15,7 +15,8 @@
 
 using System.Collections.Generic;
 using System.Linq;
-
+using System.Runtime.CompilerServices;
+using CSharp = Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface
 {
     using System;
@@ -32,6 +33,83 @@ namespace ImpromptuInterface
 
     public static class Impromptu
     {
+
+
+        public static dynamic InvokeMember(object target, string name, params object[] args)
+        {
+            var tArgTypes = args.Select(it => it.GetType()).ToArray();
+
+            var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
+                                       target.GetType(),
+                                       new[]{CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None,null)}.Concat(args.Select(
+                                           it =>
+                                           CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
+
+
+            var tList = new List<Type>();
+            tList.Add(typeof(CallSite));
+            tList.Add(typeof(object));
+            tList.AddRange(tArgTypes);
+            tList.Add(typeof(object));
+
+            var tDelagateType = BuildProxy.GenericDelegateType(tList.Count).MakeGenericType(tList.ToArray());
+
+            return Invoke(tDelagateType, tBinder, target, args);
+        }
+
+        public static dynamic InvokeSet(object target, string name, object value)
+        {
+       
+
+            var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.None, name,
+                                                  target.GetType(),
+                                                  new[]
+                                                      {
+                                                          CSharp.CSharpArgumentInfo.Create(
+                                                              CSharp.CSharpArgumentInfoFlags.None, null)
+                                                      });
+
+
+            var tList = new [] {typeof (CallSite), typeof (object), value.GetType()};
+
+            var tDelagateType = BuildProxy.GenericDelegateType(tList.Length,action:true).MakeGenericType(tList);
+
+            return Invoke(tDelagateType, tBinder, target, value);
+        }
+
+        public static dynamic InvokeGet(object target, string name)
+        {
+
+
+            var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
+                                                  target.GetType(),
+                                                  new[]
+                                                      {
+                                                          CSharp.CSharpArgumentInfo.Create(
+                                                              CSharp.CSharpArgumentInfoFlags.None, null)
+                                                      });
+
+
+            var tFuncGenParameters = new [] {typeof (CallSite), typeof (object), typeof (object)};
+
+            var tDelagateType = BuildProxy.GenericDelegateType(tFuncGenParameters.Length).MakeGenericType(tFuncGenParameters);
+
+            return Invoke(tDelagateType, tBinder, target);
+        }
+
+
+        private static dynamic Invoke(Type delegateType, CallSiteBinder binder, object target, params object[] args)
+        {
+            dynamic callSite = CallSite.Create(delegateType, binder);
+
+            var tParameters = new List<object>();
+            tParameters.Add(callSite);
+            tParameters.Add(target);
+            tParameters.AddRange(args);
+
+            return callSite.Target.DynamicInvoke(tParameters.ToArray());
+        }
+
         /// <summary>
         /// Extension Method that Wraps an existing object with an Explicit interface definition
         /// </summary>

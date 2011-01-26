@@ -541,12 +541,19 @@ namespace ImpromptuInterface
             
         }
 
-        internal static Type GenerateCallSiteType(IEnumerable<Type> argTypes, Type returnType)
+        internal static Type GenericDelegateType(int count, bool action =false)
         {
-            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType);
-            return typeof(CallSite<>).MakeGenericType(tFuncType);
+            var tTypeName = String.Format("System.Func`{0}", count);
+            if (action)
+                tTypeName = String.Format("System.Action`{0}", count);
+
+
+            var tFuncGeneric = Type.GetType(tTypeName);
+
+            return tFuncGeneric;
         }
 
+       
         private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType)
         {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
@@ -556,14 +563,7 @@ namespace ImpromptuInterface
 
 
 
-
-            var tTypeName = String.Format("System.Func`{0}", tList.Count);
-            if (returnType == typeof(void))
-                tTypeName = String.Format("System.Action`{0}", tList.Count);
-
-
-
-            var tFuncGeneric = Type.GetType(tTypeName);
+            var tFuncGeneric = GenericDelegateType(tList.Count, returnType == typeof (void));
 
             var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
             

@@ -53,6 +53,25 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tValue.ToString(), tOut);
         }
 
+
+        [Test]
+        public void TestMethodDynamicPassVoid()
+        {
+            var tTest = "Wrong";
+
+            var tValue = "Correct";
+
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Action = new Action<string>(it => tTest = it);
+
+
+
+            Impromptu.InvokeMember(tExpando, "Action", tValue);
+
+            Assert.AreEqual(tValue, tTest);
+        }
+
+
         [Test]
         public void TestMethodStaticGetValue()
         {

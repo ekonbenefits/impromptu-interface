@@ -77,4 +77,25 @@ namespace UnitTestImpromptuInterface
          string Funct(T arg);
 
      }
+
+
+    public interface IOverloadingMethod
+    {
+       string Func(int arg);
+
+       string Func(object arg);
+    }
+
+    public class OverloadingMethPoco
+    {
+        public string Func(int arg)
+        {
+            return "int";
+        }
+
+        public string Func(object arg)
+        {
+            return "object";
+        }
+    }
 }

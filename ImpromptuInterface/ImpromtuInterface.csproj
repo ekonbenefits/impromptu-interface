@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ActLike.cs" />
+    <Compile Include="Impromptu.cs" />
     <Compile Include="Dynamic\ImpromptuDictionary.cs" />
     <Compile Include="Dynamic\ImpromptuFactory.cs" />
     <Compile Include="EmitProxy\ActLikeProxy.cs" />

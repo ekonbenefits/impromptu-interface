@@ -41,7 +41,7 @@
     <Compile Include="FixtureSetup.cs" />
     <Compile Include="Generics.cs" />
     <Compile Include="ImpromptuDynamic.cs" />
-    <Compile Include="Interfaces.cs" />
+    <Compile Include="SupportDefinitions.cs" />
     <Compile Include="Basic.cs" />
     <Compile Include="PrivateTest.cs" />
     <Compile Include="SingleMethodInvoke.cs" />

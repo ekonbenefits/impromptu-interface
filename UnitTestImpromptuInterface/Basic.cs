@@ -125,6 +125,18 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
         }
+
+
+        [Test]
+        public void OverloadMethodTest()
+        {
+            var tPoco = new OverloadingMethPoco();
+            var tActsLike = tPoco.ActLike<IOverloadingMethod>();
+
+            var tValue = 1;
+            Assert.AreEqual("int", tActsLike.Func(tValue));
+            Assert.AreEqual("object", tActsLike.Func((object)tValue));
+        }
 		
 	}
 }

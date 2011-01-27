@@ -68,6 +68,27 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tValue.ToString(), tOut);
         }
 
+
+        [Test]
+        public void TestMethodStaticOverloadingPassAndGetValue()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", tValue);
+
+            Assert.AreEqual("int", tOut);
+
+            Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
+
+
+            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+
+            Assert.AreEqual("object", tOut2);
+        }
+
+
         [Test]
         public void TestMethodDynamicPassVoid()
         {

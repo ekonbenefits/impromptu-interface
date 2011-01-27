@@ -120,7 +120,7 @@ namespace UnitTestImpromptuInterface
                                                         InfoFlags.UseCompileTimeType, null)
                                                 });
 
-            var tSite = Impromptu.CallSiteCreateCached<DynamicTryString>(tBinder);
+            var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
 
           
             tSite.Target.Invoke(tSite, tPoco, out tResult);

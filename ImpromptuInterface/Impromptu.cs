@@ -33,7 +33,34 @@ namespace ImpromptuInterface
 
     public static class Impromptu
     {
+        private static Dictionary<Tuple<Type,CallSiteBinder>, CallSite> _binderCache = new Dictionary<Tuple<Type, CallSiteBinder>, CallSite>();
+        private static object _binderCacheLock = new object();
 
+        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder)
+        {
+            var tHash = Tuple.Create(delegateType, binder);
+            lock (_binderCacheLock)
+            {
+                if (!_binderCache.ContainsKey(tHash))
+                {
+                    _binderCache[tHash] = CallSite.Create(delegateType, binder);
+                }
+                return _binderCache[tHash];
+            }
+        }
+         
+        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder) where T: class 
+        {
+            var tHash = Tuple.Create(typeof(T), binder);
+            lock (_binderCacheLock)
+            {
+                if (!_binderCache.ContainsKey(tHash))
+                {
+                    _binderCache[tHash] = CallSite<T>.Create(binder);
+                }
+                return (CallSite<T>)_binderCache[tHash];
+            }
+        }
 
         public static dynamic InvokeMember(object target, string name, params object[] args)
         {
@@ -118,14 +145,9 @@ namespace ImpromptuInterface
             return Invoke(tBinder, tDelagateType, target);
         }
 
-        public static CallSite<T> CallSiteCreateCached<T>(CallSiteBinder binder) where T:class 
-        {
-            return (CallSite<T>)CallSite.Create(typeof(T), binder);
-        }
-
         public static dynamic Invoke(CallSiteBinder binder, Type delegateType, object target, params object[] args)
         {
-            dynamic callSite = CallSite.Create(delegateType, binder);
+            dynamic callSite = CreateCallSite(delegateType, binder);
 
             var tParameters = new List<object>();
             tParameters.Add(callSite);

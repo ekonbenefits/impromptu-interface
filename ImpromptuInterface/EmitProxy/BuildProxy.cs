@@ -242,12 +242,13 @@ namespace ImpromptuInterface
 
 
             tReplacedTypes = GetParamTypes(tMethodBuilder, info);
+            var tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
             if (tReplacedTypes != null)
             {
                 tReturnType = tReplacedTypes.Item1;
                 tParamTypes = tReplacedTypes.Item2;
 
-                var tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
+                tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
 
                 tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams);
                 if(tConvertFuncType !=null)
@@ -263,9 +264,9 @@ namespace ImpromptuInterface
                 tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
             }
 
-            
 
-            EmitMethodBody(tName, tParamTypes.Select(ReduceToElementType).ToArray(), tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+
+            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -564,7 +565,7 @@ namespace ImpromptuInterface
             if (returnType != typeof(void))
                 tList.Add(returnType);
 
-            var tTypeArguments = tList.AsEnumerable();
+            IEnumerable<Type> tTypeArguments = tList;
 
 
             var tDef = tFuncGeneric.GetGenericTypeDefinition();

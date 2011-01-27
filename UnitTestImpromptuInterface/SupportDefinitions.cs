@@ -149,13 +149,6 @@ namespace UnitTestImpromptuInterface
             return true;
         }
 
-
-        public void test()
-        {
-            dynamic tMethod = new MethRefPoco();
-            var tResult = 1;
-            bool tbool = tMethod.Func(ref tResult);
-        }
     }
 
     public interface IMethodRef

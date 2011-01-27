@@ -118,24 +118,23 @@ namespace ImpromptuInterface
             return Invoke(tBinder, tDelagateType, target);
         }
 
+        public static CallSite<T> CallSiteCreateCached<T>(CallSiteBinder binder) where T:class 
+        {
+            return (CallSite<T>)CallSite.Create(typeof(T), binder);
+        }
 
         public static dynamic Invoke(CallSiteBinder binder, Type delegateType, object target, params object[] args)
         {
-            var callSite = CallSite.Create(delegateType, binder);
+            dynamic callSite = CallSite.Create(delegateType, binder);
 
             var tParameters = new List<object>();
             tParameters.Add(callSite);
             tParameters.Add(target);
             tParameters.AddRange(args);
 
-            return callSite.GetDynamicTarget().DynamicInvoke(tParameters.ToArray());
+            return ((Delegate)callSite.Target).DynamicInvoke(tParameters.ToArray());
         }
 
-        public static Delegate GetDynamicTarget(this CallSite callSite)
-        {
-           return ((dynamic) callSite).Target;
-        }
-    
 
         /// <summary>
         /// Extension Method that Wraps an existing object with an Explicit interface definition

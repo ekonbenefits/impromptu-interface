@@ -116,6 +116,25 @@ namespace UnitTestImpromptuInterface
 
     
     }
+    public class GenericMethOutPoco
+    {
+        public bool Func<T>(out T result)
+        {
+            result = default(T);
+            return true;
+        }
+    }
+
+    public interface IGenericMethodOut
+    {
+        bool Func<T>(out T result);
+    }
+
+    public interface IMethodOut2
+    {
+        bool Func(out int result);
+    }
+
 
     public interface IMethodOut
     {

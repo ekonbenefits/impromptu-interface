@@ -130,6 +130,11 @@ namespace ImpromptuInterface
 
         private static IEnumerable<Type> FlattenGenericParameters(Type type)
         {
+            if (type.IsByRef || type.IsArray || type.IsPointer)
+            {
+                return FlattenGenericParameters(type.GetElementType());
+            }
+
             if (type.IsGenericParameter)
                 return new[] {type};
             if(type.ContainsGenericParameters)
@@ -141,29 +146,55 @@ namespace ImpromptuInterface
 
         private static Type ReplaceTypeWithGenericBuilder(Type type, IDictionary<Type,GenericTypeParameterBuilder> dict)
         {
-           
-            if(type.IsGenericTypeDefinition)
+            var tStartType = type;
+            Type tReturnType;
+            if (type.IsByRef || type.IsArray || type.IsPointer)
             {
-                var tArgs = type.GetGenericArguments().Select(it=>ReplaceTypeWithGenericBuilder(it,dict));
+                tStartType = type.GetElementType();
+            }
 
-                var tNewType = type.MakeGenericType(tArgs.ToArray());
-                return tNewType;
-            }
-            if(dict.ContainsKey(type))
+
+            if(tStartType.IsGenericTypeDefinition)
             {
-                var tNewType = dict[type];
-                var tAttributes = type.GenericParameterAttributes;
-                tNewType.SetGenericParameterAttributes(tAttributes);
-                foreach (var tConstraint in type.GetGenericParameterConstraints())
+                var tArgs = tStartType.GetGenericArguments().Select(it=>ReplaceTypeWithGenericBuilder(it,dict));
+
+                var tNewType = tStartType.MakeGenericType(tArgs.ToArray());
+                tReturnType = tNewType;
+            }else if (dict.ContainsKey(tStartType))
                 {
-                    if(tConstraint.IsInterface)
-                        tNewType.SetInterfaceConstraints(tConstraint);
-                    else
-                        tNewType.SetBaseTypeConstraint(tConstraint);
+                    var tNewType = dict[tStartType];
+                    var tAttributes = tStartType.GenericParameterAttributes;
+                    tNewType.SetGenericParameterAttributes(tAttributes);
+                    foreach (var tConstraint in tStartType.GetGenericParameterConstraints())
+                    {
+                        if (tConstraint.IsInterface)
+                            tNewType.SetInterfaceConstraints(tConstraint);
+                        else
+                            tNewType.SetBaseTypeConstraint(tConstraint);
+                    }
+                    tReturnType = tNewType;
                 }
-                return tNewType;
+                else
+                {
+                    tReturnType = tStartType;
+                }
+
+            if (type.IsByRef)
+            {
+                return tReturnType.MakeByRefType();
             }
-            return type;
+
+            if (type.IsArray)
+            {
+                return tReturnType.MakeArrayType();
+            }
+
+            if (type.IsPointer)
+            {
+                return tReturnType.MakePointerType();
+            }
+
+            return tReturnType;
         }
 
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
@@ -216,10 +247,12 @@ namespace ImpromptuInterface
                 tReturnType = tReplacedTypes.Item1;
                 tParamTypes = tReplacedTypes.Item2;
 
-                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tParamTypes);
+                var tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
+
+                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams);
                 if(tConvertFuncType !=null)
                     tConvertFuncType = UpdateCallsiteFuncType(tConvertFuncType, tReturnType);
-                tInvokeFuncType = UpdateCallsiteFuncType(tInvokeFuncType, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes);
+                tInvokeFuncType = UpdateCallsiteFuncType(tInvokeFuncType, tReturnType != typeof(void) ? typeof(object) : typeof(void), tReducedParams);
             }
 
             tMethodBuilder.SetReturnType(tReturnType);
@@ -230,7 +263,9 @@ namespace ImpromptuInterface
                 tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
             }
 
-            EmitMethodBody(tName, tParamTypes, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+            
+
+            EmitMethodBody(tName, tParamTypes.Select(ReduceToElementType).ToArray(), tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -529,15 +564,32 @@ namespace ImpromptuInterface
             if (returnType != typeof(void))
                 tList.Add(returnType);
 
-            var tFuncType = tFuncGeneric.GetGenericTypeDefinition().MakeGenericType(tList.ToArray());
+            var tTypeArguments = tList.AsEnumerable();
+
+
+            var tDef = tFuncGeneric.GetGenericTypeDefinition();
+
+            if (tDef.GetGenericArguments().Count() != tTypeArguments.Count())
+            {
+                tTypeArguments = tTypeArguments.Where(it => it.IsGenericParameter);
+            }
+
+            var tFuncType = tDef.MakeGenericType(tTypeArguments.ToArray());
 
             return tFuncType;
+        }
+
+        private static Type ReduceToElementType(Type type)
+        {
+            if (type.IsByRef || type.IsPointer || type.IsArray)
+                return type.GetElementType();
+            return type;
         }
 
         private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, Type[] argTypes, MethodInfo info)
         {
             Type tReturnType;
-            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType, info);
+            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType, info, builder);
             tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
 
             builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
@@ -569,25 +621,19 @@ namespace ImpromptuInterface
         }
 
        
-        private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null)
+        private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
         {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
             tList.AddRange(argTypes);
 
-            var tHash = new TypeHash(returnType, tList.ToArray());
+         
 
-            lock (DelegateCacheLock)
-            {
 
-            /*    if (_delegateCache.ContainsKey(tHash))
-                {
-                    return _delegateCache[tHash];
-                }*/
-
+            
                 if (tList.Any(it => it.IsByRef))
                 {
-                    var tType = GenerateFullDelegate(methodInfo);
-                    _delegateCache[tHash] = tType;
+                    var tType = GenerateFullDelegate(builder, methodInfo);
+            
                     return tType;
                 }
 
@@ -601,15 +647,15 @@ namespace ImpromptuInterface
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
 
-                _delegateCache[tHash] = tFuncType;
+           
 
                 return tFuncType;
-            }
+            
 
           
         }
 
-        private static Type GenerateFullDelegate(MethodInfo info)
+        private static Type GenerateFullDelegate(TypeBuilder builder,MethodInfo info)
         {
 
 

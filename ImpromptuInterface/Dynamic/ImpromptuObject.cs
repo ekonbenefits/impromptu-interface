@@ -43,7 +43,7 @@ namespace ImpromptuInterface
             get
             {
 
-                return _hash.Types;
+                return _hash.Types.Cast<Type>();
             }
             set
             {

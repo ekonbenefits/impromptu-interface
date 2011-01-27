@@ -152,6 +152,54 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("success", tResult);
         }
 
+        [Test]
+        public void OutMethodTest2()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut>();
+
+            string tResult = "success";
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(null, tResult);
+        }
+
+        [Test]
+        public void OutMethodTest3()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut2>();
+
+            int tResult = 3;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(0, tResult);
+        }
+
+        [Test]
+        public void GenericOutMethodTest()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IGenericMethodOut>();
+
+            int tResult = 3;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(0, tResult);
+
+            string tResult2 = "success";
+
+            var tOut2 = tActsLike.Func(out tResult2);
+
+            Assert.AreEqual(true, tOut2);
+            Assert.AreEqual(null, tResult2);
+        }
 
         [Test]
         public void RefMethodTest()
@@ -165,6 +213,13 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(true, tOut);
             Assert.AreEqual(3, tResult);
+
+            int tResult2 = 2;
+
+            tOut = tActsLike.Func(ref tResult2);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(4, tResult2);
         }
 	}
 }

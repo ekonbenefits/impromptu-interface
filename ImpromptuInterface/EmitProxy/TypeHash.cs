@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 
 namespace ImpromptuInterface
@@ -55,20 +56,20 @@ namespace ImpromptuInterface
             return !Equals(left, right);
         }
 
-        public readonly Type[] Types;
+        public readonly MemberInfo[] Types;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeHash"/> class.
         /// </summary>
         /// <param name="moreTypes">The more types.</param>
-        public TypeHash(IEnumerable<Type> moreTypes)
+        public TypeHash(IEnumerable<Type> moreTypes):this(false,moreTypes.ToArray())
         {
-            Types = moreTypes.OrderBy(it => it.Name).ToArray();
+          
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeHash"/> class.
-        /// For use when you have must distinguish one type;
+        /// For use when you have must distinguish one type; and the rest aren't strict
         /// </summary>
         /// <param name="type1">The type1.</param>
         /// <param name="type2">The type2.</param>
@@ -76,6 +77,25 @@ namespace ImpromptuInterface
         public TypeHash(Type type1, params Type[] moreTypes)
         {
             Types = new[] { type1 }.Concat(moreTypes.OrderBy(it => it.Name)).ToArray();
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TypeHash"/> class.
+        /// </summary>
+        /// <param name="strictOrder">if set to <c>true</c> [strict order].</param>
+        /// <param name="moreTypes">types.</param>
+        public TypeHash(bool strictOrder, params MemberInfo[] moreTypes)
+        {
+            if (strictOrder)
+            {
+                Types = moreTypes;
+            }
+            else
+            {
+                Types = moreTypes.OrderBy(it => it.Name).ToArray();
+            }
+
+
         }
     }
 }

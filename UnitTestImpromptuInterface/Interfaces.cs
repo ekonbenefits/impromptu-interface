@@ -72,7 +72,6 @@ namespace UnitTestImpromptuInterface
      
     }
 
-
      public interface IGenericTypeConstraints<T> where T:class
      {
          string Funct(T arg);

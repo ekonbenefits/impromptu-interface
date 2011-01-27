@@ -121,16 +121,20 @@ namespace ImpromptuInterface
 
         public static dynamic Invoke(CallSiteBinder binder, Type delegateType, object target, params object[] args)
         {
-            dynamic callSite = CallSite.Create(delegateType, binder);
+            var callSite = CallSite.Create(delegateType, binder);
 
             var tParameters = new List<object>();
             tParameters.Add(callSite);
             tParameters.Add(target);
             tParameters.AddRange(args);
 
-            return ((Delegate)callSite.Target).DynamicInvoke(tParameters.ToArray());
+            return callSite.GetDynamicTarget().DynamicInvoke(tParameters.ToArray());
         }
 
+        public static Delegate GetDynamicTarget(this CallSite callSite)
+        {
+           return ((dynamic) callSite).Target;
+        }
     
 
         /// <summary>

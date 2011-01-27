@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 
@@ -97,5 +98,49 @@ namespace UnitTestImpromptuInterface
         {
             return "object";
         }
+    }
+
+    /// <summary>
+    /// Dynamic Delegates need to return object or void, first parameter should be a CallSite, second object, followed by the expected arguments
+    /// </summary>
+    public delegate object DynamicTryString(CallSite callsite, object target, out string result);
+
+    public class MethOutPoco
+    {
+        public bool Func(out string result)
+        {
+            result = "success";
+            return true;
+        }
+
+
+    
+    }
+
+    public interface IMethodOut
+    {
+        bool Func(out string result);
+    }
+
+    public class MethRefPoco
+    {
+        public bool Func(ref int result)
+        {
+            result = result + 2;
+            return true;
+        }
+
+
+        public void test()
+        {
+            dynamic tMethod = new MethRefPoco();
+            var tResult = 1;
+            bool tbool = tMethod.Func(ref tResult);
+        }
+    }
+
+    public interface IMethodRef
+    {
+        bool Func(ref int result);
     }
 }

@@ -17,9 +17,14 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ImpromptuInterface;
 using NUnit.Framework;
+using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
+using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
+using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
+using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
 
 namespace UnitTestImpromptuInterface
 {
@@ -86,6 +91,43 @@ namespace UnitTestImpromptuInterface
             var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
 
             Assert.AreEqual("object", tOut2);
+        }
+
+
+        /// <summary>
+        /// To dynamically invoke a method with out or ref parameters you need to know the signature
+        /// </summary>
+        [Test]
+        public void TestOutMethod()
+        {
+
+
+
+            string tResult = String.Empty;
+
+            var tPoco = new MethOutPoco();
+
+
+
+            var tBinder =
+                Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+                                            new[]
+                                                {
+                                                    Info.Create(
+                                                        InfoFlags.None, null),
+                                                    Info.Create(
+                                                        InfoFlags.IsOut |
+                                                        InfoFlags.UseCompileTimeType, null)
+                                                });
+
+            var tSite = CallSite.Create(typeof(DynamicTryString), tBinder);
+
+            var tDelegate = (DynamicTryString)tSite.GetDynamicTarget();
+
+            tDelegate.Invoke(tSite, tPoco, out tResult);
+
+            Assert.AreEqual("success", tResult);
+
         }
 
 

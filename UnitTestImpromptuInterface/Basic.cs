@@ -137,7 +137,35 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("int", tActsLike.Func(tValue));
             Assert.AreEqual("object", tActsLike.Func((object)tValue));
         }
-		
+
+        [Test]
+        public void OutMethodTest()
+        {
+            var tPoco = new MethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut>();
+
+            string tResult = String.Empty;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual("success", tResult);
+        }
+
+
+        [Test]
+        public void RefMethodTest()
+        {
+            var tPoco = new MethRefPoco();
+            var tActsLike = tPoco.ActLike<IMethodRef>();
+
+            int tResult = 1;
+
+            var tOut = tActsLike.Func(ref tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(3, tResult);
+        }
 	}
 }
 

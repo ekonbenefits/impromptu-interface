@@ -180,14 +180,35 @@ namespace ImpromptuInterface
         }
 
 
-        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, params Type[] argTypes)
+        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
             generator.Emit(OpCodes.Ldstr, name);
             generator.Emit(OpCodes.Ldnull);
             generator.EmitTypeOf(context);
             var tList = new List<Action<ILGenerator>> { gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.None) };
-            tList.AddRange(argTypes.Select(arg => (Action<ILGenerator>)(gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.UseCompileTimeType))));
+
+           
+
+            tList.AddRange(argInfo.Select(arg => (Action<ILGenerator>)(gen =>
+                                                                            {
+                                                                                var tStart = CSharpArgumentInfoFlags.
+                                                                                    UseCompileTimeType;
+
+                                                                                if (arg.IsOut)
+                                                                                {
+                                                                                    tStart |=
+                                                                                        CSharpArgumentInfoFlags.IsOut;
+                                                                                }
+                                                                                else if(arg.ParameterType.IsByRef)
+                                                                                {
+                                                                                    tStart |=
+                                                                                       CSharpArgumentInfoFlags.IsRef;
+                                                                                }
+
+                                                                                gen.EmitCreateCSharpArgumentInfo(tStart);
+                                                                                return;
+                                                                            })));
             generator.EmitArray(typeof(CSharpArgumentInfo), tList);
             generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("InvokeMember", new[] { typeof(CSharpBinderFlags), typeof(string), typeof(IEnumerable<Type>), typeof(Type), typeof(CSharpArgumentInfo[]) }));
         }

@@ -36,7 +36,9 @@ namespace ImpromptuInterface
         private static readonly Dictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
         private static readonly object TypeCacheLock = new object();
 
-     
+        private static readonly Dictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
+        private static readonly object DelegateCacheLock = new object();
+
 
         internal class TempBuilder : IDisposable
         {
@@ -169,6 +171,7 @@ namespace ImpromptuInterface
             var tName = info.Name;
 
             Type[] tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
+            var tParamAttri = info.GetParameters();
 
             var tReturnType = info.ReturnParameter.ParameterType;
 
@@ -193,7 +196,7 @@ namespace ImpromptuInterface
             }
 
             var tInvokeMethod = "Invoke_Method";
-            var tInvokeFuncType = tCStp.DefineCallsiteField(tInvokeMethod, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes);
+            var tInvokeFuncType = tCStp.DefineCallsiteFieldForMethod(tInvokeMethod, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes, info);
 
 
 
@@ -227,7 +230,7 @@ namespace ImpromptuInterface
                 tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
             }
 
-            EmitMethodBody(tName, tParamTypes, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+            EmitMethodBody(tName, tParamTypes, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -274,6 +277,7 @@ namespace ImpromptuInterface
         private static void EmitMethodBody(
             string name,
             Type[] paramTypes, 
+            ParameterInfo[] paramInfo, 
             Type returnType, 
             string convert,
             string invokeMethod, 
@@ -303,7 +307,7 @@ namespace ImpromptuInterface
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             using (tIlGen.EmitBranchTrue())
             {
-                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramTypes);
+                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo);
                 tIlGen.EmitCallsiteCreate(invokeFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
@@ -530,6 +534,17 @@ namespace ImpromptuInterface
             return tFuncType;
         }
 
+        private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, Type[] argTypes, MethodInfo info)
+        {
+            Type tReturnType;
+            Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType, info);
+            tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+
+            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
+            return tFuncType;
+
+        }
+
         private static Type DefineCallsiteField(this TypeBuilder builder, string name, Type returnType, params Type[] argTypes)
         {
             Type tReturnType;
@@ -554,20 +569,93 @@ namespace ImpromptuInterface
         }
 
        
-        private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType)
+        private static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null)
         {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
             tList.AddRange(argTypes);
-            if (returnType != typeof(void))
-                tList.Add(returnType);
+
+            var tHash = new TypeHash(returnType, tList.ToArray());
+
+            lock (DelegateCacheLock)
+            {
+
+            /*    if (_delegateCache.ContainsKey(tHash))
+                {
+                    return _delegateCache[tHash];
+                }*/
+
+                if (tList.Any(it => it.IsByRef))
+                {
+                    var tType = GenerateFullDelegate(methodInfo);
+                    _delegateCache[tHash] = tType;
+                    return tType;
+                }
 
 
 
-            var tFuncGeneric = GenericDelegateType(tList.Count, returnType == typeof (void));
+                 if (returnType != typeof (void))
+                    tList.Add(returnType);
 
-            var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
+                var tFuncGeneric = GenericDelegateType(tList.Count, returnType == typeof (void));
+
+
+                var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
+
+                _delegateCache[tHash] = tFuncType;
+
+                return tFuncType;
+            }
+
+          
+        }
+
+        private static Type GenerateFullDelegate(MethodInfo info)
+        {
+
+
+
+
+            var tBuilder = Builder.DefineType(
+                string.Format("ActLike_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
+                TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
+                typeof (MulticastDelegate));
+
+            var tReplacedTypes = GetParamTypes(tBuilder, info);
+
+            var tReturnType = typeof(object);
+            var tParamTypes = info.GetParameters().Select(it=>it.ParameterType).ToList();
+            if (tReplacedTypes != null)
+            {
+                tParamTypes = tReplacedTypes.Item2.ToList();
+            }
+
+            tParamTypes.Insert(0, typeof(object));
+            tParamTypes.Insert(0, typeof(CallSite));
+
+            var tCon =tBuilder.DefineConstructor(
+                MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig |
+                MethodAttributes.RTSpecialName, CallingConventions.Standard, new[] {typeof (object), typeof (IntPtr)});
+
+            tCon.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+
+            var tMethod =tBuilder.DefineMethod("Invoke",
+             MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot|
+             MethodAttributes.Virtual);
+
+            tMethod.SetReturnType(tReturnType);
+            tMethod.SetParameters(tParamTypes.ToArray());
+
+            foreach (var tParam in info.GetParameters())
+            {
+                //+3 because of the callsite and target are added
+                tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
+            }
+
+            tMethod.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+
             
-            return tFuncType;
+
+            return tBuilder.CreateType();
         }
 
         private static ParameterAttributes AttributesForParam(ParameterInfo param)

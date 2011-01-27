@@ -66,7 +66,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            Impromptu.InvokeMember(tExpando, "Action", tValue);
+            Impromptu.InvokeMemberAction(tExpando, "Action", tValue);
 
             Assert.AreEqual(tValue, tTest);
         }

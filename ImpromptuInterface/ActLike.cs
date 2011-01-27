@@ -57,7 +57,28 @@ namespace ImpromptuInterface
             return Invoke(tDelagateType, tBinder, target, args);
         }
 
-        public static dynamic InvokeSet(object target, string name, object value)
+        public static void InvokeMemberAction(object target, string name, params object[] args)
+        {
+            var tArgTypes = args.Select(it => it.GetType()).ToArray();
+
+            var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
+                                       target.GetType(),
+                                       new[] { CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null) }.Concat(args.Select(
+                                           it =>
+                                           CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
+
+
+            var tList = new List<Type>();
+            tList.Add(typeof(CallSite));
+            tList.Add(typeof(object));
+            tList.AddRange(tArgTypes);
+
+            var tDelagateType = BuildProxy.GenericDelegateType(tList.Count, action:true).MakeGenericType(tList.ToArray());
+
+            Invoke(tDelagateType, tBinder, target, args);
+        }
+
+        public static void InvokeSet(object target, string name, object value)
         {
        
 
@@ -74,7 +95,7 @@ namespace ImpromptuInterface
 
             var tDelagateType = BuildProxy.GenericDelegateType(tList.Length,action:true).MakeGenericType(tList);
 
-            return Invoke(tDelagateType, tBinder, target, value);
+            Invoke(tDelagateType, tBinder, target, value);
         }
 
         public static dynamic InvokeGet(object target, string name)
@@ -107,8 +128,10 @@ namespace ImpromptuInterface
             tParameters.Add(target);
             tParameters.AddRange(args);
 
-            return callSite.Target.DynamicInvoke(tParameters.ToArray());
+            return ((Delegate)callSite.Target).DynamicInvoke(tParameters.ToArray());
         }
+
+    
 
         /// <summary>
         /// Extension Method that Wraps an existing object with an Explicit interface definition

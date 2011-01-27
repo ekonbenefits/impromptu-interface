@@ -73,15 +73,9 @@ namespace ImpromptuInterface
                                            CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
 
 
-            var tList = new List<Type>();
-            tList.Add(typeof(CallSite));
-            tList.Add(typeof(object));
-            tList.AddRange(tArgTypes);
-            tList.Add(typeof(object));
+            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
 
-            var tDelagateType = BuildProxy.GenericDelegateType(tList.Count).MakeGenericType(tList.ToArray());
-
-            return Invoke(tBinder, tDelagateType, target, args);
+            return Invoke(tDelagateType, tBinder, target, args);
         }
 
         public static void InvokeMemberAction(object target, string name, params object[] args)
@@ -95,14 +89,11 @@ namespace ImpromptuInterface
                                            CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
 
 
-            var tList = new List<Type>();
-            tList.Add(typeof(CallSite));
-            tList.Add(typeof(object));
-            tList.AddRange(tArgTypes);
+   
 
-            var tDelagateType = BuildProxy.GenericDelegateType(tList.Count, action:true).MakeGenericType(tList.ToArray());
+            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
 
-            Invoke(tBinder, tDelagateType, target, args);
+            Invoke(tDelagateType, tBinder, target, args);
         }
 
         public static void InvokeSet(object target, string name, object value)
@@ -118,11 +109,12 @@ namespace ImpromptuInterface
                                                       });
 
 
-            var tList = new [] {typeof (CallSite), typeof (object), value.GetType()};
+            var tList = new [] { value.GetType()};
 
-            var tDelagateType = BuildProxy.GenericDelegateType(tList.Length,action:true).MakeGenericType(tList);
 
-            Invoke(tBinder, tDelagateType, target, value);
+            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tList, typeof(void));
+
+            Invoke(tDelagateType, tBinder, target, value);
         }
 
         public static dynamic InvokeGet(object target, string name)
@@ -138,14 +130,15 @@ namespace ImpromptuInterface
                                                       });
 
 
-            var tFuncGenParameters = new [] {typeof (CallSite), typeof (object), typeof (object)};
+            var tFuncGenParameters = new Type[] {};
 
-            var tDelagateType = BuildProxy.GenericDelegateType(tFuncGenParameters.Length).MakeGenericType(tFuncGenParameters);
+        
+            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tFuncGenParameters, typeof(object));
 
-            return Invoke(tBinder, tDelagateType, target);
+            return Invoke(tDelagateType, tBinder, target);
         }
 
-        public static dynamic Invoke(CallSiteBinder binder, Type delegateType, object target, params object[] args)
+        public static dynamic Invoke(Type delegateType, CallSiteBinder binder, object target, params object[] args)
         {
             dynamic callSite = CreateCallSite(delegateType, binder);
 

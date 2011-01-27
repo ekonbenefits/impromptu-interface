@@ -658,20 +658,36 @@ namespace ImpromptuInterface
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
             tList.AddRange(argTypes);
 
-         
-
-
             
-                if (tList.Any(it => it.IsByRef))
+
+            lock (DelegateCacheLock)
+            {
+
+                TypeHash tHash;
+             
+                if (tList.Any(it => it.IsByRef) || tList.Count > 16)
+                {
+                    tHash = new TypeHash(strictOrder: true, moreTypes: methodInfo);
+                }else
+                {
+                    tHash = new TypeHash(strictOrder: true, moreTypes: tList.Concat(new[] {returnType}).ToArray());
+                }
+
+                if (_delegateCache.ContainsKey(tHash))
+                {
+                    return _delegateCache[tHash];
+                }
+
+                if (tList.Any(it => it.IsByRef) || tList.Count > 16)
                 {
                     var tType = GenerateFullDelegate(builder, methodInfo);
-            
+                    _delegateCache[tHash] = tType;
                     return tType;
                 }
 
 
 
-                 if (returnType != typeof (void))
+                if (returnType != typeof (void))
                     tList.Add(returnType);
 
                 var tFuncGeneric = GenericDelegateType(tList.Count, returnType == typeof (void));
@@ -679,61 +695,65 @@ namespace ImpromptuInterface
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
 
-           
+                _delegateCache[tHash] = tFuncType;
 
                 return tFuncType;
-            
 
-          
+            }
+
+
+
         }
 
         private static Type GenerateFullDelegate(TypeBuilder builder,MethodInfo info)
         {
 
+           
+
+                var tBuilder = Builder.DefineType(
+                    string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
+                    TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.NotPublic,
+                    typeof (MulticastDelegate));
+
+                var tReplacedTypes = GetParamTypes(tBuilder, info);
+
+                var tReturnType = typeof (object);
+                var tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToList();
+                if (tReplacedTypes != null)
+                {
+                    tParamTypes = tReplacedTypes.Item2.ToList();
+                }
+
+                tParamTypes.Insert(0, typeof (object));
+                tParamTypes.Insert(0, typeof (CallSite));
+
+                var tCon = tBuilder.DefineConstructor(
+                    MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig |
+                    MethodAttributes.RTSpecialName, CallingConventions.Standard,
+                    new[] {typeof (object), typeof (IntPtr)});
+
+                tCon.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+
+                var tMethod = tBuilder.DefineMethod("Invoke",
+                                                    MethodAttributes.Public | MethodAttributes.HideBySig |
+                                                    MethodAttributes.NewSlot |
+                                                    MethodAttributes.Virtual);
+
+                tMethod.SetReturnType(tReturnType);
+                tMethod.SetParameters(tParamTypes.ToArray());
+
+                foreach (var tParam in info.GetParameters())
+                {
+                    //+3 because of the callsite and target are added
+                    tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
+                }
+
+                tMethod.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
 
 
 
-            var tBuilder = Builder.DefineType(
-                string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
-                TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.NotPublic,
-                typeof (MulticastDelegate));
-
-            var tReplacedTypes = GetParamTypes(tBuilder, info);
-
-            var tReturnType = typeof(object);
-            var tParamTypes = info.GetParameters().Select(it=>it.ParameterType).ToList();
-            if (tReplacedTypes != null)
-            {
-                tParamTypes = tReplacedTypes.Item2.ToList();
-            }
-
-            tParamTypes.Insert(0, typeof(object));
-            tParamTypes.Insert(0, typeof(CallSite));
-
-            var tCon =tBuilder.DefineConstructor(
-                MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig |
-                MethodAttributes.RTSpecialName, CallingConventions.Standard, new[] {typeof (object), typeof (IntPtr)});
-
-            tCon.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
-
-            var tMethod =tBuilder.DefineMethod("Invoke",
-             MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.NewSlot|
-             MethodAttributes.Virtual);
-
-            tMethod.SetReturnType(tReturnType);
-            tMethod.SetParameters(tParamTypes.ToArray());
-
-            foreach (var tParam in info.GetParameters())
-            {
-                //+3 because of the callsite and target are added
-                tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
-            }
-
-            tMethod.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
-
+                return tBuilder.CreateType();
             
-
-            return tBuilder.CreateType();
         }
 
         private static ParameterAttributes AttributesForParam(ParameterInfo param)

@@ -91,6 +91,33 @@ namespace ImpromptuInterface
 
         }
 
+        public static bool PreLoadProxiesFromAssembly(Assembly assembly)
+        {
+            var tSuccess = true;
+            var typesWithMyAttribute =
+             from tType in assembly.GetTypes()
+             let tAttributes = tType.GetCustomAttributes(typeof(ImpromptuProxyAttribute), inherit:false)
+             where tAttributes != null && tAttributes.Length == 1
+             select new { Type = tType, Impromptu = tAttributes.Cast<ImpromptuProxyAttribute>().Single() };
+            foreach (var tTypeCombo in typesWithMyAttribute)
+            {
+                lock (TypeCacheLock)
+                {
+                    var tNewHash = new TypeHash(tTypeCombo.Impromptu.Context, tTypeCombo.Impromptu.Interfaces);
+
+                    if (!_typeHash.ContainsKey(tNewHash))
+                    {
+                        _typeHash[tNewHash] = tTypeCombo.Type;
+                    }
+                    else
+                    {
+                        tSuccess = false;
+                    }
+                }
+            }
+            return tSuccess;
+        }
+
         private static Type BuildTypeHelper(ModuleBuilder builder,Type contextType,params Type[] interfaces)
         {
 
@@ -98,6 +125,10 @@ namespace ImpromptuInterface
             var tB = builder.DefineType(
                 string.Format("ActLike_{0}_{1}", interfaces.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActLikeProxy), interfaces);
+
+            tB.SetCustomAttribute(
+                new CustomAttributeBuilder(typeof(ImpromptuProxyAttribute).GetConstructor(new[]{typeof(Type).MakeArrayType(),typeof(Type)}),
+                    new object[]{interfaces,contextType}));
 
             var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object), typeof(Type[]) });
             tC.DefineParameter(1, ParameterAttributes.None, "original");

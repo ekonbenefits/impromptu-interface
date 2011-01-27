@@ -663,8 +663,8 @@ namespace ImpromptuInterface
 
 
             var tBuilder = Builder.DefineType(
-                string.Format("ActLike_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
-                TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
+                string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
+                TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.NotPublic,
                 typeof (MulticastDelegate));
 
             var tReplacedTypes = GetParamTypes(tBuilder, info);

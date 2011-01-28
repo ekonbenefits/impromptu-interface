@@ -49,8 +49,13 @@ namespace ImpromptuInterface
     {
         public dynamic Original{ get; private set;}
 
+        private bool _init = false;
+
         public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces)
         {
+            if (_init)
+                throw new MethodAccessException("Initialize should not be called twice!");
+            _init = true;
             Original = original;
             var tKnowOriginal = Original as IDynamicKnowLike;
             if (tKnowOriginal != null)

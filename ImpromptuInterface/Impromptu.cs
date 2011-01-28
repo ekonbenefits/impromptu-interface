@@ -85,14 +85,10 @@ namespace ImpromptuInterface
         /// </remarks>
         /// <example>
         /// Unit test that exhibits usage
-        /// <code>      
-        /// <![CDATA[
+        ///<code><![CDATA[
+        /// 
         ///    string tResult = String.Empty;
-        ///
         ///    var tPoco = new MethOutPoco();
-        ///
-        ///
-        ///
         ///    var tBinder =
         ///        Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
         ///                                    new[]
@@ -105,13 +101,11 @@ namespace ImpromptuInterface
         ///                                        });
         ///
         ///    var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
-        ///
-        ///  
+        /// 
         ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
         ///
         ///    Assert.AreEqual("success", tResult);
-        /// ]]>
-        /// </code>
+        ///  ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
 

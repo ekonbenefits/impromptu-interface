@@ -23,6 +23,9 @@ namespace ImpromptuInterface
     /// </summary>
     public interface IActLikeProxy
     {
+        ///<summary>
+        /// Returns the proxied object
+        ///</summary>
         dynamic Original { get; }
         
     }
@@ -36,6 +39,11 @@ namespace ImpromptuInterface
     /// </remarks>
     public interface IActLikeProxyInitialize : IActLikeProxy
     {
+        ///<summary>
+        /// Method used to Initialize Proxy
+        ///</summary>
+        ///<param name="original"></param>
+        ///<param name="interfaces"></param>
         void Initialize(dynamic original, IEnumerable<Type> interfaces);
     }
 
@@ -45,6 +53,9 @@ namespace ImpromptuInterface
     /// </summary>
     public interface IDynamicKnowLike
     {
+        ///<summary>
+        /// Property used to pass interface information to proxied object
+        ///</summary>
         IEnumerable<Type> KnownInterfaces { set; }
     }
 

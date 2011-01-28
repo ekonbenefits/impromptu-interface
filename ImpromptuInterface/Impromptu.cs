@@ -36,6 +36,20 @@ namespace ImpromptuInterface
         private static Dictionary<Tuple<Type,CallSiteBinder>, CallSite> _binderCache = new Dictionary<Tuple<Type, CallSiteBinder>, CallSite>();
         private static object _binderCacheLock = new object();
 
+
+
+
+
+        /// <summary>
+        /// Creates a cached call site at runtime. 
+        /// </summary>
+        /// <param name="delegateType">Type of the delegate.</param>
+        /// <param name="binder">The CallSite binder.</param>
+        /// <returns>The CallSite</returns>
+        /// <remarks>
+        ///  Advanced usage only for serious custom dynamic invocation.
+        /// </remarks>  
+        /// <seealso cref="CreateCallSite{T}"/>
         public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder)
         {
             var tHash = Tuple.Create(delegateType, binder);
@@ -48,7 +62,46 @@ namespace ImpromptuInterface
                 return _binderCache[tHash];
             }
         }
-         
+
+
+        /// <summary>
+        /// Creates a cached call site at runtime.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="binder">The binder.</param>
+        /// <returns>The CallSite</returns>
+        /// <remarks>
+        ///  Advanced usage only for serious custom dynamic invocation.
+        /// </remarks>
+        /// <example>
+        /// Unit test that exhibits usage
+        /// <code>      
+        ///    string tResult = String.Empty;
+        ///
+        ///    var tPoco = new MethOutPoco();
+        ///
+        ///
+        ///
+        ///    var tBinder =
+        ///        Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+        ///                                    new[]
+        ///                                        {
+        ///                                            Info.Create(
+        ///                                                InfoFlags.None, null),
+        ///                                            Info.Create(
+        ///                                                InfoFlags.IsOut |
+        ///                                                InfoFlags.UseCompileTimeType, null)
+        ///                                        });
+        ///
+        ///    var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
+        ///
+        ///  
+        ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
+        ///
+        ///    Assert.AreEqual("success", tResult);</code>
+        /// </example>
+        /// <seealso cref="CreateCallSite"/>
+
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder) where T: class 
         {
             var tHash = Tuple.Create(typeof(T), binder);
@@ -62,6 +115,27 @@ namespace ImpromptuInterface
             }
         }
 
+
+
+        /// <summary>
+        /// Dynamically Invokes a member method using the DLR
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="args">The args.</param>
+        /// <returns> The result</returns>
+        /// <example>   
+        /// Unit test that exhibits usage:
+        /// <code>
+        ///    dynamic tExpando = new ExpandoObject();
+        ///    tExpando.Func = new Func<int, string>(it => it.ToString());
+        ///
+        ///    var tValue = 1;
+        ///    var tOut = Impromptu.InvokeMember(tExpando, "Func", tValue);
+        ///
+        ///    Assert.AreEqual(tValue.ToString(), tOut);
+        /// </code>
+        /// </example>
         public static dynamic InvokeMember(object target, string name, params object[] args)
         {
             var tArgTypes = args.Select(it => it.GetType()).ToArray();
@@ -78,6 +152,28 @@ namespace ImpromptuInterface
             return Invoke(tDelagateType, tBinder, target, args);
         }
 
+
+
+        /// <summary>
+        /// Dynamically Invokes a member method which returns void using the DLR
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="args">The args.</param>
+        /// <example>
+        /// Unit test that exhibits usage:
+        /// <code>
+        ///    var tTest = "Wrong";
+        ///    var tValue = "Correct";
+        ///
+        ///    dynamic tExpando = new ExpandoObject();
+        ///    tExpando.Action = new Action<string>(it => tTest = it);
+        ///
+        ///    Impromptu.InvokeMemberAction(tExpando, "Action", tValue);
+        ///
+        ///    Assert.AreEqual(tValue, tTest);
+        /// </code>
+        /// </example>
         public static void InvokeMemberAction(object target, string name, params object[] args)
         {
             var tArgTypes = args.Select(it => it.GetType()).ToArray();
@@ -96,6 +192,26 @@ namespace ImpromptuInterface
             Invoke(tDelagateType, tBinder, target, args);
         }
 
+
+
+        /// <summary>
+        /// Dynamically Invokes a set member using the DLR.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        /// <example>
+        /// Unit test that exhibits usage:
+        /// <code>
+        ///    dynamic tExpando = new ExpandoObject();
+        ///
+        ///    var tSetValue = "1";
+        ///
+        ///    Impromptu.InvokeSet(tExpando, "Test", tSetValue);
+        ///
+        ///    Assert.AreEqual(tSetValue, tExpando.Test);
+        /// </code>
+        /// </example>
         public static void InvokeSet(object target, string name, object value)
         {
        
@@ -117,6 +233,25 @@ namespace ImpromptuInterface
             Invoke(tDelagateType, tBinder, target, value);
         }
 
+
+
+        /// <summary>
+        /// Dynamically Invokes a get member using the DLR.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>The result.</returns>
+        /// <example>
+        /// Unit Test that describes usage
+        /// <code>
+        ///    var tSetValue = "1";
+        ///    var tAnon = new { Test = tSetValue };
+        ///
+        ///    var tOut =Impromptu.InvokeGet(tAnon, "Test");
+        ///
+        ///    Assert.AreEqual(tSetValue, tOut);
+        /// </code>
+        /// </example>
         public static dynamic InvokeGet(object target, string name)
         {
 
@@ -138,6 +273,20 @@ namespace ImpromptuInterface
             return Invoke(tDelagateType, tBinder, target);
         }
 
+
+
+        /// <summary>
+        /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type
+        /// </summary>
+        /// <param name="delegateType">Type of the delegate.</param>
+        /// <param name="binder">The binder.</param>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Advanced use only. Use this method for serious custom invocation, otherwise there are other convenience methods such as
+        /// <see cref="InvokeMember"></see>, <see cref="InvokeGet"></see>, <see cref="InvokeSet"></see> and <see cref="InvokeMemberAction"></see>
+        /// </remarks>
         public static dynamic Invoke(Type delegateType, CallSiteBinder binder, object target, params object[] args)
         {
             dynamic callSite = CreateCallSite(delegateType, binder);
@@ -188,6 +337,14 @@ namespace ImpromptuInterface
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
+        /// <example>
+        /// UnitTest That describes usage
+        /// <code>
+        ///     var tTest = new TestWithPrivateMethod();
+        ///     var tNonExposed = this.CallActLike<IExposePrivateMethod>(tTest);
+        ///     Assert.Throws<RuntimeBinderException>(() => tNonExposed.Test());
+        /// </code>
+        /// </example>
         public static TInterface CallActLike<TInterface>(this object caller, object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
             var tType = caller.GetType();

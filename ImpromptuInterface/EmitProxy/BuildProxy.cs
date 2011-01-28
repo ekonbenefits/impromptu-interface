@@ -43,13 +43,22 @@ namespace ImpromptuInterface
         internal class TempBuilder : IDisposable
         {
             private string _name;
+            private bool _disposed = false;
             internal TempBuilder(string name)
             {
                 _name = name;
             }
 
+            public void Close()
+            {
+                Dispose();
+            }
+
             public void Dispose()
             {
+                if (_disposed)
+                    throw new MethodAccessException("Can't Call Dispose Twice!!");
+                _disposed = true;
                 _tempSaveAssembly.Save(string.Format("{0}.dll", _name));
                 _tempSaveAssembly = null;
                 _tempBuilder = null;
@@ -57,10 +66,14 @@ namespace ImpromptuInterface
         }
 
         /// <summary>
-        /// Writes the out DLL of types created between this call and dispose used for debugging of emitted IL code
+        /// Writes the out DLL of types created between this call and being closed used for debugging of emitted IL code
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns></returns>
+        /// <remarks>
+        ///     This may be used for generating an assembly for preloading proxies, however you must be very careful when doing so as 
+        ///     changes could make the emitted asssembly out of date very easily.
+        /// </remarks>
         public static IDisposable WriteOutDll(string name)
         {
              GenerateAssembly(name, AssemblyBuilderAccess.RunAndSave,ref _tempSaveAssembly,ref  _tempBuilder);
@@ -90,7 +103,13 @@ namespace ImpromptuInterface
             }
 
         }
-        
+
+        /// <summary>
+        /// Preloads a proxy for ActLike to use.
+        /// </summary>
+        /// <param name="proxyType">Type of the proxy.</param>
+        /// <param name="attribute">The ActLikeProxyAttribute, if not provide it will be looked up.</param>
+        /// <returns>Returns false if there already is a proxy registered for the same type.</returns>
         public static bool PreLoadProxy(Type proxyType, ActLikeProxyAttribute attribute = null)
         {
             var tSuccess = true;
@@ -127,6 +146,11 @@ namespace ImpromptuInterface
             return tSuccess;
         }
 
+        /// <summary>
+        /// Preloads proxies that ActLike uses from assembly.
+        /// </summary>
+        /// <param name="assembly">The assembly.</param>
+        /// <returns>Returns false if there already is a proxy registered for the same type.</returns>
         public static bool PreLoadProxiesFromAssembly(Assembly assembly)
         {
             var tSuccess = true;
@@ -669,7 +693,15 @@ namespace ImpromptuInterface
             return tFuncGeneric;
         }
 
-       
+
+        /// <summary>
+        /// Generates the delegate type of the call site function.
+        /// </summary>
+        /// <param name="argTypes">The arg types.</param>
+        /// <param name="returnType">Type of the return.</param>
+        /// <param name="methodInfo">The method info. Required for reference types or delegates with more than 16 arguments.</param>
+        /// <param name="builder">The Type Builder. Required for reference types or delegates with more than 16 arguments.</param>
+        /// <returns></returns>
         internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
         {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };

@@ -5,6 +5,9 @@ using System.Text;
 
 namespace ImpromptuInterface
 {
+    /// <summary>
+    /// Meta info describing proxy usage. Can be used to preload proxy.
+    /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
     public class ActLikeProxyAttribute:Attribute
     {

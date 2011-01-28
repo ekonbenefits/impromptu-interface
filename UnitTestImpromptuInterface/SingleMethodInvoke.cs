@@ -51,8 +51,6 @@ namespace UnitTestImpromptuInterface
             var tSetValue = "1";
             var tAnon = new { Test = tSetValue };
 
-
-
             var tOut =Impromptu.InvokeGet(tAnon, "Test");
 
             Assert.AreEqual(tSetValue, tOut);

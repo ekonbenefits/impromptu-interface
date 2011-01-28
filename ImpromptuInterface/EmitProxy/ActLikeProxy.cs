@@ -27,6 +27,13 @@ namespace ImpromptuInterface
         
     }
 
+
+    /// <summary>
+    /// This interface can be used to define your own custom proxy if you preload it.
+    /// </summary>
+    /// <remarks>
+    /// Advanced usage only! This is required as well as <see cref="ActLikeProxyAttribute"></see>
+    /// </remarks>
     public interface IActLikeProxyInitialize : IActLikeProxy
     {
         void Initialize(dynamic original, IEnumerable<Type> interfaces);
@@ -34,7 +41,7 @@ namespace ImpromptuInterface
 
 
     /// <summary>
-    /// This interface can be used on your custom dynamic objects if you want to know the interface you are implementing
+    /// This interface can be used on your custom dynamic objects if you want to know the interface you are impromptu-ly implementing.
     /// </summary>
     public interface IDynamicKnowLike
     {

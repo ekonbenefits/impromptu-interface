@@ -24,7 +24,14 @@ namespace ImpromptuInterface
     public interface IActLikeProxy
     {
         dynamic Original { get; }
+        
     }
+
+    public interface IActLikeProxyInitialize : IActLikeProxy
+    {
+        void Initialize(dynamic original, IEnumerable<Type> interfaces);
+    }
+
 
     /// <summary>
     /// This interface can be used on your custom dynamic objects if you want to know the interface you are implementing
@@ -38,17 +45,16 @@ namespace ImpromptuInterface
     /// <summary>
     /// Base class of Emited Proxies
     /// </summary>
-    public abstract class ActLikeProxy : IActLikeProxy
+    public abstract class ActLikeProxy : IActLikeProxyInitialize
     {
         public dynamic Original{ get; private set;}
 
-        protected ActLikeProxy(dynamic original, IEnumerable<Type> interfaces)
+        public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces)
         {
             Original = original;
             var tKnowOriginal = Original as IDynamicKnowLike;
             if (tKnowOriginal != null)
-                tKnowOriginal.KnownInterfaces =interfaces;
-            
+                tKnowOriginal.KnownInterfaces = interfaces;
         }
     }
 }

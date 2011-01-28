@@ -100,8 +100,8 @@ namespace ImpromptuInterface
             if(attribute == null)
                 throw new Exception("Proxy Type must have ActLikeProxyAttribute");
 
-            if (!typeof(IActLikeProxy).IsAssignableFrom(proxyType))
-                throw new Exception("Proxy Type must implement IActLikeProxy");
+            if (!typeof(IActLikeProxyInitialize).IsAssignableFrom(proxyType))
+                throw new Exception("Proxy Type must implement IActLikeProxyInitialize");
 
             foreach (var tIType in attribute.Interfaces)
             {
@@ -158,18 +158,7 @@ namespace ImpromptuInterface
                 new CustomAttributeBuilder(typeof(ActLikeProxyAttribute).GetConstructor(new[]{typeof(Type).MakeArrayType(),typeof(Type)}),
                     new object[]{interfaces,contextType}));
 
-            var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object), typeof(Type[]) });
-            tC.DefineParameter(1, ParameterAttributes.None, "original");
-            tC.DefineParameter(2, ParameterAttributes.None, "interfaces");
-            var tConstInfo = typeof(ActLikeProxy).GetConstructor(BindingFlags.NonPublic |BindingFlags.Instance, null,new[] { typeof(object), typeof(Type[])},null);
-
-            var tCIl = tC.GetILGenerator();
-            tCIl.Emit(OpCodes.Ldarg_0);
-            tCIl.Emit(OpCodes.Ldarg_1);
-            tCIl.Emit(OpCodes.Ldarg_2);
-            tCIl.Emit(OpCodes.Call, tConstInfo);
-            tCIl.Emit(OpCodes.Ret);
-
+         
             var tInterfaces = interfaces.Concat(interfaces.SelectMany(it => it.GetInterfaces()));
 
             foreach (var tInterface in tInterfaces)

@@ -164,8 +164,21 @@ namespace ImpromptuInterface
 
             var tProxy = BuildProxy.BuildType(tType,typeof(TInterface), otherInterfaces);
 
-            return (TInterface)Activator.CreateInstance(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces).ToArray());
+
+
+            return
+                (TInterface)
+                InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
+
+        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces)
+        {
+            var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
+            tProxy.Initialize(original, interfaces);
+            return tProxy;
+        }
+
+       
 
         /// <summary>
         /// This Extension method is called off the calling context to perserve permissions with the object wrapped with an explicit interface definition.
@@ -181,7 +194,9 @@ namespace ImpromptuInterface
 
             var tProxy = BuildProxy.BuildType(tType, typeof(TInterface), otherInterfaces);
 
-            return (TInterface)Activator.CreateInstance(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces).ToArray());
+            return
+               (TInterface)
+               InitializeProxy(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces));
         }
 
         /// <summary>
@@ -208,7 +223,8 @@ namespace ImpromptuInterface
 
             var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
 
-            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
+            return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
+
         }
 
         /// <summary>
@@ -224,7 +240,7 @@ namespace ImpromptuInterface
 
             var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
 
-            return Activator.CreateInstance(tProxy, originalDynamic, otherInterfaces);
+            return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
         }
 
 

@@ -90,29 +90,57 @@ namespace ImpromptuInterface
             }
 
         }
+        
+        public static bool PreLoadProxy(Type proxyType, ActLikeProxyAttribute attribute = null)
+        {
+            var tSuccess = true;
+            if (attribute == null)
+                attribute = proxyType.GetCustomAttributes(typeof(ActLikeProxyAttribute), inherit: false).Cast<ActLikeProxyAttribute>().FirstOrDefault();
+
+            if(attribute == null)
+                throw new Exception("Proxy Type must have ActLikeProxyAttribute");
+
+            if (!typeof(IActLikeProxy).IsAssignableFrom(proxyType))
+                throw new Exception("Proxy Type must implement IActLikeProxy");
+
+            foreach (var tIType in attribute.Interfaces)
+            {
+                if (!tIType.IsAssignableFrom(proxyType))
+                {
+                    throw new Exception(String.Format("Proxy Type {0} must implement declared interfaces {1}", proxyType, tIType));
+                }
+            }
+
+            lock (TypeCacheLock)
+            {
+                var tNewHash = new TypeHash(attribute.Context, attribute.Interfaces);
+
+                if (!_typeHash.ContainsKey(tNewHash))
+                {
+                    _typeHash[tNewHash] = proxyType;
+                }
+                else
+                {
+                    tSuccess = false;
+                }
+            }
+            return tSuccess;
+        }
 
         public static bool PreLoadProxiesFromAssembly(Assembly assembly)
         {
             var tSuccess = true;
             var typesWithMyAttribute =
              from tType in assembly.GetTypes()
-             let tAttributes = tType.GetCustomAttributes(typeof(ImpromptuProxyAttribute), inherit:false)
+             let tAttributes = tType.GetCustomAttributes(typeof(ActLikeProxyAttribute), inherit:false)
              where tAttributes != null && tAttributes.Length == 1
-             select new { Type = tType, Impromptu = tAttributes.Cast<ImpromptuProxyAttribute>().Single() };
+             select new { Type = tType, Impromptu = tAttributes.Cast<ActLikeProxyAttribute>().Single() };
             foreach (var tTypeCombo in typesWithMyAttribute)
             {
                 lock (TypeCacheLock)
                 {
-                    var tNewHash = new TypeHash(tTypeCombo.Impromptu.Context, tTypeCombo.Impromptu.Interfaces);
-
-                    if (!_typeHash.ContainsKey(tNewHash))
-                    {
-                        _typeHash[tNewHash] = tTypeCombo.Type;
-                    }
-                    else
-                    {
+                    if (!PreLoadProxy(tTypeCombo.Type, tTypeCombo.Impromptu))
                         tSuccess = false;
-                    }
                 }
             }
             return tSuccess;
@@ -127,7 +155,7 @@ namespace ImpromptuInterface
                 typeof(ActLikeProxy), interfaces);
 
             tB.SetCustomAttribute(
-                new CustomAttributeBuilder(typeof(ImpromptuProxyAttribute).GetConstructor(new[]{typeof(Type).MakeArrayType(),typeof(Type)}),
+                new CustomAttributeBuilder(typeof(ActLikeProxyAttribute).GetConstructor(new[]{typeof(Type).MakeArrayType(),typeof(Type)}),
                     new object[]{interfaces,contextType}));
 
             var tC = tB.DefineConstructor(MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.RTSpecialName | MethodAttributes.HideBySig, CallingConventions.HasThis, new[] { typeof(object), typeof(Type[]) });

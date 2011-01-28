@@ -6,9 +6,9 @@ using System.Text;
 namespace ImpromptuInterface
 {
     [AttributeUsage(AttributeTargets.Class)]
-    public class ImpromptuProxyAttribute:Attribute
+    public class ActLikeProxyAttribute:Attribute
     {
-        public ImpromptuProxyAttribute(Type[] interfaces, Type context)
+        public ActLikeProxyAttribute(Type[] interfaces, Type context)
         {
             Interfaces = interfaces;
             Context = context;

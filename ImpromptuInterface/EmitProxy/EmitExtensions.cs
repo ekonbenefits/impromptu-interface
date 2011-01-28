@@ -24,13 +24,23 @@ namespace ImpromptuInterface
     using Microsoft.CSharp.RuntimeBinder;
     using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 
+    ///<summary>
+    /// Extension Methods that make emiting code easier and easier to read
+    ///</summary>
     public static class EmitExtensions
     {
+        ///<summary>
+        /// Used to automatically create label on dispose
+        ///</summary>
         public class BranchTrueOverBlock : IDisposable
         {
             private readonly ILGenerator _generator;
             private readonly Label _label;
 
+            ///<summary>
+            /// Constructor
+            ///</summary>
+            ///<param name="generator"></param>
             public BranchTrueOverBlock(ILGenerator generator)
             {
                 _generator = generator;
@@ -104,13 +114,14 @@ namespace ImpromptuInterface
 
 
         /// <summary>
-        /// Emits branch true.
+        /// Emits branch true. expects using keyword.
         /// </summary>
         /// <param name="generator">The generator.</param>
         /// <returns></returns>
         /// <example>
-        /// Using allows you to set the emit code you are branching over automatically emits label when disposing
+        /// Using keyword allows you to set the emit code you are branching over and then automatically emits label when disposing
         /// <code>
+        /// <![CDATA[
         ///       tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
         ///        using (tIlGen.EmitBranchTrue())
         ///       {
@@ -118,6 +129,7 @@ namespace ImpromptuInterface
         ///            tIlGen.EmitCallsiteCreate(convertFuncType);
         ///            tIlGen.Emit(OpCodes.Stsfld, tConvertField);
         ///        }
+        /// ]]>
         /// </code>
         /// </example>
         public static BranchTrueOverBlock EmitBranchTrue(this ILGenerator generator)

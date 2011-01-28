@@ -27,14 +27,24 @@ namespace ImpromptuInterface
     /// </summary>
     public interface IActLike 
     {
+        /// <summary>
+        /// This interface can be used on your custom dynamic objects if you want impromptu interfaces without casting to object or using the static method syntax of ActLike.
+        /// Also if you want to change the behavior for slightly for specific types as this will take precident when using the dynamic keyword or your specific type is known staticly.
+        /// </summary>
+        ///<param name="otherInterfaces"></param>
+        ///<typeparam name="TInterface"></typeparam>
+        ///<returns></returns>
         TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface : class;
     }
 
 
+    /// <summary>
+    /// Main API
+    /// </summary>
     public static class Impromptu
     {
-        private static Dictionary<Tuple<Type,CallSiteBinder>, CallSite> _binderCache = new Dictionary<Tuple<Type, CallSiteBinder>, CallSite>();
-        private static object _binderCacheLock = new object();
+        private static readonly Dictionary<Tuple<Type,CallSiteBinder>, CallSite> _binderCache = new Dictionary<Tuple<Type, CallSiteBinder>, CallSite>();
+        private static readonly object _binderCacheLock = new object();
 
 
 
@@ -76,6 +86,7 @@ namespace ImpromptuInterface
         /// <example>
         /// Unit test that exhibits usage
         /// <code>      
+        /// <![CDATA[
         ///    string tResult = String.Empty;
         ///
         ///    var tPoco = new MethOutPoco();
@@ -98,7 +109,9 @@ namespace ImpromptuInterface
         ///  
         ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
         ///
-        ///    Assert.AreEqual("success", tResult);</code>
+        ///    Assert.AreEqual("success", tResult);
+        /// ]]>
+        /// </code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
 
@@ -127,6 +140,7 @@ namespace ImpromptuInterface
         /// <example>   
         /// Unit test that exhibits usage:
         /// <code>
+        /// <![CDATA[
         ///    dynamic tExpando = new ExpandoObject();
         ///    tExpando.Func = new Func<int, string>(it => it.ToString());
         ///
@@ -134,6 +148,7 @@ namespace ImpromptuInterface
         ///    var tOut = Impromptu.InvokeMember(tExpando, "Func", tValue);
         ///
         ///    Assert.AreEqual(tValue.ToString(), tOut);
+        /// ]]>
         /// </code>
         /// </example>
         public static dynamic InvokeMember(object target, string name, params object[] args)
@@ -163,6 +178,7 @@ namespace ImpromptuInterface
         /// <example>
         /// Unit test that exhibits usage:
         /// <code>
+        /// <![CDATA[
         ///    var tTest = "Wrong";
         ///    var tValue = "Correct";
         ///
@@ -172,6 +188,7 @@ namespace ImpromptuInterface
         ///    Impromptu.InvokeMemberAction(tExpando, "Action", tValue);
         ///
         ///    Assert.AreEqual(tValue, tTest);
+        /// ]]>
         /// </code>
         /// </example>
         public static void InvokeMemberAction(object target, string name, params object[] args)
@@ -203,6 +220,7 @@ namespace ImpromptuInterface
         /// <example>
         /// Unit test that exhibits usage:
         /// <code>
+        /// <![CDATA[
         ///    dynamic tExpando = new ExpandoObject();
         ///
         ///    var tSetValue = "1";
@@ -210,6 +228,7 @@ namespace ImpromptuInterface
         ///    Impromptu.InvokeSet(tExpando, "Test", tSetValue);
         ///
         ///    Assert.AreEqual(tSetValue, tExpando.Test);
+        /// ]]>
         /// </code>
         /// </example>
         public static void InvokeSet(object target, string name, object value)
@@ -244,12 +263,14 @@ namespace ImpromptuInterface
         /// <example>
         /// Unit Test that describes usage
         /// <code>
+        /// <![CDATA[
         ///    var tSetValue = "1";
         ///    var tAnon = new { Test = tSetValue };
         ///
         ///    var tOut =Impromptu.InvokeGet(tAnon, "Test");
         ///
         ///    Assert.AreEqual(tSetValue, tOut);
+        /// ]]>
         /// </code>
         /// </example>
         public static dynamic InvokeGet(object target, string name)
@@ -340,9 +361,11 @@ namespace ImpromptuInterface
         /// <example>
         /// UnitTest That describes usage
         /// <code>
+        /// <![CDATA[
         ///     var tTest = new TestWithPrivateMethod();
         ///     var tNonExposed = this.CallActLike<IExposePrivateMethod>(tTest);
         ///     Assert.Throws<RuntimeBinderException>(() => tNonExposed.Test());
+        /// ]]>
         /// </code>
         /// </example>
         public static TInterface CallActLike<TInterface>(this object caller, object originalDynamic, params Type[] otherInterfaces) where TInterface : class

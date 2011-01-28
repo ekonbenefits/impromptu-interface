@@ -24,6 +24,9 @@ namespace ImpromptuInterface
     using Microsoft.CSharp.RuntimeBinder;
   
 
+    ///<summary>
+    /// Does most of the work buiding and caching proxies
+    ///</summary>
     public static class BuildProxy
     {
        
@@ -42,8 +45,8 @@ namespace ImpromptuInterface
 
         internal class TempBuilder : IDisposable
         {
-            private string _name;
-            private bool _disposed = false;
+            private readonly string _name;
+            private bool _disposed;
             internal TempBuilder(string name)
             {
                 _name = name;
@@ -276,7 +279,10 @@ namespace ImpromptuInterface
             Type[] tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
             var tParamAttri = info.GetParameters();
 
-            var tReturnType = info.ReturnParameter.ParameterType;
+
+            var tReturnType = typeof (void);
+            if (info.ReturnParameter != null)
+                tReturnType = info.ReturnParameter.ParameterType;
 
 
             var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
@@ -356,7 +362,9 @@ namespace ImpromptuInterface
         private static Tuple<Type, Type[]> GetParamTypes(dynamic builder, MethodInfo info)
         {
             var paramTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
-            var returnType = info.ReturnParameter.ParameterType;
+            var returnType = typeof(void);
+            if (info.ReturnParameter != null)
+                returnType = info.ReturnParameter.ParameterType;
 
             var tGenericParams = paramTypes
                 .SelectMany(FlattenGenericParameters)
@@ -659,11 +667,10 @@ namespace ImpromptuInterface
             return type;
         }
 
-        private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, Type[] argTypes, MethodInfo info)
+        private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, IEnumerable<Type> argTypes, MethodInfo info)
         {
-            Type tReturnType;
             Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType, info, builder);
-            tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
 
             builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
             return tFuncType;
@@ -672,9 +679,8 @@ namespace ImpromptuInterface
 
         private static Type DefineCallsiteField(this TypeBuilder builder, string name, Type returnType, params Type[] argTypes)
         {
-            Type tReturnType;
             Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType);
-            tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
 
             builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
            return tFuncType;
@@ -754,11 +760,11 @@ namespace ImpromptuInterface
 
         }
 
+// ReSharper disable UnusedParameter.Local
+// May switch to nested types if i figure out how to do it, thus would need the typebuilder
         private static Type GenerateFullDelegate(TypeBuilder builder,MethodInfo info)
+// ReSharper restore UnusedParameter.Local
         {
-
-           
-
                 var tBuilder = Builder.DefineType(
                     string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
                     TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.NotPublic,
@@ -781,7 +787,7 @@ namespace ImpromptuInterface
                     MethodAttributes.RTSpecialName, CallingConventions.Standard,
                     new[] {typeof (object), typeof (IntPtr)});
 
-                tCon.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+                tCon.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
                 var tMethod = tBuilder.DefineMethod("Invoke",
                                                     MethodAttributes.Public | MethodAttributes.HideBySig |
@@ -797,7 +803,7 @@ namespace ImpromptuInterface
                     tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
                 }
 
-                tMethod.SetImplementationFlags(MethodImplAttributes.Runtime | MethodImplAttributes.Managed);
+                tMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 
 
@@ -820,7 +826,10 @@ namespace ImpromptuInterface
         }
 
      
-        static public ModuleBuilder Builder
+        ///<summary>
+        /// Module Builder for buiding proxies
+        ///</summary>
+        static internal ModuleBuilder Builder
         {
             get
             {

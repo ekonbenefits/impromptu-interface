@@ -57,6 +57,7 @@ namespace ImpromptuInterface
                         .Select(property=>new{property.Name, property.GetGetMethod().ReturnType});
 
                     var tMethodReturnType = value.SelectMany(@interface => @interface.GetMethods())
+                      .Where(method=>!method.IsSpecialName)
                       .Select(property => new { property.Name, property.ReturnType });
 
                     var tDict = tPropReturType.Concat(tMethodReturnType)

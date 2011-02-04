@@ -56,9 +56,16 @@ namespace ImpromptuInterface
                         .Where(property=>property.GetGetMethod() !=null)
                         .Select(property=>new{property.Name, property.GetGetMethod().ReturnType});
 
+                    //If type can be determined by name
                     var tMethodReturnType = value.SelectMany(@interface => @interface.GetMethods())
                       .Where(method=>!method.IsSpecialName)
-                      .Select(property => new { property.Name, property.ReturnType });
+                      .GroupBy(method=>method.Name)
+                      .Where(group=>group.Select(method=>method.ReturnType).Distinct().Count() ==1 )
+                      .Select(group => new
+                                           {
+                                               Name =group.Key,
+                                               ReturnType =group.Select(method=>method.ReturnType).Distinct().Single()
+                                           });
 
                     var tDict = tPropReturType.Concat(tMethodReturnType)
                         .ToDictionary(info => info.Name, info => info.ReturnType);

@@ -89,6 +89,10 @@ namespace UnitTestImpromptuInterface
             var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
 
             Assert.AreEqual("object", tOut2);
+
+            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", new{Anon =1});
+
+            Assert.AreEqual("object", tOut3);
         }
 
 
@@ -106,9 +110,10 @@ namespace UnitTestImpromptuInterface
             var tPoco = new MethOutPoco();
 
 
-
+            var tName = "Func";
+            var tContext = GetType();
             var tBinder =
-                Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+                Binder.InvokeMember(BinderFlags.None, tName, null, tContext,
                                             new[]
                                                 {
                                                     Info.Create(
@@ -118,7 +123,8 @@ namespace UnitTestImpromptuInterface
                                                         InfoFlags.UseCompileTimeType, null)
                                                 });
 
-            var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
+
+            var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder, tName, tContext);
 
           
             tSite.Target.Invoke(tSite, tPoco, out tResult);

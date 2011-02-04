@@ -711,7 +711,7 @@ namespace ImpromptuInterface
         internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
         {
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
-            tList.AddRange(argTypes);
+            tList.AddRange(argTypes.Select(it => it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any() ? typeof(object) : it));
 
             
 

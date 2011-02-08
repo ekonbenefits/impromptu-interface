@@ -27,6 +27,20 @@ namespace ImpromptuInterface
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
+
+            if (InformalInterface != null || other.InformalInterface !=null)
+            {
+                if (InformalInterface == null || other.InformalInterface == null)
+                    return false;
+
+                var tTypes = Types.SequenceEqual(other.Types);
+
+                if (!tTypes )
+                    return false;
+                
+                return InformalInterface.SequenceEqual(other.InformalInterface);
+            }
+
             return Types.SequenceEqual(other.Types);
         }
 
@@ -40,9 +54,17 @@ namespace ImpromptuInterface
 
         public override int GetHashCode()
         {
+          
+
             unchecked
             {
-                return Types.Aggregate(1, (current, type) => (current * 397) ^ type.GetHashCode());
+                var tReturn = Types.Aggregate(1, (current, type) => (current * 397) ^ type.GetHashCode());
+
+                if (InformalInterface != null)
+                {
+                    tReturn = InformalInterface.Aggregate(tReturn, (current, type) => (current * 397) ^ type.GetHashCode());
+                }
+                return tReturn;
             }
         }
 
@@ -57,6 +79,7 @@ namespace ImpromptuInterface
         }
 
         public readonly MemberInfo[] Types;
+        public readonly IDictionary<string,Type> InformalInterface;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeHash"/> class.
@@ -77,6 +100,13 @@ namespace ImpromptuInterface
         public TypeHash(Type type1, params Type[] moreTypes)
         {
             Types = new[] { type1 }.Concat(moreTypes.OrderBy(it => it.Name)).ToArray();
+            InformalInterface = null;
+        }
+
+        public TypeHash(Type type1, IDictionary<string, Type> informalInterface)
+        {
+            Types = new[] {type1};
+            InformalInterface = informalInterface;
         }
 
         /// <summary>

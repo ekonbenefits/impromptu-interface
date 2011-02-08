@@ -338,10 +338,22 @@ namespace ImpromptuInterface
                 InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
 
-        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces)
+        public static dynamic ActLike(this object originalDynamic, IDictionary<string, Type> informalInterface)
+        {
+            var tType = originalDynamic.GetType();
+
+            var tProxy = BuildProxy.BuildType(tType, informalInterface);
+
+
+
+            return
+                InitializeProxy(tProxy, originalDynamic, informalInterface: informalInterface);
+        }
+
+        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface =null)
         {
             var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
-            tProxy.Initialize(original, interfaces);
+            tProxy.Initialize(original, interfaces, informalInterface);
             return tProxy;
         }
 

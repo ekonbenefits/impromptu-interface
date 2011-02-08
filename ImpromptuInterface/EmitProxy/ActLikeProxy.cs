@@ -44,7 +44,8 @@ namespace ImpromptuInterface
         ///</summary>
         ///<param name="original"></param>
         ///<param name="interfaces"></param>
-        void Initialize(dynamic original, IEnumerable<Type> interfaces);
+        ///<param name="informalInterface"></param>
+        void Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface = null);
     }
 
 
@@ -57,6 +58,8 @@ namespace ImpromptuInterface
         /// Property used to pass interface information to proxied object
         ///</summary>
         IEnumerable<Type> KnownInterfaces { set; }
+
+        IDictionary<string, Type> KnownInformalInterface { set; }
     }
 
 
@@ -69,7 +72,7 @@ namespace ImpromptuInterface
 
         private bool _init = false;
 
-        public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces)
+        public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface =null)
         {
             if (_init)
                 throw new MethodAccessException("Initialize should not be called twice!");
@@ -77,7 +80,12 @@ namespace ImpromptuInterface
             Original = original;
             var tKnowOriginal = Original as IDynamicKnowLike;
             if (tKnowOriginal != null)
+            {
                 tKnowOriginal.KnownInterfaces = interfaces;
+                if (informalInterface != null)
+                    tKnowOriginal.KnownInformalInterface = informalInterface;
+            }
+
         }
     }
 }

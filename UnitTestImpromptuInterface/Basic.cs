@@ -13,7 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
+using Microsoft.CSharp.RuntimeBinder;
 using NUnit.Framework;
 using ImpromptuInterface;
 using System.Dynamic;
@@ -126,6 +128,18 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
         }
 
+        [Test]
+        public void InformalPropTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            var tActsLike = Impromptu.ActLike(tNew,new Dictionary<string, Type>() {{"Prop1", typeof (string)}});
+
+
+            Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
+            Assert.Throws<RuntimeBinderException>(() => {var tTest = tActsLike.Prop2;});
+        }
 
         [Test]
         public void OverloadMethodTest()

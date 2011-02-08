@@ -32,6 +32,7 @@ namespace ImpromptuInterface
 
         private static readonly object TypeHashLock = new object();
         protected TypeHash _hash;
+        protected IDictionary<string, Type> _informalInterface;
 
         /// <summary>
         /// Gets or sets the known interfaces.
@@ -42,13 +43,16 @@ namespace ImpromptuInterface
         {
             get
             {
-
+                if (_informalInterface != null)
+                    return new Type[] {};
                 return _hash.Types.Cast<Type>();
             }
             set
             {
                 lock (TypeHashLock)
                 {
+                    _informalInterface = null;
+
                     _hash = new TypeHash(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;
 
@@ -75,6 +79,16 @@ namespace ImpromptuInterface
             }
         }
 
+        /// <summary>
+        /// Gets or sets the known fake interface (string method name to return type mapping).
+        /// </summary>
+        /// <value>The known fake interface.</value>
+        public virtual IDictionary<string, Type> KnownInformalInterface
+        {
+            get { return _informalInterface; }
+            set { _informalInterface = value; }
+        }
+
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return HashForThisType().Select(it => it.Key);
@@ -82,6 +96,9 @@ namespace ImpromptuInterface
 
         private IDictionary<string, Type> HashForThisType()
         {
+            if (_informalInterface != null)
+                return _informalInterface;
+
             return _hash == null || !_returnTypHash.ContainsKey(_hash)
                 ? new Dictionary<string, Type>() 
                 : _returnTypHash[_hash];
@@ -116,5 +133,11 @@ namespace ImpromptuInterface
         {
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
+
+        public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
+        {
+            return Impromptu.ActLike(this, informalInterface);
+        }
+       
     }
 }

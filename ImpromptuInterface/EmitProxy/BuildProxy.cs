@@ -107,6 +107,22 @@ namespace ImpromptuInterface
 
         }
 
+        public static Type BuildType(Type contextType, IDictionary<string,Type> informalInterface)
+        {
+            lock (TypeCacheLock)
+            {
+                var tNewHash = new TypeHash(contextType, informalInterface);
+
+                if (!_typeHash.ContainsKey(tNewHash))
+                {
+                    _typeHash[tNewHash] = BuildTypeHelper(Builder, contextType, informalInterface);
+                }
+
+                return _typeHash[tNewHash];
+            }
+
+        }
+
         /// <summary>
         /// Preloads a proxy for ActLike to use.
         /// </summary>
@@ -171,6 +187,38 @@ namespace ImpromptuInterface
                 }
             }
             return tSuccess;
+        }
+
+        private static Type BuildTypeHelper(ModuleBuilder builder, Type contextType, IDictionary<string,Type> informalInterface)
+        {
+
+
+            var tB = builder.DefineType(
+                string.Format("ActLike_{0}_{1}", "InformalINterface", Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
+                typeof(ActLikeProxy));
+
+
+            foreach (var tInterface in informalInterface)
+            {
+                
+                    MakeProperty(builder, tB, contextType, tInterface.Key, tInterface.Value);
+               
+            }
+            var tType = tB.CreateType();
+            return tType;
+        }
+
+        private static void MakeProperty(ModuleBuilder builder, TypeBuilder typeBuilder, Type contextType, string tName, Type tReturnType)
+        {
+        
+         
+            var tGetName = "get_"+tName;
+
+
+
+
+
+            MakePropertyHelper(null, tName, builder, tReturnType, null, typeBuilder, tGetName, contextType);
         }
 
         private static Type BuildTypeHelper(ModuleBuilder builder,Type contextType,params Type[] interfaces)
@@ -461,21 +509,31 @@ namespace ImpromptuInterface
 
             var tGetMethod = info.GetGetMethod();
             var tSetMethod = info.GetSetMethod();
+            var tReturnType = tGetMethod.ReturnType;
+            var tGetName = tGetMethod.Name;
 
+
+
+
+
+            MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType);
+        }
+
+        private static void MakePropertyHelper(PropertyInfo info, string tName, ModuleBuilder builder, Type tReturnType, MethodInfo tSetMethod, TypeBuilder typeBuilder, string tGetName, Type contextType)
+        {
+            var tIndexParamTypes = new Type[]{};
+            if(info!=null)
+                 tIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
             Type[] tSetParamTypes = null;
             Type tInvokeSetFuncType = null;
-
-            var tIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
-
-
-
 
             var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
             var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
 
             var tConvertGet = "Convert_Get";
-            var tConvertFuncType = tCStp.DefineCallsiteField(tConvertGet, tGetMethod.ReturnType);
+           
+            var tConvertFuncType = tCStp.DefineCallsiteField(tConvertGet, tReturnType);
 
             var tInvokeGet = "Invoke_Get";
             var tInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object), tIndexParamTypes);
@@ -490,31 +548,34 @@ namespace ImpromptuInterface
 
             var tCallSite = tCStp.CreateType();
 
-            var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, tGetMethod.ReturnType, tIndexParamTypes);
+            var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, tReturnType, tIndexParamTypes);
 
 
 
             //GetMethod
-            var tGetMethodBuilder = typeBuilder.DefineMethod(tGetMethod.Name,
-                                                    MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
-                                                    tGetMethod.ReturnType,
-                                                    tIndexParamTypes);
+           
+            var tGetMethodBuilder = typeBuilder.DefineMethod(tGetName,
+                                                             MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
+                                                             tReturnType,
+                                                             tIndexParamTypes);
 
 
-          
 
-            foreach (var tParam in info.GetGetMethod().GetParameters())
+            if (info != null)
             {
+                foreach (var tParam in info.GetGetMethod().GetParameters())
+                {
 
 
-                tGetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+                    tGetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+                }
             }
 
             EmitProperty(
                 info,
                 tName, 
                 tConvertGet,
-                tGetMethod, 
+                tReturnType, 
                 tInvokeGet, 
                 tIndexParamTypes,
                 tSetMethod, 
@@ -534,7 +595,7 @@ namespace ImpromptuInterface
             PropertyInfo info, 
             string name, 
             string convertGet,
-            MethodInfo getMethod, 
+            Type tGetReturnType, 
             string invokeGet, 
             Type[] indexParamTypes,
             MethodInfo setMethod,
@@ -549,19 +610,19 @@ namespace ImpromptuInterface
             PropertyBuilder tMp, 
             Type invokeSetFuncType)
         {
-            if (getMethod == null) throw new ArgumentNullException("getMethod");
+           
             if (indexParamTypes == null) throw new ArgumentNullException("indexParamTypes");
             var tIlGen = getMethodBuilder.GetILGenerator();
 
             var tConvertCallsiteField = callSite.GetFieldEvenIfGeneric(convertGet);
-            var tReturnLocal =tIlGen.DeclareLocal(getMethod.ReturnType);
+            var tReturnLocal = tIlGen.DeclareLocal(tGetReturnType);
 
 
        
             tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
             using (tIlGen.EmitBranchTrue())
             {
-                tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, getMethod.ReturnType, contextType);
+                tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, tGetReturnType, contextType);
                 tIlGen.EmitCallsiteCreate(tConvertFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tConvertCallsiteField);
             }

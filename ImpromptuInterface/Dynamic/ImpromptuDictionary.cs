@@ -26,8 +26,18 @@ namespace ImpromptuInterface.Dynamic
 {
     public class ImpromptuDictionary:ImpromptuObject,IDictionary<string,object>,INotifyPropertyChanged
     {
-        protected readonly IDictionary<string,object> _dictionary = new Dictionary<string, object>();
+        protected readonly IDictionary<string,object> _dictionary;
 
+        public ImpromptuDictionary()
+        {
+           _dictionary =
+            new Dictionary<string, object>();
+        }
+
+        public ImpromptuDictionary(IEnumerable<KeyValuePair<string, object>> dict)
+        {
+            _dictionary = dict.ToDictionary(k => k.Key, v => v.Value);
+        }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {

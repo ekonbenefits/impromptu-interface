@@ -32,7 +32,7 @@ namespace ImpromptuInterface
 
         private static readonly object TypeHashLock = new object();
         protected TypeHash _hash;
-        protected IDictionary<string, Type> _informalInterface;
+        protected IDictionary<string, Type> PropertySpec;
 
         /// <summary>
         /// Gets or sets the known interfaces.
@@ -43,7 +43,7 @@ namespace ImpromptuInterface
         {
             get
             {
-                if (_informalInterface != null)
+                if (PropertySpec != null)
                     return new Type[] {};
                 return _hash.Types.Cast<Type>();
             }
@@ -51,7 +51,7 @@ namespace ImpromptuInterface
             {
                 lock (TypeHashLock)
                 {
-                    _informalInterface = null;
+                    PropertySpec = null;
 
                     _hash = new TypeHash(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;
@@ -83,10 +83,10 @@ namespace ImpromptuInterface
         /// Gets or sets the known fake interface (string method name to return type mapping).
         /// </summary>
         /// <value>The known fake interface.</value>
-        public virtual IDictionary<string, Type> KnownInformalInterface
+        public virtual IDictionary<string, Type> KnownPropertySpec
         {
-            get { return _informalInterface; }
-            set { _informalInterface = value; }
+            get { return PropertySpec; }
+            set { PropertySpec = value; }
         }
 
         public override IEnumerable<string> GetDynamicMemberNames()
@@ -96,8 +96,8 @@ namespace ImpromptuInterface
 
         private IDictionary<string, Type> HashForThisType()
         {
-            if (_informalInterface != null)
-                return _informalInterface;
+            if (PropertySpec != null)
+                return PropertySpec;
 
             return _hash == null || !_returnTypHash.ContainsKey(_hash)
                 ? new Dictionary<string, Type>() 
@@ -136,7 +136,7 @@ namespace ImpromptuInterface
 
         public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
         {
-            return Impromptu.ActLike(this, informalInterface);
+            return Impromptu.ActLikeProperties(this, informalInterface);
         }
        
     }

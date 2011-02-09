@@ -282,7 +282,7 @@ namespace ImpromptuInterface
                                                               CSharp.CSharpArgumentInfoFlags.None, null)
                                                       });
 
-
+            
             var tFuncGenParameters = new Type[] {};
 
         
@@ -338,22 +338,30 @@ namespace ImpromptuInterface
                 InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
 
-        public static dynamic ActLike(this object originalDynamic, IDictionary<string, Type> informalInterface)
+
+
+        /// <summary>
+        /// Makes static methods for the passed in property spec, designed to be used with old api's that reflect properties.
+        /// </summary>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="propertySpec">The property spec.</param>
+        /// <returns></returns>
+        public static dynamic ActLikeProperties(this object originalDynamic, IDictionary<string, Type> propertySpec)
         {
             var tType = originalDynamic.GetType();
 
-            var tProxy = BuildProxy.BuildType(tType, informalInterface);
+            var tProxy = BuildProxy.BuildType(tType, propertySpec);
 
 
 
             return
-                InitializeProxy(tProxy, originalDynamic, informalInterface: informalInterface);
+                InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
         }
 
-        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface =null)
+        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
         {
             var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
-            tProxy.Initialize(original, interfaces, informalInterface);
+            tProxy.Initialize(original, interfaces, propertySpec);
             return tProxy;
         }
 

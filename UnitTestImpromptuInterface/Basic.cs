@@ -134,7 +134,7 @@ namespace UnitTestImpromptuInterface
             dynamic tNew = new ExpandoObject();
             tNew.Prop1 = "Test";
             tNew.Prop2 = 42L;
-            var tActsLike = Impromptu.ActLike(tNew,new Dictionary<string, Type>() {{"Prop1", typeof (string)}});
+            var tActsLike = Impromptu.ActLikeProperties(tNew,new Dictionary<string, Type>() {{"Prop1", typeof (string)}});
 
 
             Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);

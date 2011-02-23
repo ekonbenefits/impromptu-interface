@@ -26,12 +26,22 @@ namespace ImpromptuInterface
     /// </summary>
     public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike
     {
+        /// <summary>
+        /// Cache to avoid refelection for same Interfaces.
+        /// </summary>
         protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
 
 
         private static readonly object TypeHashLock = new object();
+        /// <summary>
+        /// Hash for this instance to lookup cached values from <see cref="_returnTypHash"/>
+        /// </summary>
         protected TypeHash _hash;
+
+        /// <summary>
+        /// Keep Track of Known Property Spec
+        /// </summary>
         protected IDictionary<string, Type> PropertySpec;
 
         /// <summary>
@@ -89,6 +99,12 @@ namespace ImpromptuInterface
             set { PropertySpec = value; }
         }
 
+        /// <summary>
+        /// Returns the enumeration of all dynamic member names.
+        /// </summary>
+        /// <returns>
+        /// A sequence that contains dynamic member names.
+        /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return HashForThisType().Select(it => it.Key);
@@ -134,6 +150,11 @@ namespace ImpromptuInterface
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
 
+        /// <summary>
+        /// Allows ActLike to be called via dyanmic invocation
+        /// </summary>
+        /// <param name="informalInterface">The informal interface.</param>
+        /// <returns></returns>
         public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
         {
             return Impromptu.ActLikeProperties(this, informalInterface);

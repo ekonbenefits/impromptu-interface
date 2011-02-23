@@ -107,6 +107,12 @@ namespace ImpromptuInterface
 
         }
 
+        /// <summary>
+        /// Builds the type.
+        /// </summary>
+        /// <param name="contextType">Type of the context.</param>
+        /// <param name="informalInterface">The informal interface.</param>
+        /// <returns></returns>
         public static Type BuildType(Type contextType, IDictionary<string,Type> informalInterface)
         {
             lock (TypeCacheLock)

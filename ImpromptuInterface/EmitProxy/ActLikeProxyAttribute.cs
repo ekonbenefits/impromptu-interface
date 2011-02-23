@@ -27,13 +27,26 @@ namespace ImpromptuInterface
     [AttributeUsage(AttributeTargets.Class)]
     public class ActLikeProxyAttribute:Attribute
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActLikeProxyAttribute"/> class.
+        /// </summary>
+        /// <param name="interfaces">The interfaces.</param>
+        /// <param name="context">The context.</param>
         public ActLikeProxyAttribute(Type[] interfaces, Type context)
         {
             Interfaces = interfaces;
             Context = context;
         }
 
+        /// <summary>
+        /// Gets or sets the interfaces.
+        /// </summary>
+        /// <value>The interfaces.</value>
         public Type[] Interfaces { get; set; }
+        /// <summary>
+        /// Gets or sets the context.
+        /// </summary>
+        /// <value>The context.</value>
         public Type Context { get; set; }
     }
 }

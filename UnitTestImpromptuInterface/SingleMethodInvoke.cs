@@ -169,10 +169,6 @@ namespace UnitTestImpromptuInterface
         {
 
 
-            var tValue = "Test";
-
-            var tParam ="Te";
-
             HelpTestStaticPassAndGetValue("Test", "Te");
 
 

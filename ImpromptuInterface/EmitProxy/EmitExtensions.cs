@@ -48,6 +48,9 @@ namespace ImpromptuInterface
                 _generator.Emit(OpCodes.Brtrue, _label);
             }
 
+            /// <summary>
+            /// Finishes block
+            /// </summary>
             public void Dispose()
             {
                 //_generator.Emit(OpCodes.Br_S, _label);

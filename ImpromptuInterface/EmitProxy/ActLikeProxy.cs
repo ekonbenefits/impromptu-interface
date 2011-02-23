@@ -59,6 +59,10 @@ namespace ImpromptuInterface
         ///</summary>
         IEnumerable<Type> KnownInterfaces { set; }
 
+        /// <summary>
+        /// Sets the known property spec.
+        /// </summary>
+        /// <value>The known property spec.</value>
         IDictionary<string, Type> KnownPropertySpec { set; }
     }
 
@@ -68,10 +72,20 @@ namespace ImpromptuInterface
     /// </summary>
     public abstract class ActLikeProxy : IActLikeProxyInitialize
     {
+        /// <summary>
+        /// Returns the proxied object
+        /// </summary>
+        /// <value></value>
         public dynamic Original{ get; private set;}
 
         private bool _init = false;
 
+        /// <summary>
+        /// Method used to Initialize Proxy
+        /// </summary>
+        /// <param name="original"></param>
+        /// <param name="interfaces"></param>
+        /// <param name="informalInterface"></param>
         public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces=null, IDictionary<string, Type> informalInterface =null)
         {
             if (_init)

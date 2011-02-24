@@ -44,6 +44,19 @@ namespace ImpromptuInterface.Dynamic
         }
 
         /// <summary>
+        /// Convenience create method to make an Impromptu Dictionary instance acting like interface type parameter
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="dict">The dict.</param>
+        /// <returns></returns>
+        public static T Create<T>(IEnumerable<KeyValuePair<string, object>> dict=null) where T:class
+        {
+            return dict == null 
+                ? new ImpromptuDictionary().ActLike<T>()
+                : new ImpromptuDictionary(dict).ActLike<T>();
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuDictionary"/> class.
         /// </summary>
         /// <param name="dict">The dict.</param>

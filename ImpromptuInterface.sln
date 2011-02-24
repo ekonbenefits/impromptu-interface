@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromtuInterface", "ImpromptuInterface\ImpromtuInterface.csproj", "{DAB7C056-660A-4153-8FF2-B80A41310AD7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface", "ImpromptuInterface\ImpromptuInterface.csproj", "{DAB7C056-660A-4153-8FF2-B80A41310AD7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface", "UnitTestImpromptuInterface\UnitTestImpromptuInterface.csproj", "{A559B4F8-8D9D-4761-B2D2-BB4104760450}"
 EndProject

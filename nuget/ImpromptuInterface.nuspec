@@ -9,7 +9,14 @@
     <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <tags>ducktyping duckcasting dynamic .net40</tags>
-    <language>en-US</language> 
+    <language>en-US</language>
+    <files>
+      <file src="..\License.txt" />
+      <file src="..\Readme.txt" />
+      <file src="..\ImpromptuInterface\bin\Release\*.xml" target="lib\net40" />
+      <file src="..\ImpromptuInterface\bin\Release\*.dll" target="lib\net40" />
+      <file src="..\ImpromptuInterface\bin\Release\*.pdb" target="lib\net40" />
+    </files>
   </metadata> 
 </package>
 

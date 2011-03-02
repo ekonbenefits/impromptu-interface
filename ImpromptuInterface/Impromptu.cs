@@ -282,14 +282,14 @@ namespace ImpromptuInterface
                                                               CSharp.CSharpArgumentInfoFlags.None, null)
                                                       });
 
-            
-            var tFuncGenParameters = new Type[] {};
-
-        
-            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tFuncGenParameters, typeof(object));
-
-            return Invoke(CreateCallSite(tDelagateType, tBinder, name, tContext), target);
+            var tCallSite = CreateCallSite<GetDelegate>(tBinder, name, tContext);
+            return tCallSite.Target.Invoke(tCallSite, target);
         }
+
+        /// <summary>
+        /// Static Delegate should work for dynamic invocation of all getters
+        /// </summary>
+        public delegate object GetDelegate(CallSite callsite, object target);
 
 
         /// <summary>

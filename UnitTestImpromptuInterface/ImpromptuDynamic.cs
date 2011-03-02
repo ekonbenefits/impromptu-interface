@@ -78,5 +78,63 @@ namespace UnitTestImpromptuInterface
  
 
         }
+
+
+        [Test]
+        public void DynamicDictionaryWrappedTest()
+        {
+
+            var tDictionary = new Dictionary<string, object>
+                                  {
+                                      {"Test1", 1},
+                                      {"Test2", 2},
+                                      {"TestD",  new Dictionary<string,object>()
+                                                     {
+                                                         {"TestA","A"},
+                                                         {"TestB","B"}
+                                                     }
+                                      }
+                                  };
+
+            dynamic tNew = new ImpromptuDictionary(tDictionary);
+
+            Assert.AreEqual(1, tNew.Test1);
+            Assert.AreEqual(2, tNew.Test2);
+            Assert.AreEqual("A", tNew.TestD.TestA);
+            Assert.AreEqual("B", tNew.TestD.TestB);
+        }
+
+        [Test]
+        public void InterfaceDictionaryWrappedTest()
+        {
+
+            var tDictionary = new Dictionary<string, object>
+                                  {
+                                      {"Test1", 1},
+                                      {"Test2", 2},
+                                      {"TestD",  new Dictionary<string,object>()
+                                                     {
+                                                         {"TestA","A"},
+                                                         {"TestB","B"}
+                                                     }
+                                      }
+                                  };
+
+            dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
+            dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
+
+
+            Assert.AreEqual(1, tDynamic.Test1);
+            Assert.AreEqual(2, tDynamic.Test2);
+            Assert.AreEqual("A", tDynamic.TestD.TestA);
+            Assert.AreEqual("B", tDynamic.TestD.TestB);
+
+            Assert.AreEqual(1, tNotDynamic.Test1);
+            Assert.AreEqual(2, tNotDynamic.Test2);
+
+
+            Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());
+            Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
+        }
     }
 }

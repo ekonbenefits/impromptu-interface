@@ -76,14 +76,22 @@ namespace ImpromptuInterface.Dynamic
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             if (_dictionary.ContainsKey(binder.Name))
+            {
                 result = _dictionary[binder.Name];
+                Type tType;
+                //If it's an IDictionary and interface is not set for the property or it's dynamic for this property return an ImpromptuDictionary
+                if (result is IDictionary<string, object> && (!TryTypeForName(binder.Name, out tType) || tType == typeof(object)))
+                {
+                    result = new ImpromptuDictionary((IDictionary<string, object>)result);
+                }
+            }
             else
             {
                 result = null;
                 Type tType;
                 if (!TryTypeForName(binder.Name, out tType))
                 {
-                    
+
                     return false;
                 }
                 if (tType.IsValueType)

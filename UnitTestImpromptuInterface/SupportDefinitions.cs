@@ -33,6 +33,24 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public interface IDynamicDict
+    {
+        int Test1 { get; }
+
+        long Test2 { get; }
+
+        dynamic TestD { get; }
+    }
+
+    public interface INonDynamicDict
+    {
+        int Test1 { get; }
+
+        long Test2 { get; }
+
+        IDictionary<string,object> TestD { get; }
+    }
+
     public interface ISimpleStringProperty
     {
         int Length { get; }

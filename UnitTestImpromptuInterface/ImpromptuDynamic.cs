@@ -123,6 +123,7 @@ namespace UnitTestImpromptuInterface
             dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
             dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
 
+            Assert.AreEqual(tDynamic, tNotDynamic);
 
             Assert.AreEqual(1, tDynamic.Test1);
             Assert.AreEqual(2, tDynamic.Test2);
@@ -135,6 +136,31 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());
             Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
+        }
+
+        [Test]
+        public void DynamicObjectEqualsTest()
+        {
+            var tDictionary = new Dictionary<string, object>
+                                  {
+                                      {"Test1", 1},
+                                      {"Test2", 2},
+                                      {"TestD",  new Dictionary<string,object>()
+                                                     {
+                                                         {"TestA","A"},
+                                                         {"TestB","B"}
+                                                     }
+                                      }
+                                  };
+
+            dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
+            dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
+
+            Assert.AreEqual(tDynamic, tNotDynamic);
+
+            Assert.AreEqual(tDynamic, tDictionary);
+
+            Assert.AreEqual(tNotDynamic, tDictionary);
         }
     }
 }

@@ -64,6 +64,19 @@ namespace UnitTestImpromptuInterface
 
         }
 
+        [Test]
+        public void AnonEqualsTest()
+        {
+            var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
+
+            var tActsLike = tAnon.ActLike<ISimpeleClassProps>();
+            var tActsLike2 = tAnon.ActLike<ISimpeleClassProps>();
+
+            Assert.AreEqual(tActsLike, tActsLike2);
+
+
+        }
+
 
         [Test]
         public void ExpandoPropertyTest()

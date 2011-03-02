@@ -29,7 +29,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
 
-        [Test] public void DictionaryNullPropertyTest()
+        [Test] 
+        public void DictionaryNullPropertyTest()
         {
 
             dynamic tNew = new ImpromptuDictionary();
@@ -42,7 +43,34 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(default(Guid), tActsLike.Prop3);
         }
 
+        [Test]
+        public void GetterAnonTest()
+        {
+            var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
 
+            dynamic tTest =new ImpromptuGet(tAnon);
+
+            Assert.AreEqual(tAnon.Prop1, tTest.Prop1);
+            Assert.AreEqual(tAnon.Prop2, tTest.Prop2);
+            Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
+        }
+
+
+        [Test]
+        public void GetterDynamicTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            tNew.Prop3 = Guid.NewGuid();
+
+            dynamic tTest = new ImpromptuGet(tNew);
+
+
+            Assert.AreEqual(tNew.Prop1, tTest.Prop1);
+            Assert.AreEqual(tNew.Prop2, tTest.Prop2);
+            Assert.AreEqual(tNew.Prop3, tTest.Prop3);
+        }
  
         [Test]
         public void DictionaryMethodsTest()

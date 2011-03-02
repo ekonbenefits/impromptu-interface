@@ -1,4 +1,4 @@
-﻿// 
+ // 
 //  Copyright 2010  Ekon Benefits
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -62,7 +62,10 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="dict">The dict.</param>
         public ImpromptuDictionary(IEnumerable<KeyValuePair<string, object>> dict)
         {
-            _dictionary = dict.ToDictionary(k => k.Key, v => v.Value);
+            if(dict is IDictionary<string,object>) //Don't need to enumerate if it's the right type.
+                _dictionary = dict;
+            else
+                _dictionary = dict.ToDictionary(k => k.Key, v => v.Value);
         }
 
         /// <summary>

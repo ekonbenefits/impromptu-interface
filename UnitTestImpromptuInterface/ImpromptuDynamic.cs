@@ -145,7 +145,7 @@ namespace UnitTestImpromptuInterface
             var tDictionary = new Dictionary<string, object>
                                   {
                                       {"Test1", 1},
-                                      {"Test2", 2},
+                                      {"Test2", 2L},
                                       {"TestD",  new Dictionary<string,object>()
                                                      {
                                                          {"TestA","A"},
@@ -160,12 +160,12 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tDynamic, tNotDynamic);
 
             Assert.AreEqual(1, tDynamic.Test1);
-            Assert.AreEqual(2, tDynamic.Test2);
+            Assert.AreEqual(2L, tDynamic.Test2);
             Assert.AreEqual("A", tDynamic.TestD.TestA);
             Assert.AreEqual("B", tDynamic.TestD.TestB);
 
             Assert.AreEqual(1, tNotDynamic.Test1);
-            Assert.AreEqual(2, tNotDynamic.Test2);
+            Assert.AreEqual(2L, tNotDynamic.Test2);
 
 
             Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());

@@ -27,7 +27,7 @@ namespace UnitTestImpromptuInterface
     {
         public void AssertException<T>(Action action) where T:Exception
         {
-            bool tSuccess = false;
+            var tSuccess = false;
             Exception tEc = null;
             try
             {
@@ -40,7 +40,6 @@ namespace UnitTestImpromptuInterface
             }
             catch(Exception ex)
             {
-                tSuccess = false;
                 tEc = ex;
             }
 

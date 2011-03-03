@@ -124,7 +124,7 @@ namespace UnitTestImpromptuInterface
             AssertException<AssertionException>(() => tActsLike.Action2(true));
         
             Assert.AreEqual("test",tActsLike.Action3());
-			Console.Write("test");
+		
           
         }
 

@@ -70,7 +70,6 @@ namespace UnitTestImpromptuInterface
             }
             catch (Exception ex)
             {
-                tSuccess = false;
                 tEc = ex;
             }
 
@@ -98,7 +97,7 @@ namespace UnitTestImpromptuInterface
 
         public void IsFalse(bool actual)
         {
-            if (!actual)
+            if (actual)
             {
                 throw new AssertionException("Expected False");
             }

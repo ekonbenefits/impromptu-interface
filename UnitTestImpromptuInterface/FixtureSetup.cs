@@ -7,7 +7,7 @@ using ImpromptuInterface;
 
 namespace UnitTestImpromptuInterface
 {
-#if !SILVERLIGHT
+#if !SILVERLIGHT && !MONO 
 
     using NUnit.Framework;
     [SetUpFixture]

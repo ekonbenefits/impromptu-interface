@@ -21,7 +21,7 @@ namespace Test
 	{
 		public AssertionHelper ()
 		{
-			Assert = new ExpandoObject();
+			
 			Action<dynamic,dynamic> tFunc = (x,y) => {
 				
 				if(x == y)
@@ -31,10 +31,9 @@ namespace Test
 				
 				
 			};
-			Assert.AreEqual = tFunc;
+		
 		}
 		
-		public dynamic Assert{get;set;}
 		
 		
 	}

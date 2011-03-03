@@ -10,7 +10,7 @@ using ImpromptuInterface;
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#else
+#elif !MONO
 using NUnit.Framework;
 #endif
 

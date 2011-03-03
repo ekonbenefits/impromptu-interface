@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -37,6 +38,27 @@ namespace ImpromptuInterface.Dynamic
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
         {
             result =Impromptu.InvokeGet(Target, binder.Name);
+            return true;
+        }
+
+
+        public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
+        {
+            result = null;
+            var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
+            if(tDel == null)
+                return false;
+
+            try
+            {
+                result = tDel.DynamicInvoke(args);
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.InnerException != null)
+                    throw ex.InnerException;
+                throw ex;
+            }
             return true;
         }
     }

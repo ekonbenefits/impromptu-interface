@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>ImpromptuInterface</id> 
-    <version>2.0.0</version> 
+    <version>2.1.0</version> 
     <authors>Jay Tuley</authors> 
     <owners>Jay Tuley</owners>
     <description>A Lightweight Duck Casting Framework for dynamic C#, Includes helper methods for Dynamic Invocation via Method and Property Names only known at runtime</description> 
@@ -17,6 +17,9 @@
     <file src="..\ImpromptuInterface\bin\Release\*.xml" target="lib\net40" />
     <file src="..\ImpromptuInterface\bin\Release\*.dll" target="lib\net40" />
     <file src="..\ImpromptuInterface\bin\Release\*.pdb" target="lib\net40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.xml" target="lib\SL40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.dll" target="lib\SL40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.pdb" target="lib\SL40" />
   </files>
 </package>
 

@@ -81,7 +81,7 @@ namespace UnitTestImpromptuInterface
 	 public interface IGenericMethWithConstraints
     {
         string Action<T>(T arg) where T:class;
-        string Action2<T>(T arg) where T : ISerializable;
+        string Action2<T>(T arg) where T : IComparable;
     }
 	
 	 public interface IGenericType<T>

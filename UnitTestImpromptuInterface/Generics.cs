@@ -1,18 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface;
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#else
 using NUnit.Framework;
+#endif
 
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture()]
-   public class Generics:AssertionHelper
+  [TestClass, TestFixture]
+    public class Generics : Helper
     {
-        [Test]
+        [Test,TestMethod]
         public void TestGenericMeth()
         {
 
@@ -45,7 +52,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestGenericType()
         {
 
@@ -63,7 +70,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(expected, tActsLike.Funct(param));
         }
 
-        [Test]
+       [Test, TestMethod]
         public void TestGenericTypeConstraints()
         {
 
@@ -82,12 +89,12 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestConstraintsMethGeneric()
         {
             var tObj = new Object();
             GenericMethConstraintsHelper(tObj, tObj.ToString());
-            var tTest = new Uri(@"http://google.com");
+            var tTest = Tuple.Create(new Uri(@"http://google.com"));
             GenericMethConstraintsHelper2(tTest, tTest.ToString());
         }
 
@@ -100,7 +107,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(expected, tActsLike.Action(param));
         }
 
-        private void GenericMethConstraintsHelper2<T>(T param, string expected) where T : ISerializable
+        private void GenericMethConstraintsHelper2<T>(T param, string expected) where T : IComparable
+
         {
             dynamic tNew = new ExpandoObject();
             tNew.Action2 = new Func<T, string>(it => it.ToString());

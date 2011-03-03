@@ -20,18 +20,26 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using ImpromptuInterface;
-using NUnit.Framework;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
 
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#else
+using NUnit.Framework;
+#endif
+
+
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture]
-    public class SingleMethodInvoke:AssertionHelper
+    [TestFixture,TestClass]
+    public class SingleMethodInvoke : Helper
     {
-        [Test]
+        [Test,TestMethod]
         public void TestDynamicSet()
         {
             dynamic tExpando = new ExpandoObject();
@@ -44,7 +52,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test]
+        [Test, TestMethod]
         public void TestGetStatic()
         {
             
@@ -57,8 +65,8 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        
-        [Test]
+
+        [Test, TestMethod]
         public void TestMethodDynamicPassAndGetValue()
         {
             dynamic tExpando = new ExpandoObject();
@@ -72,7 +80,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestMethodStaticOverloadingPassAndGetValue()
         {
             var tPoco = new OverloadingMethPoco();
@@ -99,7 +107,7 @@ namespace UnitTestImpromptuInterface
         /// <summary>
         /// To dynamically invoke a method with out or ref parameters you need to know the signature
         /// </summary>
-        [Test]
+        [Test, TestMethod]
         public void TestOutMethod()
         {
 
@@ -134,7 +142,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestMethodDynamicPassVoid()
         {
             var tTest = "Wrong";
@@ -152,7 +160,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestMethodStaticGetValue()
         {
         
@@ -164,7 +172,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tValue.ToString(), tOut);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void TestMethodStaticPassAndGetValue()
         {
 
@@ -185,7 +193,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void TestGetDynamic()
         {
 

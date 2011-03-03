@@ -5,15 +5,21 @@ using System.Linq;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#else
 using NUnit.Framework;
+#endif
 
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture]
-    public class ImpromptuDynamic: AssertionHelper
+    [TestFixture,TestClass]
+    public class ImpromptuDynamic : Helper
     {
 
-        [Test]
+        [Test, TestMethod]
         public void DictionaryPropertyTest()
         {
 
@@ -29,7 +35,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
 
-        [Test] 
+        [Test, TestMethod]
         public void DictionaryNullPropertyTest()
         {
 
@@ -43,7 +49,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(default(Guid), tActsLike.Prop3);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void GetterAnonTest()
         {
             var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -56,7 +62,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void GetterDynamicTest()
         {
             dynamic tNew = new ExpandoObject();
@@ -71,8 +77,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop2, tTest.Prop2);
             Assert.AreEqual(tNew.Prop3, tTest.Prop3);
         }
- 
-        [Test]
+
+        [Test, TestMethod]
         public void DictionaryMethodsTest()
         {
 
@@ -85,15 +91,15 @@ namespace UnitTestImpromptuInterface
 
 
 
-            Assert.Throws<AssertionException>(tActsLike.Action1);
-            Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
 
             Assert.AreEqual("test", tActsLike.Action3());
       
 
         }
 
-        [Test]
+        [Test, TestMethod]
         public void DictionaryNullMethodsTest()
         {
 
@@ -108,7 +114,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void DynamicDictionaryWrappedTest()
         {
 
@@ -132,7 +138,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("B", tNew.TestD.TestB);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void InterfaceDictionaryWrappedTest()
         {
 
@@ -166,7 +172,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
         }
 
-        [Test]
+        [Test, TestMethod]
         public void DynamicObjectEqualsTest()
         {
             var tDictionary = new Dictionary<string, object>

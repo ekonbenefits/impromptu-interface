@@ -16,19 +16,29 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
 using Microsoft.CSharp.RuntimeBinder;
-using NUnit.Framework;
 using ImpromptuInterface;
 using System.Dynamic;
+
+
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#else
+using NUnit.Framework;
+#endif
+
 namespace UnitTestImpromptuInterface
 {
-	[TestFixture()]
-	public class Basic:AssertionHelper
+
+       
+    [TestClass,TestFixture]
+	public class Basic:Helper
 	{
-	 
 
-     
 
-		[Test]
+
+         [Test,TestMethod]
         public void AnonPropertyTest()
         {
             var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
@@ -40,10 +50,10 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
         }
-		
-		
 
-        [Test]
+
+
+        [Test, TestMethod]
         public void CacheTest()
         {
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -64,7 +74,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test]
+        [Test, TestMethod]
         public void AnonEqualsTest()
         {
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -77,8 +87,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-
-        [Test]
+        [Test, TestMethod]
         public void ExpandoPropertyTest()
         {
           
@@ -98,7 +107,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void ExpandoMethodsTest()
         {
 
@@ -111,8 +120,8 @@ namespace UnitTestImpromptuInterface
 
 			
 		
-            Assert.Throws<AssertionException>(tActsLike.Action1);
-            Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
         
             Assert.AreEqual("test",tActsLike.Action3());
 			Console.Write("test");
@@ -121,7 +130,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test]
+        [Test, TestMethod]
         public void StringPropertyTest()
         {
             var tAnon = "Test 123";
@@ -131,7 +140,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Length, tActsLike.Length);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void StringMethodTest()
         {
             var tAnon = "Test 123";
@@ -141,7 +150,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
         }
 
-        [Test]
+        [Test, TestMethod]
         public void InformalPropTest()
         {
             dynamic tNew = new ExpandoObject();
@@ -151,10 +160,10 @@ namespace UnitTestImpromptuInterface
 
 
             Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
-            Assert.Throws<RuntimeBinderException>(() => {var tTest = tActsLike.Prop2;});
+            AssertException<RuntimeBinderException>(() => { var tTest = tActsLike.Prop2; });
         }
 
-        [Test]
+        [Test, TestMethod]
         public void OverloadMethodTest()
         {
             var tPoco = new OverloadingMethPoco();
@@ -165,7 +174,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("object", tActsLike.Func((object)tValue));
         }
 
-        [Test]
+        [Test, TestMethod]
         public void OutMethodTest()
         {
             var tPoco = new MethOutPoco();
@@ -179,7 +188,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("success", tResult);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void OutMethodTest2()
         {
             var tPoco = new GenericMethOutPoco();
@@ -193,7 +202,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(null, tResult);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void OutMethodTest3()
         {
             var tPoco = new GenericMethOutPoco();
@@ -207,7 +216,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(0, tResult);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void GenericOutMethodTest()
         {
             var tPoco = new GenericMethOutPoco();
@@ -228,7 +237,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(null, tResult2);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void RefMethodTest()
         {
             var tPoco = new MethRefPoco();

@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{EAA23773-6874-4651-8BA3-44838D775E16}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.Silverlight", "ImpromptuInterface.Silverlight\ImpromptuInterface.Silverlight.csproj", "{9181A92F-9A17-45A3-BBDB-EAC085A901A0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface.Silverlight", "UnitTestImpromputInterface.Silverlight\UnitTestImpromptuInterface.Silverlight.csproj", "{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +29,14 @@ Global
 		{EAA23773-6874-4651-8BA3-44838D775E16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EAA23773-6874-4651-8BA3-44838D775E16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EAA23773-6874-4651-8BA3-44838D775E16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9181A92F-9A17-45A3-BBDB-EAC085A901A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9181A92F-9A17-45A3-BBDB-EAC085A901A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9181A92F-9A17-45A3-BBDB-EAC085A901A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9181A92F-9A17-45A3-BBDB-EAC085A901A0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

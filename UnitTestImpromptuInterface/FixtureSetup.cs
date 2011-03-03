@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
-using NUnit.Framework;
+
 
 namespace UnitTestImpromptuInterface
 {
+#if !SILVERLIGHT
+
+    using NUnit.Framework;
     [SetUpFixture]
     public class FixtureSetup
     {
@@ -23,4 +26,5 @@ namespace UnitTestImpromptuInterface
             Builder.Dispose();
         }
     }
+#endif
 }

@@ -13,3 +13,4 @@ glob:nuget/NuGet.exe
 glob:nuget/*.zip
 glob:nuget/ImpromptuInterface/lib/net40/*
 glob:*~
+glob:*/Bin/*

@@ -29,7 +29,52 @@ namespace ImpromptuInterface
     ///</summary>
     public static class BuildProxy
     {
-       
+        private static readonly Type[] FuncKinds;
+        private static readonly Type[] ActionKinds; 
+        static BuildProxy()
+        {
+            FuncKinds = new []
+                            {
+                                null,
+                                typeof(Func<>),
+                                typeof(Func<,>),
+                                typeof(Func<,,>),
+                                typeof(Func<,,,>),
+                                typeof(Func<,,,,>),
+                                typeof(Func<,,,,,>),
+                                typeof(Func<,,,,,,>),
+                                typeof(Func<,,,,,,,>),
+                                typeof(Func<,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,,,>),
+                            };
+            ActionKinds = new []
+                            {
+                                typeof(Action),
+                                typeof(Action<>),
+                                typeof(Action<,>),
+                                typeof(Action<,,>),
+                                typeof(Action<,,,>),
+                                typeof(Action<,,,,>),
+                                typeof(Action<,,,,,>),
+                                typeof(Action<,,,,,,>),
+                                typeof(Action<,,,,,,,>),
+                                typeof(Action<,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,,,>),
+                            };
+        }
 
         private static ModuleBuilder _builder;
         internal static ModuleBuilder _tempBuilder;
@@ -42,7 +87,7 @@ namespace ImpromptuInterface
         private static readonly Dictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
         private static readonly object DelegateCacheLock = new object();
 
-
+#if !SILVERLIGHT
         internal class TempBuilder : IDisposable
         {
             private readonly string _name;
@@ -56,16 +101,21 @@ namespace ImpromptuInterface
             {
                 Dispose();
             }
-
+          
+           
             public void Dispose()
             {
                 if (_disposed)
                     throw new MethodAccessException("Can't Call Dispose Twice!!");
                 _disposed = true;
-                _tempSaveAssembly.Save(string.Format("{0}.dll", _name));
+            
+                 
+                   _tempSaveAssembly.Save(string.Format("{0}.dll", _name));
+               
                 _tempSaveAssembly = null;
                 _tempBuilder = null;
-            }
+            } 
+          
         }
 
         /// <summary>
@@ -78,10 +128,13 @@ namespace ImpromptuInterface
         ///     changes could make the emitted asssembly out of date very easily.
         /// </remarks>
         public static IDisposable WriteOutDll(string name)
-        {
-             GenerateAssembly(name, AssemblyBuilderAccess.RunAndSave,ref _tempSaveAssembly,ref  _tempBuilder);
-            return new TempBuilder(name);
+        {  
+              GenerateAssembly(name, AssemblyBuilderAccess.RunAndSave,ref _tempSaveAssembly,ref  _tempBuilder);
+              
+              return new TempBuilder(name);
         }
+
+#endif
 
 
         /// <summary>
@@ -756,14 +809,9 @@ namespace ImpromptuInterface
 
         internal static Type GenericDelegateType(int count, bool action =false)
         {
-            var tTypeName = String.Format("System.Func`{0}", count);
-            if (action)
-                tTypeName = String.Format("System.Action`{0}", count);
-
-
-            var tFuncGeneric = Type.GetType(tTypeName);
-
-            return tFuncGeneric;
+            return action 
+                ? ActionKinds[count] 
+                : FuncKinds[count];
         }
 
 
@@ -784,6 +832,7 @@ namespace ImpromptuInterface
 
             lock (DelegateCacheLock)
             {
+                bool tIsFunc = returnType != typeof (void);
 
                 TypeHash tHash;
              
@@ -800,7 +849,9 @@ namespace ImpromptuInterface
                     return _delegateCache[tHash];
                 }
 
-                if (tList.Any(it => it.IsByRef) || tList.Count > 16)
+                if (tList.Any(it => it.IsByRef) 
+                    || (tIsFunc && tList.Count >= FuncKinds.Length) 
+                    || (!tIsFunc && tList.Count >= ActionKinds.Length))
                 {
                     var tType = GenerateFullDelegate(builder, methodInfo);
                     _delegateCache[tHash] = tType;
@@ -809,10 +860,10 @@ namespace ImpromptuInterface
 
 
 
-                if (returnType != typeof (void))
+                if (tIsFunc)
                     tList.Add(returnType);
 
-                var tFuncGeneric = GenericDelegateType(tList.Count, returnType == typeof (void));
+                var tFuncGeneric = GenericDelegateType(tList.Count, !tIsFunc);
 
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
@@ -880,16 +931,7 @@ namespace ImpromptuInterface
 
         private static ParameterAttributes AttributesForParam(ParameterInfo param)
         {
-            var tAttribute = ParameterAttributes.None;
-            if (param.IsIn)
-                tAttribute |= ParameterAttributes.In;
-            if (param.IsOut)
-                tAttribute |= ParameterAttributes.Out;
-            if (param.IsOptional)
-                tAttribute |= ParameterAttributes.Optional;
-            if (param.IsLcid)
-                tAttribute |= ParameterAttributes.Lcid;
-            return tAttribute;
+            return param.Attributes;
         }
 
      
@@ -922,11 +964,12 @@ namespace ImpromptuInterface
                     tName,
                     access);
 
-
+            #if !SILVERLIGHT
             if (access== AssemblyBuilderAccess.RunAndSave || access == AssemblyBuilderAccess.Save)
                 mb = ab.DefineDynamicModule("MainModule", string.Format("{0}.dll", tName.Name));
             else
-                mb = ab.DefineDynamicModule("MainModule");
+            #endif
+            mb = ab.DefineDynamicModule("MainModule");
         }
     }
     

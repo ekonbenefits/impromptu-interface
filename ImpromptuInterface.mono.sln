@@ -1,0 +1,75 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface", "ImpromptuInterface\ImpromptuInterface.csproj", "{DAB7C056-660A-4153-8FF2-B80A41310AD7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UnitTests", "UnitTests", "{983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface.SelfRunner", "UnitTestImpromptuInterface.SelfRunner\UnitTestImpromptuInterface.SelfRunner.csproj", "{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Debug|x86.Build.0 = Debug|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|x86.ActiveCfg = Release|Any CPU
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}.Release|x86.Build.0 = Release|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7}.Release|x86.ActiveCfg = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = UnitTestImpromptuInterface.SelfRunner\UnitTestImpromptuInterface.SelfRunner.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+		$0.StandardHeader = $4
+		$4.inheritsSet = Apache2License
+		$0.VersionControlPolicy = $5
+		$5.inheritsSet = Mono
+		$0.ChangeLogPolicy = $6
+		$6.UpdateMode = None
+		$6.MessageStyle = $7
+		$7.LineAlign = 0
+		$6.inheritsSet = Mono
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

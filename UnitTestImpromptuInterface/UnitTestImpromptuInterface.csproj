@@ -40,15 +40,17 @@
   <ItemGroup>
     <Compile Include="FixtureSetup.cs" />
     <Compile Include="Generics.cs" />
+    <Compile Include="Helper.cs" />
     <Compile Include="ImpromptuDynamic.cs" />
-    <Compile Include="Interfaces.cs" />
+    <Compile Include="SupportDefinitions.cs" />
     <Compile Include="Basic.cs" />
     <Compile Include="PrivateTest.cs" />
+    <Compile Include="SingleMethodInvoke.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface\ImpromtuInterface.csproj">
+    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
-      <Name>ImpromtuInterface</Name>
+      <Name>ImpromptuInterface</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

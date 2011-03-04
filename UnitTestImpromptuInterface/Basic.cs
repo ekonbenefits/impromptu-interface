@@ -13,20 +13,32 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
+using System.Collections.Generic;
 using System.Runtime.Serialization;
-using NUnit.Framework;
+using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
+
+
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#elif !MONO
+using NUnit.Framework;
+#endif
+
 namespace UnitTestImpromptuInterface
 {
-	[TestFixture()]
-	public class Basic:AssertionHelper
+
+       
+    [TestClass,TestFixture]
+	public class Basic:Helper
 	{
-	 
 
-     
 
-		[Test]
+
+         [Test,TestMethod]
         public void AnonPropertyTest()
         {
             var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
@@ -38,10 +50,10 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
         }
-		
-		
 
-        [Test]
+
+
+        [Test, TestMethod]
         public void CacheTest()
         {
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -62,8 +74,20 @@ namespace UnitTestImpromptuInterface
 
         }
 
+        [Test, TestMethod]
+        public void AnonEqualsTest()
+        {
+            var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
 
-        [Test]
+            var tActsLike = tAnon.ActLike<ISimpeleClassProps>();
+            var tActsLike2 = tAnon.ActLike<ISimpeleClassProps>();
+
+            Assert.AreEqual(tActsLike, tActsLike2);
+
+
+        }
+
+        [Test, TestMethod]
         public void ExpandoPropertyTest()
         {
           
@@ -83,7 +107,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test]
+        [Test, TestMethod]
         public void ExpandoMethodsTest()
         {
 
@@ -96,17 +120,17 @@ namespace UnitTestImpromptuInterface
 
 			
 		
-            Assert.Throws<AssertionException>(tActsLike.Action1);
-            Assert.Throws<AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
         
             Assert.AreEqual("test",tActsLike.Action3());
-			Console.Write("test");
+		
           
         }
 
+      
 
-
-        [Test]
+        [Test, TestMethod]
         public void StringPropertyTest()
         {
             var tAnon = "Test 123";
@@ -116,7 +140,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Length, tActsLike.Length);
         }
 
-        [Test]
+        [Test, TestMethod]
         public void StringMethodTest()
         {
             var tAnon = "Test 123";
@@ -125,7 +149,114 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
         }
-		
+
+        [Test, TestMethod]
+        public void InformalPropTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            var tActsLike = Impromptu.ActLikeProperties(tNew,new Dictionary<string, Type>() {{"Prop1", typeof (string)}});
+
+
+            Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
+            AssertException<RuntimeBinderException>(() => { var tTest = tActsLike.Prop2; });
+        }
+
+        [Test, TestMethod]
+        public void OverloadMethodTest()
+        {
+            var tPoco = new OverloadingMethPoco();
+            var tActsLike = tPoco.ActLike<IOverloadingMethod>();
+
+            var tValue = 1;
+            Assert.AreEqual("int", tActsLike.Func(tValue));
+            Assert.AreEqual("object", tActsLike.Func((object)tValue));
+        }
+
+        [Test, TestMethod]
+        public void OutMethodTest()
+        {
+            var tPoco = new MethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut>();
+
+            string tResult = String.Empty;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual("success", tResult);
+        }
+
+        [Test, TestMethod]
+        public void OutMethodTest2()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut>();
+
+            string tResult = "success";
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(null, tResult);
+        }
+
+        [Test, TestMethod]
+        public void OutMethodTest3()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IMethodOut2>();
+
+            int tResult = 3;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(0, tResult);
+        }
+
+        [Test, TestMethod]
+        public void GenericOutMethodTest()
+        {
+            var tPoco = new GenericMethOutPoco();
+            var tActsLike = tPoco.ActLike<IGenericMethodOut>();
+
+            int tResult = 3;
+
+            var tOut = tActsLike.Func(out tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(0, tResult);
+
+            string tResult2 = "success";
+
+            var tOut2 = tActsLike.Func(out tResult2);
+
+            Assert.AreEqual(true, tOut2);
+            Assert.AreEqual(null, tResult2);
+        }
+
+        [Test, TestMethod]
+        public void RefMethodTest()
+        {
+            var tPoco = new MethRefPoco();
+            var tActsLike = tPoco.ActLike<IMethodRef>();
+
+            int tResult = 1;
+
+            var tOut = tActsLike.Func(ref tResult);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(3, tResult);
+
+            int tResult2 = 2;
+
+            tOut = tActsLike.Func(ref tResult2);
+
+            Assert.AreEqual(true, tOut);
+            Assert.AreEqual(4, tResult2);
+        }
 	}
 }
 

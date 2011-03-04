@@ -7,3 +7,10 @@ glob:*test-results*
 glob:.DS_Store
 relre:.*\.pidb$
 relre:.*\.userprefs$
+glob:nuget/*.nupkg
+glob:nuget/ImpromptuInterface.1.2.0/lib/*
+glob:nuget/NuGet.exe
+glob:nuget/*.zip
+glob:nuget/ImpromptuInterface/lib/net40/*
+glob:*~
+glob:*/Bin/*

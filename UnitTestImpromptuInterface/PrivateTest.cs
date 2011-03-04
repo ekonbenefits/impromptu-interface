@@ -5,14 +5,20 @@ using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#elif !MONO
 using NUnit.Framework;
+#endif
 
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture]
-    public class PrivateTest : AssertionHelper
+    [TestFixture,TestClass]
+    public class PrivateTest : Helper
     {
-        [Test]
+        [Test, TestMethod]
         public void TestExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
@@ -20,12 +26,12 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(3, tExposed.Test()); 
         }
 
-        [Test]
+        [Test, TestMethod]
         public void TestDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
             var tNonExposed = this.CallActLike<IExposePrivateMethod>(tTest);
-            Assert.Throws<RuntimeBinderException>(() => tNonExposed.Test());
+            AssertException<RuntimeBinderException>(() => tNonExposed.Test());
         }
     }
 

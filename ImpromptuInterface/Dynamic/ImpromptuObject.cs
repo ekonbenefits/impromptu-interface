@@ -26,12 +26,23 @@ namespace ImpromptuInterface
     /// </summary>
     public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike
     {
+        /// <summary>
+        /// Cache to avoid refelection for same Interfaces.
+        /// </summary>
         protected static readonly IDictionary<TypeHash, IDictionary<string, Type>> _returnTypHash =
         new Dictionary<TypeHash, IDictionary<string, Type>>();
 
 
         private static readonly object TypeHashLock = new object();
+        /// <summary>
+        /// Hash for this instance to lookup cached values from <see cref="_returnTypHash"/>
+        /// </summary>
         protected TypeHash _hash;
+
+        /// <summary>
+        /// Keep Track of Known Property Spec
+        /// </summary>
+        protected IDictionary<string, Type> PropertySpec;
 
         /// <summary>
         /// Gets or sets the known interfaces.
@@ -42,13 +53,16 @@ namespace ImpromptuInterface
         {
             get
             {
-
-                return _hash.Types;
+                if (PropertySpec != null)
+                    return new Type[] {};
+                return _hash.Types.Cast<Type>();
             }
             set
             {
                 lock (TypeHashLock)
                 {
+                    PropertySpec = null;
+
                     _hash = new TypeHash(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;
 
@@ -56,8 +70,16 @@ namespace ImpromptuInterface
                         .Where(property=>property.GetGetMethod() !=null)
                         .Select(property=>new{property.Name, property.GetGetMethod().ReturnType});
 
+                    //If type can be determined by name
                     var tMethodReturnType = value.SelectMany(@interface => @interface.GetMethods())
-                      .Select(property => new { property.Name, property.ReturnType });
+                      .Where(method=>!method.IsSpecialName)
+                      .GroupBy(method=>method.Name)
+                      .Where(group=>group.Select(method=>method.ReturnType).Distinct().Count() ==1 )
+                      .Select(group => new
+                                           {
+                                               Name =group.Key,
+                                               ReturnType =group.Select(method=>method.ReturnType).Distinct().Single()
+                                           });
 
                     var tDict = tPropReturType.Concat(tMethodReturnType)
                         .ToDictionary(info => info.Name, info => info.ReturnType);
@@ -67,6 +89,22 @@ namespace ImpromptuInterface
             }
         }
 
+        /// <summary>
+        /// Gets or sets the known fake interface (string method name to return type mapping).
+        /// </summary>
+        /// <value>The known fake interface.</value>
+        public virtual IDictionary<string, Type> KnownPropertySpec
+        {
+            get { return PropertySpec; }
+            set { PropertySpec = value; }
+        }
+
+        /// <summary>
+        /// Returns the enumeration of all dynamic member names.
+        /// </summary>
+        /// <returns>
+        /// A sequence that contains dynamic member names.
+        /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return HashForThisType().Select(it => it.Key);
@@ -74,11 +112,20 @@ namespace ImpromptuInterface
 
         private IDictionary<string, Type> HashForThisType()
         {
+            if (PropertySpec != null)
+                return PropertySpec;
+
             return _hash == null || !_returnTypHash.ContainsKey(_hash)
                 ? new Dictionary<string, Type>() 
                 : _returnTypHash[_hash];
         }
 
+        /// <summary>
+        /// Tries to get the type for the property name from the interface.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="returnType">The return Type.</param>
+        /// <returns></returns>
         protected virtual bool TryTypeForName(string name, out Type returnType)
         {
             if (!HashForThisType().ContainsKey(name))
@@ -92,9 +139,26 @@ namespace ImpromptuInterface
         }
 
 
+        /// <summary>
+        /// Allows ActLike to be called via dyanmic invocation
+        /// </summary>
+        /// <typeparam name="TInterface">The type of the interface.</typeparam>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
         public virtual TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface:class
         {
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
+
+        /// <summary>
+        /// Allows ActLike to be called via dyanmic invocation
+        /// </summary>
+        /// <param name="informalInterface">The informal interface.</param>
+        /// <returns></returns>
+        public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
+        {
+            return Impromptu.ActLikeProperties(this, informalInterface);
+        }
+       
     }
 }

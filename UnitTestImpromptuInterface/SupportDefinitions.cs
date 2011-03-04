@@ -19,7 +19,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
-
+using System.Diagnostics;
 namespace UnitTestImpromptuInterface
 {
 
@@ -104,6 +104,15 @@ namespace UnitTestImpromptuInterface
 
        string Func(object arg);
     }
+	
+	public class PropPoco{
+	 	public string Prop1 { get; set; }
+
+        public long Prop2 { get; set; }
+
+        public Guid Prop3 { get;set; }
+
+	}
 
     public class OverloadingMethPoco
     {
@@ -173,4 +182,16 @@ namespace UnitTestImpromptuInterface
     {
         bool Func(ref int result);
     }
+	
+	public static class TimeIt{
+		public static Stopwatch Go(Action action, int interation =1000000){
+			var tStopwatch = new Stopwatch();
+			tStopwatch.Start();
+			for(int i=0; i < interation;i++){
+				action();	
+			}
+			tStopwatch.Stop();
+			return tStopwatch;
+		}
+	}
 }

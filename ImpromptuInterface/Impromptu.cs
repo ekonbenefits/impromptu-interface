@@ -232,12 +232,15 @@ namespace ImpromptuInterface
         public static void InvokeSet(object target, string name, object value)
         {
             var tContext = target.GetType();
-            var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.None, name,
+            var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
                                                   new[]
                                                       {
                                                           CSharp.CSharpArgumentInfo.Create(
-                                                              CSharp.CSharpArgumentInfoFlags.None, null)
+                                                              CSharp.CSharpArgumentInfoFlags.None, null),
+															CSharp.CSharpArgumentInfo.Create(
+				                                 			CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)
+				
                                                       });
 
 
@@ -290,7 +293,94 @@ namespace ImpromptuInterface
         /// </summary>
         public delegate object GetDelegate(CallSite callsite, object target);
 
+	
 
+		public static object FastDynamicInvoke(this Delegate del, params object[] args){
+			if(del.Method.ReturnType == typeof(void)){
+				
+				del.FastDynamicInvokeAction(args);
+				return null;
+			}
+			dynamic tDel =del;
+			switch(args.Length){
+				default:
+					return del.DynamicInvoke(args);
+				#region Optimization
+				case 1:
+					return tDel((dynamic)args[0]);
+			    case 2:
+				    return tDel((dynamic)args[0],(dynamic)args[1]);
+				case 3:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2]);
+				case 4:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3]);
+				case 5:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4]);
+				case 6:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5]);
+				case 7:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6]);
+				case 8:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7]);
+				case 9:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8]);
+				case 10:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9]);
+				case 11:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9],(dynamic)args[10]);
+				case 12:
+				    return tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9],(dynamic)args[10],(dynamic)args[11]);
+				#endregion
+			}
+		}
+		
+		private static void FastDynamicInvokeAction(this Delegate del, params object[] args){
+			dynamic tDel =del;
+			switch(args.Length){
+				default:
+					del.DynamicInvoke(args);
+					return;
+				#region Optimization
+				case 1:
+					 tDel((dynamic)args[0]);
+					return;
+			    case 2:
+				     tDel((dynamic)args[0],(dynamic)args[1]);
+					return;
+				case 3:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2]);
+					return;
+				case 4:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3]);
+					return;
+				case 5:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4]);
+					return;
+				case 6:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5]);
+					return;
+				case 7:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6]);
+					return;
+				case 8:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7]);
+					return;
+				case 9:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8]);
+					return;
+				case 10:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9]);
+					return;
+				case 11:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9],(dynamic)args[10]);
+					return;
+				case 12:
+				     tDel((dynamic)args[0],(dynamic)args[1],(dynamic)args[2],(dynamic)args[3],(dynamic)args[4],(dynamic)args[5],(dynamic)args[6],(dynamic)args[7],(dynamic)args[8],(dynamic)args[9],(dynamic)args[10],(dynamic)args[11]);
+					return;
+				#endregion
+			}
+		}
+		
         /// <summary>
         /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type
         /// </summary>
@@ -313,7 +403,7 @@ namespace ImpromptuInterface
 
             MulticastDelegate tDelegate = ((dynamic)callSite).Target;
 
-            return tDelegate.DynamicInvoke(tParameters.ToArray());
+            return tDelegate.FastDynamicInvoke(tParameters.ToArray());
         }
 
 

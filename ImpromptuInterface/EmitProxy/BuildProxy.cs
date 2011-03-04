@@ -29,8 +29,8 @@ namespace ImpromptuInterface
     ///</summary>
     public static class BuildProxy
     {
-        private static readonly Type[] FuncKinds;
-        private static readonly Type[] ActionKinds; 
+        internal static readonly Type[] FuncKinds;
+        internal static readonly Type[] ActionKinds; 
         static BuildProxy()
         {
             FuncKinds = new []

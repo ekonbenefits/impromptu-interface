@@ -56,7 +56,9 @@ namespace UnitTestImpromptuInterface
                 }
 
 
-            } Console.Read();
+            }
+			Console.WriteLine("Done.");
+			Console.Read();
         }
 
        

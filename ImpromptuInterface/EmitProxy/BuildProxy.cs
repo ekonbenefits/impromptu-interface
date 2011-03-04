@@ -149,10 +149,11 @@ namespace ImpromptuInterface
             lock (TypeCacheLock)
             {
                 var tNewHash = new TypeHash(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
-
-                if (!_typeHash.ContainsKey(tNewHash))
+                Type tType = null;
+                if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
-                    _typeHash[tNewHash] = BuildTypeHelper(Builder,contextType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
+                    tType = BuildTypeHelper(Builder,contextType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
+                    _typeHash[tNewHash] = tType;
                 }
 
                 return _typeHash[tNewHash];
@@ -171,10 +172,12 @@ namespace ImpromptuInterface
             lock (TypeCacheLock)
             {
                 var tNewHash = new TypeHash(contextType, informalInterface);
-
-                if (!_typeHash.ContainsKey(tNewHash))
+                Type tType = null;
+                if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
-                    _typeHash[tNewHash] = BuildTypeHelper(Builder, contextType, informalInterface);
+                    tType = BuildTypeHelper(Builder, contextType, informalInterface);
+
+                    _typeHash[tNewHash] = tType;
                 }
 
                 return _typeHash[tNewHash];
@@ -844,16 +847,17 @@ namespace ImpromptuInterface
                     tHash = new TypeHash(strictOrder: true, moreTypes: tList.Concat(new[] {returnType}).ToArray());
                 }
 
-                if (_delegateCache.ContainsKey(tHash))
+                Type tType =null;
+                if (_delegateCache.TryGetValue(tHash, out tType))
                 {
-                    return _delegateCache[tHash];
+                    return tType;
                 }
 
                 if (tList.Any(it => it.IsByRef) 
                     || (tIsFunc && tList.Count >= FuncKinds.Length) 
                     || (!tIsFunc && tList.Count >= ActionKinds.Length))
                 {
-                    var tType = GenerateFullDelegate(builder, methodInfo);
+                    tType = GenerateFullDelegate(builder, methodInfo);
                     _delegateCache[tHash] = tType;
                     return tType;
                 }

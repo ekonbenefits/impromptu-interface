@@ -44,7 +44,7 @@ namespace ImpromptuInterface
     /// </summary>
     public static class Impromptu
     {
-        private static readonly Dictionary<Tuple<Type, string, Type>, CallSite> _binderCache = new Dictionary<Tuple<Type, string, Type>, CallSite>();
+        private static readonly IDictionary<Tuple<Type, string, Type>, CallSite> _binderCache = new Dictionary<Tuple<Type, string, Type>, CallSite>();
         private static readonly object _binderCacheLock = new object();
 
 
@@ -66,11 +66,13 @@ namespace ImpromptuInterface
             var tHash = Tuple.Create(delegateType, name, context);
             lock (_binderCacheLock)
             {
-                if (!_binderCache.ContainsKey(tHash))
+                CallSite tOut = null;
+                if (!_binderCache.TryGetValue(tHash, out tOut))
                 {
-                    _binderCache[tHash] = CallSite.Create(delegateType, binder);
+                    tOut = CallSite.Create(delegateType, binder);
+                    _binderCache[tHash] = tOut;
                 }
-                return _binderCache[tHash];
+                return tOut;
             }
         }
 
@@ -116,11 +118,13 @@ namespace ImpromptuInterface
             var tHash = Tuple.Create(typeof(T), name, context);
             lock (_binderCacheLock)
             {
-                if (!_binderCache.ContainsKey(tHash))
+                CallSite tOut = null;
+                if (!_binderCache.TryGetValue(tHash, out tOut))
                 {
-                    _binderCache[tHash] = CallSite<T>.Create(binder);
+                    tOut = CallSite<T>.Create(binder);
+                   _binderCache[tHash] = tOut;
                 }
-                return (CallSite<T>)_binderCache[tHash];
+                return (CallSite<T>)tOut;
             }
         }
 
@@ -192,12 +196,17 @@ namespace ImpromptuInterface
         {
             var tArgTypes = args.Select(it => it.GetType()).ToArray();
 
+
+            var tArgs = new List<CSharp.CSharpArgumentInfo>()
+                            {
+                                CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
+                            };
+            tArgs.AddRange(args.Select(
+                it =>
+                CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)));
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
-                                       tContext,
-                                       new[] { CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null) }.Concat(args.Select(
-                                           it =>
-                                           CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
+                                       tContext,tArgs);
 
 
    
@@ -234,7 +243,7 @@ namespace ImpromptuInterface
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
-                                                  new[]
+                                                  new List<CSharp.CSharpArgumentInfo>()
                                                       {
                                                           CSharp.CSharpArgumentInfo.Create(
                                                               CSharp.CSharpArgumentInfoFlags.None, null),
@@ -278,7 +287,7 @@ namespace ImpromptuInterface
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
                                                   tContext,
-                                                  new[]
+                                                  new List<CSharp.CSharpArgumentInfo>()
                                                       {
                                                           CSharp.CSharpArgumentInfo.Create(
                                                               CSharp.CSharpArgumentInfoFlags.None, null)

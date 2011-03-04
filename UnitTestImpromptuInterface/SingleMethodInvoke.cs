@@ -70,11 +70,13 @@ namespace UnitTestImpromptuInterface
 
             var tSetValue = "1";
 			
-			var tWatch =TimeIt.Go(()=>{ Impromptu.InvokeSet(tPoco, "Prop1",tSetValue);}, 50000);
-			var tWatch2 =TimeIt.Go(()=>{tPoco.GetType().GetProperty("Prop1").SetValue(tPoco,tSetValue,new object[]{});}, 50000);
+			var tWatch =TimeIt.Go(()=> Impromptu.InvokeSet(tPoco, "Prop1",tSetValue), 500000);
+			var tWatch2 =TimeIt.Go(()=> tPoco.GetType().GetProperty("Prop1").SetValue(tPoco,tSetValue,new object[]{}), 500000);
 
 		    Console.WriteLine("Impromptu: "+ tWatch.Elapsed);
 			Console.WriteLine("Refelection: "+ tWatch2.Elapsed);
+
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
         [Test, TestMethod]
@@ -102,12 +104,13 @@ namespace UnitTestImpromptuInterface
 
             
 			
-			var tWatch =TimeIt.Go(()=>{var tOut = Impromptu.InvokeGet(tAnon, "Test");}, 50000);
-			var tWatch2 =TimeIt.Go(()=>{var tOut = tAnon.GetType().GetProperty("Test").GetValue(tAnon,null);}, 50000);
+			var tWatch =TimeIt.Go(()=>{var tOut = Impromptu.InvokeGet(tAnon, "Test");}, 500000);
+			var tWatch2 =TimeIt.Go(()=>{var tOut = tAnon.GetType().GetProperty("Test").GetValue(tAnon,null);}, 500000);
 
-		Console.WriteLine("Impromptu: "+ tWatch.Elapsed);
+		    Console.WriteLine("Impromptu: "+ tWatch.Elapsed);
 			Console.WriteLine("Refelection: "+ tWatch2.Elapsed);
            
+           Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
 
@@ -226,12 +229,12 @@ namespace UnitTestImpromptuInterface
 
             
 			
-			var tWatch =TimeIt.Go(()=>{var tOut = Impromptu.InvokeMember(tValue, "ToString");}, 50000);
-			var tWatch2 =TimeIt.Go(()=>{var tOut = tValue.GetType().GetMethod("ToString",new Type[]{}).Invoke(tValue,new object[]{});}, 50000);
+			var tWatch =TimeIt.Go(()=>{var tOut = Impromptu.InvokeMember(tValue, "ToString");}, 500000);
+			var tWatch2 =TimeIt.Go(()=>{var tOut = tValue.GetType().GetMethod("ToString",new Type[]{}).Invoke(tValue,new object[]{});}, 500000);
 
 		Console.WriteLine("Impromptu: "+ tWatch.Elapsed);
 			Console.WriteLine("Refelection: "+ tWatch2.Elapsed);
-           
+           Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
         [Test, TestMethod]
@@ -282,7 +285,7 @@ namespace UnitTestImpromptuInterface
 
 			Console.WriteLine(tStopWatch1.Elapsed);
 			Console.WriteLine(tStopWatch2.Elapsed);
-
+            Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
 		}
 		
 		[Test, TestMethod]
@@ -294,7 +297,7 @@ namespace UnitTestImpromptuInterface
 
 			Console.WriteLine("Impromptu: "+ tStopWatch1.Elapsed);
 			Console.WriteLine("Refelection: "+ tStopWatch2.Elapsed);
-
+            Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
 		}
     }
 }

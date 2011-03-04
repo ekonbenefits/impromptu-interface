@@ -828,6 +828,9 @@ namespace ImpromptuInterface
         /// <returns></returns>
         internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
         {
+            bool tIsFunc = returnType != typeof(void);
+
+
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
             tList.AddRange(argTypes.Select(it => !it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any() ? typeof(object) : it));
 
@@ -835,7 +838,7 @@ namespace ImpromptuInterface
 
             lock (DelegateCacheLock)
             {
-                bool tIsFunc = returnType != typeof (void);
+               
 
                 TypeHash tHash;
              

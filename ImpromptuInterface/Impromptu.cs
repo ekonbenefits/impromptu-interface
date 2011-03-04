@@ -240,6 +240,11 @@ namespace ImpromptuInterface
         /// </example>
         public static void InvokeSet(object target, string name, object value)
         {
+            InvokeSetHelper(target, name, (dynamic) value);
+        }
+
+        private static void InvokeSetHelper<T>(object target, string name, T  value)
+        {
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
@@ -252,15 +257,9 @@ namespace ImpromptuInterface
 				
                                                       });
 
-
-            var tList = new [] { value.GetType()};
-
-
-            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tList, typeof(void));
-
-            Invoke(CreateCallSite(tDelagateType, tBinder, name, tContext), target, value);
+            var tCallSite = CreateCallSite<Action<CallSite, object, T>>(tBinder, name, tContext);
+            tCallSite.Target.Invoke(tCallSite, target, value);
         }
-
 
 
         /// <summary>

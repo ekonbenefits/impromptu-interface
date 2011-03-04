@@ -75,8 +75,6 @@ namespace ImpromptuInterface
         /// </returns>
         public override int GetHashCode()
         {
-          
-
             unchecked
             {
                 var tReturn = Types.Aggregate(1, (current, type) => (current * 397) ^ type.GetHashCode());
@@ -125,7 +123,13 @@ namespace ImpromptuInterface
         /// Initializes a new instance of the <see cref="TypeHash"/> class.
         /// </summary>
         /// <param name="moreTypes">The more types.</param>
-        public TypeHash(IEnumerable<Type> moreTypes):this(false,moreTypes.ToArray())
+        private TypeHash(IEnumerable<Type> moreTypes)
+            :this(false,moreTypes.ToArray())
+        {
+          
+        }
+
+        private TypeHash()
         {
           
         }
@@ -136,18 +140,22 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="type1">The type1.</param>
         /// <param name="moreTypes">The more types.</param>
-        public TypeHash(Type type1, params Type[] moreTypes)
+        private TypeHash(Type type1, params Type[] moreTypes)
+            :this()
         {
             Types = new[] { type1 }.Concat(moreTypes.OrderBy(it => it.Name)).ToArray();
             InformalInterface = null;
         }
+
+       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TypeHash"/> class.
         /// </summary>
         /// <param name="type1">The type1.</param>
         /// <param name="informalInterface">The informal interface.</param>
-        public TypeHash(Type type1, IDictionary<string, Type> informalInterface)
+        private TypeHash(Type type1, IDictionary<string, Type> informalInterface)
+            : this()
         {
             Types = new[] {type1};
             InformalInterface = informalInterface;
@@ -158,18 +166,31 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="strictOrder">if set to <c>true</c> [strict order].</param>
         /// <param name="moreTypes">types.</param>
-        public TypeHash(bool strictOrder, params MemberInfo[] moreTypes)
+        private TypeHash(bool strictOrder, params MemberInfo[] moreTypes):this()
         {
-            if (strictOrder)
-            {
-                Types = moreTypes;
-            }
-            else
-            {
-                Types = moreTypes.OrderBy(it => it.Name).ToArray();
-            }
+            Types = strictOrder 
+                ? moreTypes 
+                : moreTypes.OrderBy(it => it.Name).ToArray();
+        }
 
+        public static TypeHash Create(IEnumerable<Type> moreTypes)
+        {
+            return new TypeHash(moreTypes);
+        }
 
+        public static TypeHash Create(Type type1, params Type[] moreTypes)
+        {
+            return new TypeHash(type1, moreTypes);
+        }
+
+        public static TypeHash Create(Type type1, IDictionary<string, Type> informalInterface)
+        {
+            return new TypeHash(type1, informalInterface);
+        }
+
+        public static TypeHash Create(bool strictOrder, params MemberInfo[] moreTypes)
+        {
+            return new TypeHash(strictOrder, moreTypes);
         }
     }
 }

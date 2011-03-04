@@ -148,7 +148,7 @@ namespace ImpromptuInterface
         {
             lock (TypeCacheLock)
             {
-                var tNewHash = new TypeHash(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
+                var tNewHash = TypeHash.Create(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
                 Type tType = null;
                 if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
@@ -171,7 +171,7 @@ namespace ImpromptuInterface
         {
             lock (TypeCacheLock)
             {
-                var tNewHash = new TypeHash(contextType, informalInterface);
+                var tNewHash = TypeHash.Create(contextType, informalInterface);
                 Type tType = null;
                 if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
@@ -213,7 +213,7 @@ namespace ImpromptuInterface
 
             lock (TypeCacheLock)
             {
-                var tNewHash = new TypeHash(attribute.Context, attribute.Interfaces);
+                var tNewHash = TypeHash.Create(attribute.Context, attribute.Interfaces);
 
                 if (!_typeHash.ContainsKey(tNewHash))
                 {
@@ -844,10 +844,10 @@ namespace ImpromptuInterface
              
                 if (tList.Any(it => it.IsByRef) || tList.Count > 16)
                 {
-                    tHash = new TypeHash(strictOrder: true, moreTypes: methodInfo);
+                    tHash = TypeHash.Create(strictOrder: true, moreTypes: methodInfo);
                 }else
                 {
-                    tHash = new TypeHash(strictOrder: true, moreTypes: tList.Concat(new[] {returnType}).ToArray());
+                    tHash = TypeHash.Create(strictOrder: true, moreTypes: tList.Concat(new[] {returnType}).ToArray());
                 }
 
                 Type tType =null;

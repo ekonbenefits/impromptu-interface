@@ -63,7 +63,7 @@ namespace ImpromptuInterface
                 {
                     PropertySpec = null;
 
-                    _hash = new TypeHash(value);
+                    _hash = TypeHash.Create(value);
                     if (_returnTypHash.ContainsKey(_hash)) return;
 
                     var tPropReturType = value.SelectMany(@interface => @interface.GetProperties())

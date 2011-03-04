@@ -49,6 +49,7 @@ namespace ImpromptuInterface
                 return InformalInterface.SequenceEqual(other.InformalInterface);
             }
 
+
             return Types.SequenceEqual(other.Types);
         }
 

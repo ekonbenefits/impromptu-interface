@@ -92,7 +92,14 @@ namespace UnitTestImpromptuInterface
                 return;
             if(expected ==null || !expected.Equals(actual))
                 FailExpected(expected, actual);
-        }       
+        } 
+		
+		   public void Less(dynamic smaller, dynamic larger)
+        { 
+         
+            if(smaller > larger)
+                FailLess(smaller, larger);
+        }   
       
 
         public void IsFalse(bool actual)
@@ -111,6 +118,10 @@ namespace UnitTestImpromptuInterface
         private static void FailExpected(object expected, object actual)
         {
             throw new AssertionException(String.Format("Expected {0} instead got {1}", expected,actual));
+        }
+		 private static void FailLess(object expected, object actual)
+        {
+            throw new AssertionException(String.Format("Expected {0} to be less {1}", expected,actual));
         }
 
         public void Fail(string message)

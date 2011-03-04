@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
 #elif !MONO
-using ImpromptuInterface;
 using NUnit.Framework;
 #endif
 

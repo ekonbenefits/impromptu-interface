@@ -15,3 +15,4 @@ glob:nuget/ImpromptuInterface/lib/net40/*
 glob:*~
 glob:*/Bin/*
 glob:speed/*
+glob:*.orig

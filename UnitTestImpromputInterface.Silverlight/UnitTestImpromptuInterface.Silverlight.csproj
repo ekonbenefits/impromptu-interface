@@ -103,6 +103,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\SingleMethodInvoke.cs">
       <Link>SingleMethodInvoke.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\SpeedTest.cs">
+      <Link>SpeedTest.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\SupportDefinitions.cs">
       <Link>SupportDefinitions.cs</Link>
     </Compile>

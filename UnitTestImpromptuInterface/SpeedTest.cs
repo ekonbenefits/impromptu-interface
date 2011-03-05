@@ -34,7 +34,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-
+        
         [Test, TestMethod]
         public void TestPropStaticGetValueTimed()
         {

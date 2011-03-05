@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Test =Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestImpromptuInterface
 {
@@ -22,9 +22,57 @@ namespace UnitTestImpromptuInterface
     
     }
 
+    public class AssertHelp
+    {
+        public void AreEqual(dynamic expected, dynamic actual)
+        {
+            Test.Assert.AreEqual(expected,expected);
+        }
+
+        public void Less(dynamic smaller, dynamic larger)
+        {
+
+            if (smaller > larger)
+                Test.Assert.Fail("{0} is expected to be less than {1}", smaller, larger);
+        }
+
+
+        public void IsFalse(bool actual)
+        {
+            Test.Assert.IsFalse(actual);
+        }
+
+        public void Fail()
+        {
+            Test.Assert.Fail();
+        }
+    }
+
+    public class Stopwatch
+    {
+        private DateTime StartDate;
+        private DateTime EndDate;
+
+        public void Start()
+        {
+            StartDate = DateTime.Now;
+        }
+
+        public void Stop()
+        {
+            EndDate = DateTime.Now;
+        }
+        public TimeSpan Elapsed
+        {
+            get { return EndDate - StartDate; }
+        }
+    }
 
     public class Helper
     {
+        public AssertHelp Assert{get{return new AssertHelp();}}
+
+
         public void AssertException<T>(Action action) where T:Exception
         {
             var tSuccess = false;
@@ -43,7 +91,7 @@ namespace UnitTestImpromptuInterface
                 tEc = ex;
             }
 
-            Assert.IsTrue(tSuccess,"Expected Exception {0} instead of {1}",
+            Test.Assert.IsTrue(tSuccess,"Expected Exception {0} instead of {1}",
                 typeof(T).ToString(),
                 tEc ==null ? "No Exception" : tEc.GetType().ToString() );
         }

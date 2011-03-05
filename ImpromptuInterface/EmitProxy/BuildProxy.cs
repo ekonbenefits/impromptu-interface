@@ -830,22 +830,20 @@ namespace ImpromptuInterface
         {
             bool tIsFunc = returnType != typeof(void);
             Type[] tNewArray;
-            
-            tNewArray = new Type[argTypes.Length + 3];
+            if (tIsFunc)
+            {
+                tNewArray = new Type[argTypes.Length + 3];
+            }
+            else
+            {
+                tNewArray = new Type[argTypes.Length + 2]; 
+            }
 
-            tNewArray[0] = typeof(CallSite);
-            tNewArray[1] = typeof(object);
-			for(int i = 0; i < argTypes.Length; i++){
-				var it =argTypes[i];
-				tNewArray[i+2] = !it.IsGenericParameter 
-								  && it.IsGenericType
-								  && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any()
-									? typeof(object) 
-								    : it;
-			}
-			var tReturnTypeIndex = argTypes.Length +2;
+            tNewArray[0] = typeof (CallSite);
+            tNewArray[1] = typeof(CallSite);
+            var tList = new List<Type> { typeof(CallSite), typeof(object) };
+            tList.AddRange(argTypes.Select(it => !it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any() ? typeof(object) : it));
 
-			tNewArray[tReturnTypeIndex] = returnType;
             
 
             lock (DelegateCacheLock)
@@ -854,12 +852,12 @@ namespace ImpromptuInterface
 
                 TypeHash tHash;
              
-                if (tNewArray.Any(it => it.IsByRef) || tNewArray.Length > 16)
+                if (tList.Any(it => it.IsByRef) || tList.Count > 16)
                 {
                     tHash = TypeHash.Create(strictOrder: true, moreTypes: methodInfo);
                 }else
                 {
-                    tHash = TypeHash.Create(strictOrder: true, moreTypes: tNewArray);
+                    tHash = TypeHash.Create(strictOrder: true, moreTypes: tList.Concat(new[] {returnType}).ToArray());
                 }
 
                 Type tType =null;
@@ -868,9 +866,9 @@ namespace ImpromptuInterface
                     return tType;
                 }
 
-                if (tNewArray.Any(it => it.IsByRef) 
-                    || (tIsFunc && tNewArray.Length >= FuncKinds.Length) 
-                    || (!tIsFunc && tNewArray.Length >= ActionKinds.Length))
+                if (tList.Any(it => it.IsByRef) 
+                    || (tIsFunc && tList.Count >= FuncKinds.Length) 
+                    || (!tIsFunc && tList.Count >= ActionKinds.Length))
                 {
                     tType = GenerateFullDelegate(builder, methodInfo);
                     _delegateCache[tHash] = tType;
@@ -879,16 +877,13 @@ namespace ImpromptuInterface
 
 
 
-                if (!tIsFunc){
-					var tNewArray2= new Type[tReturnTypeIndex];
-                    Array.Copy(tNewArray,tNewArray2,tReturnTypeIndex);
-					tNewArray = tNewArray2;
-				}
+                if (tIsFunc)
+                    tList.Add(returnType);
 
-                var tFuncGeneric = GenericDelegateType(tNewArray.Length, !tIsFunc);
+                var tFuncGeneric = GenericDelegateType(tList.Count, !tIsFunc);
 
 
-                var tFuncType = tFuncGeneric.MakeGenericType(tNewArray);
+                var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());
 
                 _delegateCache[tHash] = tFuncType;
 

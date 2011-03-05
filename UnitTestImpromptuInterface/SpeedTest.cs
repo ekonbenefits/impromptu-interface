@@ -79,7 +79,7 @@ namespace UnitTestImpromptuInterface
         {
 
 
-            var tValue = new Hashtable();
+            var tValue = new Dictionary<object,object>();
 
 
 

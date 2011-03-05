@@ -154,7 +154,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Fluent class for writing inline lambdas that return void
     /// </summary>
-    public static class Void
+    public static class ReturnVoid
     {   /// <summary>
         /// Arguments
         /// </summary>

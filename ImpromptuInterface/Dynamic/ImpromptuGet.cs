@@ -37,7 +37,10 @@ namespace ImpromptuInterface.Dynamic
         {
             return new ImpromptuGet(target).ActLike<T>();
         }
-
+        public static dynamic Create(object target)
+        {
+            return new ImpromptuGet(target);
+        }
         /// <summary>
         /// Provides the implementation for operations that get member values. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as getting a value for a property.
         /// </summary>

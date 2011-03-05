@@ -226,13 +226,17 @@ namespace UnitTestImpromptuInterface
         {
             var tInterface = ImpromptuGet.Create<ICollection>(new
                                                                   {
-                                                                     CopyArray = ReturnVoid.Arguments<Array,int>((ar,i) => throw new NotSupportedException()),
+                                                                     CopyArray = ReturnVoid.Arguments<Array,int>((ar,i) => Enumerable.Range(1,10)),
                                                                      Count =  10,
                                                                      IsSynchronized = false,
-                                                                     object SyncRoot = this,
-
-
+                                                                     SyncRoot = this,
+                                                                     GetEnumerator = Return<IEnumerator>.Arguments(()=>Enumerable.Range(1, 10).GetEnumerator())
                                                                   });
+
+            Assert.AreEqual(10, tInterface.Count);
+            Assert.AreEqual(false, tInterface.IsSynchronized);
+            Assert.AreEqual(this, tInterface.SyncRoot);
+            Assert.AreEqual(true,tInterface.GetEnumerator().MoveNext());
         }
     }
 }

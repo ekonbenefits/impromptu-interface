@@ -92,6 +92,9 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambda.cs">
+      <Link>Dynamic\InlineLambda.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxy.cs">
       <Link>EmitProxy\ActLikeProxy.cs</Link>
     </Compile>

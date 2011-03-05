@@ -60,6 +60,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Dynamic\ImpromptuGet.cs" />
+    <Compile Include="Dynamic\InlineLambda.cs" />
     <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
     <Compile Include="Impromptu.cs" />
     <Compile Include="Dynamic\ImpromptuDictionary.cs" />

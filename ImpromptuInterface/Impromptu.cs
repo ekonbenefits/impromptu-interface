@@ -218,7 +218,7 @@ namespace ImpromptuInterface
 			 
 				var tSwitch =args.Length;
 				var tArgTypes = args.Select(it => (Type)it.GetType()).ToArray();
-				if(tArgTypes.Any(it=>!it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute),false).Any())){
+				if(tArgTypes.Any(it=>it.IsNotPublic)){
 					tSwitch = int.MaxValue;
 				}
 				switch(tSwitch){
@@ -250,7 +250,7 @@ namespace ImpromptuInterface
 				
 				var tSwitch =args.Length;
 				var tArgTypes = args.Select(it => (Type)it.GetType()).ToArray();
-				if(tArgTypes.Any(it=>!it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute),false).Any())){
+				if(tArgTypes.Any(it=>it.IsNotPublic)){
 					tSwitch = int.MaxValue;
 				}
 				switch(tSwitch){

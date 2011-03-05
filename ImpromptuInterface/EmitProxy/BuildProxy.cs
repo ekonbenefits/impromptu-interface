@@ -832,7 +832,7 @@ namespace ImpromptuInterface
 
 
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
-            tList.AddRange(argTypes.Select(it => !it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any() ? typeof(object) : it));
+            tList.AddRange(argTypes.Select(it => it.IsNotPublic ? typeof(object) : it));
 
             
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,7 +35,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-
+        
         [Test, TestMethod]
         public void TestPropStaticGetValueTimed()
         {
@@ -67,6 +68,23 @@ namespace UnitTestImpromptuInterface
 
             var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "ToString"); }, 500000);
             var tWatch2 = TimeIt.Go(() => { var tOut = tValue.GetType().GetMethod("ToString", new Type[] { }).Invoke(tValue, new object[] { }); }, 500000);
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticVoidTimed()
+        {
+
+
+            var tValue = new Dictionary<object,object>();
+
+
+
+            var tWatch = TimeIt.Go(() => Impromptu.InvokeMemberAction(tValue, "Clear"), 500000);
+            var tWatch2 = TimeIt.Go(() => tValue.GetType().GetMethod("Clear", new Type[] { }).Invoke(tValue, new object[] { }), 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);

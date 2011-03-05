@@ -92,6 +92,9 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambda.cs">
+      <Link>Dynamic\InlineLambda.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxy.cs">
       <Link>EmitProxy\ActLikeProxy.cs</Link>
     </Compile>
@@ -109,6 +112,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\Impromptu.cs">
       <Link>Impromptu.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper.cs">
+      <Link>Optimization\InvokeHelper.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
@@ -136,6 +142,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

@@ -125,7 +125,7 @@ namespace ImpromptuInterface.Dynamic
                 {
                     try
                     {
-                        result = tFunc.DynamicInvoke(args);
+                        result = tFunc.FastDynamicInvoke(args);
                     }
                     catch (TargetInvocationException ex)
                     {

@@ -28,6 +28,20 @@ namespace ImpromptuInterface.Dynamic
         }
 
         /// <summary>
+        /// Creates the proxy over the specified target.
+        /// </summary>
+        /// <typeparam name="T">Interface</typeparam>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public static T Create<T>(object target) where T : class
+        {
+            return new ImpromptuGet(target).ActLike<T>();
+        }
+        public static dynamic Create(object target)
+        {
+            return new ImpromptuGet(target);
+        }
+        /// <summary>
         /// Provides the implementation for operations that get member values. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as getting a value for a property.
         /// </summary>
         /// <param name="binder">Provides information about the object that called the dynamic operation. The binder.Name property provides the name of the member on which the dynamic operation is performed. For example, for the Console.WriteLine(sampleObject.SampleProperty) statement, where sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, binder.Name returns "SampleProperty". The binder.IgnoreCase property specifies whether the member name is case-sensitive.</param>
@@ -51,7 +65,7 @@ namespace ImpromptuInterface.Dynamic
 
             try
             {
-                result = tDel.DynamicInvoke(args);
+                result = tDel.FastDynamicInvoke(args);
             }
             catch (TargetInvocationException ex)
             {
@@ -63,25 +77,4 @@ namespace ImpromptuInterface.Dynamic
         }
     }
 
-    public static class Return<TR>
-    {
-        public static Func<TR> Arguments(Func<TR> del)
-        {
-            return del;
-        }
-
-        public static Func<T1, TR> Arguments<T1>(Func<T1, TR> del)
-        {
-            return del;
-        }
-
-    }
-
-    public static class Void
-    {
-        public static Action Arguments(Action del)
-        {
-            return del;
-        }
-    }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -195,6 +196,47 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tDynamic, tDictionary);
 
             Assert.AreEqual(tNotDynamic, tDictionary);
+        }
+
+        [TestMethod,Test]
+        public void DynamicAnnonymousWrapper()
+        {
+            var tData = new Dictionary<int, string> {{1, "test"}};
+            var tDyn = ImpromptuGet.Create(new
+                                               {
+                                                   Test1 = 1,
+                                                   Test2 = "2",
+                                                   IsGreaterThan5 = Return<bool>.Arguments<int>(it => it > 5),
+                                                   ClearData = ReturnVoid.Arguments(() => tData.Clear())
+                                               });
+
+            Assert.AreEqual(1,tDyn.Test1);
+            Assert.AreEqual("2", tDyn.Test2);
+            Assert.AreEqual(true, tDyn.IsGreaterThan5(6));
+            Assert.AreEqual(false, tDyn.IsGreaterThan5(4));
+
+            Assert.AreEqual(1, tData.Count);
+            tDyn.ClearData();
+            Assert.AreEqual(0, tData.Count);
+
+        }   
+
+        [Test, TestMethod]
+        public void TestAnonInterface()
+        {
+            var tInterface = ImpromptuGet.Create<ICollection>(new
+                                                                  {
+                                                                     CopyArray = ReturnVoid.Arguments<Array,int>((ar,i) => Enumerable.Range(1,10)),
+                                                                     Count =  10,
+                                                                     IsSynchronized = false,
+                                                                     SyncRoot = this,
+                                                                     GetEnumerator = Return<IEnumerator>.Arguments(()=>Enumerable.Range(1, 10).GetEnumerator())
+                                                                  });
+
+            Assert.AreEqual(10, tInterface.Count);
+            Assert.AreEqual(false, tInterface.IsSynchronized);
+            Assert.AreEqual(this, tInterface.SyncRoot);
+            Assert.AreEqual(true,tInterface.GetEnumerator().MoveNext());
         }
     }
 }

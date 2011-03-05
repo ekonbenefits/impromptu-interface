@@ -790,7 +790,7 @@ namespace ImpromptuInterface
             return type;
         }
 
-        private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, Type[] argTypes, MethodInfo info)
+        private static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, string name, Type returnType, IEnumerable<Type> argTypes, MethodInfo info)
         {
             Type tFuncType = GenerateCallSiteFuncType(argTypes, returnType, info, builder);
             Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
@@ -826,23 +826,13 @@ namespace ImpromptuInterface
         /// <param name="methodInfo">The method info. Required for reference types or delegates with more than 16 arguments.</param>
         /// <param name="builder">The Type Builder. Required for reference types or delegates with more than 16 arguments.</param>
         /// <returns></returns>
-        internal static Type GenerateCallSiteFuncType(Type[] argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
+        internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
         {
             bool tIsFunc = returnType != typeof(void);
-            Type[] tNewArray;
-            if (tIsFunc)
-            {
-                tNewArray = new Type[argTypes.Length + 3];
-            }
-            else
-            {
-                tNewArray = new Type[argTypes.Length + 2]; 
-            }
 
-            tNewArray[0] = typeof (CallSite);
-            tNewArray[1] = typeof(CallSite);
+
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
-            tList.AddRange(argTypes.Select(it => !it.IsGenericParameter && it.IsGenericType && it.GetCustomAttributes(typeof(CompilerGeneratedAttribute), false).Any() ? typeof(object) : it));
+            tList.AddRange(argTypes.Select(it => it.IsNotPublic ? typeof(object) : it));
 
             
 

@@ -153,7 +153,6 @@ namespace ImpromptuInterface
         /// </example>
         public static dynamic InvokeMember(object target, string name, params object[] args)
         {
-            var tArgTypes = args.Select(it => it.GetType()).ToArray();
 
             var tContext = target.GetType();
             var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
@@ -163,9 +162,7 @@ namespace ImpromptuInterface
                                            CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null))));
 
 
-            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
-
-            return Invoke(CreateCallSite(tDelagateType, tBinder, name, tContext), target, args);
+            return InvokeHelper.InvokeMember(tBinder,name,tContext,target,args);
         }
 
 
@@ -194,7 +191,6 @@ namespace ImpromptuInterface
         /// </example>
         public static void InvokeMemberAction(object target, string name, params object[] args)
         {
-            var tArgTypes = args.Select(it => it.GetType()).ToArray();
 
 
             var tArgs = new List<CSharp.CSharpArgumentInfo>()
@@ -208,15 +204,148 @@ namespace ImpromptuInterface
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
                                        tContext,tArgs);
 
+			
+   			InvokeHelper.InvokeMemberAction(tBinder, name, tContext,target, args);
 
-   
-
-            var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-
-            Invoke(CreateCallSite(tDelagateType, tBinder, name, tContext), target, args);
+        
         }
+		internal static class InvokeHelper{
+		
+			internal static void InvokeMemberAction(CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target, params dynamic[] args){
+			 
+				var tSwitch =args.Length;
+				var tArgTypes = args.Select(it => (Type)it.GetType()).ToArray();
+				if(tArgTypes.Any(it=>it.IsNotPublic)){
+					tSwitch = int.MaxValue;
+				}
+				switch(tSwitch){
+					case 0:
+						InvokeHelper.InvokeMemberActionHelper(binder,name,context,target);
+						break;
+					case 1:
+						InvokeHelper.InvokeMemberActionHelper(binder,name,context,target, args[0]);
+						break;
+					case 2:
+						InvokeHelper.InvokeMemberActionHelper(binder,name,context,target, args[0], args[1]);
+						break;
+					case 3:
+						InvokeHelper.InvokeMemberActionHelper(binder,name,context,target, args[0], args[1],args[2]);
+						break;
+					default:
 
+					    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
+            			Invoke(CreateCallSite(tDelagateType, binder, name, context), target, args);
+						break;
+					
+				}
+			}
+			
+				internal static object InvokeMember(CallSiteBinder binder, 
+			                                     	string name, 
+			                                      Type context,
+			                                      object target, params dynamic[] args){
+				
+				var tSwitch =args.Length;
+				var tArgTypes = args.Select(it => (Type)it.GetType()).ToArray();
+				if(tArgTypes.Any(it=>it.IsNotPublic)){
+					tSwitch = int.MaxValue;
+				}
+				switch(tSwitch){
+					case 0:
+						return InvokeHelper.InvokeMemberHelper(binder,name,context,target);
+					case 1:
+						return InvokeHelper.InvokeMemberHelper(binder,name,context,target, args[0]);
+					case 2:
+						return InvokeHelper.InvokeMemberHelper(binder,name,context,target, args[0], args[1]);
+					case 3:
+						return InvokeHelper.InvokeMemberHelper(binder,name,context,target, args[0], args[1],args[2]);
+					default:
 
+					    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
+            			return Invoke(CreateCallSite(tDelagateType, binder, name, context), target, args);
+					
+				}
+			}
+			
+			
+			private static void InvokeMemberActionHelper(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target){
+				
+				var tCallSite = CreateCallSite<Action<CallSite, object>>(binder, name, context);
+	            tCallSite.Target.Invoke(tCallSite, target);
+			}
+			private static void InvokeMemberActionHelper<T1>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target, T1 arg1){
+				
+				var tCallSite = CreateCallSite<Action<CallSite, object, T1>>(binder, name, context);
+	            tCallSite.Target.Invoke(tCallSite, target, arg1);
+			}
+			private static void InvokeMemberActionHelper<T1,T2>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target,  T1 arg1, T2 arg2){
+				
+				var tCallSite = CreateCallSite<Action<CallSite, object, T1,T2>>(binder, name, context);
+	            tCallSite.Target.Invoke(tCallSite, target,arg1,arg2);
+			}
+			private static void InvokeMemberActionHelper<T1,T2, T3>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target,  T1 arg1, T2 arg2, T3 arg3){
+				
+				var tCallSite = CreateCallSite<Action<CallSite, object, T1,T2, T3>>(binder, name, context);
+	            tCallSite.Target.Invoke(tCallSite, target, arg1,arg2, arg3);
+			}
+			
+			
+			private static object InvokeMemberHelper(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target){
+				
+				var tCallSite = CreateCallSite<Func<CallSite, object, object>>(binder, name, context);
+	            return tCallSite.Target.Invoke(tCallSite, target);
+			}
+			private static object InvokeMemberHelper<T1>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target, T1 arg1){
+				
+				var tCallSite = CreateCallSite<Func<CallSite, object, T1,object>>(binder, name, context);
+	            return tCallSite.Target.Invoke(tCallSite, target, arg1);
+			}
+			private static object InvokeMemberHelper<T1,T2>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target, T1 arg1, T2 arg2){
+				
+				var tCallSite = CreateCallSite<Func<CallSite, object, T1,T2, object>>(binder, name, context);
+	            return tCallSite.Target.Invoke(tCallSite, target, arg1,arg2);
+			}
+			private static object InvokeMemberHelper<T1,T2, T3>(
+			                                           	CallSiteBinder binder, 
+			                                           	string name, 
+			                                            Type context,
+			                                            object target, T1 arg1, T2 arg2, T3 arg3){
+				
+				var tCallSite = CreateCallSite<Func<CallSite, object, T1,T2,T3, object>>(binder, name, context);
+	            return tCallSite.Target.Invoke(tCallSite, target, arg1,arg2, arg3);
+			}
+		}
 
         /// <summary>
         /// Dynamically Invokes a set member using the DLR.

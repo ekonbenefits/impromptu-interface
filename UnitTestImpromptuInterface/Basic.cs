@@ -24,7 +24,7 @@ using System.Dynamic;
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !MONO
+#elif !SELFRUNNER
 using NUnit.Framework;
 #endif
 

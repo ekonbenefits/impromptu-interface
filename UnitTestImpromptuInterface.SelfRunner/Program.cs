@@ -10,11 +10,15 @@ namespace UnitTestImpromptuInterface
     {
         static void Main(string[] args)
         {
-
+			var hashset = new HashSet<string>(args);
+			var tSuccess=0;
+			var tFailed =0;
             var tTypes =
                 Assembly.GetAssembly(typeof (Program)).GetTypes()
                     .Where(it => it.GetCustomAttributes(typeof (TestFixtureAttribute), false).Any());
 
+			Console.WriteLine("Press a key to start.");
+			Console.Read();
             foreach (var tType in tTypes)
             {
                 Console.WriteLine(tType.Name);
@@ -23,14 +27,18 @@ namespace UnitTestImpromptuInterface
                 foreach (var tMethod in tMethods)
                 {
                     var tObj = Activator.CreateInstance(tType);
+                  	if(hashset.Any() && !hashset.Contains(String.Format("{0}.{1}",tType.Name,tMethod.Name))){
+						continue;
+					}
+					
                     Console.Write("    ");
                     Console.WriteLine(tMethod.Name);
-                  
                     try
                     {
                         tMethod.Invoke(tObj,null);
                         Console.Write("       ");
                         Console.WriteLine("Success");
+						tSuccess++;
                     }
                     catch (TargetInvocationException ex)
                     {
@@ -41,6 +49,8 @@ namespace UnitTestImpromptuInterface
                             Console.Write("Failed: ");
                             Console.WriteLine(ex.InnerException.Message);
                             Console.WriteLine();
+							tFailed++;
+
                         }
                         else
                         {
@@ -57,7 +67,7 @@ namespace UnitTestImpromptuInterface
 
 
             }
-			Console.WriteLine("Done.");
+			Console.WriteLine("Done. Successes:{0} Failures:{1}",tSuccess,tFailed);
 			Console.Read();
         }
 

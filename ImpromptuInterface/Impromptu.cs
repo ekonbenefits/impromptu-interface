@@ -290,14 +290,9 @@ namespace ImpromptuInterface
                                                               CSharp.CSharpArgumentInfoFlags.None, null)
                                                       });
 
-            var tCallSite = CreateCallSite<GetDelegate>(tBinder, name, tContext);
+            var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
             return tCallSite.Target.Invoke(tCallSite, target);
         }
-
-        /// <summary>
-        /// Static Delegate should work for dynamic invocation of all getters
-        /// </summary>
-        public delegate object GetDelegate(CallSite callsite, object target);
 
 	
 

@@ -27,7 +27,8 @@ namespace UnitTestImpromptuInterface
             var tSetValue = "1";
 
             var tWatch = TimeIt.Go(() => Impromptu.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
-            var tWatch2 = TimeIt.Go(() => tPoco.GetType().GetProperty("Prop1").SetValue(tPoco, tSetValue, new object[] { }), 500000);
+            var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
@@ -48,7 +49,12 @@ namespace UnitTestImpromptuInterface
 
 
             var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeGet(tAnon, "Test"); }, 500000);
-            var tWatch2 = TimeIt.Go(() => { var tOut = tAnon.GetType().GetProperty("Test").GetValue(tAnon, null); }, 500000);
+
+            var tPropertyInfo = tAnon.GetType().GetProperty("Test");
+            var tWatch2 = TimeIt.Go(() =>
+                                        {
+                                            var tOut = tPropertyInfo.GetValue(tAnon, null);
+                                        }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
@@ -67,7 +73,11 @@ namespace UnitTestImpromptuInterface
 
 
             var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "ToString"); }, 500000);
-            var tWatch2 = TimeIt.Go(() => { var tOut = tValue.GetType().GetMethod("ToString", new Type[] { }).Invoke(tValue, new object[] { }); }, 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("ToString", new Type[] { });
+            var tWatch2 = TimeIt.Go(() =>
+                                        {
+                                            var tOut = tMethodInfo.Invoke(tValue, new object[] { });
+                                        }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
@@ -84,7 +94,11 @@ namespace UnitTestImpromptuInterface
 
 
             var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "IndexOf", "45", 0, 14, StringComparison.InvariantCulture); }, 500000);
-            var tWatch2 = TimeIt.Go(() => { var tOut = tValue.GetType().GetMethod("IndexOf", new Type[] {typeof(string), typeof(int),typeof(int),typeof(StringComparison) }).Invoke(tValue, new object[] { "45", 0, 14, StringComparison.InvariantCulture }); }, 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("IndexOf", new Type[] { typeof(string), typeof(int), typeof(int), typeof(StringComparison) });
+            var tWatch2 = TimeIt.Go(() =>
+                                        {
+                                            var tOut = tMethodInfo.Invoke(tValue, new object[] { "45", 0, 14, StringComparison.InvariantCulture });
+                                        }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
@@ -101,7 +115,8 @@ namespace UnitTestImpromptuInterface
 
 
             var tWatch = TimeIt.Go(() => Impromptu.InvokeMemberAction(tValue, "Clear"), 500000);
-            var tWatch2 = TimeIt.Go(() => tValue.GetType().GetMethod("Clear", new Type[] { }).Invoke(tValue, new object[] { }), 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
+            var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }), 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);

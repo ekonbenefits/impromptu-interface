@@ -30,9 +30,11 @@ namespace ImpromptuInterface
     /// </summary>
     public static class Impromptu
     {
-        private static readonly IDictionary<Tuple<Type, string, Type>, CallSite> _binderCache = new Dictionary<Tuple<Type, string, Type>, CallSite>();
+        private static readonly IDictionary<BinderHash, CallSite> _binderCache = new Dictionary<BinderHash, CallSite>();
         private static readonly object _binderCacheLock = new object();
 
+
+     
 
         /// <summary>
         /// Creates a cached call site at runtime. 
@@ -49,7 +51,7 @@ namespace ImpromptuInterface
         public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, string name, Type context)
         {
 
-            var tHash = Tuple.Create(delegateType, name, context);
+            var tHash = BinderHash.Create(delegateType, name, context);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -101,7 +103,7 @@ namespace ImpromptuInterface
         /// <seealso cref="CreateCallSite"/>
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, string name, Type context) where T: class
         {
-            var tHash = Tuple.Create(typeof(T), name, context);
+            var tHash = BinderHash<T>.Create(name, context);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -145,9 +147,13 @@ namespace ImpromptuInterface
                             {
                                 CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
                             };
-            tList.AddRange(args.Select(
-                                           it =>
-                                           CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)));
+
+            //Optimization: linq statement creates a slight overhead in this case
+            // ReSharper disable LoopCanBeConvertedToQuery
+            for (int i = 0; i < args.Length; i++)
+                tList.Add(CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+            // ReSharper restore LoopCanBeConvertedToQuery
+
             var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
                                        tContext,tList);
 
@@ -187,9 +193,11 @@ namespace ImpromptuInterface
                             {
                                 CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
                             };
-            tArgs.AddRange(args.Select(
-                it =>
-                CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)));
+            //Optimization: linq statement creates a slight overhead in this case
+            // ReSharper disable LoopCanBeConvertedToQuery
+            for (int i = 0; i < args.Length; i++)
+                tArgs.Add(CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+            // ReSharper restore LoopCanBeConvertedToQuery
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
                                        tContext,tArgs);

@@ -72,6 +72,7 @@
     <Compile Include="EmitProxy\BuildProxy.cs" />
     <Compile Include="EmitProxy\EmitExtensions.cs" />
     <Compile Include="Dynamic\ImpromptuObject.cs" />
+    <Compile Include="Optimization\BinderHash.cs" />
     <Compile Include="Optimization\InvokeHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmitProxy\TypeHash.cs" />

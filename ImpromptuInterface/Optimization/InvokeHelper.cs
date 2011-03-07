@@ -269,7 +269,7 @@ namespace ImpromptuInterface.Optimization
             return tCallSite.Target.Invoke(tCallSite, target, arg1, arg2, arg3, arg4,arg5);
         }
 
-        private static void InvokeSetHelper<T>(object target, string name, T  value)
+        internal static void InvokeSetHelper<T>(object target, string name, T  value)
         {
             var tContext = target.GetType();
             var tBinder = Binder.SetMember(CSharpBinderFlags.ResultDiscarded, name,

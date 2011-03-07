@@ -16,3 +16,4 @@ glob:*~
 glob:*/Bin/*
 glob:speed/*
 glob:*.orig
+glob:*.ReSharper

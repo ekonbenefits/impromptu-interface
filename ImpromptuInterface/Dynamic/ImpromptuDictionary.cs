@@ -20,7 +20,6 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace ImpromptuInterface.Dynamic
 {

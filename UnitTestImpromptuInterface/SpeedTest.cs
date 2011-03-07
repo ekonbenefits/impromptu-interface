@@ -75,6 +75,23 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestMethodStaticGetValue4argsTimed()
+        {
+
+
+            var tValue = "test 123 45 string";
+
+
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "IndexOf", "45", 0, 14, StringComparison.InvariantCulture); }, 500000);
+            var tWatch2 = TimeIt.Go(() => { var tOut = tValue.GetType().GetMethod("IndexOf", new Type[] {typeof(string), typeof(int),typeof(int),typeof(StringComparison) }).Invoke(tValue, new object[] { "45", 0, 14, StringComparison.InvariantCulture }); }, 500000);
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
         public void TestMethodStaticVoidTimed()
         {
 

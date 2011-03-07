@@ -64,7 +64,7 @@ namespace ImpromptuInterface.Optimization
         {
             
             var tSwitch = args.Length;
-            var tArgTypes = args.Select(it => (Type)it.GetType());
+            var tArgTypes = ((object[])args).Select(it => it.GetType());
             if (tArgTypes.Any(it => it.IsNotPublic))
             {
                 tSwitch = Int32.MaxValue;
@@ -176,7 +176,7 @@ namespace ImpromptuInterface.Optimization
         {
          
             var tSwitch = args.Length;
-            var tArgTypes = args.Select(it => (Type)it.GetType());
+            var tArgTypes = ((object[])args).Select(it => it.GetType());
             if (tArgTypes.Any(it => it.IsNotPublic))
             {
                 tSwitch = Int32.MaxValue;

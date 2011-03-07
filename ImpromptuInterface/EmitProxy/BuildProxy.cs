@@ -13,6 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using ImpromptuInterface.Optimization;
+
 namespace ImpromptuInterface
 {
     using System;
@@ -29,52 +31,7 @@ namespace ImpromptuInterface
     ///</summary>
     public static class BuildProxy
     {
-        internal static readonly Type[] FuncKinds;
-        internal static readonly Type[] ActionKinds; 
-        static BuildProxy()
-        {
-            FuncKinds = new []
-                            {
-                                null,
-                                typeof(Func<>),
-                                typeof(Func<,>),
-                                typeof(Func<,,>),
-                                typeof(Func<,,,>),
-                                typeof(Func<,,,,>),
-                                typeof(Func<,,,,,>),
-                                typeof(Func<,,,,,,>),
-                                typeof(Func<,,,,,,,>),
-                                typeof(Func<,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,,,>),
-                            };
-            ActionKinds = new []
-                            {
-                                typeof(Action),
-                                typeof(Action<>),
-                                typeof(Action<,>),
-                                typeof(Action<,,>),
-                                typeof(Action<,,,>),
-                                typeof(Action<,,,,>),
-                                typeof(Action<,,,,,>),
-                                typeof(Action<,,,,,,>),
-                                typeof(Action<,,,,,,,>),
-                                typeof(Action<,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,,,>),
-                            };
-        }
+        
 
         private static ModuleBuilder _builder;
         internal static ModuleBuilder _tempBuilder;
@@ -810,12 +767,7 @@ namespace ImpromptuInterface
             
         }
 
-        internal static Type GenericDelegateType(int count, bool action =false)
-        {
-            return action 
-                ? ActionKinds[count] 
-                : FuncKinds[count];
-        }
+     
 
 
         /// <summary>
@@ -856,9 +808,9 @@ namespace ImpromptuInterface
                     return tType;
                 }
 
-                if (tList.Any(it => it.IsByRef) 
-                    || (tIsFunc && tList.Count >= FuncKinds.Length) 
-                    || (!tIsFunc && tList.Count >= ActionKinds.Length))
+                if (tList.Any(it => it.IsByRef)
+                    || (tIsFunc && tList.Count >= InvokeHelper.FuncKinds.Length)
+                    || (!tIsFunc && tList.Count >= InvokeHelper.ActionKinds.Length))
                 {
                     tType = GenerateFullDelegate(builder, methodInfo);
                     _delegateCache[tHash] = tType;
@@ -870,7 +822,7 @@ namespace ImpromptuInterface
                 if (tIsFunc)
                     tList.Add(returnType);
 
-                var tFuncGeneric = GenericDelegateType(tList.Count, !tIsFunc);
+                var tFuncGeneric = Impromptu.GenericDelegateType(tList.Count, !tIsFunc);
 
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());

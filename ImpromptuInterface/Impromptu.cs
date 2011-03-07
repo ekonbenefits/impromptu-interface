@@ -311,6 +311,20 @@ namespace ImpromptuInterface
 		    return InvokeHelper.FastDynamicInvokeReturn(del, args);
 		}
 
+        public static Type GenericDelegateType(int paramCount, bool returnVoid = false)
+        {
+            var tParamCount = returnVoid ? paramCount : paramCount - 1;
+            if (tParamCount > 16)
+                throw new ArgumentException(String.Format("{0} only handle at most {1} parameters", returnVoid ? "Action" : "Func", returnVoid ? 16 : 17), "paramCount");
+            if(tParamCount < 0)
+                throw new ArgumentException(String.Format("{0} must have at least {1} parameter(s)", returnVoid ? "Action" : "Func", returnVoid ? 0 : 1), "paramCount");
+
+
+            return returnVoid
+                ? InvokeHelper.ActionKinds[tParamCount]
+                : InvokeHelper.FuncKinds[tParamCount];
+        }
+
         /// <summary>
         /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type
         /// </summary>

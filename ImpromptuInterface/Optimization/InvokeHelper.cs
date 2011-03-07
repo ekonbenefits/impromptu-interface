@@ -2,13 +2,58 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Optimization
 {
     internal static class InvokeHelper
     {
+        internal static readonly Type[] FuncKinds;
+        internal static readonly Type[] ActionKinds;
+        static InvokeHelper()
+        {
+            FuncKinds = new []
+                            {
+                                typeof(Func<>), //0
+                                typeof(Func<,>),
+                                typeof(Func<,,>),
+                                typeof(Func<,,,>),
+                                typeof(Func<,,,,>),
+                                typeof(Func<,,,,,>),
+                                typeof(Func<,,,,,,>),
+                                typeof(Func<,,,,,,,>),
+                                typeof(Func<,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,,>),
+                                typeof(Func<,,,,,,,,,,,,,,,,>), //16
+                            };
+            ActionKinds = new []
+                            {
+                                typeof(Action), //0
+                                typeof(Action<>),
+                                typeof(Action<,>),
+                                typeof(Action<,,>),
+                                typeof(Action<,,,>),
+                                typeof(Action<,,,,>),
+                                typeof(Action<,,,,,>),
+                                typeof(Action<,,,,,,>),
+                                typeof(Action<,,,,,,,>),
+                                typeof(Action<,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,,>),
+                                typeof(Action<,,,,,,,,,,,,,,,>), //16
+                            };
+        }
+
 
         internal static void InvokeMemberAction(CallSiteBinder binder,
                                                     string name,
@@ -212,7 +257,7 @@ namespace ImpromptuInterface.Optimization
             }
         }
 
-        internal static void FastDynamicInvokeAction(this Delegate del, params object[] args)
+        internal static void FastDynamicInvokeAction(Delegate del, params object[] args)
         {
             dynamic tDel =del;
             switch(args.Length){

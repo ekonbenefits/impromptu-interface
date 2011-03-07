@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -37,14 +37,17 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\UnitTestImpromptuInterface\Support\FixtureSetup.cs">
+      <Link>Support\FixtureSetup.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\Support\SupportDefinitions.cs">
+      <Link>Support\SupportDefinitions.cs</Link>
+    </Compile>
     <Compile Include="AssemblyInfo.cs" />
-    <Compile Include="Helper.cs" />
-    <Compile Include="Program.cs" />
+    <Compile Include="Support\Helper.cs" />
+    <Compile Include="Support\Program.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\Basic.cs">
       <Link>Basic.cs</Link>
-    </Compile>
-    <Compile Include="..\UnitTestImpromptuInterface\FixtureSetup.cs">
-      <Link>FixtureSetup.cs</Link>
     </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\Generics.cs">
       <Link>Generics.cs</Link>
@@ -57,9 +60,6 @@
     </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\SingleMethodInvoke.cs">
       <Link>SingleMethodInvoke.cs</Link>
-    </Compile>
-    <Compile Include="..\UnitTestImpromptuInterface\SupportDefinitions.cs">
-      <Link>SupportDefinitions.cs</Link>
     </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\SpeedTest.cs">
       <Link>SpeedTest.cs</Link>

@@ -70,8 +70,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Toolkit\Apr10\Testing\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\tools\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="System.Windows" />
@@ -88,9 +88,6 @@
     <Compile Include="..\UnitTestImpromptuInterface\Basic.cs">
       <Link>Basic.cs</Link>
     </Compile>
-    <Compile Include="..\UnitTestImpromptuInterface\FixtureSetup.cs">
-      <Link>FixtureSetup.cs</Link>
-    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\Generics.cs">
       <Link>Generics.cs</Link>
     </Compile>
@@ -106,10 +103,13 @@
     <Compile Include="..\UnitTestImpromptuInterface\SpeedTest.cs">
       <Link>SpeedTest.cs</Link>
     </Compile>
-    <Compile Include="..\UnitTestImpromptuInterface\SupportDefinitions.cs">
-      <Link>SupportDefinitions.cs</Link>
+    <Compile Include="..\UnitTestImpromptuInterface\Support\FixtureSetup.cs">
+      <Link>Support\FixtureSetup.cs</Link>
     </Compile>
-    <Compile Include="Helper.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Support\SupportDefinitions.cs">
+      <Link>Support\SupportDefinitions.cs</Link>
+    </Compile>
+    <Compile Include="Support\Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

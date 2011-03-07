@@ -278,8 +278,14 @@ namespace ImpromptuInterface
             return tCallSite.Target.Invoke(tCallSite, target);
         }
 
-	
 
+
+        /// <summary>
+        /// Fast Dynamic invoke Extension method. Runs up to runs up to 20x faster than <see cref="System.Delegate.DynamicInvoke"/> .
+        /// </summary>
+        /// <param name="del">The del.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
 		public static object FastDynamicInvoke(this Delegate del, params object[] args)
 		{
 		    if(del.Method.ReturnType == typeof(void)){
@@ -290,6 +296,12 @@ namespace ImpromptuInterface
 		    return InvokeHelper.FastDynamicInvokeReturn(del, args);
 		}
 
+        /// <summary>
+        /// Given a generic parameter count and whether it returns void or not gives type of Action or Func
+        /// </summary>
+        /// <param name="paramCount">The param count.</param>
+        /// <param name="returnVoid">if set to <c>true</c> [return void].</param>
+        /// <returns>Type of Action or Func</returns>
         public static Type GenericDelegateType(int paramCount, bool returnVoid = false)
         {
             var tParamCount = returnVoid ? paramCount : paramCount - 1;
@@ -370,6 +382,16 @@ namespace ImpromptuInterface
                 InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
         }
 
+
+
+        /// <summary>
+        /// Private helper method that initializes the proxy.
+        /// </summary>
+        /// <param name="proxytype">The proxytype.</param>
+        /// <param name="original">The original.</param>
+        /// <param name="interfaces">The interfaces.</param>
+        /// <param name="propertySpec">The property spec.</param>
+        /// <returns></returns>
         private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
         {
             var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);

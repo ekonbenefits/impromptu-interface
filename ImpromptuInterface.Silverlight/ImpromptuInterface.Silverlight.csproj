@@ -123,6 +123,7 @@
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.nuspec">
       <Link>Properties\ImpromptuInterface.nuspec</Link>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@
 
 using ImpromptuInterface.Optimization;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Build
 {
     using System;
     using System.Collections.Generic;

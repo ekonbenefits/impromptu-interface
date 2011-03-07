@@ -80,6 +80,12 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ImpromptuInterface\Dynamic\IActLike.cs">
+      <Link>Dynamic\IActLike.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\IDynamicKnowLike.cs">
+      <Link>Dynamic\IDynamicKnowLike.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionary.cs">
       <Link>Dynamic\ImpromptuDictionary.cs</Link>
     </Compile>
@@ -109,6 +115,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\TypeHash.cs">
       <Link>EmitProxy\TypeHash.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\IActLikeProxy.cs">
+      <Link>IActLikeProxy.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Impromptu.cs">
       <Link>Impromptu.cs</Link>

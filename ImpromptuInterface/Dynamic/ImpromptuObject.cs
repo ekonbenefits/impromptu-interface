@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using ImpromptuInterface.Build;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Dynamic Object that knows about the Impromtu Interface return types;

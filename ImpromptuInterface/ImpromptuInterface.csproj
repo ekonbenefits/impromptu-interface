@@ -62,6 +62,9 @@
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\InlineLambda.cs" />
     <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
+    <Compile Include="Dynamic\IDynamicKnowLike.cs" />
+    <Compile Include="Dynamic\IActLike.cs" />
+    <Compile Include="IActLikeProxy.cs" />
     <Compile Include="Impromptu.cs" />
     <Compile Include="Dynamic\ImpromptuDictionary.cs" />
     <Compile Include="Dynamic\ImpromptuFactory.cs" />

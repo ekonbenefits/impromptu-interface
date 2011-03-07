@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Base Class for making a fluent factory using an Impromptu Interface return type.

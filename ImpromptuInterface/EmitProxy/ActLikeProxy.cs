@@ -15,22 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Build
 {
-    /// <summary>
-    /// This interface can be used to access the original content of your emitted type;
-    /// </summary>
-    public interface IActLikeProxy
-    {
-        ///<summary>
-        /// Returns the proxied object
-        ///</summary>
-        dynamic Original { get; }
-        
-    }
-
-
     /// <summary>
     /// This interface can be used to define your own custom proxy if you preload it.
     /// </summary>
@@ -46,24 +35,6 @@ namespace ImpromptuInterface
         ///<param name="interfaces"></param>
         ///<param name="informalInterface"></param>
         void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null);
-    }
-
-
-    /// <summary>
-    /// This interface can be used on your custom dynamic objects if you want to know the interface you are impromptu-ly implementing.
-    /// </summary>
-    public interface IDynamicKnowLike
-    {
-        ///<summary>
-        /// Property used to pass interface information to proxied object
-        ///</summary>
-        IEnumerable<Type> KnownInterfaces { set; }
-
-        /// <summary>
-        /// Sets the known property spec.
-        /// </summary>
-        /// <value>The known property spec.</value>
-        IDictionary<string, Type> KnownPropertySpec { set; }
     }
 
 

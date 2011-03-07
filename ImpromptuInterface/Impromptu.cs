@@ -17,27 +17,12 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ImpromptuInterface.Build;
 using ImpromptuInterface.Optimization;
 using CSharp = Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface
 {
     using System;
-
-    /// <summary>
-    /// This interface can be used on your custom dynamic objects if you want impromptu interfaces without casting to object or using the static method syntax of ActLike.
-    /// Also if you want to change the behavior for slightly for specific types as this will take precident when using the dynamic keyword or your specific type is known staticly.
-    /// </summary>
-    public interface IActLike 
-    {
-        /// <summary>
-        /// This interface can be used on your custom dynamic objects if you want impromptu interfaces without casting to object or using the static method syntax of ActLike.
-        /// Also if you want to change the behavior for slightly for specific types as this will take precident when using the dynamic keyword or your specific type is known staticly.
-        /// </summary>
-        ///<param name="otherInterfaces"></param>
-        ///<typeparam name="TInterface"></typeparam>
-        ///<returns></returns>
-        TInterface ActLike<TInterface>(params Type[] otherInterfaces) where TInterface : class;
-    }
 
 
     /// <summary>
@@ -281,7 +266,7 @@ namespace ImpromptuInterface
 
 
         /// <summary>
-        /// Fast Dynamic invoke Extension method. Runs up to runs up to 20x faster than <see cref="System.Delegate.DynamicInvoke"/> .
+        /// FastDynamicInvoke extension method. Runs up to runs up to 20x faster than <see cref="System.Delegate.DynamicInvoke"/> .
         /// </summary>
         /// <param name="del">The del.</param>
         /// <param name="args">The args.</param>

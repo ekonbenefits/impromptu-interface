@@ -36,6 +36,23 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+        [Test, TestMethod]
+        public void TestSetNullTimed()
+        {
+            var tPoco = new PropPoco();
+
+            String tSetValue = null;
+
+            var tWatch = TimeIt.Go(() => Impromptu.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
+            var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
         
         [Test, TestMethod]
         public void TestPropStaticGetValueTimed()
@@ -84,6 +101,28 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+
+        [Test, TestMethod]
+        public void TestMethodStaticGetValuePassNullTimed()
+        {
+
+
+            var tValue = new OverloadingMethPoco();
+
+
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object)});
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { null});
+            }, 500000);
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
         [Test, TestMethod]
         public void TestMethodStaticGetValue4argsTimed()
         {
@@ -104,6 +143,8 @@ namespace UnitTestImpromptuInterface
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
+
+ 
 
         [Test, TestMethod]
         public void TestMethodStaticVoidTimed()

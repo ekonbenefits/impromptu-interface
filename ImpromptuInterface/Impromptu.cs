@@ -147,18 +147,27 @@ namespace ImpromptuInterface
                             {
                                 CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
                             };
+            if (args == null)
+                args = new object[] { null };
 
+            var tBoolMoreDynamic = args.Select(it => it == null ? typeof(DummmyNull) : it.GetType()).Any(it => !it.IsPublic);
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
+            // ReSharper disable ForCanBeConvertedToForeach
             for (int i = 0; i < args.Length; i++)
-                tList.Add(CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+
+                tList.Add(CSharp.CSharpArgumentInfo.Create(
+                    tBoolMoreDynamic 
+                    ? CSharp.CSharpArgumentInfoFlags.None
+                    : CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+            // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
 
             var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
                                        tContext,tList);
 
 
-            return InvokeHelper.InvokeMember(tBinder,name,tContext,target,args);
+            return InvokeHelper.InvokeMember(tBinder, name, tContext, tBoolMoreDynamic, target, args);
         }
 
 
@@ -187,23 +196,33 @@ namespace ImpromptuInterface
         /// </example>
         public static void InvokeMemberAction(object target, string name, params object[] args)
         {
-
+         
 
             var tArgs = new List<CSharp.CSharpArgumentInfo>()
                             {
                                 CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
                             };
+            if (args == null)
+                args = new object[] { null };
+
+            var tBoolMoreDynamic = args.Select(it => it == null ? typeof(DummmyNull) : it.GetType()).Any(it => !it.IsPublic);
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
+            // ReSharper disable ForCanBeConvertedToForeach
             for (int i = 0; i < args.Length; i++)
-                tArgs.Add(CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+
+                tArgs.Add(CSharp.CSharpArgumentInfo.Create(
+                    tBoolMoreDynamic
+                    ? CSharp.CSharpArgumentInfoFlags.None
+                    : CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+            // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
             var tContext = target.GetType();
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
                                        tContext,tArgs);
 
-			
-   			InvokeHelper.InvokeMemberAction(tBinder, name, tContext,target, args);
+
+            InvokeHelper.InvokeMemberAction(tBinder, name, tContext, tBoolMoreDynamic,target, args);
 
         
         }
@@ -229,13 +248,18 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+    
         public static void InvokeSet(object target, string name, object value)
         {
-            InvokeHelper.InvokeSetHelper(target, name, (dynamic) value);
+           if (value == null)  
+            {
+                InvokeHelper.InvokeSetHelper<dynamic>(target, name, value);
+            }
+            else
+            {
+                InvokeHelper.InvokeSetHelper(target, name, (dynamic)value);
+            }
         }
-
-  
-
 
         /// <summary>
         /// Dynamically Invokes a get member using the DLR.

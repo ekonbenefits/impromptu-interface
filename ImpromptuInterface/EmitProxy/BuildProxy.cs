@@ -784,7 +784,7 @@ namespace ImpromptuInterface.Build
 
 
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
-            tList.AddRange(argTypes.Select(it => it.IsNotPublic && !it.IsByRef ? typeof(object) : it));
+            tList.AddRange(argTypes.Select(it => (it.IsNotPublic && !it.IsByRef) ? typeof(object) : it));
 
             
 

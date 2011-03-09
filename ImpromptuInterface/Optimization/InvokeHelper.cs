@@ -22,6 +22,11 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Optimization
 {
+    internal class DummmyNull
+    {
+        
+    }
+
     internal static class InvokeHelper
     {
         internal static readonly Type[] FuncKinds;
@@ -76,37 +81,59 @@ namespace ImpromptuInterface.Optimization
         internal static void InvokeMemberAction(CallSiteBinder binder,
                                                     string name,
                                                     Type context,
+                                                    bool tMoreDynamic,
                                                     object target, params dynamic [] args)
         {
             
             var tSwitch = args.Length;
-            var tArgTypes = ((object[])args).Select(it => it.GetType());
-            if (tArgTypes.Any(it => it.IsNotPublic))
-            {
-                tSwitch = Int32.MaxValue;
-            }
             switch (tSwitch)
             {
                 case 0:
                     InvokeMemberActionHelper(binder, name, context, target);
                     break;
                 case 1:
+                    if (tMoreDynamic)
+                    {
+                        InvokeHelper.InvokeMemberActionHelper<dynamic>(binder, name, context, target, args[0]);
+                        break;
+                    }
+
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0]);
                     break;
                 case 2:
+                    if (tMoreDynamic)
+                    {
+                        InvokeHelper.InvokeMemberActionHelper<dynamic,dynamic>(binder, name, context, target, args[0], args[1]);
+                        break;
+                    }
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1]);
                     break;
                 case 3:
+                    if (tMoreDynamic)
+                    {
+                        InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2]);
+                        break;
+                    }
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2]);
                     break;
                 case 4:
+                    if (tMoreDynamic)
+                    {
+                        InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic, dynamic, dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3]);
+                        break;
+                    }
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2], args[3]);
                     break;
                 case 5:
+                    if (tMoreDynamic)
+                    {
+                        InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
+                        break;
+                    }
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                     break;
                 default:
-
+                    var tArgTypes =args.Select(it => it == null ? typeof (DummmyNull) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
                     Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
                     break;
@@ -181,38 +208,55 @@ namespace ImpromptuInterface.Optimization
 
         #endregion
 
-
+       
         #region InvokeMember Optimizations
 
 
         internal static object InvokeMember(CallSiteBinder binder,
                                        string name,
                                      Type context,
+            bool tMoreDynamic,
                                      object target, params dynamic [] args)
         {
          
             var tSwitch = args.Length;
-            var tArgTypes = ((object[])args).Select(it => it.GetType());
-            if (tArgTypes.Any(it => it.IsNotPublic))
-            {
-                tSwitch = Int32.MaxValue;
-            }
+    
             switch (tSwitch)
             {
                 case 0:
                     return InvokeMemberHelper(binder, name, context, target);
                 case 1:
+                    if (tMoreDynamic)
+                    {
+                        return InvokeHelper.InvokeMemberHelper<dynamic>(binder, name, context, target, args[0]);
+                    }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0]);
                 case 2:
+                    if (tMoreDynamic)
+                    {
+                        return InvokeHelper.InvokeMemberHelper<dynamic,dynamic>(binder, name, context, target, args[0], args[1]);
+                    }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1]);
                 case 3:
+                    if (tMoreDynamic)
+                    {
+                        return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic>(binder, name, context, target, args[0], args[1], args[2]);
+                    }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2]);
                 case 4:
+                    if (tMoreDynamic)
+                    {
+                        return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3]);
+                    }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2], args[3]);
                 case 5:
+                    if (tMoreDynamic)
+                    {
+                        return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
+                    }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                 default:
-
+                    var tArgTypes = args.Select(it => it == null ? typeof(DummmyNull) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
                     return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
 
@@ -230,6 +274,8 @@ namespace ImpromptuInterface.Optimization
             var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, object>>(binder, name, context);
             return tCallSite.Target.Invoke(tCallSite, target);
         }
+
+      
         private static object InvokeMemberHelper<T1>(
                                                     CallSiteBinder binder,
                                                     string name,
@@ -295,7 +341,13 @@ namespace ImpromptuInterface.Optimization
                                                           CSharpArgumentInfo.Create(
                                                               CSharpArgumentInfoFlags.None, null),
                                                           CSharpArgumentInfo.Create(
-                                                              CSharpArgumentInfoFlags.UseCompileTimeType, null)
+// ReSharper disable CompareNonConstrainedGenericWithNull
+                                                                    value == null ?  //Only care about null values not default values
+// ReSharper restore CompareNonConstrainedGenericWithNull
+                                                                    CSharpArgumentInfoFlags.None :
+                                                                    CSharpArgumentInfoFlags.UseCompileTimeType
+                                                              
+                                                              , null)
 				
                                                       });
 

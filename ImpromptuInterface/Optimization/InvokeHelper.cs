@@ -133,7 +133,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                     break;
                 default:
-                    var tArgTypes =args.Select(it => it == null ? typeof (DummmyNull) : ((object)it).GetType());
+                    var tArgTypes = args.Select(it => tMoreDynamic ? typeof(object) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
                     Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
                     break;
@@ -256,7 +256,7 @@ namespace ImpromptuInterface.Optimization
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                 default:
-                    var tArgTypes = args.Select(it => it == null ? typeof(DummmyNull) : ((object)it).GetType());
+                    var tArgTypes = args.Select(it => tMoreDynamic ? typeof(object) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
                     return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
 

@@ -154,6 +154,14 @@ namespace UnitTestImpromptuInterface
             var tOut3 = Impromptu.InvokeMember(tPoco, "Func", null);
 
             Assert.AreEqual("object", tOut3);
+
+            var tOut4 = Impromptu.InvokeMember(tPoco, "Func", null, null, "test", null, null, null);
+
+            Assert.AreEqual("object 6", tOut4);
+
+            var tOut5 = Impromptu.InvokeMember(tPoco, "Func", null, null, null, null, null, null);
+
+            Assert.AreEqual("object 6", tOut5);
         }
 
         /// <summary>

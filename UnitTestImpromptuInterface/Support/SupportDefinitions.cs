@@ -127,6 +127,10 @@ namespace UnitTestImpromptuInterface
         {
             return "object";
         }
+        public string Func(object arg, object arg2, object arg3, object arg4, object arg5, object arg6)
+        {
+            return "object 6";
+        }
     }
 
     /// <summary>

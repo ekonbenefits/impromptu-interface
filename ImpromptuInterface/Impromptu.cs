@@ -150,16 +150,12 @@ namespace ImpromptuInterface
             if (args == null)
                 args = new object[] { null };
 
-            var tBoolMoreDynamic =  true; //args.Any(it => it == null || !it.GetType().IsPublic);
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
             for (int i = 0; i < args.Length; i++)
-
                 tList.Add(CSharp.CSharpArgumentInfo.Create(
-                    tBoolMoreDynamic 
-                    ? CSharp.CSharpArgumentInfoFlags.None
-                    : CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+                    CSharp.CSharpArgumentInfoFlags.None, null));
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
 
@@ -167,7 +163,7 @@ namespace ImpromptuInterface
                                        tContext,tList);
 
 
-            return InvokeHelper.InvokeMember(tBinder, name, tContext, tBoolMoreDynamic, target, args);
+            return InvokeHelper.InvokeMember(tBinder, name, tContext, target, args);
         }
 
 
@@ -205,16 +201,14 @@ namespace ImpromptuInterface
             if (args == null)
                 args = new object[] { null };
          
-            var tBoolMoreDynamic = true; //args.Any(it => it == null || !it.GetType().IsPublic);
+    
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach)
             for (int i = 0; i < args.Length; i++)
 
                 tArgs.Add(CSharp.CSharpArgumentInfo.Create(
-                    tBoolMoreDynamic
-                    ? CSharp.CSharpArgumentInfoFlags.None
-                    : CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null));
+                     CSharp.CSharpArgumentInfoFlags.None, null));
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
             var tContext = target.GetType();
@@ -222,7 +216,7 @@ namespace ImpromptuInterface
                                        tContext,tArgs);
 
 
-            InvokeHelper.InvokeMemberAction(tBinder, name, tContext, tBoolMoreDynamic,target, args);
+            InvokeHelper.InvokeMemberAction(tBinder, name, tContext,target, args);
 
         
         }

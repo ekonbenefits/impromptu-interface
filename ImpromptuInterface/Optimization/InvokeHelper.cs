@@ -331,30 +331,6 @@ namespace ImpromptuInterface.Optimization
             return tCallSite.Target.Invoke(tCallSite, target, arg1, arg2, arg3, arg4,arg5);
         }
 
-        internal static void InvokeSetHelper<T>(object target, string name, T  value)
-        {
-            var tContext = target.GetType();
-            var tBinder = Binder.SetMember(CSharpBinderFlags.ResultDiscarded, name,
-                                                  tContext,
-                                                  new List<CSharpArgumentInfo>()
-                                                      {
-                                                          CSharpArgumentInfo.Create(
-                                                              CSharpArgumentInfoFlags.None, null),
-                                                          CSharpArgumentInfo.Create(
-// ReSharper disable CompareNonConstrainedGenericWithNull
-                                                                    value == null ?  //Only care about null values not default values
-// ReSharper restore CompareNonConstrainedGenericWithNull
-                                                                    CSharpArgumentInfoFlags.None :
-                                                                    CSharpArgumentInfoFlags.UseCompileTimeType
-                                                              
-                                                              , null)
-				
-                                                      });
-
-            var tCallSite = Impromptu.CreateCallSite<Action<CallSite, object, T>>(tBinder, name, tContext);
-            tCallSite.Target.Invoke(tCallSite, target, value);
-        }
-
         #endregion
 
 

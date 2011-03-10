@@ -251,14 +251,25 @@ namespace ImpromptuInterface
     
         public static void InvokeSet(object target, string name, object value)
         {
-           if (value == null)  
-            {
-                InvokeHelper.InvokeSetHelper<dynamic>(target, name, value);
-            }
-            else
-            {
-                InvokeHelper.InvokeSetHelper(target, name, (dynamic)value);
-            }
+
+            var tContext = target.GetType();
+            var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
+                                                  tContext,
+                                                  new List<CSharp.CSharpArgumentInfo>()
+                                                      {
+                                                           CSharp.CSharpArgumentInfo.Create(
+                                                              CSharp.CSharpArgumentInfoFlags.None, null),
+                                                          CSharp.CSharpArgumentInfo.Create(
+
+                                                                     CSharp.CSharpArgumentInfoFlags.None
+                                                              
+                                                              , null)
+				
+                                                      });
+
+            var tCallSite = CreateCallSite<Action<CallSite, object, object>>(tBinder, name, tContext);
+            tCallSite.Target(tCallSite, target, value);
+          
         }
 
         /// <summary>
@@ -292,7 +303,7 @@ namespace ImpromptuInterface
                                                       });
 
             var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
-            return tCallSite.Target.Invoke(tCallSite, target);
+            return tCallSite.Target(tCallSite, target);
         }
 
 

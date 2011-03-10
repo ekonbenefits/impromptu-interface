@@ -150,7 +150,7 @@ namespace ImpromptuInterface
             if (args == null)
                 args = new object[] { null };
 
-            var tBoolMoreDynamic = args.Any(it => it == null || !it.GetType().IsPublic);
+            var tBoolMoreDynamic =  true; //args.Any(it => it == null || !it.GetType().IsPublic);
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
@@ -204,8 +204,8 @@ namespace ImpromptuInterface
                             };
             if (args == null)
                 args = new object[] { null };
-
-            var tBoolMoreDynamic = args.Any(it => it == null || !it.GetType().IsPublic);
+         
+            var tBoolMoreDynamic = true; //args.Any(it => it == null || !it.GetType().IsPublic);
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach)

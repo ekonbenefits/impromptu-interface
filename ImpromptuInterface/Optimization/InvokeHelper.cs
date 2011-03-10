@@ -81,10 +81,10 @@ namespace ImpromptuInterface.Optimization
         internal static void InvokeMemberAction(CallSiteBinder binder,
                                                     string name,
                                                     Type context,
-                                                    bool tMoreDynamic,
+                                                    bool moreDynamic,
                                                     object target, params dynamic [] args)
         {
-            
+          
             var tSwitch = args.Length;
             switch (tSwitch)
             {
@@ -92,7 +92,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeMemberActionHelper(binder, name, context, target);
                     break;
                 case 1:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         InvokeHelper.InvokeMemberActionHelper<dynamic>(binder, name, context, target, args[0]);
                         break;
@@ -101,7 +101,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0]);
                     break;
                 case 2:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         InvokeHelper.InvokeMemberActionHelper<dynamic,dynamic>(binder, name, context, target, args[0], args[1]);
                         break;
@@ -109,7 +109,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1]);
                     break;
                 case 3:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2]);
                         break;
@@ -117,7 +117,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2]);
                     break;
                 case 4:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic, dynamic, dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3]);
                         break;
@@ -125,7 +125,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2], args[3]);
                     break;
                 case 5:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         InvokeHelper.InvokeMemberActionHelper<dynamic, dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                         break;
@@ -133,7 +133,7 @@ namespace ImpromptuInterface.Optimization
                     InvokeHelper.InvokeMemberActionHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                     break;
                 default:
-                    var tArgTypes = args.Select(it => tMoreDynamic ? typeof(object) : ((object)it).GetType());
+                    var tArgTypes = args.Select(it => moreDynamic ? typeof(object) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
                     Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
                     break;
@@ -215,10 +215,10 @@ namespace ImpromptuInterface.Optimization
         internal static object InvokeMember(CallSiteBinder binder,
                                        string name,
                                      Type context,
-            bool tMoreDynamic,
+            bool moreDynamic,
                                      object target, params dynamic [] args)
         {
-         
+           
             var tSwitch = args.Length;
     
             switch (tSwitch)
@@ -226,37 +226,37 @@ namespace ImpromptuInterface.Optimization
                 case 0:
                     return InvokeMemberHelper(binder, name, context, target);
                 case 1:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         return InvokeHelper.InvokeMemberHelper<dynamic>(binder, name, context, target, args[0]);
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0]);
                 case 2:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         return InvokeHelper.InvokeMemberHelper<dynamic,dynamic>(binder, name, context, target, args[0], args[1]);
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1]);
                 case 3:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic>(binder, name, context, target, args[0], args[1], args[2]);
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2]);
                 case 4:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3]);
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2], args[3]);
                 case 5:
-                    if (tMoreDynamic)
+                    if (moreDynamic)
                     {
                         return InvokeHelper.InvokeMemberHelper<dynamic, dynamic, dynamic, dynamic,dynamic>(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                     }
                     return InvokeHelper.InvokeMemberHelper(binder, name, context, target, args[0], args[1], args[2], args[3], args[4]);
                 default:
-                    var tArgTypes = args.Select(it => tMoreDynamic ? typeof(object) : ((object)it).GetType());
+                    var tArgTypes = args.Select(it => moreDynamic ? typeof(object) : ((object)it).GetType());
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
                     return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context), target, args);
 

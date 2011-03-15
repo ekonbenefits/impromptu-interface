@@ -151,15 +151,6 @@ namespace ImpromptuInterface.Dynamic
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
 
-        /// <summary>
-        /// Allows ActLike to be called via dyanmic invocation
-        /// </summary>
-        /// <param name="informalInterface">The informal interface.</param>
-        /// <returns></returns>
-        public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
-        {
-            return Impromptu.ActLikeProperties(this, informalInterface);
-        }
        
     }
 }

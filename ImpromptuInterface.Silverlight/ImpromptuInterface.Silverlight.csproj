@@ -86,14 +86,23 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\IDynamicKnowLike.cs">
       <Link>Dynamic\IDynamicKnowLike.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuBuilder.cs">
+      <Link>Dynamic\ImpromptuBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionary.cs">
       <Link>Dynamic\ImpromptuDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionaryBase.cs">
+      <Link>Dynamic\ImpromptuDictionaryBase.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuFactory.cs">
       <Link>Dynamic\ImpromptuFactory.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuGet.cs">
       <Link>Dynamic\ImpromptuGet.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuList.cs">
+      <Link>Dynamic\ImpromptuList.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>

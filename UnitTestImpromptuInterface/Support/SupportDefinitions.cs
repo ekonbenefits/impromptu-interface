@@ -60,8 +60,11 @@ namespace UnitTestImpromptuInterface
     public interface IRobot
     {
         string Name { get; }
-
     }
+     public class Robot
+     {
+         public string Name { get; set; } 
+     }
 
     public interface ISimpleStringMethod
     {

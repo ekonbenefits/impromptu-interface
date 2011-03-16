@@ -125,12 +125,13 @@ namespace UnitTestImpromptuInterface
         {
             dynamic NewI = Builder.New();
             dynamic NewE = Builder.New<ExpandoObject>();
+            dynamic NewP = Builder.New<Robot>();
             dynamic NewC = new ClayFactory();
 
             var tRobotI = NewI.Robot(Name: "Bender");
             var tRobotC = NewC.Robot(Name: "Bender");
             var tRobotE = NewE.Robot(Name: "Bender");
-         
+            Robot tRobotP = NewP.Robot(Name: "Bender");
 
             var tWatchI = TimeIt.Go(() =>
             {
@@ -147,14 +148,22 @@ namespace UnitTestImpromptuInterface
                 var tOut = tRobotE.Name;
             });
 
+            var tWatchP = TimeIt.Go(() =>
+            {
+                var tOut = tRobotP.Name;
+            });
             Console.WriteLine("Impromptu: " + tWatchI.Elapsed);
             Console.WriteLine("Clay: " + tWatchC.Elapsed);
             Console.WriteLine("Expando: " + tWatchE.Elapsed);
+            Console.WriteLine("POCO: " + tWatchP.Elapsed);
 
             Assert.Less(tWatchI.Elapsed, tWatchC.Elapsed);
 
             Console.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC.ElapsedTicks / tWatchI.ElapsedTicks);
             Console.WriteLine("Expando  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchE.ElapsedTicks);
+            Console.WriteLine("POCO  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchP.ElapsedTicks);
+            Console.WriteLine("POCO  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchP.ElapsedTicks);
+            Console.WriteLine("POCO  VS Expando:{0:0.0}  x faster", (double)tWatchE.ElapsedTicks / tWatchP.ElapsedTicks);
             Console.WriteLine("Expando  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchE.ElapsedTicks);
         }
     }

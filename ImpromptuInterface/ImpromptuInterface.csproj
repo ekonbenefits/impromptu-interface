@@ -63,7 +63,7 @@
     <Compile Include="Dynamic\ImpromptuDictionaryBase.cs" />
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\ImpromptuList.cs" />
-    <Compile Include="Dynamic\InlineLambda.cs" />
+    <Compile Include="Dynamic\InlineSyntax.cs" />
     <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
     <Compile Include="Dynamic\IDynamicKnowLike.cs" />
     <Compile Include="Dynamic\IActLike.cs" />

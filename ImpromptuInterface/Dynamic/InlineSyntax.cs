@@ -13,9 +13,98 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 using System;
+using System.Linq;
 
 namespace ImpromptuInterface.Dynamic
 {
+
+
+    /// <summary>
+    /// Builds Objects with a Fluent Syntax
+    /// </summary>
+    public static class Builder
+    {
+        /// <summary>
+        /// New Builder
+        /// </summary>
+        /// <returns></returns>
+        public static IImpromptuBuilder New()
+        {
+            return new ImpromptuBuilder<ImpromptuChainableDictionary>();
+        }
+
+        /// <summary>
+        /// New Builder
+        /// </summary>
+        /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+        /// <returns></returns>
+        public static IImpromptuBuilder New<TObjectPrototype>() where TObjectPrototype : new()
+        {
+            return new ImpromptuBuilder<TObjectPrototype>();
+        }
+    }
+
+    /// <summary>
+    /// Encapsulates an Activator
+    /// </summary>
+    public class Activate
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Activate"/> class.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <param name="args">The args.</param>
+        public Activate(Type type, params object[] args)
+        {
+            Type = type;
+            Arguments = args;
+        }
+
+        /// <summary>
+        /// Gets or sets the constructor type.
+        /// </summary>
+        /// <value>The type.</value>
+        public virtual Type Type { get; private set; }
+
+        /// <summary>
+        /// Gets or sets the constructor arguments.
+        /// </summary>
+        /// <value>The arguments.</value>
+        public virtual object[] Arguments { get; private set; }
+
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
+        public virtual dynamic Create()
+        {
+            return Activator.CreateInstance(Type, Arguments);
+        }
+    }
+
+    /// <summary>
+    /// Encapsulates an Activator
+    /// </summary>
+    /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+    public class Activate<TObjectPrototype> : Activate
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="Activate&lt;TObjectPrototype&gt;"/> class.
+        /// </summary>
+        /// <param name="args">The args.</param>
+        public Activate(params object[] args) : base(typeof(TObjectPrototype), args)
+        {
+        }
+
+        public override dynamic Create()
+        {
+            return Arguments.Any() 
+                ? base.Create() 
+                : Activator.CreateInstance<TObjectPrototype>();
+        }
+    }
+
+
     /// <summary>
     /// Fluent Class for writing inline lambdass
     /// </summary>

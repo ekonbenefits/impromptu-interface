@@ -34,13 +34,7 @@ namespace ImpromptuInterface
         private static readonly object _binderCacheLock = new object();
 
 
-     	public static dynamic NewBuilder(){
-				return new Dynamic.ImpromptuBuilder<Dynamic.ImpromptuChainableDictionary>();
-		}
-		
-		public static dynamic NewBuilder<TObjectPrototype>() where TObjectPrototype:new() {
-				return new Dynamic.ImpromptuBuilder<TObjectPrototype>();
-		}
+    
 			
 
         /// <summary>

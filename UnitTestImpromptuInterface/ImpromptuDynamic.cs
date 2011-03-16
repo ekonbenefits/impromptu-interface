@@ -241,7 +241,7 @@ namespace UnitTestImpromptuInterface
 		  
 		[Test, TestMethod]
 		public void TestBuilder(){
-			var New = Impromptu.NewBuilder<ExpandoObject>();
+			var New = Builder.New<ExpandoObject>();
 			
 			  var tExpando =New.Object(
 										Test:"test1",
@@ -264,7 +264,7 @@ namespace UnitTestImpromptuInterface
 				
 		[Test, TestMethod]
 		public void TestSetupOtherTypes(){
-			var New = Impromptu.NewBuilder().Setup(
+			var New = Builder.New().Setup(
 					Expando: typeof(ExpandoObject),
 					Dict: typeof(ImpromptuDictionary)
 				);
@@ -291,7 +291,7 @@ namespace UnitTestImpromptuInterface
 		
 		[Test, TestMethod]
 		public void TestClayFactorySyntax(){
-			dynamic New = Impromptu.NewBuilder();
+			dynamic New = Builder.New();
 			
 			{
 					var person = New.Person();
@@ -326,10 +326,11 @@ namespace UnitTestImpromptuInterface
 		}
 		
 		[Test, TestMethod]
-		public void TestBuilderActLike(){
-			var New = Impromptu.ActLike<IBuilder>(Impromptu.NewBuilder());
+		public void TestBuilderActLike()
+		{
+		    var New = Builder.New().ActLike<IBuilder>();
 
-		var tNest =New.Nested(new {
+		var tNest =New.Nester(new {
 				NameLevel1 = "Lvl1",
 				Nested =  New.Nester2(new{
 					NameLevel2 = "Lvl2"
@@ -342,7 +343,7 @@ namespace UnitTestImpromptuInterface
 		
 			[Test, TestMethod]
 		public void TestFactoryListSyntax(){
-			dynamic New = Impromptu.NewBuilder();
+			dynamic New = Builder.New();
 			
 			//Test a Clay Syntax
 			var people = New.Array(

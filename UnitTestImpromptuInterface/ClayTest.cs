@@ -82,10 +82,10 @@ namespace UnitTestImpromptuInterface
 
 
          /// <summary>
-         /// Impromptu's Proxy is about the same Speed as Clay's
+         /// Impromptu's Interface Proxy is about the same Speed as Clay's
          /// </summary>
         [Test, TestMethod]
-        public void SpeedTest()
+        public void SpeedTestInterface()
         {   
             dynamic New = new ClayFactory();
             ISimpleStringProperty tRobot = New.Robot().Name("Bender");
@@ -114,10 +114,42 @@ namespace UnitTestImpromptuInterface
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Clay: " + tWatch2.Elapsed);
 
-             var tDiffernce = (tWatch2.Elapsed - tWatch.Elapsed);
+             var tDiffernce = (tWatch.Elapsed - tWatch2.Elapsed);
              Console.WriteLine("1 million call Difference: " + tDiffernce);
 
-             Assert.Less(Math.Abs(tDiffernce.TotalMilliseconds), 1);
+             Assert.Less(tDiffernce.TotalMilliseconds, 1d);
+        } 
+           
+        [Test, TestMethod]
+        public void SpeedTestPrototype()
+        {
+            dynamic NewI = Builder.New();
+            dynamic NewC = new ClayFactory();
+           
+            var tRobotI = NewI.Robot().Name("Bender");
+            var tRobotC = NewC.Robot().Name("Bender");
+         
+
+            var tWatchI = TimeIt.Go(() =>
+            {
+                var tOut = tRobotI.Name;
+            });
+   
+            var tWatchC = TimeIt.Go(() =>
+                                         {
+                                             var tOut =tRobotC.Name;
+                                         } );
+
+       
+
+            Console.WriteLine("Impromptu: " + tWatchI.Elapsed);
+            Console.WriteLine("Clay: " + tWatchC.Elapsed);
+
+            Assert.Less(tWatchI.Elapsed, tWatchC.Elapsed);
+
+            var tDiffernce = (tWatchI.Elapsed - tWatchC.Elapsed);
+            Console.WriteLine("1 million call Difference: " + tDiffernce);
         }
     }
+    
 }

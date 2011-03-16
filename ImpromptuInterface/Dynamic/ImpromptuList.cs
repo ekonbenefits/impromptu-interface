@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -112,8 +113,13 @@ namespace ImpromptuInterface.Dynamic
                 if (!index.HasValue)
                 {
                     index = _list.Count;
-                } 
-                _list.Insert(index.Value, item);
+                    _list.Add(item);
+                   
+                }
+                else
+                {
+                    _list.Insert(index.Value, item);
+                }
             }
             OnCollectionChanged(NotifyCollectionChangedAction.Add, newItem: item, newIndex: index);
         }
@@ -212,6 +218,15 @@ namespace ImpromptuInterface.Dynamic
         /// Occurs when the collection changes.
         /// </summary>
         public event NotifyCollectionChangedEventHandler CollectionChanged;
-    
+
+        dynamic IDictionary<string, object>.this[string key]
+        {
+         
+            get { return _dictionary[key]; }
+            set
+            {
+                SetProperty(key, value);
+            }
+        }
     }
 }

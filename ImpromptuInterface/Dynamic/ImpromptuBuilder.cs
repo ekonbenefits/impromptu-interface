@@ -22,6 +22,37 @@ namespace ImpromptuInterface.Dynamic
         dynamic List(params dynamic[] contents);
 
         /// <summary>
+        /// Setup List or Array, takes either one <see cref="Activate"/> or a list of constructor args that will use objects Type
+        /// </summary>
+        /// <param name="constructorArgs">The constructor args.</param>
+        /// <returns></returns>
+        dynamic ListSetup(params dynamic[] constructorArgs);
+
+        /// <summary>
+        /// Setup List or Array, takes either one <see cref="Activate"/> or a list of constructor args that will use objects Type
+        /// </summary>
+        /// <param name="constructorArgsFactory">The constructor args factory.</param>
+        /// <returns></returns>
+        dynamic ListSetup(Func<object[]> constructorArgsFactory);
+
+
+        /// <summary>
+        /// Alternative name for <see cref="ListSetup"/>
+        /// </summary>
+        /// <param name="constructorArgs">The constructor args.</param>
+        /// <returns></returns>
+        dynamic ArraySetup(params dynamic[] constructorArgs);
+
+
+        /// <summary>
+        /// Alternative name for <see cref="ListSetup"/>
+        /// </summary>
+        /// <param name="constructorArgsFactory">The constructor args factory.</param>
+        /// <returns></returns>
+        dynamic ArraySetup(Func<object[]> constructorArgsFactory);
+
+
+        /// <summary>
         /// Alternative name for <see cref="List"/>
         /// </summary>
         /// <param name="contents">The contents.</param>
@@ -42,6 +73,13 @@ namespace ImpromptuInterface.Dynamic
         dynamic ObjectSetup(params dynamic[] constructorArgs);
 
         /// <summary>
+        /// Sets up object builder
+        /// </summary>
+        /// <param name="constructorArgs">The constructor factory.</param>
+        /// <returns></returns>
+        dynamic ObjectSetup(Func<object[]> constructorArgsFactory);
+
+        /// <summary>
         /// Setups up named builders 
         /// </summary>
         /// <value>The setup.</value>
@@ -52,7 +90,7 @@ namespace ImpromptuInterface.Dynamic
     /// Builds Expando-Like Objects with an inline Syntax
     /// </summary>
     /// <typeparam name="TObjectProtoType">The type of the object proto type.</typeparam>
-    public class ImpromptuBuilder<TObjectProtoType>: ImpromptuObject, IImpromptuBuilder where TObjectProtoType: new()
+    public class ImpromptuBuilder<TObjectProtoType>: ImpromptuObject, IImpromptuBuilder
     {
 		protected IDictionary<string,Activate> _buildType;
 
@@ -72,9 +110,66 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public dynamic List(params dynamic[] contents)
         {
+            Activate tBuildType;
+            if (!_buildType.TryGetValue("List", out tBuildType))
+                tBuildType = null;
+
+            if (tBuildType != null)
+            {
+                dynamic tList = tBuildType.Create();
+
+                if (contents != null)
+                {
+                    foreach (var item in contents)
+                    {
+                        tList.Add(item);
+                    }
+                }
+                return tList;
+            }
+
             return new ImpromptuList(contents);
         }
 
+
+
+        public dynamic ListSetup(params dynamic[] constructorArgs)
+        {
+            var tActivate =constructorArgs.OfType<Activate>().SingleOrDefault();
+
+            
+            if (tActivate == null)
+            {
+
+                if (!_buildType.TryGetValue("Object", out tActivate))
+                    tActivate = null;
+                if (tActivate != null)
+                {
+                    tActivate = new Activate(tActivate.Type,constructorArgs);
+                }
+                if(tActivate == null)
+                    tActivate = new Activate<ImpromptuList>(constructorArgs);
+            }
+
+            _buildType["List"] = tActivate;
+            _buildType["Array"] = tActivate;
+            return this;
+        }
+
+        public dynamic ListSetup(Func<object[]> constructorArgsFactory)
+        {
+            return ListSetup((object)constructorArgsFactory);
+        }
+
+        public dynamic ArraySetup(params dynamic[] constructorArgs)
+        {
+            return ListSetup(constructorArgs);
+        }
+
+        public dynamic ArraySetup(Func<object[]> constructorArgsFactory)
+        {
+            return ListSetup((object)constructorArgsFactory);
+        }
 
         /// <summary>
         /// Alternative name for <see cref="List"/>
@@ -101,6 +196,16 @@ namespace ImpromptuInterface.Dynamic
         {
             _buildType["Object"] = new Activate<TObjectProtoType>(constructorArgs);
             return this;
+        }
+
+        /// <summary>
+        /// Sets up object builder
+        /// </summary>
+        /// <param name="constructorArgsFactory"></param>
+        /// <returns></returns>
+        public dynamic ObjectSetup(Func<object[]> constructorArgsFactory)
+        {
+            return ObjectSetup((object) constructorArgsFactory);
         }
 
         /// <summary>
@@ -191,6 +296,9 @@ namespace ImpromptuInterface.Dynamic
 			Activate tBuildType;
 			if(!_buildType.TryGetValue(binder.Name, out tBuildType))
 				tBuildType = null;
+
+            if (tBuildType == null && !_buildType.TryGetValue("Object", out tBuildType))
+                tBuildType = null;
 
             result = InvokeHelper(binder.CallInfo, args,tBuildType);
             if (TryTypeForName(binder.Name, out tType))

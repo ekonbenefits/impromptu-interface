@@ -290,40 +290,55 @@ namespace UnitTestImpromptuInterface
 		}
 		
 		[Test, TestMethod]
-		public void TestClayFactorySyntax(){
-			dynamic New = Builder.New();
-			
-			{
-					var person = New.Person();
-						person.FirstName = "Louis";
-						person.LastName = "Dejardin";
-					Assert.AreEqual(person.FirstName, "Louis");
-		  			Assert.AreEqual(person.LastName, "Dejardin");
-			}
-			{
-					var person = New.Person();
-						person["FirstName"] = "Louis";
-						person["LastName"] = "Dejardin";
-					Assert.AreEqual(person.FirstName, "Louis");
-		  			Assert.AreEqual(person.LastName, "Dejardin");
-			}
-			{
-					var person = New.Person() 
-							.FirstName("Louis")
-   							.LastName("Dejardin");
-					Assert.AreEqual(person.FirstName, "Louis");
-		  			Assert.AreEqual(person.LastName, "Dejardin");
-			}
-				{
-					var person = New.Person(new {
-										    FirstName = "Louis",
-										    LastName = "Dejardin"
-										   });
-					Assert.AreEqual(person.FirstName, "Louis");
-		  			Assert.AreEqual(person.LastName, "Dejardin");
-			}
 
-		}
+        //This test data is modified from MS-PL Clay project http://clay.codeplex.com
+        public void TestClayFactorySyntax()
+        {
+            dynamic New = Builder.New();
+
+            {
+                var person = New.Person();
+                person.FirstName = "Louis";
+                person.LastName = "Dejardin";
+                Assert.AreEqual("Louis",person.FirstName );
+                Assert.AreEqual("Dejardin", person.LastName);
+            }
+            {
+                var person = New.Person();
+                person["FirstName"] = "Louis";
+                person["LastName"] = "Dejardin";
+                Assert.AreEqual("Louis", person.FirstName);
+                Assert.AreEqual("Dejardin", person.LastName);
+            }
+            {
+                var person = New.Person(
+                    FirstName: "Bertrand",
+                    LastName: "Le Roy"
+                    ).Aliases("bleroy", "boudin");
+
+                Assert.AreEqual("Bertrand", person.FirstName);
+                Assert.AreEqual("Le Roy", person.LastName);
+                Assert.AreEqual("boudin", person.Aliases[1]);
+            }
+
+            {
+                var person = New.Person()
+                    .FirstName("Louis")
+                    .LastName("Dejardin");
+                Assert.AreEqual(person.FirstName, "Louis");
+            }
+
+            {
+                var person = New.Person(new
+                {
+                    FirstName = "Louis",
+                    LastName = "Dejardin"
+                });
+                Assert.AreEqual(person.FirstName, "Louis");
+                Assert.AreEqual(person.LastName, "Dejardin");
+            }
+
+        }
 		
 		[Test, TestMethod]
 		public void TestBuilderActLike()
@@ -342,10 +357,11 @@ namespace UnitTestImpromptuInterface
 	    }
 		
 			[Test, TestMethod]
+        //This test data is modified from MS-PL Clay project http://clay.codeplex.com
 		public void TestFactoryListSyntax(){
 			dynamic New = Builder.New();
 			
-			//Test a Clay Syntax
+			//Test using Clay Syntax
 			var people = New.Array(
     						 New.Person().FirstName("Louis").LastName("Dejardin"),
    							 New.Person().FirstName("Bertrand").LastName("Le Roy")

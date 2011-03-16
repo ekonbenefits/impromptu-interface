@@ -93,7 +93,10 @@ namespace ImpromptuInterface.Dynamic
                 result = _dictionary[binder.Name];
                 Type tType;
                 //If it's an IDictionary and interface is not set for the property or it's dynamic for this property return an ImpromptuDictionary
-                if (result is IDictionary<string, object> && (!TryTypeForName(binder.Name, out tType) || tType == typeof(object)))
+                if (result is IDictionary<string, object>
+                    && !(result is ImpromptuDictionaryBase) 
+                    && (!TryTypeForName(binder.Name, out tType) 
+                            || tType == typeof(object)))
                 {
                     result = new ImpromptuDictionary((IDictionary<string, object>)result);
                 }
@@ -168,7 +171,8 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            this[binder.Name] = value;
+       
+            SetProperty(binder.Name,value);
             return true;
         }
 
@@ -178,7 +182,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="item">The item.</param>
         public void Add(KeyValuePair<string, object> item)
         {
-            this[item.Key]=item.Value;
+            SetProperty(item.Key, item.Value);
         }
 
         /// <summary>
@@ -240,7 +244,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="value">The value.</param>
         public void Add(string key, object value)
         {
-            this[key]=value;
+            SetProperty(key,value);
         }
 
         /// <summary>
@@ -266,18 +270,12 @@ namespace ImpromptuInterface.Dynamic
             return _dictionary.TryGetValue(key, out value);
         }
 
-        /// <summary>
-        /// Gets or sets the <see cref="System.Object"/> with the specified key.
-        /// </summary>
-        /// <value></value>
-        public object this[string key]
+       
+
+        protected void SetProperty(string key, object value)
         {
-            get { return _dictionary[key]; }
-            set
-            {
-                _dictionary[key] = value;
-                OnPropertyChanged(key);
-            }
+            _dictionary[key] = value;
+            OnPropertyChanged(key);
         }
 
         /// <summary>

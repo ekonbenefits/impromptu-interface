@@ -57,9 +57,21 @@ namespace ImpromptuInterface.Dynamic
         public Activate(Type type, params object[] args)
         {
             Type = type;
-            Arguments = args;
+
+            var tArg = args.OfType<Func<object[]>>().SingleOrDefault();
+            if (tArg != null)
+                Arguments = tArg;
+            else
+                Arguments = () => args;
+            
         }
 
+
+        public Activate(Type type, Func<object[]> args)
+        {
+            Type = type;
+            Arguments = args;
+        }
         /// <summary>
         /// Gets or sets the constructor type.
         /// </summary>
@@ -70,7 +82,10 @@ namespace ImpromptuInterface.Dynamic
         /// Gets or sets the constructor arguments.
         /// </summary>
         /// <value>The arguments.</value>
-        public virtual object[] Arguments { get; private set; }
+        public virtual Func<object[]> Arguments
+        {
+            get; private set;
+        }
 
         /// <summary>
         /// Creates this instance.
@@ -78,7 +93,8 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public virtual dynamic Create()
         {
-            return Activator.CreateInstance(Type, Arguments);
+            var tArgs = Arguments();
+            return Activator.CreateInstance(Type, tArgs);
         }
     }
 
@@ -96,9 +112,16 @@ namespace ImpromptuInterface.Dynamic
         {
         }
 
+        public Activate(Func<object[]> args)
+            : base(typeof(TObjectPrototype), args)
+        {
+        }
+
         public override dynamic Create()
         {
-            return Arguments.Any() 
+            var tArgs = Arguments();
+
+            return tArgs.Any() 
                 ? base.Create() 
                 : Activator.CreateInstance<TObjectPrototype>();
         }

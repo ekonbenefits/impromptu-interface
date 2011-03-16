@@ -87,6 +87,19 @@ namespace ImpromptuInterface.Dynamic
                 OnPropertyChanged(tKey);
             }
         }
+
+        /// <summary>
+        /// Gets or sets the <see cref="System.Object"/> with the specified key.
+        /// </summary>
+        /// <value></value>
+        public object this[string key]
+        {
+            get { return _dictionary[key]; }
+            set
+            {
+                SetProperty(key, value);
+            }
+        }
     }
 	
 		public class ImpromptuChainableDictionary:ImpromptuDictionary{
@@ -100,6 +113,12 @@ namespace ImpromptuInterface.Dynamic
 					result = this;
 					return true;
 				}
+                if (binder.CallInfo.ArgumentCount > 1)
+                {
+                    _dictionary[binder.Name] = new ImpromptuList(args);
+                    result = this;
+                    return true;
+                }
 				
 				return false;
 			}

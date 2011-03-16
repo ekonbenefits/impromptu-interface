@@ -57,6 +57,12 @@ namespace UnitTestImpromptuInterface
 
     }
 
+    public interface IRobot
+    {
+        string Name { get; }
+
+    }
+
     public interface ISimpleStringMethod
     {
         bool StartsWith(string value);

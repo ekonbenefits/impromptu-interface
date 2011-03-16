@@ -104,7 +104,7 @@ namespace ImpromptuInterface.Dynamic
             result = InvokeHelper(binder.CallInfo, args,tBuildType);
             if (TryTypeForName(binder.Name, out tType))
             {
-                if (tType.IsInterface && result != null && tType.IsAssignableFrom(result.GetType()))
+                if (tType.IsInterface && result != null && !tType.IsAssignableFrom(result.GetType()))
                 {
                     result = Impromptu.DynamicActLike(result, tType);
                 }

@@ -325,6 +325,21 @@ namespace UnitTestImpromptuInterface
 
 		}
 		
+		[Test, TestMethod]
+		public void TestBuilderActLike(){
+			var New = Impromptu.ActLike<IBuilder>(Impromptu.NewBuilder());
+
+		var tNest =New.Nested(new {
+				NameLevel1 = "Lvl1",
+				Nested =  New.Nester2(new{
+					NameLevel2 = "Lvl2"
+				})
+			});
+			
+			Assert.AreEqual("Lvl1", tNest.NameLevel1);
+			Assert.AreEqual("Lvl2",tNest.Nested.NameLevel2);
+	    }
+		
 			[Test, TestMethod]
 		public void TestFactoryListSyntax(){
 			dynamic New = Impromptu.NewBuilder();

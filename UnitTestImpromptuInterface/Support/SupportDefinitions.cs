@@ -189,5 +189,20 @@ namespace UnitTestImpromptuInterface
         bool Func(ref int result);
     }
 	
+	public interface IBuilder{
+		 INest Nester(object props);
+		 INested Nester2(object props);	
+
+	}
 	
+	public interface INest
+    {
+		String NameLevel1 {get;set;}
+		INested Nested {get;set;}
+	}
+	
+    public interface INested
+    {
+		string NameLevel2 {get;}
+    }
 }

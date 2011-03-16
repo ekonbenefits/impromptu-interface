@@ -324,8 +324,11 @@ namespace UnitTestImpromptuInterface
             {
                 var person = New.Person()
                     .FirstName("Louis")
-                    .LastName("Dejardin");
+                    .LastName("Dejardin")
+                    .Aliases(new[] {"Lou"});
+
                 Assert.AreEqual(person.FirstName, "Louis");
+                Assert.AreEqual(person.Aliases[0], "Lou");
             }
 
             {

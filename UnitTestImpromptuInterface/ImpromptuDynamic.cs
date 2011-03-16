@@ -344,7 +344,7 @@ namespace UnitTestImpromptuInterface
         }
 		
 		[Test, TestMethod]
-		public void TestBuilderActLike()
+		public void TestBuilderActLikeAnon()
 		{
 		    var New = Builder.New().ActLike<IBuilder>();
 
@@ -358,6 +358,23 @@ namespace UnitTestImpromptuInterface
 			Assert.AreEqual("Lvl1", tNest.NameLevel1);
 			Assert.AreEqual("Lvl2",tNest.Nested.NameLevel2);
 	    }
+
+        [Test, TestMethod]
+        public void TestBuilderActLikeNamed()
+        {
+            var New = Builder.New().ActLike<IBuilder>();
+
+            var tNest = New.Nester(
+                NameLevel1 :"Lvl1",
+                Nested : New.Nester2(
+                            NameLevel2 : "Lvl2"
+                        )
+            );
+
+            Assert.AreEqual("Lvl1", tNest.NameLevel1);
+            Assert.AreEqual("Lvl2", tNest.Nested.NameLevel2);
+        }
+		
 		
 			[Test, TestMethod]
         //This test data is modified from MS-PL Clay project http://clay.codeplex.com

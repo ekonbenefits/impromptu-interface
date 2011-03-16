@@ -341,10 +341,28 @@ namespace ImpromptuInterface.Build
 
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
         {
-            var tName = info.Name;
 
-            Type[] tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
+       
+            var tName = info.Name;
+            
             var tParamAttri = info.GetParameters();
+            Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
+           
+
+            IEnumerable<string> tArgNames;
+            if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any())
+            {
+                tArgNames = tParamAttri.Select(it => it.Name).ToList();
+            }
+            else
+            {
+                var tParam = tParamAttri.Zip(Enumerable.Range(0, tParamTypes.Count()), (p,i) => new { i, p })
+                    .FirstOrDefault(it => it.p.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any());
+
+                tArgNames = tParam == null
+                    ? Enumerable.Repeat(default(string), tParamTypes.Length) 
+                    : Enumerable.Repeat(default(string), tParam.i).Concat(tParamAttri.Skip(Math.Min(tParam.i - 1,0)).Select(it=>it.Name)).ToList();
+            }
 
 
             var tReturnType = typeof (void);
@@ -411,7 +429,7 @@ namespace ImpromptuInterface.Build
 
 
 
-            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType, tArgNames);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -468,7 +486,9 @@ namespace ImpromptuInterface.Build
             Type callSite,
             Type contextType, 
             Type convertFuncType, 
-            Type invokeFuncType)
+            Type invokeFuncType,
+            IEnumerable<string> argNames
+            )
         {
             var tIlGen = methodBuilder.GetILGenerator();
 
@@ -490,7 +510,7 @@ namespace ImpromptuInterface.Build
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             using (tIlGen.EmitBranchTrue())
             {
-                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo);
+                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo, argNames);
                 tIlGen.EmitCallsiteCreate(invokeFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }

@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Diagnostics;
+using ImpromptuInterface.Dynamic;
+
 namespace UnitTestImpromptuInterface
 {
 
@@ -200,8 +202,12 @@ namespace UnitTestImpromptuInterface
 	
 	public interface IBuilder{
 		 INest Nester(object props);
-		 INested Nester2(object props);	
+		 INested Nester2(object props);
 
+         [UseNamedArgument]
+         INest Nester(string NameLevel1, INested Nested);
+
+         INested Nester2([UseNamedArgument]string NameLevel2);	
 	}
 	
 	public interface INest

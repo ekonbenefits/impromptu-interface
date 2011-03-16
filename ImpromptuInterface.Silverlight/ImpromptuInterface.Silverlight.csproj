@@ -110,6 +110,9 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\InlineSyntax.cs">
       <Link>Dynamic\InlineSyntax.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\UseNamedArgumentAttribute.cs">
+      <Link>Dynamic\UseNamedArgumentAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxy.cs">
       <Link>EmitProxy\ActLikeProxy.cs</Link>
     </Compile>

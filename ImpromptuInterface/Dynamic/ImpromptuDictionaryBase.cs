@@ -65,6 +65,10 @@ namespace ImpromptuInterface.Dynamic
             get { return _dictionary.Values; }
         }
 
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            return base.GetDynamicMemberNames().Concat(_dictionary.Keys).Distinct();
+        }
    
 
         /// <summary>

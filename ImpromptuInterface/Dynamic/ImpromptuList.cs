@@ -228,5 +228,27 @@ namespace ImpromptuInterface.Dynamic
                 SetProperty(key, value);
             }
         }
+
+        public bool Equals(ImpromptuList other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return base.Equals(other) && Equals(other._list, _list);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return Equals(obj as ImpromptuList);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (base.GetHashCode()*397) ^ _list.GetHashCode();
+            }
+        }
     }
 }

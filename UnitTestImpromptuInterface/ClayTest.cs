@@ -15,12 +15,43 @@ namespace UnitTestImpromptuInterface
 {   
     
     //Test data modified from MS-PL Clay http://clay.codeplex.com
+    /// <summary>
+    /// Testing Integration of Clay with Impromptu-Interface
+    /// </summary>
     [TestClass,TestFixture]
     public class ClayTest : Helper
-    { 
-        
-        
-        
+    {
+
+        [Test, TestMethod]
+        public void InvokeMemberContainsNameWithImpromptuInterface()
+        {
+            var clay = new Clay(new TestBehavior()).ActLike<ISimpeleClassMeth>();
+            var result = clay.Action3();
+            Assert.IsTrue(result.Contains("[name:Action3]"), "Does Not Match Argument Name");
+            Assert.IsTrue(result.Contains("[count:0]"), "Does Not Match Argument Count");
+
+        }
+
+        [Test, TestMethod]
+        public void InvokeMemberContainsNameWithImpromptuInvoke()
+        {
+            var clay = new Clay(new TestBehavior());
+            var result = Impromptu.InvokeMember(clay, "Help", "Test");
+            Assert.IsTrue(result.Contains("[name:Help]"), "Does Not Match Argument Name");
+            Assert.IsTrue(result.Contains("[count:1]"), "Does Not Match Argument Count");
+
+        }
+
+        [Test, TestMethod]
+        public void InvokeMemberContainsNameWithClayInvoke()
+        {
+            dynamic clay = new Clay(new TestBehavior());
+            var result = clay.InvokeMember("Help", "Test");
+            Assert.IsTrue(result.Contains("[name:Help]"), "Does Not Match Argument Name");
+            Assert.IsTrue(result.Contains("[count:1]"), "Does Not Match Argument Count");
+
+        }
+
         [Test,TestMethod]
         public void TestClay()
         {
@@ -118,8 +149,32 @@ namespace UnitTestImpromptuInterface
              Console.WriteLine("50000 Difference: " + tDiffernce);
 
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
-        } 
-           
+        }
+        
+        [Test, TestMethod]
+        public void SpeedTestInvoke()
+        {
+            dynamic New = new ClayFactory();
+            dynamic clay1 = new Clay(new TestBehavior());
+            dynamic clay2 = new Clay(new TestBehavior());
+
+
+            var tWatchC = TimeIt.Go(() =>
+            {
+                var tOut = Impromptu.InvokeMember(clay1,"TestMethod","OneArg");
+            });
+            var tWatchC2 = TimeIt.Go(() =>
+            {
+                var tOut = clay2.InvokeMember("TestMethod", "OneArg");
+            });
+
+            Console.WriteLine("Impromptu: " + tWatchC.Elapsed);
+            Console.WriteLine("Clay: " + tWatchC2.Elapsed);
+
+            Assert.Less(tWatchC.Elapsed, tWatchC2.Elapsed);
+
+        }
+
         [Test, TestMethod]
         public void SpeedTestPrototype()
         {
@@ -165,6 +220,15 @@ namespace UnitTestImpromptuInterface
             Console.WriteLine("POCO  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchP.ElapsedTicks);
             Console.WriteLine("POCO  VS Expando:{0:0.0}  x faster", (double)tWatchE.ElapsedTicks / tWatchP.ElapsedTicks);
             Console.WriteLine("Expando  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchE.ElapsedTicks);
+        }
+
+        //TestBehavoir from MS-PL ClaySharp http://clay.codeplex.com
+        class TestBehavior : ClayBehavior
+        {
+            public override object InvokeMember(Func<object> proceed, object self, string name, INamedEnumerable<object> args)
+            {
+                return string.Format("[name:{0}] [count:{1}]", name ?? "<null>", args.Count());
+            }
         }
     }
     

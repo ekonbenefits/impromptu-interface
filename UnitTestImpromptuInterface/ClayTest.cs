@@ -42,15 +42,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
-        public void InvokeMemberContainsNameWithClayInvoke()
-        {
-            dynamic clay = new Clay(new TestBehavior());
-            var result = clay.InvokeMember("Help", "Test");
-            Assert.IsTrue(result.Contains("[name:Help]"), "Does Not Match Argument Name");
-            Assert.IsTrue(result.Contains("[count:1]"), "Does Not Match Argument Count");
-
-        }
+      
 
         [Test,TestMethod]
         public void TestClay()
@@ -149,30 +141,6 @@ namespace UnitTestImpromptuInterface
              Console.WriteLine("50000 Difference: " + tDiffernce);
 
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
-        }
-        
-        [Test, TestMethod]
-        public void SpeedTestInvoke()
-        {
-            dynamic New = new ClayFactory();
-            dynamic clay1 = new Clay(new TestBehavior());
-            dynamic clay2 = new Clay(new TestBehavior());
-
-
-            var tWatchC = TimeIt.Go(() =>
-            {
-                var tOut = Impromptu.InvokeMember(clay1,"TestMethod","OneArg");
-            });
-            var tWatchC2 = TimeIt.Go(() =>
-            {
-                var tOut = clay2.InvokeMember("TestMethod", "OneArg");
-            });
-
-            Console.WriteLine("Impromptu: " + tWatchC.Elapsed);
-            Console.WriteLine("Clay: " + tWatchC2.Elapsed);
-
-            Assert.Less(tWatchC.Elapsed, tWatchC2.Elapsed);
-
         }
 
         [Test, TestMethod]

@@ -88,4 +88,20 @@ namespace ImpromptuInterface.Dynamic
             }
         }
     }
+	
+		public class ImpromptuChainableDictionary:ImpromptuDictionary{
+			public override bool TryInvokeMember (InvokeMemberBinder binder, object[] args, out object result)
+			{
+				if(base.TryInvokeMember (binder, args, out result)){
+					return true;
+				}
+				if(binder.CallInfo.ArgumentCount ==1){
+					_dictionary[binder.Name] = args.FirstOrDefault();
+					result = this;
+					return true;
+				}
+				
+				return false;
+			}
+		}
 }

@@ -51,14 +51,14 @@ namespace ImpromptuInterface.Dynamic
             return _dictionary.GetEnumerator();
         }
 
-        public IEnumerator<object> GetEnumerator()
+        public IEnumerator<dynamic> GetEnumerator()
         {
             return _list.GetEnumerator();
         }
 
 
 
-        public void Add(object item)
+        public void Add(dynamic item)
         {
             InsertHelper(item);
         }
@@ -73,7 +73,7 @@ namespace ImpromptuInterface.Dynamic
             OnCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
-        public bool Contains(object item)
+        public bool Contains(dynamic item)
         {
             return _list.Contains(item);
         }
@@ -92,7 +92,7 @@ namespace ImpromptuInterface.Dynamic
 
 
 
-        public int IndexOf(object item)
+        public int IndexOf(dynamic item)
         {
             lock (ListLock)
             {
@@ -100,7 +100,7 @@ namespace ImpromptuInterface.Dynamic
             }
         }
 
-        public void Insert(int index, object item)
+        public void Insert(int index, dynamic item)
         {
             InsertHelper(item,index);
         }
@@ -123,7 +123,7 @@ namespace ImpromptuInterface.Dynamic
             RemoveHelper(index: index);
         }
 
-        public bool Remove(object item)
+        public bool Remove(dynamic item)
         {
             return RemoveHelper(item);
         }
@@ -148,7 +148,7 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
-        public object this[int index]
+        public dynamic this[int index]
         {
             get { return _list[index]; }
             set

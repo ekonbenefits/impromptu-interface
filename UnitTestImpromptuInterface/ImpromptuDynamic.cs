@@ -238,5 +238,116 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(this, tInterface.SyncRoot);
             Assert.AreEqual(true,tInterface.GetEnumerator().MoveNext());
         }
+		  
+		[Test, TestMethod]
+		public void TestBuilder(){
+			var New = Impromptu.NewBuilder<ExpandoObject>();
+			
+			  var tExpando =New.Object(
+										Test:"test1",
+										Test2:"Test 2nd"
+									);
+		   Assert.AreEqual("test1",tExpando.Test );
+		   Assert.AreEqual("Test 2nd",tExpando.Test2);
+			
+		    dynamic NewD = new ImpromptuBuilder<ExpandoObject>();
+
+			
+			var tExpandoNamedTest =NewD.Robot(
+				LeftArm:"Rise",
+				RightArm:"Clamp"
+				);
+			
+			 Assert.AreEqual("Rise",tExpandoNamedTest.LeftArm);
+		  	 Assert.AreEqual("Clamp",tExpandoNamedTest.RightArm);
+		}
+				
+		[Test, TestMethod]
+		public void TestSetupOtherTypes(){
+			var New = Impromptu.NewBuilder().Setup(
+					Expando: typeof(ExpandoObject),
+					Dict: typeof(ImpromptuDictionary)
+				);
+			
+			var tExpando =New.Expando(
+				LeftArm:"Rise",
+				RightArm:"Clamp"
+				);
+			
+			var tDict =New.Dict(
+				LeftArm:"RiseD",
+				RightArm:"ClampD"
+				);
+			
+			 Assert.AreEqual("Rise",tExpando.LeftArm);
+		  	 Assert.AreEqual("Clamp",tExpando.RightArm);
+			Assert.AreEqual(typeof(ExpandoObject),tExpando.GetType());
+			
+			 Assert.AreEqual("RiseD",tDict.LeftArm);
+			 Assert.AreEqual("ClampD",tDict.RightArm);
+			Assert.AreEqual(typeof(ImpromptuDictionary),tDict.GetType());
+
+		}
+		
+		[Test, TestMethod]
+		public void TestClayFactorySyntax(){
+			dynamic New = Impromptu.NewBuilder();
+			
+			{
+					var person = New.Person();
+						person.FirstName = "Louis";
+						person.LastName = "Dejardin";
+					Assert.AreEqual(person.FirstName, "Louis");
+		  			Assert.AreEqual(person.LastName, "Dejardin");
+			}
+			{
+					var person = New.Person();
+						person["FirstName"] = "Louis";
+						person["LastName"] = "Dejardin";
+					Assert.AreEqual(person.FirstName, "Louis");
+		  			Assert.AreEqual(person.LastName, "Dejardin");
+			}
+			{
+					var person = New.Person() 
+							.FirstName("Louis")
+   							.LastName("Dejardin");
+					Assert.AreEqual(person.FirstName, "Louis");
+		  			Assert.AreEqual(person.LastName, "Dejardin");
+			}
+				{
+					var person = New.Person(new {
+										    FirstName = "Louis",
+										    LastName = "Dejardin"
+										   });
+					Assert.AreEqual(person.FirstName, "Louis");
+		  			Assert.AreEqual(person.LastName, "Dejardin");
+			}
+
+		}
+		
+			[Test, TestMethod]
+		public void TestFactoryListSyntax(){
+			dynamic New = Impromptu.NewBuilder();
+			
+			//Test a Clay Syntax
+			var people = New.Array(
+    						 New.Person().FirstName("Louis").LastName("Dejardin"),
+   							 New.Person().FirstName("Bertrand").LastName("Le Roy")
+						 );
+			
+			Assert.AreEqual("Dejardin",people[0].LastName);
+		  	Assert.AreEqual("Le Roy",people[1].LastName);
+			
+			var people2 =  new ImpromptuList(){
+							New.Robot(Name:"Bender"),
+							New.Robot(Name:"RobotDevil")
+						   };	
+			
+			
+			Assert.AreEqual("Bender", people2[0].Name);
+		  	Assert.AreEqual("RobotDevil",people2[1].Name);
+
+		}
+		
     }
 }

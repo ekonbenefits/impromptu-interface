@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using System.Collections.Concurrent;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -10,9 +11,16 @@ namespace ImpromptuInterface.Dynamic
     /// Builds Expando-Like Objects with an inline Syntax
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ImpromptuBuilder<T>: ImpromptuObject where T: new()
+    public class ImpromptuBuilder<TObjectProtoType>: ImpromptuObject where TObjectProtoType: new()
     {
-
+		protected IDictionary<string,Type> _buildType;
+		
+		public ImpromptuBuilder(){
+			_buildType = new Dictionary<string,Type>();
+			Setup = new SetupTrampoline(this);
+			Object = new BuilderTrampoline();
+		}
+		
         /// <summary>
         /// Creates a prototype list
         /// </summary>
@@ -38,7 +46,10 @@ namespace ImpromptuInterface.Dynamic
         /// Creates a Prototype object.
         /// </summary>
         /// <value>The object.</value>
-        public readonly dynamic Object = new BuilderTrampoline();
+        public readonly dynamic Object;
+		
+		public readonly dynamic Setup;
+
 
         ///<summary>
         /// Trampoline for pulder
@@ -52,12 +63,45 @@ namespace ImpromptuInterface.Dynamic
                 return true;
             }
         }
-
+		
+		public class SetupTrampoline:DynamicObject
+        {
+			ImpromptuBuilder<TObjectProtoType> _buider;
+			public SetupTrampoline(ImpromptuBuilder<TObjectProtoType> builder){
+				_buider = builder;
+			}
+			
+            public override bool TryInvoke(InvokeBinder binder, dynamic[] args, out object result)
+            {
+				if (binder.CallInfo.ArgumentNames.Count != binder.CallInfo.ArgumentCount)
+               		 throw new ArgumentException("Requires argument names for every argument");
+	             
+				foreach(var tKeyPair in binder.CallInfo.ArgumentNames.Zip(args, (n, a) => new KeyValuePair<string, Type>(n, a))){
+					_buider._buildType[tKeyPair.Key]=tKeyPair.Value;
+				}
+				result = _buider;
+				return true;
+            }
+        }
+		
+		public override bool TrySetMember(SetMemberBinder binder, dynamic value){
+			if(value != null && !(value is Type)){
+				return false;	
+			}
+			
+			_buildType[binder.Name]=value;
+			return true;
+		}
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             Type tType;
-            result = InvokeHelper(binder.CallInfo, args);
+			Type tBuildType;
+			
+			if(!_buildType.TryGetValue(binder.Name, out tBuildType))
+				tBuildType = null;
+
+            result = InvokeHelper(binder.CallInfo, args,tBuildType);
             if (TryTypeForName(binder.Name, out tType))
             {
                 if (tType.IsInterface && result != null && tType.IsAssignableFrom(result.GetType()))
@@ -69,17 +113,33 @@ namespace ImpromptuInterface.Dynamic
 
         }
 
-        private static object InvokeHelper(CallInfo callinfo, IEnumerable<object> args)
+        private static object InvokeHelper(CallInfo callinfo, IEnumerable<object> args, Type buildType =null)
         {
             IEnumerable<KeyValuePair<string, object>> keyValues =null;
             if (callinfo.ArgumentNames.Count == 0 && callinfo.ArgumentCount == 1)
             {
-                keyValues = args.FirstOrDefault() as IDictionary<string, object>;
+				var tArg =args.FirstOrDefault();
+                keyValues = tArg as IDictionary<string, object>;
+				if(keyValues ==null 
+					&& tArg !=null
+					&& tArg.GetType().IsNotPublic  
+					&& Attribute.IsDefined(
+									tArg.GetType(), 
+									typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), 
+									false)){
+					var keyDict = new Dictionary<string,object>();
+					foreach(var tProp in tArg.GetType().GetProperties()){
+						keyDict[tProp.Name] = Impromptu.InvokeGet(tArg, tProp.Name);
+					}
+					keyValues = keyDict;
+				}
             }
 
             if (keyValues == null && callinfo.ArgumentNames.Count != callinfo.ArgumentCount)
                 throw new ArgumentException("Requires argument names for every argument");
-            var result = Activator.CreateInstance<T>();
+            var result = buildType !=null 
+				? Activator.CreateInstance(buildType) 
+					: Activator.CreateInstance<TObjectProtoType>();
             var tDict = result as IDictionary<string, object>;
             keyValues = keyValues ?? callinfo.ArgumentNames.Zip(args, (n, a) => new KeyValuePair<string, object>(n, a));
             foreach (var tArgs in keyValues)

@@ -22,16 +22,17 @@ namespace ImpromptuInterface.Optimization
 {
     internal class BinderHash
     {
-        protected BinderHash(Type delegateType, string name, Type context)
+        protected BinderHash(Type delegateType, string name, Type context, string[] argNames)
         {
             DelegateType = delegateType;
             Name = name;
             Context = context;
+            ArgNames = argNames;
         }
 
-        public static BinderHash Create(Type delType, string name, Type context)
+        public static BinderHash Create(Type delType, string name, Type context, string[] argNames)
         {
-            return new BinderHash(delType, name, context);
+            return new BinderHash(delType, name, context, argNames);
         }
 
 
@@ -39,13 +40,22 @@ namespace ImpromptuInterface.Optimization
         public Type DelegateType { get; protected set; }
         public string Name { get; protected set; }
         public Type Context { get; protected set; }
-
+        public string[] ArgNames { get; protected set; }
 
         public virtual bool Equals(BinderHash other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other.DelegateType, DelegateType) && Equals(other.Name, Name) && Equals(other.Context, Context);
+            return 
+                !(other.ArgNames == null ^ ArgNames == null)
+                && Equals(other.DelegateType, DelegateType) 
+                && Equals(other.Name, Name) 
+                && Equals(other.Context, Context)
+                 && (ArgNames == null
+                // ReSharper disable AssignNullToNotNullAttribute
+                //Exclusive Or Makes Sure this doesn't happen
+                                 || other.ArgNames.SequenceEqual(ArgNames));
+            // ReSharper restore AssignNullToNotNullAttribute
         }
 
         public override bool Equals(object obj)
@@ -53,7 +63,7 @@ namespace ImpromptuInterface.Optimization
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
             if (!(obj is BinderHash)) return false;
-            return Equals((BinderHash)obj);
+            return Equals((BinderHash) obj);
         }
 
         public override int GetHashCode()
@@ -61,8 +71,8 @@ namespace ImpromptuInterface.Optimization
             unchecked
             {
                 int result = DelegateType.GetHashCode();
-                result = (result * 397) ^ Name.GetHashCode();
-                result = (result * 397) ^ Context.GetHashCode();
+                result = (result*397) ^ Name.GetHashCode();
+                result = (result*397) ^ Context.GetHashCode();
                 return result;
             }
         }
@@ -70,8 +80,8 @@ namespace ImpromptuInterface.Optimization
 
     internal class GenericBinderHashBase : BinderHash
     {
-        protected GenericBinderHashBase(Type delegateType, string name, Type context)
-            : base(delegateType, name, context)
+        protected GenericBinderHashBase(Type delegateType, string name, Type context, string[] argNames)
+            : base(delegateType, name, context,argNames)
         {
         }
     }
@@ -79,13 +89,13 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash<T> : GenericBinderHashBase where T : class
     {
 
-        public static BinderHash<T> Create(string name, Type context)
+        public static BinderHash<T> Create(string name, Type context, string[] argNames)
         {
-            return new BinderHash<T>(name, context);
+            return new BinderHash<T>(name, context, argNames);
         }
 
-        protected BinderHash(string name, Type context)
-            : base(typeof(T), name, context)
+        protected BinderHash(string name, Type context, string[] argNames)
+            : base(typeof(T), name, context, argNames)
         {
         }
 
@@ -96,7 +106,15 @@ namespace ImpromptuInterface.Optimization
             {
                 if (other is BinderHash<T>)
                 {
-                    return Equals(other.Name, Name) && Equals(other.Context, Context);
+                    return 
+                           !(other.ArgNames == null ^ ArgNames == null)
+                           && Equals(other.Name, Name)
+                           && Equals(other.Context, Context)
+                           && (ArgNames == null
+                            // ReSharper disable AssignNullToNotNullAttribute
+                                 //Exclusive Or Makes Sure this doesn't happen
+                                 || other.ArgNames.SequenceEqual(ArgNames));
+                            // ReSharper restore AssignNullToNotNullAttribute
                 }
                 return false;
             }

@@ -34,25 +34,26 @@ namespace ImpromptuInterface
         private static readonly object _binderCacheLock = new object();
 
 
-    
-			
+
+
 
         /// <summary>
-        /// Creates a cached call site at runtime. 
+        /// Creates a cached call site at runtime.
         /// </summary>
         /// <param name="delegateType">Type of the delegate.</param>
         /// <param name="binder">The CallSite binder.</param>
-        ///<param name="name">Member Name</param>
-        ///<param name="context"> Permissions Context type</param>
+        /// <param name="name">Member Name</param>
+        /// <param name="context">Permissions Context type</param>
+        /// <param name="argNames">The arg names.</param>
         /// <returns>The CallSite</returns>
         /// <remarks>
-        ///  Advanced usage only for serious custom dynamic invocation.
-        /// </remarks>  
+        /// Advanced usage only for serious custom dynamic invocation.
+        /// </remarks>
         /// <seealso cref="CreateCallSite{T}"/>
-        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, string name, Type context)
+        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, string name, Type context, string[] argNames)
         {
 
-            var tHash = BinderHash.Create(delegateType, name, context);
+            var tHash = BinderHash.Create(delegateType, name, context, argNames);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -65,19 +66,32 @@ namespace ImpromptuInterface
             }
         }
 
-
         /// <summary>
         /// Creates a cached call site at runtime.
         /// </summary>
-        /// <typeparam name="T">Delegate Type</typeparam>
+        /// <param name="delegateType">Type of the delegate.</param>
         /// <param name="binder">The binder.</param>
-        ///<param name="name">Member Name</param>
-        ///<param name="context"> Permissions Context type</param>
-        ///<returns>The CallSite</returns>
+        /// <param name="name">The name.</param>
+        /// <param name="context">The context.</param>
+        /// <returns>The CallSite</returns>
         /// <remarks>
-        ///  Advanced usage only for serious custom dynamic invocation.
+        /// Advanced usage only for serious custom dynamic invocation.
         /// </remarks>
-        /// <example>
+        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, string name, Type context)
+        {
+            return CreateCallSite(delegateType, binder, name, context,null);
+        }
+
+        /// <summary>
+        /// Creates the call site.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="binder">The binder.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="argNames">The arg names.</param>
+        /// <returns></returns>
+        ///    /// <example>
         /// Unit test that exhibits usage
         ///<code><![CDATA[
         /// 
@@ -102,9 +116,9 @@ namespace ImpromptuInterface
         ///  ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
-        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, string name, Type context) where T: class
+        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, string name, Type context, string[]argNames) where T: class
         {
-            var tHash = BinderHash<T>.Create(name, context);
+            var tHash = BinderHash<T>.Create(name, context, argNames);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -116,7 +130,43 @@ namespace ImpromptuInterface
                 return (CallSite<T>)tOut;
             }
         }
-
+        /// <summary>
+        /// Creates the call site.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="binder">The binder.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        ///    /// <example>
+        /// Unit test that exhibits usage
+        ///<code><![CDATA[
+        /// 
+        ///    string tResult = String.Empty;
+        ///    var tPoco = new MethOutPoco();
+        ///    var tBinder =
+        ///        Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+        ///                                    new[]
+        ///                                        {
+        ///                                            Info.Create(
+        ///                                                InfoFlags.None, null),
+        ///                                            Info.Create(
+        ///                                                InfoFlags.IsOut |
+        ///                                                InfoFlags.UseCompileTimeType, null)
+        ///                                        });
+        ///
+        ///    var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
+        /// 
+        ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
+        ///
+        ///    Assert.AreEqual("success", tResult);
+        ///  ]]></code>
+        /// </example>
+        /// <seealso cref="CreateCallSite"/>
+         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, string name, Type context) where T: class
+         {
+             return CreateCallSite<T>(binder, name, context, null);
+         }
 
 
         /// <summary>
@@ -154,9 +204,27 @@ namespace ImpromptuInterface
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
+            var tArgNames = new string[args.Length];
+            var tArgSet = false;
             for (int i = 0; i < args.Length; i++)
+            {
+                var tFlag =CSharp.CSharpArgumentInfoFlags.None;
+                var tArg = args[i];
+                string tName = null;
+                if (tArg is InvokeArg)
+                {
+                    tFlag |= CSharp.CSharpArgumentInfoFlags.NamedArgument;
+                    tName = ((InvokeArg)tArg).Name;
+
+                    args[i] = ((InvokeArg)tArg).Value;
+                    tArgSet = true;
+                }
+                tArgNames[i] = tName;
                 tList.Add(CSharp.CSharpArgumentInfo.Create(
-                    CSharp.CSharpArgumentInfoFlags.None, null));
+                    tFlag, tName));
+            }
+            if (!tArgSet)
+                tArgNames = null;
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
 
@@ -164,7 +232,7 @@ namespace ImpromptuInterface
                                        tContext,tList);
 
 
-            return InvokeHelper.InvokeMember(tBinder, name, tContext, target, args);
+            return InvokeHelper.InvokeMember(tBinder, name, tContext,tArgNames, target, args);
         }
 
 
@@ -201,15 +269,32 @@ namespace ImpromptuInterface
                             };
             if (args == null)
                 args = new object[] { null };
-         
-    
+
+
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
-            // ReSharper disable ForCanBeConvertedToForeach)
+            // ReSharper disable ForCanBeConvertedToForeach
+            var tArgNames = new string[args.Length];
+            var tArgSet = false;
             for (int i = 0; i < args.Length; i++)
+            {
+                var tFlag = CSharp.CSharpArgumentInfoFlags.None;
+                var tArg = args[i];
+                string tName = null;
+                if (tArg is InvokeArg)
+                {
+                    tFlag |= CSharp.CSharpArgumentInfoFlags.NamedArgument;
+                    tName = ((InvokeArg)tArg).Name;
 
+                    args[i] = ((InvokeArg)tArg).Value;
+                    tArgSet = true;
+                }
+                tArgNames[i] = tName;
                 tArgs.Add(CSharp.CSharpArgumentInfo.Create(
-                     CSharp.CSharpArgumentInfoFlags.None, null));
+                    tFlag, tName));
+            }
+            if (!tArgSet)
+                tArgNames = null;
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
             var tContext = target.GetType();
@@ -217,7 +302,7 @@ namespace ImpromptuInterface
                                        tContext,tArgs);
 
 
-            InvokeHelper.InvokeMemberAction(tBinder, name, tContext,target, args);
+            InvokeHelper.InvokeMemberAction(tBinder, name, tContext,tArgNames, target, args);
 
         
         }

@@ -133,6 +133,61 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("object", tOut3);
         }
 
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPassAndGetValueArg()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", new InvokeArg("arg", tValue));
+
+            Assert.AreEqual("int", tOut);
+
+            Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
+
+
+            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+
+            Assert.AreEqual("object", tOut2);
+
+            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", new { Anon = 1 });
+
+            Assert.AreEqual("object", tOut3);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPassAndGetValueArgOptional()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var arg = InvokeArg.Create;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func",  arg("two", tValue));
+
+            Assert.AreEqual("object named", tOut);
+
+            Assert.AreEqual("object named", (object)tOut); 
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPass2AndGetValueArgOptional()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var arg = InvokeArg.Create;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", arg("two", tValue), arg("one", tValue));
+
+            Assert.AreEqual("object named", tOut);
+
+            Assert.AreEqual("object named", (object)tOut);
+        }
+
          [Test, TestMethod]
         public void TestMethodStaticOverloadingPassAndGetValueNull()
         {

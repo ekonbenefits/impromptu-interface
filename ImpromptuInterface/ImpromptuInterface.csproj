@@ -61,7 +61,6 @@
   <ItemGroup>
     <Compile Include="Dynamic\ImpromptuBuilder.cs" />
     <Compile Include="Dynamic\ImpromptuDictionaryBase.cs" />
-    <Compile Include="Dynamic\ImpromptuForwarder.cs" />
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\ImpromptuList.cs" />
     <Compile Include="Dynamic\InlineSyntax.cs" />

@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>ImpromptuInterface</id> 
-    <version>3.1.0</version> 
+    <version>3.1.1</version> 
     <authors>Jay Tuley</authors> 
     <owners>Jay Tuley</owners>
     <description>A Lightweight Duck Casting Framework for dynamic C# 4.0 (.net4 &amp; silverlight4). Includes helper methods for dynamic invocation via method and property names known only at runtime (runs faster than reflection).</description> 
@@ -10,6 +10,9 @@
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <tags>ducktyping duckcasting dynamic .net40</tags>
     <language>en-US</language>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="SL40" />
+    </frameworkAssemblies>
   </metadata>
   <files>
     <file src="..\License.txt" />

@@ -11,7 +11,7 @@
     <tags>ducktyping duckcasting dynamic .net40</tags>
     <language>en-US</language>
     <frameworkAssemblies>
-      <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework="SL40" />
+      <frameworkAssembly assemblyName="Microsoft.CSharp" />
     </frameworkAssemblies>
   </metadata>
   <files>

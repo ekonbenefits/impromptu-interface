@@ -299,7 +299,7 @@ namespace ImpromptuInterface.Dynamic
         /// <summary>
         /// Occurs when a property value changes.
         /// </summary>
-        public virtual event PropertyChangedEventHandler PropertyChanged;
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
         /// Equalses the specified other.

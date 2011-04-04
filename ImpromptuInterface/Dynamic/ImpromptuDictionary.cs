@@ -82,11 +82,6 @@ namespace ImpromptuInterface.Dynamic
         }
 
         /// <summary>
-        /// Occurs when a property value changes.
-        /// </summary>
-        public override event PropertyChangedEventHandler PropertyChanged;
-
-        /// <summary>
         /// Clears this instance.
         /// </summary>
         public void Clear()

@@ -66,6 +66,10 @@ namespace ImpromptuInterface.Dynamic
             return _dictionary.GetEnumerator();
         }
 
+        /// <summary>
+        /// Gets the enumerator.
+        /// </summary>
+        /// <returns></returns>
         public IEnumerator<dynamic> GetEnumerator()
         {
             return _list.GetEnumerator();
@@ -88,6 +92,13 @@ namespace ImpromptuInterface.Dynamic
             OnCollectionChanged(NotifyCollectionChangedAction.Reset);
         }
 
+        /// <summary>
+        /// Determines whether [contains] [the specified item].
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns>
+        /// 	<c>true</c> if [contains] [the specified item]; otherwise, <c>false</c>.
+        /// </returns>
         public bool Contains(dynamic item)
         {
             return _list.Contains(item);
@@ -243,6 +254,11 @@ namespace ImpromptuInterface.Dynamic
             }
         }
 
+        /// <summary>
+        /// Equalses the specified other.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns></returns>
         public bool Equals(ImpromptuList other)
         {
             if (ReferenceEquals(null, other)) return false;

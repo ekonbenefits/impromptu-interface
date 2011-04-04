@@ -90,7 +90,7 @@ namespace ImpromptuInterface.Dynamic
         /// <summary>
         /// Sets up object builder
         /// </summary>
-        /// <param name="constructorArgs">The constructor factory.</param>
+        /// <param name="constructorArgsFactory"></param>
         /// <returns></returns>
         dynamic ObjectSetup(Func<object[]> constructorArgsFactory);
 
@@ -236,6 +236,10 @@ namespace ImpromptuInterface.Dynamic
         {
             ImpromptuBuilder<TObjectProtoType> _buider;
 
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ImpromptuBuilder&lt;TObjectProtoType&gt;.BuilderTrampoline"/> class.
+            /// </summary>
+            /// <param name="builder">The builder.</param>
             public BuilderTrampoline(ImpromptuBuilder<TObjectProtoType> builder)
             {
 				_buider = builder;

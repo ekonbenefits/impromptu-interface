@@ -130,9 +130,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface.Silverlight.csproj">
+    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
       <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
-      <Name>ImpromptuInterface.Silverlight</Name>
+      <Name>ImpromptuInterface %28Silverlight%29</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

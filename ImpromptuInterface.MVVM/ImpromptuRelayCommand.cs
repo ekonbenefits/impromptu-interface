@@ -75,25 +75,22 @@ namespace ImpromptuInterface.MVVM
         }
 
 
-#if !SILVERLIGHT   
+        /// <summary>
+        /// Raises the can execute changed.
+        /// </summary>
+        public void RaiseCanExecuteChanged()
+        {
+            if (CanExecuteChanged != null)
+            {
+                CanExecuteChanged(this, EventArgs.Empty);
+            }
+        }
+
+
         /// <summary>
         /// Occurs when changes occur that affect whether or not the command should execute.
         /// </summary>
-        public event EventHandler CanExecuteChanged
-        {
-            add
-            {
-                CommandManager.RequerySuggested += value;
-            }
-            remove
-            {
-                CommandManager.RequerySuggested -= value;
-            }
-        }
-#else
         public event EventHandler CanExecuteChanged;
-#endif
-
 
     }
 }

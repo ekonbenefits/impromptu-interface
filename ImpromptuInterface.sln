@@ -17,8 +17,16 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface.SelfRunner", "UnitTestImpromptuInterface.SelfRunner\UnitTestImpromptuInterface.SelfRunner.csproj", "{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.MVVM", "ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj", "{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}"
+	ProjectSection(ProjectDependencies) = postProject
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7} = {DAB7C056-660A-4153-8FF2-B80A41310AD7}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.MVVM (Silverlight)", "ImpromptuInterface.MVVM.Silverlight\ImpromptuInterface.MVVM (Silverlight).csproj", "{56215C8D-85AE-4FCB-BD33-89E6ABBA407B}"
+	ProjectSection(ProjectDependencies) = postProject
+		{9181A92F-9A17-45A3-BBDB-EAC085A901A0} = {9181A92F-9A17-45A3-BBDB-EAC085A901A0}
+		{DAB7C056-660A-4153-8FF2-B80A41310AD7} = {DAB7C056-660A-4153-8FF2-B80A41310AD7}
+		{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB} = {D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

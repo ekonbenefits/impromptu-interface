@@ -14,6 +14,8 @@ Usage:
 
 Example:
 
+Note: the below example is using WPF, for Silverlight since as of 4.0 it still doesn't support dynamic properties use indexers when binding, e.g. {Binding [Progress]} or {Binding Command[Search]} instead.
+
 ---
      <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">
             <DatePicker SelectedDate="{Binding StartDate, Mode=TwoWay}" ></DatePicker>

@@ -28,7 +28,7 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public class ImpromptuViewModel:ImpromptuDictionary
     {
-        private Trampoline _trampoline;
+        private ImpropmtuCommands _trampoline;
 
         /// <summary>
         /// Convenient access to Dynamic Properties. When subclassing you can use Dynamic.PropertyName = x, etc.
@@ -45,35 +45,57 @@ namespace ImpromptuInterface.MVVM
         /// <value>The command.</value>
         public virtual dynamic Command
         {
-            get { return _trampoline ?? (_trampoline = new Trampoline(this)); }
+            get { return _trampoline ?? (_trampoline = new ImpropmtuCommands(this)); }
         }
 
-        protected class Trampoline : ImpromptuDictionary
+        /// <summary>
+        /// Trampoline object to give access to methods as Commands of original viewmodal
+        /// </summary>
+        public class ImpropmtuCommands : DynamicObject
         {
             private readonly ImpromptuDictionary _parent;
 
-            public Trampoline(ImpromptuDictionary parent)
+            private readonly Dictionary<string, ImpromptuRelayCommand> _commands =
+                new Dictionary<string, ImpromptuRelayCommand>();
+
+
+            internal ImpropmtuCommands(ImpromptuDictionary parent)
             {
                 _parent = parent;
             }
 
             public override bool TryGetMember(GetMemberBinder binder, out object result)
             {
-                if (!base.TryGetMember(binder, out result))
-                {
-                    var tName = binder.Name;
-                    var tCanExecute = "Can" + tName;
-                    if (_parent.ContainsKey(tCanExecute) || _parent.GetType().GetMethod(tCanExecute) != null)
-                    {
-                        result = new ImpromptuRelayCommand(_parent, tName, _parent, tCanExecute);
-                    }
-                    else
-                    {
-                        result = new ImpromptuRelayCommand(_parent, tName);
-                    }
-                    this[tName] = result;
-                }
+                result = this[binder.Name];
                 return true;
+            }
+
+            /// <summary>
+            /// Gets the <see cref="ImpromptuInterface.MVVM.ImpromptuRelayCommand"/> with the specified key.
+            /// </summary>
+            /// <value></value>
+            public ImpromptuRelayCommand this[String key]
+            {
+                get
+                {
+                    ImpromptuRelayCommand result;
+
+                    if (!_commands.TryGetValue(key, out result))
+                    {
+
+                        var tCanExecute = "Can" + key;
+                        if (_parent.ContainsKey(tCanExecute) || _parent.GetType().GetMethod(tCanExecute) != null)
+                        {
+                            result = new ImpromptuRelayCommand(_parent, key, _parent, tCanExecute);
+                        }
+                        else
+                        {
+                            result = new ImpromptuRelayCommand(_parent, key);
+                        }
+                        _commands[key] = result;
+                    }
+                    return result;
+                }
             }
         }
 

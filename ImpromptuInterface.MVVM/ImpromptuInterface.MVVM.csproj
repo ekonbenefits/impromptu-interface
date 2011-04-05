@@ -32,6 +32,9 @@
     <DocumentationFile>bin\Release\ImpromptuInterface.MVVM.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ImpromptuInterface">
+      <HintPath>..\ImpromptuInterface\bin\Release\ImpromptuInterface.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -45,12 +48,6 @@
     <Compile Include="ImpromptuRelayCommand.cs" />
     <Compile Include="ImpromptuViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
-      <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
-      <Name>ImpromptuInterface</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">

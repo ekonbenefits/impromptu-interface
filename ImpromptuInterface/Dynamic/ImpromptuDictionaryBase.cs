@@ -292,8 +292,11 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="key">The key.</param>
         protected virtual void OnPropertyChanged(string key)
         {
-            if(PropertyChanged !=null)
-                PropertyChanged(this,new PropertyChangedEventArgs(key));
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(key));
+                PropertyChanged(this, new PropertyChangedEventArgs("Item["+key+"]"));  //Indexers are Updated on Dictionarys as well
+            }
         }
 
         /// <summary>

@@ -47,6 +47,8 @@ Note: the below example is using WPF, for Silverlight since as of 4.0 it still d
             Dynamic.Progress = 0d;
             Dynamic.Data = null;
 
+	    PropertyChanged += (sender, e) => Command.Search.RaiseCanExecuteChanged();
+
 
             var tBackgroundWorker = new BackgroundWorker();
             Dynamic.BackgroundWorker = tBackgroundWorker;

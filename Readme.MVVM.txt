@@ -2,14 +2,14 @@ impromptu-interface.mvvm http://code.google.com/p/impromptu-interface/
 
 A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.
 
-Copyright 2010 Ekon Benefits
+Copyright 2011 Ekon Benefits
 Apache Licensed: http://www.apache.org/licenses/LICENSE-2.0
 
 Author:
 Jay Tuley jay+code@tuley.name
 
 Usage:
-    Just subclass ImpromptuViewModel and set your properties using Dynamic.PropertyName. Your commands need to be 'void CommandName(object parameter)' and then they can be bound with the path Command.CommandName and optional have a method 'bool CanCommandName(object parameter)'
+    Just subclass ImpromptuViewModel and set your properties using Dynamic.PropertyName. Your commands need to be 'void CommandName(object parameter)' and then they can be bound with the path Command.CommandName and optionally have a method 'bool CanCommandName(object parameter)'
 
 
 Example:
@@ -39,7 +39,6 @@ Example:
     {
         public MainWindowVM()
         {
-            Dynamic.Today = DateTime.Now;
             Dynamic.StartDate = DateTime.Today.AddMonths(-3);
             Dynamic.EndDate = DateTime.Today;
             Dynamic.Limit = 4;

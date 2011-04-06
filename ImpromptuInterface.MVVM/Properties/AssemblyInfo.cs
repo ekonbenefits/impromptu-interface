@@ -1,36 +1,22 @@
-﻿// 
-//  Copyright 2010  Ekon Benefits
-// 
-//    Licensed under the Apache License, Version 2.0 (the "License");
-//    you may not use this file except in compliance with the License.
-//    You may obtain a copy of the License at
-// 
-//        http://www.apache.org/licenses/LICENSE-2.0
-// 
-//    Unless required by applicable law or agreed to in writing, software
-//    distributed under the License is distributed on an "AS IS" BASIS,
-//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-//    See the License for the specific language governing permissions and
-//    limitations under the License.
-using System.Reflection;
+﻿using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+
+
 #if SILVERLIGHT
-[assembly: AssemblyTitle("ImpromptuInterface (Silverlight)")]
+[assembly: AssemblyTitle("ImpromptuInterface.MVVM (Silverlight)")]
 #else
-[assembly: AssemblyTitle("ImpromptuInterface")]
+[assembly: AssemblyTitle("ImpromptuInterface.MVVM")]
 #endif
-
-
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ekon Benefits")]
-[assembly: AssemblyProduct("ImpromptuInterface")]
-[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2010-2011")]
+[assembly: AssemblyProduct("ImpromptuInterface.MVVM")]
+[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2011")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -40,7 +26,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("fe08c33f-ea0d-429f-82c2-846f6e4c4f13")]
+[assembly: Guid("770f9380-29e4-45f2-b042-e11e704fb38e")]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -52,9 +38,8 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-
 #if SILVERLIGHT
-[assembly: AssemblyVersion("3.1.4.0")]
+[assembly: AssemblyVersion("1.0.9.0")]
 #else
-[assembly: AssemblyVersion("3.1.4.*")]
+[assembly: AssemblyVersion("1.0.9.*")]
 #endif

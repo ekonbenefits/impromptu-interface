@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Build
 {
     /// <summary>
     /// Meta info describing proxy usage. Can be used to preload proxy.

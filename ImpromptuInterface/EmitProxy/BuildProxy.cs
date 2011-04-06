@@ -13,7 +13,9 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-namespace ImpromptuInterface
+using ImpromptuInterface.Optimization;
+
+namespace ImpromptuInterface.Build
 {
     using System;
     using System.Collections.Generic;
@@ -29,52 +31,7 @@ namespace ImpromptuInterface
     ///</summary>
     public static class BuildProxy
     {
-        internal static readonly Type[] FuncKinds;
-        internal static readonly Type[] ActionKinds; 
-        static BuildProxy()
-        {
-            FuncKinds = new []
-                            {
-                                null,
-                                typeof(Func<>),
-                                typeof(Func<,>),
-                                typeof(Func<,,>),
-                                typeof(Func<,,,>),
-                                typeof(Func<,,,,>),
-                                typeof(Func<,,,,,>),
-                                typeof(Func<,,,,,,>),
-                                typeof(Func<,,,,,,,>),
-                                typeof(Func<,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,,>),
-                                typeof(Func<,,,,,,,,,,,,,,,,>),
-                            };
-            ActionKinds = new []
-                            {
-                                typeof(Action),
-                                typeof(Action<>),
-                                typeof(Action<,>),
-                                typeof(Action<,,>),
-                                typeof(Action<,,,>),
-                                typeof(Action<,,,,>),
-                                typeof(Action<,,,,,>),
-                                typeof(Action<,,,,,,>),
-                                typeof(Action<,,,,,,,>),
-                                typeof(Action<,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,,>),
-                                typeof(Action<,,,,,,,,,,,,,,,>),
-                            };
-        }
+        
 
         private static ModuleBuilder _builder;
         internal static ModuleBuilder _tempBuilder;
@@ -384,10 +341,28 @@ namespace ImpromptuInterface
 
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
         {
-            var tName = info.Name;
 
-            Type[] tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
+       
+            var tName = info.Name;
+            
             var tParamAttri = info.GetParameters();
+            Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
+           
+
+            IEnumerable<string> tArgNames;
+            if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any())
+            {
+                tArgNames = tParamAttri.Select(it => it.Name).ToList();
+            }
+            else
+            {
+                var tParam = tParamAttri.Zip(Enumerable.Range(0, tParamTypes.Count()), (p,i) => new { i, p })
+                    .FirstOrDefault(it => it.p.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any());
+
+                tArgNames = tParam == null
+                    ? Enumerable.Repeat(default(string), tParamTypes.Length) 
+                    : Enumerable.Repeat(default(string), tParam.i).Concat(tParamAttri.Skip(Math.Min(tParam.i - 1,0)).Select(it=>it.Name)).ToList();
+            }
 
 
             var tReturnType = typeof (void);
@@ -454,7 +429,7 @@ namespace ImpromptuInterface
 
 
 
-            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType);
+            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType, tArgNames);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -511,7 +486,9 @@ namespace ImpromptuInterface
             Type callSite,
             Type contextType, 
             Type convertFuncType, 
-            Type invokeFuncType)
+            Type invokeFuncType,
+            IEnumerable<string> argNames
+            )
         {
             var tIlGen = methodBuilder.GetILGenerator();
 
@@ -533,7 +510,7 @@ namespace ImpromptuInterface
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             using (tIlGen.EmitBranchTrue())
             {
-                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo);
+                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo, argNames);
                 tIlGen.EmitCallsiteCreate(invokeFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
@@ -810,12 +787,7 @@ namespace ImpromptuInterface
             
         }
 
-        internal static Type GenericDelegateType(int count, bool action =false)
-        {
-            return action 
-                ? ActionKinds[count] 
-                : FuncKinds[count];
-        }
+     
 
 
         /// <summary>
@@ -832,7 +804,7 @@ namespace ImpromptuInterface
 
 
             var tList = new List<Type> { typeof(CallSite), typeof(object) };
-            tList.AddRange(argTypes.Select(it => it.IsNotPublic && !it.IsByRef ? typeof(object) : it));
+            tList.AddRange(argTypes.Select(it => (it.IsNotPublic && !it.IsByRef) ? typeof(object) : it));
 
             
 
@@ -856,9 +828,9 @@ namespace ImpromptuInterface
                     return tType;
                 }
 
-                if (tList.Any(it => it.IsByRef) 
-                    || (tIsFunc && tList.Count >= FuncKinds.Length) 
-                    || (!tIsFunc && tList.Count >= ActionKinds.Length))
+                if (tList.Any(it => it.IsByRef)
+                    || (tIsFunc && tList.Count >= InvokeHelper.FuncKinds.Length)
+                    || (!tIsFunc && tList.Count >= InvokeHelper.ActionKinds.Length))
                 {
                     tType = GenerateFullDelegate(builder, methodInfo);
                     _delegateCache[tHash] = tType;
@@ -870,7 +842,7 @@ namespace ImpromptuInterface
                 if (tIsFunc)
                     tList.Add(returnType);
 
-                var tFuncGeneric = GenericDelegateType(tList.Count, !tIsFunc);
+                var tFuncGeneric = Impromptu.GenericDelegateType(tList.Count, !tIsFunc);
 
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());

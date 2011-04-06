@@ -19,7 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Build
 {
     /// <summary>
     /// Type that Encompasses Hashing a group of Types in various ways
@@ -178,27 +178,47 @@ namespace ImpromptuInterface
                 : moreTypes.OrderBy(it => it.Name).ToArray();
         }
 
+        /// <summary>
+        /// Creates the TypeHash
+        /// </summary>
+        /// <param name="moreTypes">The more types.</param>
+        /// <returns></returns>
         public static TypeHash Create(IEnumerable<Type> moreTypes)
         {
 #pragma warning disable 612,618
             return new TypeHash(moreTypes);
 #pragma warning restore 612,618
         }
-
+        /// <summary>
+        /// Creates the TypeHash
+        /// </summary>
+        /// <param name="type1">The type1.</param>
+        /// <param name="moreTypes">The more types.</param>
+        /// <returns></returns>
         public static TypeHash Create(Type type1, params Type[] moreTypes)
         {
 #pragma warning disable 612,618
             return new TypeHash(type1, moreTypes);
 #pragma warning restore 612,618
         }
-
+        /// <summary>
+        /// Creates the TypeHash
+        /// </summary>
+        /// <param name="type1">The type1.</param>
+        /// <param name="informalInterface">The informal interface.</param>
+        /// <returns></returns>
         public static TypeHash Create(Type type1, IDictionary<string, Type> informalInterface)
         {
 #pragma warning disable 612,618
             return new TypeHash(type1, informalInterface);
 #pragma warning restore 612,618
         }
-
+        /// <summary>
+        /// Creates the TypeHash
+        /// </summary>
+        /// <param name="strictOrder">if set to <c>true</c> [strict order].</param>
+        /// <param name="moreTypes">The more types.</param>
+        /// <returns></returns>
         public static TypeHash Create(bool strictOrder, params MemberInfo[] moreTypes)
         {
 #pragma warning disable 612,618

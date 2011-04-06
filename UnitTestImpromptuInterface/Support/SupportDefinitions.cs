@@ -20,6 +20,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Diagnostics;
+using ImpromptuInterface.Dynamic;
+
 namespace UnitTestImpromptuInterface
 {
 
@@ -56,6 +58,15 @@ namespace UnitTestImpromptuInterface
         int Length { get; }
 
     }
+
+    public interface IRobot
+    {
+        string Name { get; }
+    }
+     public class Robot
+     {
+         public string Name { get; set; } 
+     }
 
     public interface ISimpleStringMethod
     {
@@ -114,6 +125,8 @@ namespace UnitTestImpromptuInterface
 
 	}
 
+
+
     public class OverloadingMethPoco
     {
         public string Func(int arg)
@@ -124,6 +137,15 @@ namespace UnitTestImpromptuInterface
         public string Func(object arg)
         {
             return "object";
+        }
+        public string Func(object arg, object arg2, object arg3, object arg4, object arg5, object arg6)
+        {
+            return "object 6";
+        }
+
+        public string Func(object one = null, object two = null, object three = null)
+        {
+            return "object named";
         }
     }
 
@@ -183,5 +205,24 @@ namespace UnitTestImpromptuInterface
         bool Func(ref int result);
     }
 	
+	public interface IBuilder{
+		 INest Nester(object props);
+		 INested Nester2(object props);
+
+         [UseNamedArgument]
+         INest Nester(string NameLevel1, INested Nested);
+
+         INested Nester2([UseNamedArgument]string NameLevel2);	
+	}
 	
+	public interface INest
+    {
+		String NameLevel1 {get;set;}
+		INested Nested {get;set;}
+	}
+	
+    public interface INested
+    {
+		string NameLevel2 {get;}
+    }
 }

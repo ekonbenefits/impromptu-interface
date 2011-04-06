@@ -2,24 +2,27 @@
 <package> 
   <metadata> 
     <id>ImpromptuInterface</id> 
-    <version>2.1.0</version> 
+    <version>3.1.4</version> 
     <authors>Jay Tuley</authors> 
     <owners>Jay Tuley</owners>
-    <description>A Lightweight Duck Casting Framework for dynamic C#, Includes helper methods for Dynamic Invocation via Method and Property Names only known at runtime</description> 
+    <description>A Lightweight Duck Casting Framework for dynamic C# 4.0 (.net4 &amp; silverlight4). Includes helper methods for dynamic invocation via method and property names known only at runtime (runs faster than reflection).</description> 
     <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
     <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
     <tags>ducktyping duckcasting dynamic .net40</tags>
     <language>en-US</language>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="Microsoft.CSharp" />
+    </frameworkAssemblies>
   </metadata>
   <files>
     <file src="..\License.txt" />
     <file src="..\Readme.txt" />
-    <file src="..\ImpromptuInterface\bin\Release\*.xml" target="lib\net40" />
-    <file src="..\ImpromptuInterface\bin\Release\*.dll" target="lib\net40" />
-    <file src="..\ImpromptuInterface\bin\Release\*.pdb" target="lib\net40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.xml" target="lib\SL40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.dll" target="lib\SL40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\*.pdb" target="lib\SL40" />
+    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
+    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
+    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.pdb" target="lib\net40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
+    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.pdb" target="lib\SL40" />
   </files>
 </package>
 

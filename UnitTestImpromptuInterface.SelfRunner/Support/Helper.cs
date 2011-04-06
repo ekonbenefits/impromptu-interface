@@ -102,12 +102,28 @@ namespace UnitTestImpromptuInterface
                 FailLess(smaller, larger);
         }   
       
+        public void IsTrue(bool actual,string message)
+        {
+            if (!actual)
+            {
+                throw new AssertionException(message ?? "Expected True");
+            }
+        }
+        public void IsTrue(bool actual)
+        {
+            IsTrue(actual, null);
+        }   
 
         public void IsFalse(bool actual)
         {
+            IsFalse(actual, null);
+        }   
+
+        public void IsFalse(bool actual, string message)
+        {
             if (actual)
             {
-                throw new AssertionException("Expected False");
+                throw new AssertionException(message ?? "Expected False");
             }
         }
 

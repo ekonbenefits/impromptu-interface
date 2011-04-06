@@ -80,8 +80,20 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ImpromptuInterface\Dynamic\IActLike.cs">
+      <Link>Dynamic\IActLike.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\IDynamicKnowLike.cs">
+      <Link>Dynamic\IDynamicKnowLike.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuBuilder.cs">
+      <Link>Dynamic\ImpromptuBuilder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionary.cs">
       <Link>Dynamic\ImpromptuDictionary.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionaryBase.cs">
+      <Link>Dynamic\ImpromptuDictionaryBase.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuFactory.cs">
       <Link>Dynamic\ImpromptuFactory.cs</Link>
@@ -89,11 +101,17 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuGet.cs">
       <Link>Dynamic\ImpromptuGet.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuList.cs">
+      <Link>Dynamic\ImpromptuList.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
-    <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambda.cs">
-      <Link>Dynamic\InlineLambda.cs</Link>
+    <Compile Include="..\ImpromptuInterface\Dynamic\InlineSyntax.cs">
+      <Link>Dynamic\InlineSyntax.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\UseNamedArgumentAttribute.cs">
+      <Link>Dynamic\UseNamedArgumentAttribute.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxy.cs">
       <Link>EmitProxy\ActLikeProxy.cs</Link>
@@ -110,8 +128,17 @@
     <Compile Include="..\ImpromptuInterface\EmitProxy\TypeHash.cs">
       <Link>EmitProxy\TypeHash.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\IActLikeProxy.cs">
+      <Link>IActLikeProxy.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Impromptu.cs">
       <Link>Impromptu.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeArg.cs">
+      <Link>InvokeArg.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\BinderHash.cs">
+      <Link>Optimization\BinderHash.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper.cs">
       <Link>Optimization\InvokeHelper.cs</Link>
@@ -123,6 +150,7 @@
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.nuspec">
       <Link>Properties\ImpromptuInterface.nuspec</Link>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <ItemGroup>

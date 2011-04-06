@@ -13,7 +13,7 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Build
 {
     using System;
     using System.Collections.Generic;
@@ -290,7 +290,7 @@ namespace ImpromptuInterface
         /// <param name="name">The name.</param>
         /// <param name="context">The context.</param>
         /// <param name="argInfo">The arg info.</param>
-        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo)
+        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo, IEnumerable<string> argNames)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
             generator.Emit(OpCodes.Ldstr, name);
@@ -300,23 +300,29 @@ namespace ImpromptuInterface
 
            
 
-            tList.AddRange(argInfo.Select(arg => (Action<ILGenerator>)(gen =>
+            tList.AddRange(argInfo.Zip(argNames,(p,n)=>new{p,n}).Select(arg => (Action<ILGenerator>)(gen =>
                                                                             {
                                                                                 var tStart = CSharpArgumentInfoFlags.
                                                                                     UseCompileTimeType;
 
-                                                                                if (arg.IsOut)
+                                                                                if (arg.p.IsOut)
                                                                                 {
                                                                                     tStart |=
                                                                                         CSharpArgumentInfoFlags.IsOut;
                                                                                 }
-                                                                                else if(arg.ParameterType.IsByRef)
+                                                                                else if(arg.p.ParameterType.IsByRef)
                                                                                 {
                                                                                     tStart |=
                                                                                        CSharpArgumentInfoFlags.IsRef;
                                                                                 }
 
-                                                                                gen.EmitCreateCSharpArgumentInfo(tStart);
+                                                                                if (!String.IsNullOrEmpty(arg.n))
+                                                                                {
+                                                                                    tStart |=
+                                                                                     CSharpArgumentInfoFlags.NamedArgument;
+                                                                                }
+
+                                                                                gen.EmitCreateCSharpArgumentInfo(tStart, arg.n);
                                                                                 return;
                                                                             })));
             generator.EmitArray(typeof(CSharpArgumentInfo), tList);

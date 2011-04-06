@@ -16,3 +16,7 @@ glob:*~
 glob:*/Bin/*
 glob:speed/*
 glob:*.orig
+glob:*.ReSharper
+glob:dist/*
+glob:_UpgradeReport_Files/*
+glob:UpgradeLog.XML

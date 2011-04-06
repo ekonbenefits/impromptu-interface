@@ -238,5 +238,168 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(this, tInterface.SyncRoot);
             Assert.AreEqual(true,tInterface.GetEnumerator().MoveNext());
         }
+		  
+		[Test, TestMethod]
+		public void TestBuilder(){
+			var New = Builder.New<ExpandoObject>();
+			
+			  var tExpando =New.Object(
+										Test:"test1",
+										Test2:"Test 2nd"
+									);
+		   Assert.AreEqual("test1",tExpando.Test );
+		   Assert.AreEqual("Test 2nd",tExpando.Test2);
+			
+		    dynamic NewD = new ImpromptuBuilder<ExpandoObject>();
+
+			
+			var tExpandoNamedTest =NewD.Robot(
+				LeftArm:"Rise",
+				RightArm:"Clamp"
+				);
+			
+			 Assert.AreEqual("Rise",tExpandoNamedTest.LeftArm);
+		  	 Assert.AreEqual("Clamp",tExpandoNamedTest.RightArm);
+		}
+				
+		[Test, TestMethod]
+		public void TestSetupOtherTypes(){
+			var New = Builder.New().Setup(
+					Expando: typeof(ExpandoObject),
+					Dict: typeof(ImpromptuDictionary)
+				);
+			
+			var tExpando =New.Expando(
+				LeftArm:"Rise",
+				RightArm:"Clamp"
+				);
+			
+			var tDict =New.Dict(
+				LeftArm:"RiseD",
+				RightArm:"ClampD"
+				);
+			
+			 Assert.AreEqual("Rise",tExpando.LeftArm);
+		  	 Assert.AreEqual("Clamp",tExpando.RightArm);
+			Assert.AreEqual(typeof(ExpandoObject),tExpando.GetType());
+			
+			 Assert.AreEqual("RiseD",tDict.LeftArm);
+			 Assert.AreEqual("ClampD",tDict.RightArm);
+			Assert.AreEqual(typeof(ImpromptuDictionary),tDict.GetType());
+
+		}
+		
+		[Test, TestMethod]
+
+        //This test data is modified from MS-PL Clay project http://clay.codeplex.com
+        public void TestClayFactorySyntax()
+        {
+            dynamic New = Builder.New();
+
+            {
+                var person = New.Person();
+                person.FirstName = "Louis";
+                person.LastName = "Dejardin";
+                Assert.AreEqual("Louis",person.FirstName );
+                Assert.AreEqual("Dejardin", person.LastName);
+            }
+            {
+                var person = New.Person();
+                person["FirstName"] = "Louis";
+                person["LastName"] = "Dejardin";
+                Assert.AreEqual("Louis", person.FirstName);
+                Assert.AreEqual("Dejardin", person.LastName);
+            }
+            {
+                var person = New.Person(
+                    FirstName: "Bertrand",
+                    LastName: "Le Roy"
+                    ).Aliases("bleroy", "boudin");
+
+                Assert.AreEqual("Bertrand", person.FirstName);
+                Assert.AreEqual("Le Roy", person.LastName);
+                Assert.AreEqual("boudin", person.Aliases[1]);
+            }
+
+            {
+                var person = New.Person()
+                    .FirstName("Louis")
+                    .LastName("Dejardin")
+                    .Aliases(new[] {"Lou"});
+
+                Assert.AreEqual(person.FirstName, "Louis");
+                Assert.AreEqual(person.Aliases[0], "Lou");
+            }
+
+            {
+                var person = New.Person(new
+                {
+                    FirstName = "Louis",
+                    LastName = "Dejardin"
+                });
+                Assert.AreEqual(person.FirstName, "Louis");
+                Assert.AreEqual(person.LastName, "Dejardin");
+            }
+
+        }
+		
+		[Test, TestMethod]
+		public void TestBuilderActLikeAnon()
+		{
+		    var New = Builder.New().ActLike<IBuilder>();
+
+		var tNest =New.Nester(new {
+				NameLevel1 = "Lvl1",
+				Nested =  New.Nester2(new{
+					NameLevel2 = "Lvl2"
+				})
+			});
+			
+			Assert.AreEqual("Lvl1", tNest.NameLevel1);
+			Assert.AreEqual("Lvl2",tNest.Nested.NameLevel2);
+	    }
+
+        [Test, TestMethod]
+        public void TestBuilderActLikeNamed()
+        {
+            var New = Builder.New().ActLike<IBuilder>();
+
+            var tNest = New.Nester(
+                NameLevel1 :"Lvl1",
+                Nested : New.Nester2(
+                            NameLevel2 : "Lvl2"
+                        )
+            );
+
+            Assert.AreEqual("Lvl1", tNest.NameLevel1);
+            Assert.AreEqual("Lvl2", tNest.Nested.NameLevel2);
+        }
+		
+		
+			[Test, TestMethod]
+        //This test data is modified from MS-PL Clay project http://clay.codeplex.com
+		public void TestFactoryListSyntax(){
+			dynamic New = Builder.New();
+			
+			//Test using Clay Syntax
+			var people = New.Array(
+    						 New.Person().FirstName("Louis").LastName("Dejardin"),
+   							 New.Person().FirstName("Bertrand").LastName("Le Roy")
+						 );
+			
+			Assert.AreEqual("Dejardin",people[0].LastName);
+		  	Assert.AreEqual("Le Roy",people[1].LastName);
+			
+			var people2 =  new ImpromptuList(){
+							New.Robot(Name:"Bender"),
+							New.Robot(Name:"RobotDevil")
+						   };	
+			
+			
+			Assert.AreEqual("Bender", people2[0].Name);
+		  	Assert.AreEqual("RobotDevil",people2[1].Name);
+
+		}
+		
     }
 }

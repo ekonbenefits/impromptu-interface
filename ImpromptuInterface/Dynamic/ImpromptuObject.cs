@@ -17,8 +17,9 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using ImpromptuInterface.Build;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Dynamic Object that knows about the Impromtu Interface return types;
@@ -150,15 +151,6 @@ namespace ImpromptuInterface
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
 
-        /// <summary>
-        /// Allows ActLike to be called via dyanmic invocation
-        /// </summary>
-        /// <param name="informalInterface">The informal interface.</param>
-        /// <returns></returns>
-        public virtual dynamic ActLike(IDictionary<string,Type> informalInterface)
-        {
-            return Impromptu.ActLikeProperties(this, informalInterface);
-        }
        
     }
 }

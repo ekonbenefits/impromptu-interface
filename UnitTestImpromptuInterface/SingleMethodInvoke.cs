@@ -53,15 +53,30 @@ namespace UnitTestImpromptuInterface
 		     [Test,TestMethod]
         public void TestStaticSet()
         {
-            var tExpando = new PropPoco();
+            var tPoco = new PropPoco();
 
             var tSetValue = "1";
 
-            Impromptu.InvokeSet(tExpando, "Prop1", tSetValue);
+            Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
 
-            Assert.AreEqual(tSetValue, tExpando.Prop1);
+            Assert.AreEqual(tSetValue, tPoco.Prop1);
 
         }
+
+             [Test, TestMethod]
+             public void TestStaticSetNull()
+             {
+                 var tPoco = new PropPoco(){Prop1 = "Test default"};
+
+                 String tSetValue = null;
+
+
+                 Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
+
+                 Assert.AreEqual(tSetValue, tPoco.Prop1);
+
+
+             }
 		
 
 
@@ -118,6 +133,91 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("object", tOut3);
         }
 
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPassAndGetValueArg()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", new InvokeArg("arg", tValue));
+
+            Assert.AreEqual("int", tOut);
+
+            Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
+
+
+            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+
+            Assert.AreEqual("object", tOut2);
+
+            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", new { Anon = 1 });
+
+            Assert.AreEqual("object", tOut3);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPassAndGetValueArgOptional()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var arg = InvokeArg.Create;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func",  arg("two", tValue));
+
+            Assert.AreEqual("object named", tOut);
+
+            Assert.AreEqual("object named", (object)tOut); 
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticOverloadingPass2AndGetValueArgOptional()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var arg = InvokeArg.Create;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", arg("two", tValue), arg("one", tValue));
+
+            Assert.AreEqual("object named", tOut);
+
+            Assert.AreEqual("object named", (object)tOut);
+        }
+
+         [Test, TestMethod]
+        public void TestMethodStaticOverloadingPassAndGetValueNull()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tOut = Impromptu.InvokeMember(tPoco, "Func", tValue);
+
+            Assert.AreEqual("int", tOut);
+
+            Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
+
+
+            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+
+            Assert.AreEqual("object", tOut2);
+
+            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", null);
+
+            Assert.AreEqual("object", tOut3);
+
+            var tOut4 = Impromptu.InvokeMember(tPoco, "Func", null, null, "test", null, null, null);
+
+            Assert.AreEqual("object 6", tOut4);
+
+            var tOut5 = Impromptu.InvokeMember(tPoco, "Func", null, null, null, null, null, null);
+
+            Assert.AreEqual("object 6", tOut5);
+        }
 
         /// <summary>
         /// To dynamically invoke a method with out or ref parameters you need to know the signature

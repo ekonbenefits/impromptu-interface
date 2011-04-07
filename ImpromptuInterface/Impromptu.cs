@@ -500,7 +500,7 @@ namespace ImpromptuInterface
         /// <param name="interfaces">The interfaces.</param>
         /// <param name="propertySpec">The property spec.</param>
         /// <returns></returns>
-        private static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
+        internal static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
         {
             var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
             tProxy.Initialize(original, interfaces, propertySpec);

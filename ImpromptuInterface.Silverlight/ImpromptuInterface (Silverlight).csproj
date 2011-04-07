@@ -119,6 +119,9 @@
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxyAttribute.cs">
       <Link>EmitProxy\ActLikeProxyAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxySerializationHelper.cs">
+      <Link>EmitProxy\ActLikeProxySerializationHelper.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\BuildProxy.cs">
       <Link>EmitProxy\BuildProxy.cs</Link>
     </Compile>

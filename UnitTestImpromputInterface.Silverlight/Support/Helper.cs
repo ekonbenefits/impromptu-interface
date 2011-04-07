@@ -12,6 +12,10 @@ using Test =Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestImpromptuInterface
 {
+    public class SerializableAttribute : Attribute
+    {
+    }
+
     public class TestFixtureAttribute : Attribute
     {
         

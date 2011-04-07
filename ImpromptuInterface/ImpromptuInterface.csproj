@@ -68,6 +68,7 @@
     <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
     <Compile Include="Dynamic\IDynamicKnowLike.cs" />
     <Compile Include="Dynamic\IActLike.cs" />
+    <Compile Include="EmitProxy\ActLikeProxySerializationHelper.cs" />
     <Compile Include="IActLikeProxy.cs" />
     <Compile Include="Impromptu.cs" />
     <Compile Include="Dynamic\ImpromptuDictionary.cs" />

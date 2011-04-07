@@ -15,6 +15,7 @@
 
 using System;
 using System.Reflection;
+using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -88,16 +89,8 @@ namespace ImpromptuInterface.Dynamic
             if(tDel == null)
                 return false;
 
-            try
-            {
-                result = tDel.FastDynamicInvoke(args);
-            }
-            catch (TargetInvocationException ex)
-            {
-                if (ex.InnerException != null)
-                    throw ex.InnerException;
-                throw ex;
-            }
+            result = this.InvokeMethodDelegate(tDel, args);
+
             return true;
         }
     }

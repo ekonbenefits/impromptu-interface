@@ -87,6 +87,30 @@ namespace UnitTestImpromptuInterface
             tNew.Action1 = new Action(Assert.Fail);
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
             tNew.Action3 = new Func<string>(() => "test");
+            tNew.Action4 = new Func<int, string>(arg => "test" + arg);
+
+
+            ISimpeleClassMeth2 tActsLike = Impromptu.ActLike<ISimpeleClassMeth2>(tNew);
+
+
+
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
+
+            Assert.AreEqual("test", tActsLike.Action3());
+
+            Assert.AreEqual("test4", tActsLike.Action4(4));
+        }
+
+        [Test, TestMethod]
+        public void DictionaryMethodsTestWithPropertyAccess()
+        {
+
+            dynamic tNew = new ImpromptuDictionary();
+            tNew.PropCat = "Cat-";
+            tNew.Action1 = new Action(Assert.Fail);
+            tNew.Action2 = new Action<bool>(Assert.IsFalse);
+            tNew.Action3 = new ThisFunc<string>(@this => @this.PropCat + "test"); 
 
             ISimpeleClassMeth tActsLike = Impromptu.ActLike<ISimpeleClassMeth>(tNew);
 
@@ -95,8 +119,8 @@ namespace UnitTestImpromptuInterface
             AssertException<AssertionException>(tActsLike.Action1);
             AssertException<AssertionException>(() => tActsLike.Action2(true));
 
-            Assert.AreEqual("test", tActsLike.Action3());
-      
+            Assert.AreEqual("Cat-test", tActsLike.Action3());
+
 
         }
 

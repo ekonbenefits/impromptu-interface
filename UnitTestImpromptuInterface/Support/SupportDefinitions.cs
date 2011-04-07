@@ -81,6 +81,12 @@ namespace UnitTestImpromptuInterface
         string Action3();
     }
 
+    public interface ISimpeleClassMeth2 : ISimpeleClassMeth
+    {
+       
+        string Action4(int arg);
+    }
+
     public interface IGenericMeth
     {
         string Action<T>(T arg);

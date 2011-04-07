@@ -1,0 +1,202 @@
+﻿<#@ template language="C#" #>
+<#@ output extension="cs" #>
+<#@ assembly  name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+
+// 
+//  Copyright 2011 Ekon Benefits
+// 
+//    Licensed under the Apache License, Version 2.0 (the "License");
+//    you may not use this file except in compliance with the License.
+//    You may obtain a copy of the License at
+// 
+//        http://www.apache.org/licenses/LICENSE-2.0
+// 
+//    Unless required by applicable law or agreed to in writing, software
+//    distributed under the License is distributed on an "AS IS" BASIS,
+//    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//    See the License for the specific language governing permissions and
+//    limitations under the License.
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using ImpromptuInterface.Build;
+using Microsoft.CSharp.RuntimeBinder;
+using ImpromptuInterface.Dynamic;
+using System.Reflection;
+
+namespace ImpromptuInterface.Optimization
+{
+    internal class DummmyNull
+    {
+        
+    }
+
+    internal static class InvokeHelper
+    {
+		internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
+        {
+            object result;
+            try
+            {
+                result = tFunc.FastDynamicInvoke(
+                    tFunc.IsSpecialThisDelegate()
+                        ? new[]{target}.Concat(args).ToArray()
+                        : args
+                    );
+            }
+            catch (TargetInvocationException ex)
+            {
+                if(ex.InnerException !=null)
+                    throw ex.InnerException;
+                throw ex;
+            }
+            return result;
+        }
+
+
+        internal static readonly Type[] FuncKinds;
+        internal static readonly Type[] ActionKinds;
+        static InvokeHelper()
+        {
+            FuncKinds = new []
+                            {
+<# for(int i=0; i <= 16; i++){ 
+	var tCommas = String.Concat(Enumerable.Repeat(",",i));
+#>
+								typeof(Func<<#=tCommas#>>), //<#=i#>
+<# } #>
+                            };
+
+            ActionKinds = new []
+                            {
+                                typeof(Action), //0
+<# for(int i=1; i <= 16; i++){ 
+	var tCommas = String.Concat(Enumerable.Repeat(",",i-1));
+#>
+								typeof(Action<<#=tCommas#>>), //<#=i#>
+<# } #>
+                            };
+        }
+
+        #region InvokeMemberAction Optimizations
+
+
+        internal static void InvokeMemberAction(CallSiteBinder binder,
+                                                    string name,
+                                                    Type context, 
+                                                    string[] argNames,
+                                                    object target,
+                                                    params object [] args)
+        {
+          
+            var tSwitch = args.Length;
+            switch (tSwitch)
+            {
+<# for(int i=0; i <= 14; i++){ 
+		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i+1));
+		var tArrayArgs = String.Concat(Enumerable.Range(0,i).Select(it=>String.Format(", args[{0}]",it)));
+#>
+                case <#=i#>:
+                    {
+                        var tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames);
+                        tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
+                        break;
+                    }
+<# } #>
+                default:
+                    var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
+                    Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
+                    break;
+
+            }
+        }
+
+        #endregion
+
+       
+        #region InvokeMember Optimizations
+
+
+        internal static object InvokeMember(CallSiteBinder binder,
+                                       string name,
+                                     Type context,
+                                     string[] argNames,
+                                     object target, params object [] args)
+        {
+           
+            var tSwitch = args.Length;
+
+            switch (tSwitch)
+            {
+<# for(int i=0; i <= 14; i++){ 
+		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i+1));
+		var tArrayArgs = String.Concat(Enumerable.Range(0,i).Select(it=>String.Format(", args[{0}]",it)));
+#>
+                case <#=i#>:
+                    {
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, <#=tobjectArgs#>>>(binder, name, context, argNames);
+                        return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
+                    }
+<# } #>
+                default:
+                    var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
+                    return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
+
+            }
+        }
+
+
+    
+
+      
+     
+     
+
+     
+
+
+     
+
+        #endregion
+
+
+        internal static object FastDynamicInvokeReturn(Delegate del, dynamic [] args)
+        {
+            dynamic tDel =del;
+            switch(args.Length){
+                default:
+                    return del.DynamicInvoke(args);
+#region Optimization
+<# for(int i=1; i <= 16; i++){ 
+	var tArgs = String.Join(",",Enumerable.Range(0,i).Select(it=>String.Format("args[{0}]",it)));
+#>				case <#=i#>:
+                    return tDel(<#= tArgs #>);
+<# } #>
+#endregion
+            }
+        }
+
+        internal static void FastDynamicInvokeAction(Delegate del, params dynamic [] args)
+        {
+            dynamic tDel =del;
+            switch(args.Length){
+                default:
+                    del.DynamicInvoke(args);
+                    return;
+#region Optimization
+<# for(int i=1; i <= 16; i++){ 
+	var tArgs = String.Join(",",Enumerable.Range(0,i).Select(it=>String.Format("args[{0}]",it)));
+#>				case <#=i#>:
+                    tDel(<#= tArgs #>);
+                    return;
+<# } #>
+#endregion
+            }
+        }
+    }
+}

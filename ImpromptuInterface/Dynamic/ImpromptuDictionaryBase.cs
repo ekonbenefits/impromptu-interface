@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -143,16 +144,8 @@ namespace ImpromptuInterface.Dynamic
                 var tFunc = _dictionary[binder.Name] as Delegate;
                 if (tFunc !=null)
                 {
-                    try
-                    {
-                        result = tFunc.FastDynamicInvoke(args);
-                    }
-                    catch (TargetInvocationException ex)
-                    {
-                        if(ex.InnerException !=null)
-                            throw ex.InnerException;
-                        throw ex;
-                    }
+                    result = this.InvokeMethodDelegate(tFunc, args);
+                    return true;
                 }
                 return false;
             }
@@ -168,6 +161,8 @@ namespace ImpromptuInterface.Dynamic
             }
             return true;
         }
+
+      
 
         /// <summary>
         /// Provides the implementation for operations that set member values. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as setting a value for a property.

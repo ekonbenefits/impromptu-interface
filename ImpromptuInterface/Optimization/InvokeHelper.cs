@@ -17,8 +17,10 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
+using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Optimization

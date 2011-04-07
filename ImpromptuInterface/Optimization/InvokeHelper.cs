@@ -17,11 +17,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
-using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+using ImpromptuInterface.Dynamic;
+using System.Reflection;
 
 namespace ImpromptuInterface.Optimization
 {
@@ -334,40 +334,40 @@ namespace ImpromptuInterface.Optimization
             switch(args.Length){
                 default:
                     return del.DynamicInvoke(args);
-                    #region Optimization
-                case 1:
+#region Optimization
+				case 1:
                     return tDel(args[0]);
-                case 2:
-                    return tDel(args[0], args[1]);
-                case 3:
-                    return tDel(args[0], args[1], args[2]);
-                case 4:
-                    return tDel(args[0], args[1], args[2], args[3]);
-                case 5:
-                    return tDel(args[0], args[1], args[2], args[3], args[4]);
-                case 6:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5]);
-                case 7:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
-                case 8:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
-                case 9:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
-                case 10:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
-                case 11:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
-                case 12:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
-                case 13:
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
-                case 14:                                                                                                                    
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
-                case 15:                                                                                                                  
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
-                case 16:                                                                                                                    
-                    return tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
-                    #endregion
+				case 2:
+                    return tDel(args[0],args[1]);
+				case 3:
+                    return tDel(args[0],args[1],args[2]);
+				case 4:
+                    return tDel(args[0],args[1],args[2],args[3]);
+				case 5:
+                    return tDel(args[0],args[1],args[2],args[3],args[4]);
+				case 6:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5]);
+				case 7:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
+				case 8:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
+				case 9:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8]);
+				case 10:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9]);
+				case 11:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
+				case 12:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11]);
+				case 13:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12]);
+				case 14:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13]);
+				case 15:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13],args[14]);
+				case 16:
+                    return tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13],args[14],args[15]);
+#endregion
             }
         }
 
@@ -378,56 +378,56 @@ namespace ImpromptuInterface.Optimization
                 default:
                     del.DynamicInvoke(args);
                     return;
-                #region Optimization
-                case 1:
+#region Optimization
+				case 1:
                     tDel(args[0]);
                     return;
-                case 2:
-                    tDel(args[0], args[1]);
+				case 2:
+                    tDel(args[0],args[1]);
                     return;
-                case 3:
-                    tDel(args[0], args[1], args[2]);
+				case 3:
+                    tDel(args[0],args[1],args[2]);
                     return;
-                case 4:
-                    tDel(args[0], args[1], args[2], args[3]);
+				case 4:
+                    tDel(args[0],args[1],args[2],args[3]);
                     return;
-                case 5:
-                    tDel(args[0], args[1], args[2], args[3], args[4]);
+				case 5:
+                    tDel(args[0],args[1],args[2],args[3],args[4]);
                     return;
-                case 6:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5]);
+				case 6:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5]);
                     return;
-                case 7:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
+				case 7:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6]);
                     return;
-                case 8:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
+				case 8:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7]);
                     return;
-                case 9:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
+				case 9:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8]);
                     return;
-                case 10:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
+				case 10:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9]);
                     return;
-                case 11:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
+				case 11:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10]);
                     return;
-                case 12:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
+				case 12:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11]);
                     return;
-                case 13:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
+				case 13:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12]);
                     return;
-                case 14:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
+				case 14:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13]);
                     return;
-                case 15:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14]);
+				case 15:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13],args[14]);
                     return;
-                case 16:
-                    tDel(args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13], args[14], args[15]);
+				case 16:
+                    tDel(args[0],args[1],args[2],args[3],args[4],args[5],args[6],args[7],args[8],args[9],args[10],args[11],args[12],args[13],args[14],args[15]);
                     return;
-                    #endregion
+#endregion
             }
         }
     }

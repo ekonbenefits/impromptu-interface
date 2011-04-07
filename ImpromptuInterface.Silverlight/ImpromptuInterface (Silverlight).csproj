@@ -80,6 +80,9 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ImpromptuInterface\Dynamic\Builder.cs">
+      <Link>Dynamic\Builder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\IActLike.cs">
       <Link>Dynamic\IActLike.cs</Link>
     </Compile>
@@ -107,8 +110,11 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
-    <Compile Include="..\ImpromptuInterface\Dynamic\InlineSyntax.cs">
-      <Link>Dynamic\InlineSyntax.cs</Link>
+    <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambdas.cs">
+      <Link>Dynamic\InlineLambdas.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ThisFunctions.cs">
+      <Link>Dynamic\ThisFunctions.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\UseNamedArgumentAttribute.cs">
       <Link>Dynamic\UseNamedArgumentAttribute.cs</Link>

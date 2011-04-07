@@ -145,7 +145,11 @@ namespace ImpromptuInterface.Dynamic
                 {
                     try
                     {
-                        result = tFunc.FastDynamicInvoke(args);
+                        result = tFunc.FastDynamicInvoke(
+                            tFunc.IsSpecialThisDelegate()
+                                ? new[]{this}.Concat(args).ToArray()
+                                : args
+                            );
                     }
                     catch (TargetInvocationException ex)
                     {
@@ -153,6 +157,7 @@ namespace ImpromptuInterface.Dynamic
                             throw ex.InnerException;
                         throw ex;
                     }
+                    return true;
                 }
                 return false;
             }

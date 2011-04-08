@@ -20,12 +20,15 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Similar to Expando Objects but handles null values when the property is defined with an impromptu interface
     /// </summary>
+      
+    [Serializable]
      public class ImpromptuDictionary:ImpromptuDictionaryBase,IDictionary<string,object>
     {
 
@@ -56,6 +59,15 @@ namespace ImpromptuInterface.Dynamic
         public ImpromptuDictionary(IEnumerable<KeyValuePair<string, object>> dict) : base(dict)
         {
         }
+
+
+#if !SILVERLIGHT
+        protected ImpromptuDictionary(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+
+        }
+#endif
 
         /// <summary>
         /// Gets the count.
@@ -110,8 +122,34 @@ namespace ImpromptuInterface.Dynamic
             }
         }
     }
-	
+       
+    
+        [Serializable]
 		public class ImpromptuChainableDictionary:ImpromptuDictionary{
+
+
+            /// <summary>
+            /// Initializes a new instance of the <see cref="ImpromptuChainableDictionary"/> class.
+            /// </summary>
+        public ImpromptuChainableDictionary() 
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuDictionary"/> class.
+        /// </summary>
+        /// <param name="dict">The dict.</param>
+        public ImpromptuChainableDictionary(IEnumerable<KeyValuePair<string, object>> dict) : base(dict)
+        {
+        }
+#if !SILVERLIGHT
+            protected ImpromptuChainableDictionary(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+
+        }
+#endif
+
 			public override bool TryInvokeMember (InvokeMemberBinder binder, object[] args, out object result)
 			{
 				if(base.TryInvokeMember (binder, args, out result)){

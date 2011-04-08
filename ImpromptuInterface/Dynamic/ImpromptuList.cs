@@ -17,12 +17,14 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
-
+using System.Runtime.Serialization;
+using ImpromptuInterface.Optimization;
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Expando-Type List for dynamic objects
     /// </summary>
+    [Serializable]
     public class ImpromptuList : ImpromptuDictionaryBase, IList<object>, IDictionary<string, object>, INotifyCollectionChanged
 
     {
@@ -36,6 +38,7 @@ namespace ImpromptuInterface.Dynamic
         /// Initializes a new instance of the <see cref="ImpromptuDictionary"/> class.
         /// </summary>
         private static readonly object ListLock = new object();
+
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuList"/> class.
@@ -60,6 +63,24 @@ namespace ImpromptuInterface.Dynamic
                 _list = contents.ToList();
             }
         }
+
+#if !SILVERLIGHT
+        protected ImpromptuList(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+            _list = info.GetValue<IList<object>>("_list");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (_list.OfType<Delegate>().Any())
+            {
+                throw new SerializationException("Won't serialize protoType objects containing delegates");
+            }
+            base.GetObjectData(info,context);
+            info.AddValue("_list", _list);
+        }
+#endif
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
         {

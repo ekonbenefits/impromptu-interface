@@ -6,15 +6,13 @@ using System.Text;
 
 namespace ImpromptuInterface.Build
 {
-#if SILVERLIGHT
-    public class SerializableAttribute:Attribute{
-    }
-    public interface IObjectReference {}
-    public interface ISerializable {}
-#else
+#if !SILVERLIGHT
 
 
 
+    /// <summary>
+    /// Support Deserializing the proxy since on separate runs of an executable
+    /// </summary>
     [Serializable]
     public class ActLikeProxySerializationHelper : IObjectReference 
     {
@@ -22,6 +20,11 @@ namespace ImpromptuInterface.Build
         private Type[] Interfaces;
         private Type Context;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ActLikeProxySerializationHelper"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
         public ActLikeProxySerializationHelper(SerializationInfo info, 
            StreamingContext context)
         {
@@ -34,13 +37,9 @@ namespace ImpromptuInterface.Build
         public object GetRealObject(StreamingContext context)
         {
             var tType =BuildProxy.BuildType(Context, Interfaces.First(), Interfaces.Skip(1).ToArray());
-           return Impromptu.InitializeProxy(tType, Original);
+           return Impromptu.InitializeProxy(tType, Original, Interfaces);
         }
 
-        public void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            throw new NotImplementedException();
-        }
     }
 #endif
 }

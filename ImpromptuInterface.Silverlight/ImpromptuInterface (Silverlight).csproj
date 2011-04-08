@@ -152,9 +152,13 @@
     <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper.cs">
       <Link>Optimization\InvokeHelper.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\Util.cs">
+      <Link>Optimization\Util.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Support.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.nuspec">

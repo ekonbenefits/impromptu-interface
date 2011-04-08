@@ -105,7 +105,9 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestMethodStaticGetValuePassNullTimed()
         {
-
+#if DEBUG
+            Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
+#endif
 
             var tValue = new OverloadingMethPoco();
 
@@ -126,8 +128,9 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestMethodStaticGetValuePassNullDoubleCallTimed()
         {
-
-
+#if DEBUG
+            Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
+#endif
             var tValue = new OverloadingMethPoco();
 
 

@@ -14,7 +14,9 @@
 //    limitations under the License.
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
@@ -22,6 +24,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Dynamic Proxy that exposes any (and only) getter properties of wrapped objects including Anonymous objects
     /// </summary>
+    [Serializable]
     public class ImpromptuGet:ImpromptuObject
     {
         /// <summary>
@@ -38,6 +41,23 @@ namespace ImpromptuInterface.Dynamic
         {
             Target = target;
         }
+
+#if !SILVERLIGHT
+        protected ImpromptuGet(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+
+
+            Target = info.GetValue<IDictionary<string, object>>("Target");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info,context);
+            info.AddValue("Target", Target);
+        }
+#endif
+
 
         /// <summary>
         /// Creates the proxy over the specified target.

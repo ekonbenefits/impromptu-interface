@@ -44,6 +44,25 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+    public class IgnoreException : Exception
+    {
+        public IgnoreException()
+        {
+
+        }
+
+        public IgnoreException(string message)
+            : base(message)
+        {
+
+        }
+        public IgnoreException(string message, Exception inner)
+            : base(message, inner)
+        {
+
+        }
+    }
+
     public class Helper 
     {
         public Helper()
@@ -125,6 +144,11 @@ namespace UnitTestImpromptuInterface
             {
                 throw new AssertionException(message ?? "Expected False");
             }
+        }
+
+        public void Ignore(string message)
+        {
+            throw new IgnoreException(message);
         }
 
         public void Fail()

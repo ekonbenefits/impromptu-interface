@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface.Dynamic;
 
@@ -28,6 +29,24 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public class ImpromptuViewModel:ImpromptuDictionary
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuViewModel"/> class.
+        /// </summary>
+        public ImpromptuViewModel()
+        {
+        
+        }
+
+#if !SILVERLIGHT
+        protected ImpromptuViewModel(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+          
+
+        }
+#endif
+
+
         private ImpropmtuCommands _trampoline;
 
         /// <summary>

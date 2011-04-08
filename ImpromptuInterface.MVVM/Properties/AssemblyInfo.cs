@@ -39,7 +39,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 #if SILVERLIGHT
-[assembly: AssemblyVersion("1.0.9.0")]
+[assembly: AssemblyVersion("1.1.0.0")]
 #else
-[assembly: AssemblyVersion("1.0.9.*")]
+[assembly: AssemblyVersion("1.1.0.*")]
 #endif

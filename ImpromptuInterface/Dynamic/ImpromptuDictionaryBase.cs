@@ -19,6 +19,7 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
@@ -26,6 +27,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Base class of Expando-Type objects
     /// </summary>
+    [Serializable]
     public abstract class ImpromptuDictionaryBase : ImpromptuObject, INotifyPropertyChanged
     {
         /// <summary>
@@ -33,7 +35,26 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         protected IDictionary<string,object> _dictionary;
 
-  
+      
+#if !SILVERLIGHT
+        protected ImpromptuDictionaryBase(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+          
+
+            _dictionary = info.GetValue<IDictionary<string, object>>("_dictionary");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            if (_dictionary.Values.OfType<Delegate>().Any())
+            {
+                throw new SerializationException("Won't serialize protoType objects containing delegates");
+            }
+            base.GetObjectData(info,context);
+            info.AddValue("_dictionary", _dictionary);
+        }
+#endif
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuDictionary"/> class.
         /// </summary>

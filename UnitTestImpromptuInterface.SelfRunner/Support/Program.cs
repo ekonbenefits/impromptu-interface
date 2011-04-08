@@ -13,6 +13,7 @@ namespace UnitTestImpromptuInterface
 			var hashset = new HashSet<string>(args);
 			var tSuccess=0;
 			var tFailed =0;
+            var tIgnored = 0;
             var tTypes =
                 Assembly.GetAssembly(typeof (Program)).GetTypes()
                     .Where(it => it.GetCustomAttributes(typeof (TestFixtureAttribute), false).Any());
@@ -42,18 +43,27 @@ namespace UnitTestImpromptuInterface
                     }
                     catch (TargetInvocationException ex)
                     {
-                        Console.Write("*      ");
+                       
                         if (ex.InnerException is AssertionException)
                         {
-
+                            Console.Write("*      ");
                             Console.Write("Failed: ");
                             Console.WriteLine(ex.InnerException.Message);
                             Console.WriteLine();
 							tFailed++;
 
                         }
+                        else if (ex.InnerException is IgnoreException)
+                        {
+                            Console.Write("-      ");
+                            Console.Write("Ignored: ");
+                            Console.WriteLine(ex.InnerException.Message);
+                            Console.WriteLine();
+                            tIgnored++;
+                        }
                         else
                         {
+                            Console.Write("*      ");
                             throw ex.InnerException;
                         }
                     }
@@ -67,7 +77,7 @@ namespace UnitTestImpromptuInterface
 
 
             }
-			Console.WriteLine("Done. Successes:{0} Failures:{1}",tSuccess,tFailed);
+			Console.WriteLine("Done. Successes:{0} Failures:{1} Ignored:{2}",tSuccess,tFailed,tIgnored);
 			Console.Read();
         }
 

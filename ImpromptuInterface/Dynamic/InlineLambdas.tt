@@ -141,7 +141,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 <# for(int j=1;j<=i;j++){ #>
 		/// <typeparam name="T<#=j#>">The type of the Argument <#=j#>.</typeparam>

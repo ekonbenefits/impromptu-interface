@@ -141,11 +141,11 @@ namespace ImpromptuInterface.Build
             info.AddValue("Interfaces",
                           tCustomAttr == null 
                           ? null
-                          : tCustomAttr.Interfaces);
+                          : tCustomAttr.Interfaces,typeof(Type[]));
             info.AddValue("Context",
                           tCustomAttr == null 
                           ? null
-                          : tCustomAttr.Context);
+                          : tCustomAttr.Context,typeof(Type));
         }
 #endif
 

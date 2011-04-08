@@ -25,6 +25,7 @@ namespace ImpromptuInterface.Build
     /// Meta info describing proxy usage. Can be used to preload proxy.
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
+	[Serializable]
     public class ActLikeProxyAttribute:Attribute
     {
         /// <summary>

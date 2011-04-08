@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build
 {
@@ -133,19 +134,33 @@ namespace ImpromptuInterface.Build
         public void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             info.SetType(typeof(ActLikeProxySerializationHelper));
-            info.AddValue("Original", (object)Original);
-            var tCustomAttr =
+			
+		    var tCustomAttr =
                 GetType().GetCustomAttributes(typeof (ActLikeProxyAttribute), false).OfType<ActLikeProxyAttribute>().
                     FirstOrDefault();
 			
-            info.AddValue("Interfaces",
-                          tCustomAttr == null 
-                          ? null
-                          : tCustomAttr.Interfaces,typeof(Type[]));
+				
             info.AddValue("Context",
                           tCustomAttr == null 
                           ? null
                           : tCustomAttr.Context,typeof(Type));
+			
+			
+			if(Util.IsMono){
+				info.AddValue("MonoInterfaces",
+                          tCustomAttr == null 
+                          ? null
+                          : tCustomAttr.Interfaces.Select(it=>it.AssemblyQualifiedName).ToArray(),typeof(string[]));
+			}else{
+            	info.AddValue("Interfaces",
+                          tCustomAttr == null 
+                          ? null
+                          : tCustomAttr.Interfaces,typeof(Type[]));
+			}
+		
+			
+            info.AddValue("Original", (object)Original);
+
         }
 #endif
 

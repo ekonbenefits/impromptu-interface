@@ -17,13 +17,15 @@ namespace ImpromptuInterface.Build
     public class ActLikeProxySerializationHelper : IObjectReference 
     {
         public object Original;
-        public Type[] Interfaces;
-        public Type Context;
+		public Type[] Interfaces;
+        public string[] MonoInterfaces;
+		public Type Context;
 
         public object GetRealObject(StreamingContext context)
         {
-           var tType =BuildProxy.BuildType(Context, Interfaces.First(), Interfaces.Skip(1).ToArray());
-           return Impromptu.InitializeProxy(tType, Original, Interfaces);
+		   var tInterfaces = Interfaces ?? MonoInterfaces.Select(it=>Type.GetType(it)).ToArray();
+           var tType =BuildProxy.BuildType(Context, tInterfaces.First(), tInterfaces.Skip(1).ToArray());
+           return Impromptu.InitializeProxy(tType, Original, tInterfaces);
         }
 
     }

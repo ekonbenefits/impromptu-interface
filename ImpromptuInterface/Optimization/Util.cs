@@ -24,5 +24,11 @@ namespace ImpromptuInterface.Optimization
             return (T) info.GetValue(name, typeof (T));
         }
 #endif
+		
+		public static bool IsMono{
+			get{
+				return Type.GetType ("Mono.Runtime") != null;
+			}
+		}
     }
 }

@@ -16,27 +16,13 @@ namespace ImpromptuInterface.Build
     [Serializable]
     public class ActLikeProxySerializationHelper : IObjectReference 
     {
-        private object Original;
-        private Type[] Interfaces;
-        private Type Context;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ActLikeProxySerializationHelper"/> class.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="context">The context.</param>
-        public ActLikeProxySerializationHelper(SerializationInfo info, 
-           StreamingContext context)
-        {
-            Original = info.GetValue("Original", typeof (Object));
-            Interfaces = (Type[]) info.GetValue("Interfaces", typeof (Type).MakeArrayType());
-            Context = (Type) info.GetValue("Context", typeof (Type));
-        }
-
+        public object Original;
+        public Type[] Interfaces;
+        public Type Context;
 
         public object GetRealObject(StreamingContext context)
         {
-            var tType =BuildProxy.BuildType(Context, Interfaces.First(), Interfaces.Skip(1).ToArray());
+           var tType =BuildProxy.BuildType(Context, Interfaces.First(), Interfaces.Skip(1).ToArray());
            return Impromptu.InitializeProxy(tType, Original, Interfaces);
         }
 

@@ -137,6 +137,7 @@ namespace ImpromptuInterface.Build
             var tCustomAttr =
                 GetType().GetCustomAttributes(typeof (ActLikeProxyAttribute), false).OfType<ActLikeProxyAttribute>().
                     FirstOrDefault();
+			
             info.AddValue("Interfaces",
                           tCustomAttr == null 
                           ? null

@@ -24,6 +24,44 @@ using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM
 {
+
+    /// <summary>
+    /// View Model that uses a Dynamic Implementation to remove boilerplate for Two-Way bound properties and commands to methods. 
+    /// If you specific a TInterface it provides a guide to the dynamic properties
+    /// </summary>
+    /// <typeparam name="TInterface">The type of the interface.</typeparam>
+    public class ImpromptuViewModel<TInterface>:ImpromptuViewModel where TInterface:class 
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuViewModel&lt;TInterface&gt;"/> class.
+        /// </summary>
+        public ImpromptuViewModel()
+        {
+            _static = new Lazy<TInterface>(()=>ActLike<TInterface>());
+        }
+
+#if !SILVERLIGHT
+        protected ImpromptuViewModel(SerializationInfo info,
+           StreamingContext context)
+            : base(info, context)
+        {
+            _static = new Lazy<TInterface>(() => ActLike<TInterface>());
+        }
+#endif
+        private readonly Lazy<TInterface> _static;
+
+        /// <summary>
+        /// Convenient access to Dynamic Properties but represented by a Static Interface.
+        ///  When subclassing you can use Static.PropertyName = x, etc
+        /// </summary>
+        /// <value>The static.</value>
+        public TInterface Static
+        {
+            get { return _static.Value; }
+        }
+    }
+
+
     /// <summary>
     /// View Model that uses a Dynamic Implementation to remove boilerplate for Two-Way bound properties and commands to methods
     /// </summary>

@@ -22,21 +22,23 @@ namespace ImpromptuInterface.Optimization
 {
     internal class BinderHash
     {
-        protected BinderHash(Type delegateType, string name, Type context, string[] argNames)
+
+        protected BinderHash(Type delegateType, string name, Type context, string[] argNames, Type binderType)
         {
+            BinderType = binderType;
             DelegateType = delegateType;
             Name = name;
             Context = context;
             ArgNames = argNames;
         }
 
-        public static BinderHash Create(Type delType, string name, Type context, string[] argNames)
+        public static BinderHash Create(Type delType, string name, Type context, string[] argNames, Type binderType)
         {
-            return new BinderHash(delType, name, context, argNames);
+            return new BinderHash(delType, name, context, argNames, binderType);
         }
 
 
-
+        public Type BinderType { get; protected set; }
         public Type DelegateType { get; protected set; }
         public string Name { get; protected set; }
         public Type Context { get; protected set; }
@@ -51,6 +53,7 @@ namespace ImpromptuInterface.Optimization
                 && Equals(other.DelegateType, DelegateType) 
                 && Equals(other.Name, Name) 
                 && Equals(other.Context, Context)
+                && Equals(other.BinderType, BinderType)
                  && (ArgNames == null
                 // ReSharper disable AssignNullToNotNullAttribute
                 //Exclusive Or Makes Sure this doesn't happen
@@ -80,8 +83,8 @@ namespace ImpromptuInterface.Optimization
 
     internal class GenericBinderHashBase : BinderHash
     {
-        protected GenericBinderHashBase(Type delegateType, string name, Type context, string[] argNames)
-            : base(delegateType, name, context,argNames)
+        protected GenericBinderHashBase(Type delegateType, string name, Type context, string[] argNames, Type binderType)
+            : base(delegateType, name, context, argNames, binderType)
         {
         }
     }
@@ -89,13 +92,13 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash<T> : GenericBinderHashBase where T : class
     {
 
-        public static BinderHash<T> Create(string name, Type context, string[] argNames)
+        public static BinderHash<T> Create(string name, Type context, string[] argNames, Type binderType)
         {
-            return new BinderHash<T>(name, context, argNames);
+            return new BinderHash<T>(name, context, argNames, binderType);
         }
 
-        protected BinderHash(string name, Type context, string[] argNames)
-            : base(typeof(T), name, context, argNames)
+        protected BinderHash(string name, Type context, string[] argNames, Type binderType)
+            : base(typeof(T), name, context, argNames, binderType)
         {
         }
 
@@ -110,6 +113,7 @@ namespace ImpromptuInterface.Optimization
                            !(other.ArgNames == null ^ ArgNames == null)
                            && Equals(other.Name, Name)
                            && Equals(other.Context, Context)
+                           && Equals(other.BinderType, BinderType)
                            && (ArgNames == null
                             // ReSharper disable AssignNullToNotNullAttribute
                                  //Exclusive Or Makes Sure this doesn't happen

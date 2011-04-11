@@ -62,6 +62,17 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
         }
 
+        [Test, TestMethod]
+        public void GetterVoidTest()
+        {
+            var tPoco = new VoidMethodPoco();
+
+            dynamic tTest = new ImpromptuGet(tPoco);
+
+            tTest.Action();
+        }
+
+
 
         [Test, TestMethod]
         public void GetterDynamicTest()

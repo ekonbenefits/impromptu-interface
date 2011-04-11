@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -106,12 +107,28 @@ namespace ImpromptuInterface.Dynamic
         public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
         {
             result = null;
-            var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
-            if(tDel == null)
-                return false;
+            try
+            {
+                var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
+                if (tDel == null)
+                    return false;
 
-            result = this.InvokeMethodDelegate(tDel, args);
-           
+                result = this.InvokeMethodDelegate(tDel, args);
+            }
+            catch (RuntimeBinderException)
+            {
+                   try
+                   {
+                       result = Impromptu.InvokeMember(Target, binder.Name, args);
+                   }
+                   catch (RuntimeBinderException)
+                   {
+                       result = null;
+                       Impromptu.InvokeMemberAction(Target, binder.Name, args);
+                   }
+            }
+
+
             return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
         }
     }

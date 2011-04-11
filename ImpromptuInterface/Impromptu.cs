@@ -53,7 +53,7 @@ namespace ImpromptuInterface
         public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, string name, Type context, string[] argNames)
         {
 
-            var tHash = BinderHash.Create(delegateType, name, context, argNames);
+            var tHash = BinderHash.Create(delegateType, name, context, argNames,binder.GetType());
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -118,7 +118,7 @@ namespace ImpromptuInterface
         /// <seealso cref="CreateCallSite"/>
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, string name, Type context, string[]argNames) where T: class
         {
-            var tHash = BinderHash<T>.Create(name, context, argNames);
+            var tHash = BinderHash<T>.Create(name, context, argNames, binder.GetType());
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -383,6 +383,7 @@ namespace ImpromptuInterface
                                                       });
 
             var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
+            
             return tCallSite.Target(tCallSite, target);
         }
 

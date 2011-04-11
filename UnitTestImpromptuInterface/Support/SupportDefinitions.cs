@@ -133,6 +133,18 @@ namespace UnitTestImpromptuInterface
 	}
 
 
+    public interface IVoidMethod
+    {
+        void Action();
+    }
+
+    public class VoidMethodPoco
+    {
+        public void Action()
+        {
+           Console.WriteLine("VoidFunc");
+        }
+    }
 
     public class OverloadingMethPoco
     {

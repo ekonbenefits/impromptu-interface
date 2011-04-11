@@ -20,6 +20,11 @@ namespace ImpromptuInterface.Optimization
         {
             Type tType;
             var tTryType = target.TryTypeForName(binderName, out tType);
+            if (tTryType && tType == typeof(void))
+            {
+                return true;
+            }
+
             if(resultFound){
               if (result is IDictionary<string, object>
                     && !(result is ImpromptuDictionaryBase)

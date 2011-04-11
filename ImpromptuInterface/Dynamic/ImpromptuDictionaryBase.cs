@@ -20,6 +20,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using System.Threading;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
@@ -123,29 +124,12 @@ namespace ImpromptuInterface.Dynamic
                 result = _dictionary[binder.Name];
                 Type tType;
                 //If it's an IDictionary and interface is not set for the property or it's dynamic for this property return an ImpromptuDictionary
-                if (result is IDictionary<string, object>
-                    && !(result is ImpromptuDictionaryBase) 
-                    && (!TryTypeForName(binder.Name, out tType) 
-                            || tType == typeof(object)))
-                {
-                    result = new ImpromptuDictionary((IDictionary<string, object>)result);
-                }
-            }
-            else
-            {
-                result = null;
-                Type tType;
-                if (!TryTypeForName(binder.Name, out tType))
-                {
 
-                    return false;
-                }
-                if (tType.IsValueType)
-                {
-                    result = Activator.CreateInstance(tType);
-                }
+                return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
             }
-            return true;
+
+            result = null;
+            return this.MassageResultBasedOnInterface(binder.Name, false, ref result);
         }
 
         /// <summary>
@@ -166,21 +150,11 @@ namespace ImpromptuInterface.Dynamic
                 if (tFunc !=null)
                 {
                     result = this.InvokeMethodDelegate(tFunc, args);
-                    return true;
+                    return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
                 }
                 return false;
             }
-            Type tType;
-            if (!TryTypeForName(binder.Name, out tType))
-            {
-
-                return false;
-            }
-            if (tType.IsValueType)
-            {
-                result = Activator.CreateInstance(tType);
-            }
-            return true;
+            return this.MassageResultBasedOnInterface(binder.Name, false, ref result);
         }
 
       

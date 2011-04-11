@@ -15,6 +15,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
@@ -50,6 +51,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
         }
+
+  
 
 
 
@@ -105,6 +108,27 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
+
+
+        [Test, TestMethod]
+        public void ImpromptuConversionPropertyTest()
+        {
+
+            dynamic tNew = new ImpromptuDictionary();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = "42";
+            tNew.Prop3 = Guid.NewGuid();
+
+            var tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
+
+
+
+
+            Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
+            Assert.AreEqual(42L, tActsLike.Prop2);
+            Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
+        }
+
 
         [Test, TestMethod]
         public void AnnonMethodsTest()
@@ -185,6 +209,9 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
             AssertException<RuntimeBinderException>(() => { var tTest = tActsLike.Prop2; });
         }
+
+  
+
 
         [Test, TestMethod]
         public void OverloadMethodTest()

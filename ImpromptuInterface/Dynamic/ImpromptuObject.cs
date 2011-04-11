@@ -161,7 +161,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="name">The name.</param>
         /// <param name="returnType">The return Type.</param>
         /// <returns></returns>
-        protected virtual bool TryTypeForName(string name, out Type returnType)
+        public virtual bool TryTypeForName(string name, out Type returnType)
         {
             if (!HashForThisType().ContainsKey(name))
             {

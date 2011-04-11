@@ -89,7 +89,8 @@ namespace ImpromptuInterface.Dynamic
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
         {
             result =Impromptu.InvokeGet(Target, binder.Name);
-            return true;
+
+            return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
         }
 
 
@@ -110,8 +111,8 @@ namespace ImpromptuInterface.Dynamic
                 return false;
 
             result = this.InvokeMethodDelegate(tDel, args);
-
-            return true;
+           
+            return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
         }
     }
 

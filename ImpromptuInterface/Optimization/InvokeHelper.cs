@@ -32,25 +32,7 @@ namespace ImpromptuInterface.Optimization
 
     internal static class InvokeHelper
     {
-		internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
-        {
-            object result;
-            try
-            {
-                result = tFunc.FastDynamicInvoke(
-                    tFunc.IsSpecialThisDelegate()
-                        ? new[]{target}.Concat(args).ToArray()
-                        : args
-                    );
-            }
-            catch (TargetInvocationException ex)
-            {
-                if(ex.InnerException !=null)
-                    throw ex.InnerException;
-                throw ex;
-            }
-            return result;
-        }
+	
 
 
         internal static readonly Type[] FuncKinds;

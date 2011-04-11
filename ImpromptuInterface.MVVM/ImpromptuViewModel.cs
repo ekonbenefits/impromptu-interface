@@ -38,7 +38,7 @@ namespace ImpromptuInterface.MVVM
         /// </summary>
         public ImpromptuViewModel()
         {
-            _static = new Lazy<TInterface>(()=>ActLike<TInterface>());
+            _static = Impromptu.ActLike<TInterface>(this);
         }
 
 #if !SILVERLIGHT
@@ -46,10 +46,10 @@ namespace ImpromptuInterface.MVVM
            StreamingContext context)
             : base(info, context)
         {
-            _static = new Lazy<TInterface>(() => ActLike<TInterface>());
+            _static = Impromptu.ActLike<TInterface>(this);
         }
 #endif
-        private readonly Lazy<TInterface> _static;
+        private readonly TInterface _static;
 
         /// <summary>
         /// Convenient access to Dynamic Properties but represented by a Static Interface.
@@ -58,7 +58,7 @@ namespace ImpromptuInterface.MVVM
         /// <value>The static.</value>
         public TInterface Static
         {
-            get { return _static.Value; }
+            get { return _static; }
         }
     }
 

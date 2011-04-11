@@ -89,6 +89,7 @@
     <Compile Include="Dynamic\ImpromptuObject.cs" />
     <Compile Include="InvokeArg.cs" />
     <Compile Include="Optimization\BinderHash.cs" />
+    <Compile Include="Optimization\ImmutableEmptyDictionary.cs" />
     <Compile Include="Optimization\InvokeHelper.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

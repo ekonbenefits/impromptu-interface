@@ -31,13 +31,22 @@ namespace ImpromptuInterface.Optimization
                 {
                     if (result != null && !tType.IsAssignableFrom(result.GetType()))
                     {
-                       if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
-                       {
-                           tType = tType.GetGenericArguments().First();
-                       }
+
+                        if (tType.IsInterface)
+                        {
+                            result = Impromptu.DynamicActLike(result, tType);
+                        }
+                        else
+                        {
+
+                            if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
+                            {
+                                tType = tType.GetGenericArguments().First();
+                            }
 
 
-                       result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
+                            result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
+                        }
                     }
                     else if (result == null && tType.IsValueType)
                     {

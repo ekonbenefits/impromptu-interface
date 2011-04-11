@@ -119,12 +119,9 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if (_dictionary.ContainsKey(binder.Name))
-            {
-                result = _dictionary[binder.Name];
-                Type tType;
-                //If it's an IDictionary and interface is not set for the property or it's dynamic for this property return an ImpromptuDictionary
 
+            if (_dictionary.TryGetValue(binder.Name, out result))
+            {
                 return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
             }
 
@@ -144,9 +141,9 @@ namespace ImpromptuInterface.Dynamic
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             result = null;
-            if (_dictionary.ContainsKey(binder.Name))
+            if (_dictionary.TryGetValue(binder.Name, out result))
             {
-                var tFunc = _dictionary[binder.Name] as Delegate;
+                var tFunc = result as Delegate;
                 if (tFunc !=null)
                 {
                     result = this.InvokeMethodDelegate(tFunc, args);

@@ -32,7 +32,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
-
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -49,7 +49,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
-
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -75,7 +75,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
-
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -98,6 +98,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -121,7 +122,8 @@ namespace UnitTestImpromptuInterface
             }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Reflection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -148,7 +150,8 @@ namespace UnitTestImpromptuInterface
             }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Reflection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -169,7 +172,8 @@ namespace UnitTestImpromptuInterface
                                         }, 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Reflection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -189,7 +193,8 @@ namespace UnitTestImpromptuInterface
             var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }), 500000);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Reflection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -203,6 +208,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine(tStopWatch1.Elapsed);
             Console.WriteLine(tStopWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tStopWatch2.Elapsed.Ticks / tStopWatch1.Elapsed.Ticks);
             Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
         }
 
@@ -215,7 +221,8 @@ namespace UnitTestImpromptuInterface
             var tStopWatch2 = TimeIt.Go(() => tFunc.DynamicInvoke(5));
 
             Console.WriteLine("Impromptu: " + tStopWatch1.Elapsed);
-            Console.WriteLine("Refelection: " + tStopWatch2.Elapsed);
+            Console.WriteLine("Reflection: " + tStopWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tStopWatch2.Elapsed.Ticks / tStopWatch1.Elapsed.Ticks);
             Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
         }
 

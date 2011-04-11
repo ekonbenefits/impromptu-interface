@@ -24,6 +24,7 @@ namespace ImpromptuInterface
     /// <summary>
     /// Use for Named arguments passed to InvokeMethods
     /// </summary>
+    [Serializable]
     public class InvokeArg
     {
         /// <summary>
@@ -71,6 +72,7 @@ namespace ImpromptuInterface
     /// InvokeArg that makes it easier to Cast from any IDictionaryValue
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Serializable]
     public class InvokeArg<T> : InvokeArg
     {
         /// <summary>

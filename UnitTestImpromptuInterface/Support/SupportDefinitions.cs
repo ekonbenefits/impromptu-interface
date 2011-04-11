@@ -122,6 +122,7 @@ namespace UnitTestImpromptuInterface
        string Func(object arg);
     }
 	
+    [Serializable]
 	public class PropPoco{
 	 	public string Prop1 { get; set; }
 

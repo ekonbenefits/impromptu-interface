@@ -15,8 +15,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.Serialization;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build
 {
@@ -39,9 +42,10 @@ namespace ImpromptuInterface.Build
 
 
     /// <summary>
-    /// Base class of Emited Proxies
+    /// Base class of Emited ProxiesC:\Documents and Settings\jayt\My Documents\Visual Studio 2010\Projects\impromptuinterface\ImpromptuInterface\Optimization\
     /// </summary>
-    public abstract class ActLikeProxy : IActLikeProxyInitialize
+    [Serializable]
+    public abstract class ActLikeProxy : IActLikeProxyInitialize, ISerializable
     {
         /// <summary>
         /// Returns the proxied object
@@ -76,6 +80,8 @@ namespace ImpromptuInterface.Build
             }
 
         }
+
+
 
         /// <summary>
         /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
@@ -116,6 +122,47 @@ namespace ImpromptuInterface.Build
         {
             return Original.GetHashCode();
         }
+
+#if !SILVERLIGHT
+
+        /// <summary>
+        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
+        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
+        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+        public void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            info.SetType(typeof(ActLikeProxySerializationHelper));
+			
+		    var tCustomAttr =
+                GetType().GetCustomAttributes(typeof (ActLikeProxyAttribute), false).OfType<ActLikeProxyAttribute>().
+                    FirstOrDefault();
+			
+				
+            info.AddValue("Context",
+                          tCustomAttr == null 
+                          ? null
+                          : tCustomAttr.Context,typeof(Type));
+			
+			
+			if(Util.IsMono){
+				info.AddValue("MonoInterfaces",
+                          tCustomAttr == null 
+                          ? null
+                          : tCustomAttr.Interfaces.Select(it=>it.AssemblyQualifiedName).ToArray(),typeof(string[]));
+			}else{
+            	info.AddValue("Interfaces",
+                          tCustomAttr == null 
+                          ? null
+                          : tCustomAttr.Interfaces,typeof(Type[]));
+			}
+		
+			
+            info.AddValue("Original", (object)Original);
+
+        }
+#endif
 
         /// <summary>
         /// Returns a <see cref="System.String"/> that represents this instance.

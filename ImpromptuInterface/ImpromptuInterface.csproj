@@ -78,6 +78,7 @@
     <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
     <Compile Include="Dynamic\IDynamicKnowLike.cs" />
     <Compile Include="Dynamic\IActLike.cs" />
+    <Compile Include="EmitProxy\ActLikeProxySerializationHelper.cs" />
     <Compile Include="IActLikeProxy.cs" />
     <Compile Include="Impromptu.cs" />
     <Compile Include="Dynamic\ImpromptuDictionary.cs" />
@@ -93,6 +94,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>InvokeHelper.tt</DependentUpon>
     </Compile>
+    <Compile Include="Optimization\Util.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EmitProxy\TypeHash.cs" />
   </ItemGroup>

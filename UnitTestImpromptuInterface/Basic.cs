@@ -106,6 +106,29 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
 
+        [Test, TestMethod]
+        public void AnnonMethodsTest()
+        {
+
+            var tNew = new
+                               {
+                                   Action1 = new Action(Assert.Fail),
+                                   Action2 = new Action<bool>(Assert.IsFalse),
+                                   Action3 = new Func<string>(() => "test"),
+                               };
+
+            ISimpeleClassMeth tActsLike = tNew.ActLike<ISimpeleClassMeth>();
+
+
+
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
+
+            Assert.AreEqual("test", tActsLike.Action3());
+
+
+        }
+
 
         [Test, TestMethod]
         public void ExpandoMethodsTest()

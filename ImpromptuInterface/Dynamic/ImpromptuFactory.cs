@@ -15,12 +15,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Base Class for making a fluent factory using an Impromptu Interface return type.
     /// </summary>
+    [Serializable]
     public class ImpromptuFactory:ImpromptuObject
     {
 

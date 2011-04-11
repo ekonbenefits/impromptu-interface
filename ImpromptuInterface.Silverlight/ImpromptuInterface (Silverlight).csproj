@@ -125,6 +125,9 @@
     <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxyAttribute.cs">
       <Link>EmitProxy\ActLikeProxyAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\EmitProxy\ActLikeProxySerializationHelper.cs">
+      <Link>EmitProxy\ActLikeProxySerializationHelper.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\EmitProxy\BuildProxy.cs">
       <Link>EmitProxy\BuildProxy.cs</Link>
     </Compile>
@@ -149,9 +152,13 @@
     <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper.cs">
       <Link>Optimization\InvokeHelper.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\Util.cs">
+      <Link>Optimization\Util.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Support.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.nuspec">

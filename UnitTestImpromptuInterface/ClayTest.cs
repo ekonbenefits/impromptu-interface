@@ -66,25 +66,25 @@ namespace UnitTestImpromptuInterface
         }
 
 
-         [Test,TestMethod]
+        [Test,TestMethod]
         public void TestBuilderWithClay()
           {
               var New = Builder.New<Clay>()
                   .ObjectSetup(
                    Return<object[]>.Arguments(
-                  () => new object[]{
+                  () => new object[]{new IClayBehavior[]{
                     new InterfaceProxyBehavior(),
                     new PropBehavior(),   
                     new ArrayPropAssignmentBehavior(),
-                    new NilResultBehavior()}))
+                    new NilResultBehavior()}}))
                   .ArraySetup(
                   Return<object[]>.Arguments(
-                  ()=>new object[]{
+                  ()=>new object[]{ new IClayBehavior[]{
                     new InterfaceProxyBehavior(),
                     new PropBehavior(),
                     new ArrayPropAssignmentBehavior(),
                     new ArrayBehavior(),
-                    new NilResultBehavior()}));
+                    new NilResultBehavior()}}));
 
 
 

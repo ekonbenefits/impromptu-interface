@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.Serialization;
 using ImpromptuInterface.Build;
 
 namespace ImpromptuInterface.Dynamic
@@ -25,8 +26,41 @@ namespace ImpromptuInterface.Dynamic
     /// Dynamic Object that knows about the Impromtu Interface return types;
     /// Override Typical Dynamic Object methods, and use TypeForName to get the return type of an interface member.
     /// </summary>
-    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike
+     
+    [Serializable]
+    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike,ISerializable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuObject"/> class.
+        /// </summary>
+        public ImpromptuObject()
+        {
+            
+        }
+#if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuObject"/> class. when deserializing
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        protected ImpromptuObject(SerializationInfo info, 
+           StreamingContext context)
+        {
+            
+        }
+
+        /// <summary>
+        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
+        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
+        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
+        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+#endif
+
         /// <summary>
         /// Cache to avoid refelection for same Interfaces.
         /// </summary>
@@ -151,6 +185,7 @@ namespace ImpromptuInterface.Dynamic
             return Impromptu.ActLike<TInterface>(this, otherInterfaces);
         }
 
-       
+
+        
     }
 }

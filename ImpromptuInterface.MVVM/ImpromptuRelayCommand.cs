@@ -24,11 +24,10 @@ using ImpromptuInterface;
 
 namespace ImpromptuInterface.MVVM
 {
-
-
     /// <summary>
     /// Command that relays to a target and method name.
     /// </summary>
+    [Serializable]
     public class ImpromptuRelayCommand : ICommand
     {
         private readonly object _executeTarget;

@@ -98,7 +98,7 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public virtual dynamic Create()
         {
-            var tArgs = Arguments();
+            object[] tArgs = Arguments();
             return Activator.CreateInstance(Type, tArgs);
         }
     }

@@ -12,6 +12,10 @@ using Test =Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestImpromptuInterface
 {
+    public class SerializableAttribute : Attribute
+    {
+    }
+
     public class TestFixtureAttribute : Attribute
     {
         
@@ -35,7 +39,11 @@ namespace UnitTestImpromptuInterface
             if (smaller > larger)
                 Test.Assert.Fail("{0} is expected to be less than {1}", smaller, larger);
         }
-
+        
+        public void Ignore(string message)
+        {
+            Test.Assert.Inconclusive(message);
+        }
 
         public void IsFalse(bool actual)
         {

@@ -731,7 +731,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
          /// <param name="del">The del.</param>
@@ -757,7 +757,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -785,7 +785,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -815,7 +815,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -847,7 +847,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -881,7 +881,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -917,7 +917,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -955,7 +955,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -995,7 +995,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1037,7 +1037,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1081,7 +1081,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1127,7 +1127,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1175,7 +1175,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1225,7 +1225,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1277,7 +1277,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>
@@ -1331,7 +1331,7 @@ namespace ImpromptuInterface.Dynamic
 
 
          /// <summary>
-         /// This and arguments.
+         /// This and Arguments.
          /// </summary>
 		/// <typeparam name="T1">The type of the Argument 1.</typeparam>
 		/// <typeparam name="T2">The type of the Argument 2.</typeparam>

@@ -14,7 +14,14 @@ namespace ImpromptuInterface.Optimization
     /// </summary>
     public static class Util
     {
-
+        public static Type FixContext(this Type context)
+        {
+            if (context.IsArray)
+            {
+                return typeof (object);
+            }
+            return context;
+        }
 
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {

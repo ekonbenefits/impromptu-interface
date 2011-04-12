@@ -92,8 +92,66 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tOut);
 
         }
-	
-			
+
+        [Test, TestMethod]
+        public void TestGetIndexer()
+        {
+       
+            dynamic tSetValue = "1";
+            var tAnon = new [] { tSetValue, "2" };
+
+
+            string tOut = Impromptu.InvokeGetIndex(tAnon,0);
+
+            Assert.AreEqual(tSetValue, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetLengthArray()
+        {
+            var tAnon = new []  { "1", "2" };
+
+
+            int tOut = Impromptu.InvokeGet(tAnon, "Length");
+
+            Assert.AreEqual(2, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetIndexerArray()
+        {
+
+            dynamic tSetValue = "1";
+            var tAnon = new List<string> { tSetValue, "2" };
+     
+
+            string tOut = Impromptu.InvokeGetIndex(tAnon, 0);
+
+            Assert.AreEqual(tSetValue, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestSetIndexer()
+        {
+          
+            dynamic tSetValue = "3";
+            var tAnon =  new List<string> { "1", "2" };
+
+            dynamic index = 0;
+            dynamic tDyn = tAnon;
+
+
+            Impromptu.InvokeSetIndex(tAnon, 0, tSetValue);
+
+            Assert.AreEqual(tSetValue, tAnon[0]);
+
+        }
+
+     
+
 
 
         [Test, TestMethod]
@@ -286,8 +344,8 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(tValue.ToString(), tOut);
         }
-		
 
+  
 
         [Test, TestMethod]
         public void TestMethodStaticPassAndGetValue()

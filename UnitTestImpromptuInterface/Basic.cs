@@ -131,6 +131,37 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
+        public void DictIndexTest()
+        {
+
+            dynamic tNew = new ImpromptuDictionary();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = "42";
+            tNew.Prop3 = Guid.NewGuid();
+
+            var tActsLike = Impromptu.ActLike<IObjectStringIndexer>(tNew);
+
+
+
+
+            Assert.AreEqual(tNew["Prop1"], tActsLike["Prop1"]);
+        }
+
+        [Test, TestMethod]
+        public void ArrayIndexTest()
+        {
+
+            var tNew = new[] { "Test1", "Test2" };
+
+            var tActsLike = Impromptu.ActLike<IStringIntIndexer>(tNew);
+
+
+
+
+            Assert.AreEqual(tNew[1], tActsLike[1]);
+        }
+
+        [Test, TestMethod]
         public void AnnonMethodsTest()
         {
 

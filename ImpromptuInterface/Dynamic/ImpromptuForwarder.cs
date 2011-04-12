@@ -15,9 +15,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.CSharp;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -41,8 +44,7 @@ namespace ImpromptuInterface.Dynamic
         /// <value>The target.</value>
         public object Target {  get; protected set; }
 
-
-        public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
+        public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
           
             result = Impromptu.InvokeGet(Target, binder.Name);
@@ -51,18 +53,20 @@ namespace ImpromptuInterface.Dynamic
 
         }
 
-        public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
+        public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
+            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, args);
+
             Type tType;
             if (TryTypeForName(binder.Name, out tType))
             {
-               return InvokeMember(tType == typeof(void), binder, args, out result);
+                return InvokeMember(tType == typeof(void), binder, tArgs, out result);
             }
 
             bool tVoidBool;
             try
             {
-                    var tProp = Target.GetType().GetMethod(binder.Name);
+                var tProp = Target.GetType().GetMethod(binder.Name);
                 tVoidBool = tProp.ReturnType == typeof (void);
             }
             catch (AmbiguousMatchException)
@@ -71,34 +75,47 @@ namespace ImpromptuInterface.Dynamic
                 tVoidBool =false;
             }
 
-
-            return InvokeMember(tVoidBool, binder, args, out result);
+            try
+            {
+                return InvokeMember(tVoidBool, binder, tArgs, out result);
+            }
+            catch (RuntimeBinderException)
+            {
+                return InvokeMember(!tVoidBool, binder, tArgs, out result);
+            }
         }
 
-        private bool InvokeMember(bool isVoid,System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
+        private bool InvokeMember(bool isVoid,InvokeMemberBinder binder, object[] args, out object result)
         {
-            object[] tArgs;
-            if(binder.CallInfo.ArgumentNames.Count == 0)
-                 tArgs =args;
-            else
-            {
-                var tStop = binder.CallInfo.ArgumentCount - binder.CallInfo.ArgumentNames.Count;
-                tArgs =  Enumerable.Repeat(default(string), tStop).Concat(binder.CallInfo.ArgumentNames).Zip(args, (n, v) => n == null ? v : new InvokeArg(n, v)).ToArray();
-            }
 
             if (isVoid)
             {
-                Impromptu.InvokeMemberAction(Target,binder.Name, tArgs);
+                Impromptu.InvokeMemberAction(Target, binder.Name, args);
                 result = null;
             }
             else
             {
-                result = Impromptu.InvokeMember(Target, binder.Name, tArgs);
+                result = Impromptu.InvokeMember(Target, binder.Name, args);
             }
             return true;
         }
 
-        public override bool TrySetMember(System.Dynamic.SetMemberBinder binder, object value)
+    
+
+        private object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
+        {
+            object[] tArgs;
+            if (callInfo.ArgumentNames.Count == 0)
+                tArgs =args;
+            else
+            {
+                var tStop = callInfo.ArgumentCount - callInfo.ArgumentNames.Count;
+                tArgs = Enumerable.Repeat(default(string), tStop).Concat(callInfo.ArgumentNames).Zip(args, (n, v) => n == null ? v : new InvokeArg(n, v)).ToArray();
+            }
+            return tArgs;
+        }
+
+        public override bool TrySetMember(SetMemberBinder binder, object value)
         {
 
             Impromptu.InvokeSet(Target, binder.Name, value);
@@ -106,6 +123,23 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
+        public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+        {
+
+            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, indexes);
+
+            result = Impromptu.InvokeGetIndex(Target, tArgs);
+            return true;
+        }
+
+        public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
+        {
+            var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
+            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
+
+            Impromptu.InvokeSetIndex(tArgs);
+            return true;
+        }
         
     }
 }

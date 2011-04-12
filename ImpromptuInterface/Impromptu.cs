@@ -192,19 +192,36 @@ namespace ImpromptuInterface
         /// </example>
         public static dynamic InvokeMember(object target, string name, params object[] args)
         {
-            
-            var tContext = target.GetType();
-            var tList = new List<CSharp.CSharpArgumentInfo>()
-                            {
-                                CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
-                            };
+            string[] tArgNames;
+            List<CSharp.CSharpArgumentInfo> tList;
+            Type tContext;
+            args = GetInvokeMemberArgs(target, args, out tArgNames, out tList, out tContext);
+          
+
+            var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
+                                       tContext,tList);
+
+
+            return InvokeHelper.InvokeMember(tBinder, name, tContext,tArgNames, target, args);
+        }
+
+        private static object[] GetInvokeMemberArgs(object target, object[] args, out string[] tArgNames, out List<CSharp.CSharpArgumentInfo> tList, out Type tContext)
+        {
+            tContext = target.GetType().FixContext();
+
+        
+
+            tList = new List<CSharp.CSharpArgumentInfo>()
+                        {
+                            CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
+                        };
             if (args == null)
                 args = new object[] { null };
 
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
-            var tArgNames = new string[args.Length];
+            tArgNames = new string[args.Length];
             var tArgSet = false;
             for (int i = 0; i < args.Length; i++)
             {
@@ -223,19 +240,47 @@ namespace ImpromptuInterface
                 tList.Add(CSharp.CSharpArgumentInfo.Create(
                     tFlag, tName));
             }
-            if (!tArgSet)
-                tArgNames = null;
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
-
-            var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
-                                       tContext,tList);
-
-
-            return InvokeHelper.InvokeMember(tBinder, name, tContext,tArgNames, target, args);
+            if (!tArgSet)
+                tArgNames = null;
+            return args;
         }
 
 
+
+
+        /// <summary>
+        /// Dynamically Invokes indexer using the DLR.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="indexes">The indexes.</param>
+        /// <returns></returns>
+        public static dynamic InvokeGetIndex(object target, params object[] indexes)
+        {     
+                        string[] tArgNames;
+            List<CSharp.CSharpArgumentInfo> tList;
+            Type tContext;
+            indexes = GetInvokeMemberArgs(target, indexes, out tArgNames, out tList, out tContext);
+
+            var tBinder =  CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
+
+            return InvokeHelper.InvokeMember(tBinder, "Item[].Get", tContext, tArgNames, target, indexes);
+        }
+
+
+        public static void InvokeSetIndex(object target, params object[] indexesThenValue)
+        {
+            string[] tArgNames;
+            List<CSharp.CSharpArgumentInfo> tList;
+            Type tContext;
+            indexesThenValue = GetInvokeMemberArgs(target, indexesThenValue, out tArgNames, out tList, out tContext);
+
+            var tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
+
+            InvokeHelper.InvokeMemberAction(tBinder, "Item[].Set", tContext, tArgNames, target, indexesThenValue);
+        }
 
         /// <summary>
         /// Dynamically Invokes a member method which returns void using the DLR
@@ -332,7 +377,7 @@ namespace ImpromptuInterface
         public static void InvokeSet(object target, string name, object value)
         {
 
-            var tContext = target.GetType();
+            var tContext = target.GetType().FixContext();
             var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
                                                   new List<CSharp.CSharpArgumentInfo>()
@@ -373,7 +418,9 @@ namespace ImpromptuInterface
         /// </example>
         public static dynamic InvokeGet(object target, string name)
         {
-            var tContext = target.GetType();
+            var tContext = target.GetType().FixContext();
+         
+
             var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
                                                   tContext,
                                                   new List<CSharp.CSharpArgumentInfo>()

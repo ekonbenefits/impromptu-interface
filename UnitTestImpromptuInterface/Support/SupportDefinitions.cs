@@ -94,7 +94,16 @@ namespace UnitTestImpromptuInterface
         T Action2<T>(T arg);
     }
 
-	
+    public interface IStringIntIndexer
+    {
+        string this[int index] { get; set; }
+    }
+
+    public interface IObjectStringIndexer
+    {
+        object this[string index] { get; set; }
+    }
+
 	 public interface IGenericMethWithConstraints
     {
         string Action<T>(T arg) where T:class;

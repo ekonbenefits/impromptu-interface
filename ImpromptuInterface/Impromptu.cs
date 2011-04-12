@@ -266,7 +266,7 @@ namespace ImpromptuInterface
 
             var tBinder =  CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
-            return InvokeHelper.InvokeMember(tBinder, "Item[].Get", tContext, tArgNames, target, indexes);
+            return InvokeHelper.InvokeMember(tBinder, "Item", tContext, tArgNames, target, indexes);
         }
 
 
@@ -279,7 +279,7 @@ namespace ImpromptuInterface
 
             var tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
-            InvokeHelper.InvokeMemberAction(tBinder, "Item[].Set", tContext, tArgNames, target, indexesThenValue);
+            InvokeHelper.InvokeMemberAction(tBinder, "Item", tContext, tArgNames, target, indexesThenValue);
         }
 
         /// <summary>

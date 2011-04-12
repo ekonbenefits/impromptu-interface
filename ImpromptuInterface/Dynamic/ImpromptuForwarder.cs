@@ -18,18 +18,19 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using Microsoft.CSharp;
 using Microsoft.CSharp.RuntimeBinder;
-
+using ImpromptuInterface.Optimization;
 namespace ImpromptuInterface.Dynamic
 {
     ///<summary>
     /// Proxies Calls allows subclasser to override do extra actions before or after base invocation
     ///</summary>
     /// <remarks>
-    /// This may not be as efficient as other proxies that can work on just static objects or just dynamic objects
-    /// Consider this class a work in progress
+    /// This may not be as efficient as other proxies that can work on just static objects or just dynamic objects...
+    /// Consider this when using.
     /// </remarks>
     public abstract class ImpromptuForwarder:ImpromptuObject
     {
@@ -37,6 +38,22 @@ namespace ImpromptuInterface.Dynamic
         {
             Target = target;
         }
+
+#if !SILVERLIGHT
+        protected ImpromptuForwarder(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+
+
+            Target = info.GetValue<IDictionary<string, object>>("Target");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+            base.GetObjectData(info,context);
+            info.AddValue("Target", Target);
+        }
+#endif
 
         /// <summary>
         /// Gets or sets the target.
@@ -57,50 +74,26 @@ namespace ImpromptuInterface.Dynamic
         {
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, args);
 
-            Type tType;
-            if (TryTypeForName(binder.Name, out tType))
-            {
-                return InvokeMember(tType == typeof(void), binder, tArgs, out result);
-            }
-
-            bool tVoidBool;
             try
             {
-                var tProp = Target.GetType().GetMethod(binder.Name);
-                tVoidBool = tProp.ReturnType == typeof (void);
-            }
-            catch (AmbiguousMatchException)
-            {
-
-                tVoidBool =false;
-            }
-
-            try
-            {
-                return InvokeMember(tVoidBool, binder, tArgs, out result);
+                result = Impromptu.InvokeMember(Target, binder.Name, tArgs);
+               
             }
             catch (RuntimeBinderException)
             {
-                return InvokeMember(!tVoidBool, binder, tArgs, out result);
-            }
-        }
-
-        private bool InvokeMember(bool isVoid,InvokeMemberBinder binder, object[] args, out object result)
-        {
-
-            if (isVoid)
-            {
-                Impromptu.InvokeMemberAction(Target, binder.Name, args);
                 result = null;
-            }
-            else
-            {
-                result = Impromptu.InvokeMember(Target, binder.Name, args);
+                try
+                {
+                    Impromptu.InvokeMemberAction(Target, binder.Name, tArgs);
+                }
+                catch (RuntimeBinderException)
+                {
+
+                    return false;
+                }
             }
             return true;
         }
-
-    
 
         private object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
         {

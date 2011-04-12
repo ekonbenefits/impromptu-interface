@@ -26,6 +26,13 @@ namespace UnitTestImpromptuInterface
 {
 
 
+    public class TestForwarder:ImpromptuForwarder
+    {
+        public TestForwarder(object target) : base(target)
+        {
+        }
+    }
+
     public interface ISimpeleClassProps
     {
         string Prop1 { get;  }

@@ -23,24 +23,20 @@ using Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
-    /// Dynamic Proxy that exposes any (and only) getter properties of wrapped objects including Anonymous objects
+    /// Dynamic Proxy that exposes any properties of objects, and can massage results based on interface
     /// </summary>
     [Serializable]
-    public class ImpromptuGet:ImpromptuObject
+    public class ImpromptuGet:ImpromptuForwarder
     {
-        /// <summary>
-        /// Gets or sets the target.
-        /// </summary>
-        /// <value>The target.</value>
-        public object Target { get; private set; }
+     
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuGet"/> class.
         /// </summary>
         /// <param name="target">The target.</param>
-        public ImpromptuGet(object target)
+        public ImpromptuGet(object target):base(target)
         {
-            Target = target;
+            
         }
 
 #if !SILVERLIGHT
@@ -49,14 +45,9 @@ namespace ImpromptuInterface.Dynamic
         {
 
 
-            Target = info.GetValue<IDictionary<string, object>>("Target");
         }
 
-        public override void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info,context);
-            info.AddValue("Target", Target);
-        }
+       
 #endif
 
 
@@ -89,9 +80,11 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
         {
-            result =Impromptu.InvokeGet(Target, binder.Name);
-
-            return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
+            if (base.TryGetMember(binder, out result))
+            {
+                return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
+            }
+            return false;
         }
 
 
@@ -106,30 +99,28 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
         {
-            result = null;
-            try
+
+            if (!base.TryInvokeMember(binder, args, out result))
             {
+                result = null;
                 var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
                 if (tDel == null)
                     return false;
 
                 result = this.InvokeMethodDelegate(tDel, args);
             }
-            catch (RuntimeBinderException)
-            {
-                   try
-                   {
-                       result = Impromptu.InvokeMember(Target, binder.Name, args);
-                   }
-                   catch (RuntimeBinderException)
-                   {
-                       result = null;
-                       Impromptu.InvokeMemberAction(Target, binder.Name, args);
-                   }
-            }
-
 
             return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
+        }
+
+
+        public override bool TryGetIndex(System.Dynamic.GetIndexBinder binder, object[] indexes, out object result)
+        {
+            if (base.TryGetIndex(binder, indexes, out result))
+            {
+                return this.MassageResultBasedOnInterface("Item", true, ref result);
+            }
+            return false;
         }
     }
 

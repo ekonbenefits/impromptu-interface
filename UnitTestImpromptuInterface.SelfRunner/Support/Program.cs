@@ -20,7 +20,7 @@ namespace UnitTestImpromptuInterface
 
 			Console.WriteLine("Press a key to start.");
 			Console.Read();
-            foreach (var tType in tTypes)
+            foreach (var tType in tTypes.OrderBy(it => it.Name))
             {
                 Console.WriteLine(tType.Name);
                 var tMethods =

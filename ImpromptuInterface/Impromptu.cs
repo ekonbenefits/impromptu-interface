@@ -31,7 +31,13 @@ namespace ImpromptuInterface
     /// </summary>
     public static class Impromptu
     {
+
+#if!SILVERLIGHT
+        private static readonly IDictionary<BinderHash, CallSite> _binderCache = new FastLookupDictionary<BinderHash, CallSite>();
+#else
         private static readonly IDictionary<BinderHash, CallSite> _binderCache = new Dictionary<BinderHash, CallSite>();
+
+#endif
         private static readonly object _binderCacheLock = new object();
 
 

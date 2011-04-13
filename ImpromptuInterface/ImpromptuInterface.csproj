@@ -93,6 +93,7 @@
     <Compile Include="InvokeArg.cs" />
     <Compile Include="InvokeContext.cs" />
     <Compile Include="Optimization\BinderHash.cs" />
+    <Compile Include="Optimization\FastLookupDictionary.cs" />
     <Compile Include="Optimization\ImmutableEmptyDictionary.cs" />
     <Compile Include="Optimization\InvokeHelper.cs">
       <AutoGen>True</AutoGen>

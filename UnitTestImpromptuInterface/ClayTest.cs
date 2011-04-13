@@ -42,7 +42,20 @@ namespace UnitTestImpromptuInterface
 
         }
 
-      
+        [Test, TestMethod]
+        public void TestRecorder()
+        {
+            dynamic New = Builder.New<ImpromptuRecorder>();
+
+            ImpromptuRecorder tRecording = New.Watson(Test: "One", Test2: 2, NameLast: "Watson");
+
+            
+            dynamic tVar =tRecording.ReplayOn(new ExpandoObject());
+
+            Assert.AreEqual("One", tVar.Test);
+            Assert.AreEqual(2, tVar.Test2);
+            Assert.AreEqual("Watson", tVar.NameLast);
+        }
 
         [Test,TestMethod]
         public void TestClay()

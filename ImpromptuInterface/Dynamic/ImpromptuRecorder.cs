@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -26,8 +27,18 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Proxy that Records Dynamic Invocations on an object
     /// </summary>
+    [Serializable]
     public class ImpromptuRecorder:ImpromptuForwarder
     {
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuRecorder"/> class.
+        /// </summary>
+        public ImpromptuRecorder():base(new ImpromptuDummy())
+        {
+            Recording = new List<Invocation>();
+        }
+
         /// <summary>
         /// Gets or sets the recording.
         /// </summary>
@@ -63,12 +74,14 @@ namespace ImpromptuInterface.Dynamic
         /// Replays the recording on target.
         /// </summary>
         /// <param name="target">The target.</param>
-        public void ReplayOn(object target)
+        public T ReplayOn<T>(T target)
         {
             foreach (var tInvocation in Recording)
             {
                 tInvocation.Invoke(target);
             }
+
+            return target;
         }
 
         public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)

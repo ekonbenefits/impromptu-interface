@@ -118,7 +118,7 @@ namespace ImpromptuInterface.Dynamic
         {
             if (base.TryGetIndex(binder, indexes, out result))
             {
-                return this.MassageResultBasedOnInterface("Item", true, ref result);
+                return this.MassageResultBasedOnInterface(Invocation.IndexBinderName, true, ref result);
             }
             return false;
         }

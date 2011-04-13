@@ -95,7 +95,7 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
-        private object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
+        protected object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
         {
             object[] tArgs;
             if (callInfo.ArgumentNames.Count == 0)

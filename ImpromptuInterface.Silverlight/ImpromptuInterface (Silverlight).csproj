@@ -113,8 +113,14 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuRecorder.cs">
+      <Link>Dynamic\ImpromptuRecorder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambdas.cs">
       <Link>Dynamic\InlineLambdas.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\Invocation.cs">
+      <Link>Dynamic\Invocation.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ThisFunctions.cs">
       <Link>Dynamic\ThisFunctions.cs</Link>

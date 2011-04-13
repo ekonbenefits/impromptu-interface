@@ -65,11 +65,13 @@
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\ImpromptuList.cs" />
     <Compile Include="Dynamic\Builder.cs" />
+    <Compile Include="Dynamic\ImpromptuRecorder.cs" />
     <Compile Include="Dynamic\InlineLambdas.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InlineLambdas.tt</DependentUpon>
     </Compile>
+    <Compile Include="Dynamic\Invocation.cs" />
     <Compile Include="Dynamic\ThisFunctions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

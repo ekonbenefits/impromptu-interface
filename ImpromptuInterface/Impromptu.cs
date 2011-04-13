@@ -18,6 +18,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 using CSharp = Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface
@@ -266,7 +267,7 @@ namespace ImpromptuInterface
 
             var tBinder =  CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
-            return InvokeHelper.InvokeMember(tBinder, "Item", tContext, tArgNames, target, indexes);
+            return InvokeHelper.InvokeMember(tBinder, Invocation.IndexBinderName, tContext, tArgNames, target, indexes);
         }
 
 
@@ -279,7 +280,7 @@ namespace ImpromptuInterface
 
             var tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
-            InvokeHelper.InvokeMemberAction(tBinder, "Item", tContext, tArgNames, target, indexesThenValue);
+            InvokeHelper.InvokeMemberAction(tBinder, Invocation.IndexBinderName, tContext, tArgNames, target, indexesThenValue);
         }
 
         /// <summary>
@@ -408,7 +409,7 @@ namespace ImpromptuInterface
 
 
         /// <summary>
-        /// Invokes excplit convert using the DLR.
+        /// Invokes  convert using the DLR.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="type">The type.</param>
@@ -425,7 +426,7 @@ namespace ImpromptuInterface
 
             var tFunc=BuildProxy.GenerateCallSiteFuncType(new Type[]{}, type);
 
-            dynamic tCallSite = CreateCallSite(tFunc,tBinder, "(Convert)", tContext);
+            dynamic tCallSite = CreateCallSite(tFunc, tBinder, Invocation.ConvertBinderName, tContext);
 
             return tCallSite.Target(tCallSite, target);
         }

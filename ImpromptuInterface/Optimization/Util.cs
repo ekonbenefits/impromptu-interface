@@ -14,6 +14,25 @@ namespace ImpromptuInterface.Optimization
     /// </summary>
     public static class Util
     {
+
+
+        public static object GetTargetContext(this object target, out Type context)
+        {
+            var tInvokeContext = target as InvokeContext;
+            if (tInvokeContext != null)
+            {
+                context = tInvokeContext.Context;
+                if (context.IsArray)
+                    context = typeof(object);
+                return tInvokeContext.Target;
+            }
+            context = target.GetType();
+            if (context.IsArray)
+                context = typeof (object);
+            return target;
+        }
+
+
         public static Type FixContext(this Type context)
         {
             if (context.IsArray)

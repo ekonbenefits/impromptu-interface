@@ -20,7 +20,7 @@ using System.Text;
 
 namespace ImpromptuInterface.Optimization
 {
-    internal class BinderHash
+    internal class BinderHash:IComparable<BinderHash>
     {
 
         protected BinderHash(Type delegateType, string name, Type context, string[] argNames, Type binderType)
@@ -59,6 +59,26 @@ namespace ImpromptuInterface.Optimization
                 //Exclusive Or Makes Sure this doesn't happen
                                  || other.ArgNames.SequenceEqual(ArgNames));
             // ReSharper restore AssignNullToNotNullAttribute
+        }
+
+
+        public int CompareTo(BinderHash other)
+        {
+            var tReturn = Name.CompareTo(other.Name);
+            if (tReturn != 0)
+                return tReturn;
+            if (DelegateType.AssemblyQualifiedName != null)
+                tReturn = DelegateType.AssemblyQualifiedName.CompareTo(other.DelegateType.AssemblyQualifiedName);
+            if (tReturn != 0)
+                return tReturn;
+            if (Context.AssemblyQualifiedName != null)
+                tReturn = Context.AssemblyQualifiedName.CompareTo(other.Context.AssemblyQualifiedName);
+            if (tReturn != 0)
+                return tReturn;
+            if (BinderType.AssemblyQualifiedName != null)
+                tReturn = BinderType.AssemblyQualifiedName.CompareTo(other.BinderType.AssemblyQualifiedName);
+          
+            return tReturn;
         }
 
         public override bool Equals(object obj)

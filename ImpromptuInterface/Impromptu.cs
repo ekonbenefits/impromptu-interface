@@ -195,7 +195,7 @@ namespace ImpromptuInterface
             string[] tArgNames;
             List<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            args = GetInvokeMemberArgs(target, args, out tArgNames, out tList, out tContext);
+            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext);
           
 
             var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name, null,
@@ -205,11 +205,10 @@ namespace ImpromptuInterface
             return InvokeHelper.InvokeMember(tBinder, name, tContext,tArgNames, target, args);
         }
 
-        private static object[] GetInvokeMemberArgs(object target, object[] args, out string[] tArgNames, out List<CSharp.CSharpArgumentInfo> tList, out Type tContext)
+        private static object[] GetInvokeMemberArgs(ref object target, object[] args, out string[] tArgNames, out List<CSharp.CSharpArgumentInfo> tList, out Type tContext)
         {
-            tContext = target.GetType().FixContext();
+            target =target.GetTargetContext(out tContext);
 
-        
 
             tList = new List<CSharp.CSharpArgumentInfo>()
                         {
@@ -222,6 +221,7 @@ namespace ImpromptuInterface
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
             tArgNames = new string[args.Length];
+          
             var tArgSet = false;
             for (int i = 0; i < args.Length; i++)
             {
@@ -262,7 +262,7 @@ namespace ImpromptuInterface
                         string[] tArgNames;
             List<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            indexes = GetInvokeMemberArgs(target, indexes, out tArgNames, out tList, out tContext);
+            indexes = GetInvokeMemberArgs(ref target, indexes, out tArgNames, out tList, out tContext);
 
             var tBinder =  CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
@@ -275,7 +275,7 @@ namespace ImpromptuInterface
             string[] tArgNames;
             List<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            indexesThenValue = GetInvokeMemberArgs(target, indexesThenValue, out tArgNames, out tList, out tContext);
+            indexesThenValue = GetInvokeMemberArgs(ref target, indexesThenValue, out tArgNames, out tList, out tContext);
 
             var tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
@@ -306,45 +306,13 @@ namespace ImpromptuInterface
         /// </example>
         public static void InvokeMemberAction(object target, string name, params object[] args)
         {
-         
+            string[] tArgNames;
+            List<CSharp.CSharpArgumentInfo> tList;
+            Type tContext;
+            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext);
 
-            var tArgs = new List<CSharp.CSharpArgumentInfo>()
-                            {
-                                CSharp.CSharpArgumentInfo.Create(CSharp.CSharpArgumentInfoFlags.None, null)
-                            };
-            if (args == null)
-                args = new object[] { null };
-
-
-            //Optimization: linq statement creates a slight overhead in this case
-            // ReSharper disable LoopCanBeConvertedToQuery
-            // ReSharper disable ForCanBeConvertedToForeach
-            var tArgNames = new string[args.Length];
-            var tArgSet = false;
-            for (int i = 0; i < args.Length; i++)
-            {
-                var tFlag = CSharp.CSharpArgumentInfoFlags.None;
-                var tArg = args[i];
-                string tName = null;
-                if (tArg is InvokeArg)
-                {
-                    tFlag |= CSharp.CSharpArgumentInfoFlags.NamedArgument;
-                    tName = ((InvokeArg)tArg).Name;
-
-                    args[i] = ((InvokeArg)tArg).Value;
-                    tArgSet = true;
-                }
-                tArgNames[i] = tName;
-                tArgs.Add(CSharp.CSharpArgumentInfo.Create(
-                    tFlag, tName));
-            }
-            if (!tArgSet)
-                tArgNames = null;
-            // ReSharper restore ForCanBeConvertedToForeach
-            // ReSharper restore LoopCanBeConvertedToQuery
-            var tContext = target.GetType();
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name, null,
-                                       tContext,tArgs);
+                                       tContext, tList);
 
 
             InvokeHelper.InvokeMemberAction(tBinder, name, tContext,tArgNames, target, args);
@@ -376,8 +344,10 @@ namespace ImpromptuInterface
     
         public static void InvokeSet(object target, string name, object value)
         {
+            Type tContext;
+            target.GetTargetContext(out tContext);
+            tContext = tContext.FixContext();
 
-            var tContext = target.GetType().FixContext();
             var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
                                                   new List<CSharp.CSharpArgumentInfo>()
@@ -418,8 +388,9 @@ namespace ImpromptuInterface
         /// </example>
         public static dynamic InvokeGet(object target, string name)
         {
-            var tContext = target.GetType().FixContext();
-         
+            Type tContext;
+            target.GetTargetContext(out tContext);
+            tContext = tContext.FixContext();
 
             var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
                                                   tContext,
@@ -507,9 +478,12 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static TInterface ActLike<TInterface>(this object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
-            var tType = originalDynamic.GetType();
+            Type tContext;
+            originalDynamic = originalDynamic.GetTargetContext(out tContext);
+            tContext = tContext.FixContext();
 
-            var tProxy = BuildProxy.BuildType(tType,typeof(TInterface), otherInterfaces);
+
+            var tProxy = BuildProxy.BuildType(tContext, typeof(TInterface), otherInterfaces);
 
 
 
@@ -528,9 +502,11 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic ActLikeProperties(this object originalDynamic, IDictionary<string, Type> propertySpec)
         {
-            var tType = originalDynamic.GetType();
+            Type tContext;
+            originalDynamic = originalDynamic.GetTargetContext(out tContext);
+            tContext = tContext.FixContext();
 
-            var tProxy = BuildProxy.BuildType(tType, propertySpec);
+            var tProxy = BuildProxy.BuildType(tContext, propertySpec);
 
 
 
@@ -575,15 +551,10 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+        [Obsolete("Using InvokeContext wrapper to change permission context from target")]
         public static TInterface CallActLike<TInterface>(this object caller, object originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
-            var tType = caller.GetType();
-
-            var tProxy = BuildProxy.BuildType(tType, typeof(TInterface), otherInterfaces);
-
-            return
-               (TInterface)
-               InitializeProxy(tProxy, originalDynamic, new[] { typeof(TInterface) }.Concat(otherInterfaces));
+            return originalDynamic.WithContext(caller).ActLike<TInterface>(otherInterfaces);
         }
 
         /// <summary>
@@ -606,9 +577,11 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
         {
-            var tType = originalDynamic.GetType();
+            Type tContext;
+            originalDynamic = originalDynamic.GetTargetContext(out tContext);
+            tContext = tContext.FixContext();
 
-            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+            var tProxy = BuildProxy.BuildType(tContext, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
 
             return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
 
@@ -621,13 +594,12 @@ namespace ImpromptuInterface
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
+       [Obsolete("Using WithContext() wrapper to change permission context from target")]
         public static dynamic CallDynamicActLike(this object caller, object originalDynamic, params Type[] otherInterfaces)
         {
-            var tType = caller.GetType();
 
-            var tProxy = BuildProxy.BuildType(tType, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+            return DynamicActLike(originalDynamic.WithContext(caller), otherInterfaces);
 
-            return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
         }
 
 
@@ -639,9 +611,10 @@ namespace ImpromptuInterface
         /// <param name="caller">The caller.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
+        [Obsolete("Using WithContext() wrapper to change permission context from target")] 
         public static IEnumerable<TInterface> AllCallActLike<TInterface>(this IEnumerable<object> originalDynamic, object caller, params Type[] otherInterfaces) where TInterface : class
         {
-            return originalDynamic.Select(it => caller.CallActLike<TInterface>(it,otherInterfaces));
+            return originalDynamic.Select(it => it.WithContext(caller).ActLike<TInterface>(otherInterfaces));
         }
 
 

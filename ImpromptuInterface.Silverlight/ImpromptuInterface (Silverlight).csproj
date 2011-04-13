@@ -149,6 +149,9 @@
     <Compile Include="..\ImpromptuInterface\InvokeArg.cs">
       <Link>InvokeArg.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeContext.cs">
+      <Link>InvokeContext.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Optimization\BinderHash.cs">
       <Link>Optimization\BinderHash.cs</Link>
     </Compile>

@@ -19,12 +19,12 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Linq;
 using ImpromptuInterface;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
-
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -77,8 +77,28 @@ namespace UnitTestImpromptuInterface
 
 
              }
-		
+        
+        [Test, TestMethod]
+        public void TestConvert()
+        {
+            var tEl = new XElement("Test","45");
 
+            var tCast = Impromptu.InvokeConvert(tEl, typeof (int), explict:true);
+           
+            Assert.AreEqual(typeof(int), tCast.GetType());
+            Assert.AreEqual(45,tCast);
+        }
+
+
+        [Test, TestMethod]
+        public void TestImplicitConvert()
+        {
+            var tEl = 45;
+
+            var tCast = Impromptu.InvokeConvert(tEl, typeof(long));
+
+            Assert.AreEqual(typeof(long), tCast.GetType());
+        }
 
         [Test, TestMethod]
         public void TestGetStatic()

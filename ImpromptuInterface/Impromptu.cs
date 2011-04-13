@@ -389,8 +389,7 @@ namespace ImpromptuInterface
         public static dynamic InvokeGet(object target, string name)
         {
             Type tContext;
-            target.GetTargetContext(out tContext);
-            tContext = tContext.FixContext();
+            target= target.GetTargetContext(out tContext);
 
             var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
                                                   tContext,
@@ -400,11 +399,36 @@ namespace ImpromptuInterface
                                                               CSharp.CSharpArgumentInfoFlags.None, null)
                                                       });
 
+            
+
             var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
             
             return tCallSite.Target(tCallSite, target);
         }
 
+
+        /// <summary>
+        /// Invokes excplit convert using the DLR.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="type">The type.</param>
+        /// <param name="explict">if set to <c>true</c> [explict].</param>
+        /// <returns></returns>
+        public static dynamic InvokeConvert(object target, Type type, bool explict =false)
+        {
+            Type tContext;
+            target = target.GetTargetContext(out tContext);
+
+            var tFlags = explict ? CSharp.CSharpBinderFlags.ConvertExplicit: CSharp.CSharpBinderFlags.None;
+
+            var tBinder = CSharp.Binder.Convert(tFlags, type, tContext);
+
+            var tFunc=BuildProxy.GenerateCallSiteFuncType(new Type[]{}, type);
+
+            dynamic tCallSite = CreateCallSite(tFunc,tBinder, "(Convert)", tContext);
+
+            return tCallSite.Target(tCallSite, target);
+        }
 
 
         /// <summary>

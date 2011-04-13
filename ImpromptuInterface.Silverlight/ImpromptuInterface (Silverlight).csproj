@@ -98,6 +98,9 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionaryBase.cs">
       <Link>Dynamic\ImpromptuDictionaryBase.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDummy.cs">
+      <Link>Dynamic\ImpromptuDummy.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuFactory.cs">
       <Link>Dynamic\ImpromptuFactory.cs</Link>
     </Compile>

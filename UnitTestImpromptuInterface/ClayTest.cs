@@ -127,7 +127,7 @@ namespace UnitTestImpromptuInterface
 
             Console.WriteLine("Impromptu: " + tWatchC.Elapsed);
             Console.WriteLine("Clay: " + tWatchC2.Elapsed);
-
+            Console.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC2.ElapsedTicks / tWatchC.ElapsedTicks);
             Assert.Less(tWatchC.Elapsed, tWatchC2.Elapsed);
 
             var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, 50000);
@@ -137,8 +137,7 @@ namespace UnitTestImpromptuInterface
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Clay: " + tWatch2.Elapsed);
 
-             var tDiffernce = (tWatch.Elapsed - tWatch2.Elapsed);
-             Console.WriteLine("50000 Difference: " + tDiffernce);
+            Console.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatch2.ElapsedTicks / tWatch.ElapsedTicks);
 
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }

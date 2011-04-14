@@ -21,6 +21,11 @@ namespace UnitTestImpromptuInterface
         
     }
 
+    public class TestFixtureSetUpAttribute : Attribute
+    {
+
+    }
+
     public class TestAttribute : Attribute
     {
     
@@ -80,6 +85,22 @@ namespace UnitTestImpromptuInterface
     {
         public AssertHelp Assert{get{return new AssertHelp();}}
 
+        private Test.TestContext testContextInstance;
+        /// <summary>
+        ///Gets or sets the test context which provides
+        ///information about and functionality for the current test run.
+        ///</summary>
+        public Test.TestContext TestContext
+        {
+            get
+            {
+                return testContextInstance;
+            }
+            set
+            {
+                testContextInstance = value;
+            }
+        }
 
         public void AssertException<T>(Action action) where T:Exception
         {

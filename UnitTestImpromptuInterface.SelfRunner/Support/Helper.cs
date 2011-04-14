@@ -21,6 +21,16 @@ namespace UnitTestImpromptuInterface
 
     }
 
+    public class TestFixtureSetUpAttribute : Attribute
+    {
+
+    }
+
+    public class TestInitializeAttribute : Attribute
+    {
+
+    }
+
     public class TestAttribute : Attribute
     {
 
@@ -63,6 +73,14 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+    public class WriteLineContext
+    {
+        public void WriteLine(string format, params object[] args)
+        {
+            Console.WriteLine(format, args);
+        }
+    }
+
     public class Helper 
     {
         public Helper()
@@ -71,6 +89,11 @@ namespace UnitTestImpromptuInterface
             
 
 		}
+
+        public WriteLineContext TestContext
+        {
+            get { return new WriteLineContext(); }
+        }
 
         public AssertHelper Assert { get; private set; }
 

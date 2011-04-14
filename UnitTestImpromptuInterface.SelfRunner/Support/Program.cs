@@ -18,7 +18,7 @@ namespace UnitTestImpromptuInterface
                 Assembly.GetAssembly(typeof (Program)).GetTypes()
                     .Where(it => it.GetCustomAttributes(typeof (TestFixtureAttribute), false).Any());
 
-			Console.WriteLine("Press a key to start.");
+			Console.WriteLine("Press enter to start.");
 			Console.Read();
             foreach (var tType in tTypes.OrderBy(it => it.Name))
             {

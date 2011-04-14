@@ -461,6 +461,14 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestStaticSet()
+        {
+            int tValue = 12;
+            Impromptu.InvokeSet(typeof(StaticType).WithStaticContext(), "TestSet", tValue);
+            Assert.AreEqual(tValue, StaticType.TestSet);
+        }
+
+        [Test, TestMethod]
         public void TestStaticDateTimeMethod()
         {
             object tDateDyn = "01/20/2009";

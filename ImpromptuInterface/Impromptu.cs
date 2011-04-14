@@ -321,27 +321,43 @@ namespace ImpromptuInterface
             target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
 
-            var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
-            if (tStaticContext)
-            {  //Grr forced to use reflection for static context
-                ((Type)target).GetProperty(name).GetSetMethod().Invoke(target, new object[] { value });
-                return;
-                tTargetFlag |= CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType;
-            }
+    
+            CallSiteBinder tBinder;
+            if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
+            {
 
-            var tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
+                tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, "set_" + name,
+                                                     null,
+                                                     tContext,
+                                                     new List<CSharp.CSharpArgumentInfo>()
+                                                        {
+                                                            CSharp.CSharpArgumentInfo.Create(
+                                                                CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                                                   CSharp.CSharpArgumentInfo.Create(
+
+                                                              CSharp.CSharpArgumentInfoFlags.None
+
+                                                              , null)
+                                                        });
+            }
+            else
+            {
+
+                tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
                                                   tContext,
                                                   new List<CSharp.CSharpArgumentInfo>()
                                                       {
-                                                           CSharp.CSharpArgumentInfo.Create(
-                                                              tTargetFlag, null),
+                                                          CSharp.CSharpArgumentInfo.Create(
+                                                              CSharp.CSharpArgumentInfoFlags.None, null),
                                                           CSharp.CSharpArgumentInfo.Create(
 
-                                                                     CSharp.CSharpArgumentInfoFlags.None
-                                                              
+                                                              CSharp.CSharpArgumentInfoFlags.None
+
                                                               , null)
-				
+
                                                       });
+            }
+
 
             var tCallSite = CreateCallSite<Action<CallSite, object, object>>(tBinder, name, tContext);
             tCallSite.Target(tCallSite, target, value);
@@ -378,14 +394,23 @@ namespace ImpromptuInterface
             tContext = tContext.FixContext();
 
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
+            CallSiteBinder tBinder;
             if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
             {
-                return ((Type)target).GetProperty(name).GetGetMethod().Invoke(target, new object[] { });
-                tTargetFlag |= CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType;
+
+                tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, "get_" + name,
+                                                     null,
+                                                     tContext,
+                                                     new List<CSharp.CSharpArgumentInfo>()
+                                                         {
+                                                             CSharp.CSharpArgumentInfo.Create(
+                                                                 CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)
+                                                         });
             }
+            else
+            {
 
-
-            var tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
+                tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
                                                   tContext,
                                                   new List<CSharp.CSharpArgumentInfo>()
                                                       {
@@ -393,14 +418,16 @@ namespace ImpromptuInterface
                                                               tTargetFlag, null)
                                                       });
 
-            
+            }
+
 
             var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
             
             return tCallSite.Target(tCallSite, target);
         }
 
-     
+      
+
 
         /// <summary>
         /// Invokes  convert using the DLR.

@@ -44,6 +44,8 @@ namespace UnitTestImpromptuInterface
         {
             get { return true; }
         }
+
+        public static int TestSet { get; set; }
     }
 
     public interface ISimpeleClassProps

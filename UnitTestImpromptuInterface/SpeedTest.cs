@@ -154,6 +154,28 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestGetStaticTimed()
+        {
+
+
+
+
+            var tStaticType = typeof(DateTime);
+            var tTarget = tStaticType.WithStaticContext();
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeGet(tTarget, "Today"); }, 500000);
+            var tMethodInfo = typeof (DateTime).GetProperty("Today").GetGetMethod();
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType, new object[] { });
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
         public void TestMethodStaticMethodValueTimed()
         {
 

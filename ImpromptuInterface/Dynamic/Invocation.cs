@@ -61,6 +61,10 @@ namespace ImpromptuInterface.Dynamic
         /// Invoke Method that could return a value or void
         /// </summary>
         InvokeMemberUnknown,
+        /// <summary>
+        /// Invoke Constructor
+        /// </summary>
+        Constructor,
     }
 
     /// <summary>
@@ -115,7 +119,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="name">The name.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public static Invocation Create(InvocationKind kind,string name, params object[] args)
+        public static Invocation Create(InvocationKind kind, String_OR_InvokeMemberName name, params object[] args)
         {
             return new Invocation(kind,name,args);
         }
@@ -126,12 +130,65 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="kind">The kind.</param>
         /// <param name="name">The name.</param>
         /// <param name="args">The args.</param>
-        public Invocation(InvocationKind kind, string name, params object[] args)
+        public Invocation(InvocationKind kind, String_OR_InvokeMemberName name, params object[] args)
         {
             Kind = kind;
             Name = name;
             Args = args;
         }
+
+
+        /// <summary>
+        /// Invokes the invocation on specified target with specific args.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        public object InvokeWithArgs(object target, params object[] args)
+        {
+            switch (Kind)
+            {
+                case InvocationKind.Constructor:
+                    return Impromptu.InvokeConstuctor((Type)target, args);
+                case InvocationKind.Convert:
+                    bool tExplict = false;
+                    if (Args.Length == 2)
+                        tExplict = (bool)args[1];
+                    return Impromptu.InvokeConvert(target, (Type)args[0], tExplict);
+                case InvocationKind.Get:
+                    return Impromptu.InvokeGet(target, Name.Name);
+                case InvocationKind.Set:
+                    Impromptu.InvokeSet(target, Name.Name, args.FirstOrDefault());
+                    return null;
+                case InvocationKind.GetIndex:
+                    return Impromptu.InvokeGetIndex(target, args);
+                case InvocationKind.SetIndex:
+                    Impromptu.InvokeSetIndex(target, args);
+                    return null;
+                case InvocationKind.InvokeMember:
+                    return Impromptu.InvokeMember(target, Name, args);
+                case InvocationKind.InvokeMemberAction:
+                    Impromptu.InvokeMemberAction(target, Name, args);
+                    return null;
+                case InvocationKind.InvokeMemberUnknown:
+                    {
+                        try
+                        {
+                            return Impromptu.InvokeMember(target, Name, args);
+                        }
+                        catch (RuntimeBinderException)
+                        {
+
+                            Impromptu.InvokeMemberAction(target, Name, args);
+                            return null;
+                        }
+                    }
+                default:
+                    throw new InvalidOperationException("Unknown Invocation Kind: " + Kind);
+            }
+
+        }
+
 
         /// <summary>
         /// Invokes the invocation on specified target.
@@ -140,44 +197,7 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public object Invoke(object target)
         {
-            switch (Kind)
-            {
-                case InvocationKind.Convert:
-                    bool tExplict =false;
-                    if(Args.Length == 2)
-                        tExplict = (bool) Args[1];
-                    return Impromptu.InvokeConvert(target, (Type) Args[0], tExplict);
-                case InvocationKind.Get:
-                    return Impromptu.InvokeGet(target, Name.Name);
-                case InvocationKind.Set:
-                    Impromptu.InvokeSet(target, Name.Name, Args.FirstOrDefault());
-                    return null;
-                case InvocationKind.GetIndex:
-                    return Impromptu.InvokeGetIndex(target, Args);
-                case InvocationKind.SetIndex:
-                    Impromptu.InvokeSetIndex(target, Args);
-                    return null;
-                case InvocationKind.InvokeMember:
-                    return Impromptu.InvokeMember(target, Name, Args);
-                case InvocationKind.InvokeMemberAction:
-                    Impromptu.InvokeMemberAction(target, Name, Args);
-                    return null;
-                case InvocationKind.InvokeMemberUnknown:
-                    {
-                        try
-                        {
-                             return Impromptu.InvokeMember(target, Name, Args);
-                        }
-                        catch (RuntimeBinderException)
-                        {
-                            
-                            Impromptu.InvokeMemberAction(target, Name, Args);
-                            return null;
-                        }
-                    }
-                default:
-                    throw new InvalidOperationException("Unknown Invocation Kind: "+ Kind);
-            }
+            return InvokeWithArgs(target, Args);
         }
     }
 }

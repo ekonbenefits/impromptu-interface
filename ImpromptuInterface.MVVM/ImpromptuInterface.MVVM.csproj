@@ -52,6 +52,7 @@
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">
       <Link>Properties\ImpromptuInterface.MVVM.nuspec</Link>
+      <SubType>Designer</SubType>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

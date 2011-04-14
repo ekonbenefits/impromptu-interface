@@ -43,12 +43,12 @@ namespace ImpromptuInterface
         /// Gets the name.
         /// </summary>
         /// <value>The name.</value>
-        public abstract string Name { get;  }
+        public string Name { get; protected set; }
         /// <summary>
         /// Gets the generic args.
         /// </summary>
         /// <value>The generic args.</value>
-        public abstract Type[] GenericArgs { get; }
+        public Type[] GenericArgs { get; protected set; }
     }
 
     /// <summary>
@@ -67,18 +67,7 @@ namespace ImpromptuInterface
             return new InvokeMemberName(name,null);
         }
 
-        private readonly string _name;
-        public override string Name
-        {
-            get { return _name; }
-        }
-
-        private readonly Type[] _genericArgs;
-        public override Type[] GenericArgs
-        {
-            get { return _genericArgs; }
-        }
-
+       
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeMemberName"/> class.
         /// </summary>
@@ -86,8 +75,8 @@ namespace ImpromptuInterface
         /// <param name="genericArgs">The generic args.</param>
         public InvokeMemberName(string name, params Type[] genericArgs)
         {
-            _name = name;
-            _genericArgs = genericArgs;
+            Name = name;
+            GenericArgs = genericArgs;
         }
 
         public bool Equals(InvokeMemberName other)

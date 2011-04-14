@@ -13,23 +13,54 @@ namespace ImpromptuInterface
         }
     }
 
-    public class InvokeMemberName
+
+    /// <summary>
+    /// String or InvokeMemberName
+    /// </summary>
+    public abstract class String_OR_InvokeMemberName
     {
-       
+        public static implicit operator String_OR_InvokeMemberName(string name)
+        {
+            return new InvokeMemberName(name, null);
+        }
 
 
+        /// <summary>
+        /// Gets the name.
+        /// </summary>
+        /// <value>The name.</value>
+        public abstract string Name { get;  }
+        /// <summary>
+        /// Gets the generic args.
+        /// </summary>
+        /// <value>The generic args.</value>
+        public abstract Type[] GenericArgs { get; }
+    }
+
+    public class InvokeMemberName:String_OR_InvokeMemberName
+    {
+        
         public static implicit operator InvokeMemberName(string name)
         {
             return new InvokeMemberName(name,null);
         }
 
-        public string Name { get; set; }
-        public Type[] GenericArgs { get; set; }
+        private string _name;
+        public override string Name
+        {
+            get { return _name; }
+        }
+
+        private Type[] _genericArgs;
+        public override Type[] GenericArgs
+        {
+            get { return _genericArgs; }
+        }
 
         public InvokeMemberName(string name, params Type[] genericArgs)
         {
-            Name = name;
-            GenericArgs = genericArgs;
+            _name = name;
+            _genericArgs = genericArgs;
         }
 
         public bool Equals(InvokeMemberName other)

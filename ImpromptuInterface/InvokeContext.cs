@@ -59,33 +59,48 @@ namespace ImpromptuInterface
         {
             return new InvokeContext(target, context);
         }
+
+        /// <summary>
+        /// Withes the static context.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public static InvokeContext WithStaticContext(this Type target, object context =null)
+        {
+
+            return new InvokeContext(target,true,context);
+        }
     }
 
     /// <summary>
     /// Object that stores a context with a target for dynamic invocation
     /// </summary>
+    [Serializable]
     public class InvokeContext
     {
         /// <summary>
         /// Gets or sets the target.
         /// </summary>
         /// <value>The target.</value>
-        public object Target { get; set; }
+        public object Target { get; protected set; }
         /// <summary>
         /// Gets or sets the context.
         /// </summary>
         /// <value>The context.</value>
-        public Type Context { get; set; }
+        public Type Context { get; protected set; }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="InvokeContext"/> class.
-        /// </summary>
-        /// <param name="Target">The target.</param>
-        /// <param name="context">The context.</param>
-        public InvokeContext(object Target, Type context)
+        public bool StaticContext { get; protected set; }
+
+        public InvokeContext(Type target, bool staticContext, object context)
         {
-            this.Target = Target;
-            Context = context;
+            if (context != null && !(context is Type))
+            {
+                context = context.GetType();
+            }
+            Target = target;
+            Context = ((Type)context) ?? target;
+            StaticContext = staticContext;
         }
 
         /// <summary>
@@ -96,7 +111,13 @@ namespace ImpromptuInterface
         public InvokeContext(object Target, object context)
         {
             this.Target = Target;
-            Context = context.GetType();
+
+            if (context != null && !(context is Type))
+            {
+                context = context.GetType();
+            }
+
+            Context = (Type)context;
         }
     }
 }

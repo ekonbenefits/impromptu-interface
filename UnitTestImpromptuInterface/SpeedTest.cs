@@ -81,6 +81,46 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
+        public void TestConstructorTimed()
+        {
+
+
+           
+
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(Tuple<string>), "Test" ); });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(Tuple<string>),"Test");
+            });
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructorValueTypeTimed()
+        {
+
+
+            var tIter = 1000000;
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);
+            }, tIter);
+
+            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
+            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            Console.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+        [Test, TestMethod]
         public void TestMethodStaticGetValueTimed()
         {
 

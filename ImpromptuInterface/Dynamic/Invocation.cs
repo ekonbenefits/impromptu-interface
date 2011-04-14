@@ -76,6 +76,7 @@ namespace ImpromptuInterface.Dynamic
         /// Defacto Binder Name for Indexer
         /// </summary>
         public static readonly string IndexBinderName = "Item";
+        public static readonly string ConstructorBinderName = "new()";
 
         /// <summary>
         /// Gets or sets the kind.

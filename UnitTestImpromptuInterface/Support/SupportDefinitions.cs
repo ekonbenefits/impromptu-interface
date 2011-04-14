@@ -33,6 +33,14 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+    public static class StaticType
+    {
+        public static TReturn Create<TReturn>(int type)
+        {
+            return default(TReturn);
+        }
+    }
+
     public interface ISimpeleClassProps
     {
         string Prop1 { get;  }

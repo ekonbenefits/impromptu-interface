@@ -89,6 +89,35 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(45,tCast);
         }
 
+        [Test, TestMethod]
+        public void TestConstruct()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof (List<object>), new object[]
+                                                                              {
+                                                                                  new string[] {"one", "two", "three"}
+                                                                              });
+        
+            Assert.AreEqual("two", tCast[1]);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructValueType()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);
+
+            Assert.AreEqual(20, tCast.Day);
+        }
+
+        [Test, TestMethod]
+        public void TestStaticCall()
+        {
+            dynamic i = 1;
+
+            
+            var tOut = Impromptu.InvokeMember(typeof (StaticType).WithStaticContext(),
+                                              "Create".WithGenericArgs(typeof(bool)), 1);
+            Assert.AreEqual(false,tOut);
+        }
 
         [Test, TestMethod]
         public void TestImplicitConvert()
@@ -124,6 +153,20 @@ namespace UnitTestImpromptuInterface
             string tOut = Impromptu.InvokeGetIndex(tAnon,0);
 
             Assert.AreEqual(tSetValue, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetIndexerValue()
+        {
+
+            
+            var tAnon = new int[] { 1, 2};
+
+
+            int tOut = Impromptu.InvokeGetIndex(tAnon, 1);
+
+            Assert.AreEqual(tAnon[1], tOut);
 
         }
 

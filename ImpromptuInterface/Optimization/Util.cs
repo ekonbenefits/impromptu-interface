@@ -32,11 +32,13 @@ namespace ImpromptuInterface.Optimization
     {
 
 
-        public static object GetTargetContext(this object target, out Type context)
+        public static object GetTargetContext(this object target, out Type context, out bool staticContext)
         {
             var tInvokeContext = target as InvokeContext;
+            staticContext = false;
             if (tInvokeContext != null)
             {
+                staticContext = tInvokeContext.StaticContext;
                 context = tInvokeContext.Context;
                 if (context.IsArray)
                     context = typeof(object);
@@ -117,25 +119,6 @@ namespace ImpromptuInterface.Optimization
             return true;
         }
 
-        internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
-        {
-            object result;
-            try
-            {
-                result = tFunc.FastDynamicInvoke(
-                    tFunc.IsSpecialThisDelegate()
-                        ? new[] { target }.Concat(args).ToArray()
-                        : args
-                    );
-            }
-            catch (TargetInvocationException ex)
-            {
-                if (ex.InnerException != null)
-                    throw ex.InnerException;
-                throw ex;
-            }
-            return result;
-        }
 
 
 #if !SILVERLIGHT

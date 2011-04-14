@@ -85,7 +85,8 @@ namespace ImpromptuInterface.Optimization
 
 
         internal static void InvokeMemberAction(CallSiteBinder binder,
-                                                    string name,
+                                                    InvokeMemberName name,
+													bool staticContext,
                                                     Type context, 
                                                     string[] argNames,
                                                     object target,
@@ -101,7 +102,7 @@ namespace ImpromptuInterface.Optimization
 #>
                 case <#=i#>:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames);
+                        var tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
                         tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                         break;
                     }
@@ -120,9 +121,55 @@ namespace ImpromptuInterface.Optimization
        
         #region InvokeMember Optimizations
 
+ internal static readonly IDictionary<Type,CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>
+            _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>();
 
-        internal static object InvokeMember(CallSiteBinder binder,
+		internal static dynamic DynamicInvokeMember(Type tReturn, CallSiteBinder binder,
                                        string name,
+									 bool staticContext,
+                                     Type context,
+                                     string[] argNames,
+                                     object target, params object [] args)
+		{
+		    CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>> tSite;
+            if (!_dynamicInvokeMemberSite.TryGetValue(tReturn, out tSite))
+            {
+                tSite = CallSite
+                    <Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>.
+                    Create(
+                        Microsoft.CSharp.RuntimeBinder.Binder.InvokeMember(
+                            CSharpBinderFlags.None,
+                            "InvokeMember",
+                            new[] {tReturn},
+                            typeof (InvokeHelper),
+                            new[]
+                                {
+                                    CSharpArgumentInfo.Create(
+                                        CSharpArgumentInfoFlags.IsStaticType |
+                                        CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                }
+                            )
+                    );
+					_dynamicInvokeMemberSite[tReturn] = tSite;
+            }
+
+		    return tSite.Target(tSite, typeof(InvokeHelper), binder, name, staticContext, context, argNames, target, args);
+		}
+
+
+
+
+
+        internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
+                                       InvokeMemberName name,
+									 bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      object target, params object [] args)
@@ -133,12 +180,12 @@ namespace ImpromptuInterface.Optimization
             switch (tSwitch)
             {
 <# for(int i=0; i <= 14; i++){ 
-		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i+1));
+		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{"TReturn"}));
 		var tArrayArgs = String.Concat(Enumerable.Range(0,i).Select(it=>String.Format(", args[{0}]",it)));
 #>
                 case <#=i#>:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, <#=tobjectArgs#>>>(binder, name, context, argNames);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                     }
 <# } #>

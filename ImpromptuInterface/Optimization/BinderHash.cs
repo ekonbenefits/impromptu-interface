@@ -23,24 +23,27 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash:IComparable<BinderHash>
     {
 
-        protected BinderHash(Type delegateType, string name, Type context, string[] argNames, Type binderType)
+        protected BinderHash(Type delegateType, InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
             BinderType = binderType;
+            StaticContext = staticContext;
             DelegateType = delegateType;
             Name = name;
             Context = context;
             ArgNames = argNames;
+
         }
 
-        public static BinderHash Create(Type delType, string name, Type context, string[] argNames, Type binderType)
+        public static BinderHash Create(Type delType, InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
-            return new BinderHash(delType, name, context, argNames, binderType);
+            return new BinderHash(delType, name, context, argNames, binderType, staticContext);
         }
 
 
         public Type BinderType { get; protected set; }
+        public bool StaticContext { get; protected set; }
         public Type DelegateType { get; protected set; }
-        public string Name { get; protected set; }
+        public InvokeMemberName Name { get; protected set; }
         public Type Context { get; protected set; }
         public string[] ArgNames { get; protected set; }
 
@@ -50,6 +53,7 @@ namespace ImpromptuInterface.Optimization
             if (ReferenceEquals(this, other)) return true;
             return 
                 !(other.ArgNames == null ^ ArgNames == null)
+                && Equals(other.StaticContext,StaticContext)
                 && Equals(other.DelegateType, DelegateType) 
                 && Equals(other.Name, Name) 
                 && Equals(other.Context, Context)
@@ -64,7 +68,7 @@ namespace ImpromptuInterface.Optimization
 
         public int CompareTo(BinderHash other)
         {
-            var tReturn = Name.CompareTo(other.Name);
+            var tReturn = Name.Name.CompareTo(other.Name.Name);
             if (tReturn != 0)
                 return tReturn;
             if (DelegateType.AssemblyQualifiedName != null)
@@ -103,8 +107,8 @@ namespace ImpromptuInterface.Optimization
 
     internal class GenericBinderHashBase : BinderHash
     {
-        protected GenericBinderHashBase(Type delegateType, string name, Type context, string[] argNames, Type binderType)
-            : base(delegateType, name, context, argNames, binderType)
+        protected GenericBinderHashBase(Type delegateType, InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
+            : base(delegateType, name, context, argNames, binderType, staticContext)
         {
         }
     }
@@ -112,13 +116,13 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash<T> : GenericBinderHashBase where T : class
     {
 
-        public static BinderHash<T> Create(string name, Type context, string[] argNames, Type binderType)
+        public static BinderHash<T> Create(InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
-            return new BinderHash<T>(name, context, argNames, binderType);
+            return new BinderHash<T>(name, context, argNames, binderType, staticContext );
         }
 
-        protected BinderHash(string name, Type context, string[] argNames, Type binderType)
-            : base(typeof(T), name, context, argNames, binderType)
+        protected BinderHash(InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext )
+            : base(typeof(T), name, context, argNames, binderType, staticContext )
         {
         }
 

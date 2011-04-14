@@ -311,17 +311,21 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
-    
+        /// <remarks>
+        /// if you call a static property off a type with a static context the csharp dlr binder won't do it, so this method reverts to reflection
+        /// </remarks>
         public static void InvokeSet(object target, string name, object value)
         {
             Type tContext;
             bool tStaticContext;
-            target.GetTargetContext(out tContext, out tStaticContext);
+            target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
 
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
             if (tStaticContext)
-            {
+            {  //Grr forced to use reflection for static context
+                ((Type)target).GetProperty(name).GetSetMethod().Invoke(target, new object[] { value });
+                return;
                 tTargetFlag |= CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType;
             }
 
@@ -363,16 +367,20 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+        /// <remarks>
+        /// if you call a static property off a type with a static context the csharp dlr binder won't do it, so this method reverts to reflection
+        /// </remarks>
         public static dynamic InvokeGet(object target, string name)
         {
             Type tContext;
             bool tStaticContext;
-            target.GetTargetContext(out tContext, out tStaticContext);
+            target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
 
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
-            if (tStaticContext)
+            if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
             {
+                return ((Type)target).GetProperty(name).GetGetMethod().Invoke(target, new object[] { });
                 tTargetFlag |= CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType;
             }
 
@@ -392,6 +400,7 @@ namespace ImpromptuInterface
             return tCallSite.Target(tCallSite, target);
         }
 
+     
 
         /// <summary>
         /// Invokes  convert using the DLR.

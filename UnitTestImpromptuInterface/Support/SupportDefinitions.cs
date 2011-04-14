@@ -39,6 +39,11 @@ namespace UnitTestImpromptuInterface
         {
             return default(TReturn);
         }
+
+        public static bool Test
+        {
+            get { return true; }
+        }
     }
 
     public interface ISimpeleClassProps

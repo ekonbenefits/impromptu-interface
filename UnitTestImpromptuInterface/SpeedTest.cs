@@ -65,7 +65,7 @@ namespace UnitTestImpromptuInterface
 
         
         [Test, TestMethod]
-        public void TestPropStaticGetValueTimed()
+        public void TestPropPocoGetValueTimed()
         {
 
 
@@ -132,7 +132,7 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValueTimed()
+        public void TestMethodPocoGetValueTimed()
         {
 
 
@@ -153,9 +153,31 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+        [Test, TestMethod]
+        public void TestMethodStaticMethodValueTimed()
+        {
+
+
+
+
+            var tStaticType = typeof (DateTime);
+            var tTarget = tStaticType.WithStaticContext();
+            string tDate = "01/20/2009";
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tTarget, "Parse", tDate); }, 500000);
+            var tMethodInfo = typeof(DateTime).GetMethod("Parse",new[]{typeof(string)});
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType,new object[]{tDate});
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValuePassNullTimed()
+        public void TestMethodPocoGetValuePassNullTimed()
         {
 #if DEBUG
             Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
@@ -179,7 +201,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValuePassNullDoubleCallTimed()
+        public void TestMethodPocoGetValuePassNullDoubleCallTimed()
         {
 #if DEBUG
             Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
@@ -207,7 +229,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValue4argsTimed()
+        public void TestMethodPocoGetValue4argsTimed()
         {
 
 
@@ -231,7 +253,7 @@ namespace UnitTestImpromptuInterface
  
 
         [Test, TestMethod]
-        public void TestMethodStaticVoidTimed()
+        public void TestMethodPocoVoidTimed()
         {
 
 

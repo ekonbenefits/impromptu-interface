@@ -51,7 +51,7 @@ namespace UnitTestImpromptuInterface
 
         }
 		     [Test,TestMethod]
-        public void TestStaticSet()
+        public void TestPocoSet()
         {
             var tPoco = new PropPoco();
 
@@ -64,7 +64,7 @@ namespace UnitTestImpromptuInterface
         }
 
              [Test, TestMethod]
-             public void TestStaticSetNull()
+             public void TestPocoSetNull()
              {
                  var tPoco = new PropPoco(){Prop1 = "Test default"};
 
@@ -397,7 +397,7 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValue()
+        public void TestMethodPocoGetValue()
         {
         
 
@@ -411,17 +411,17 @@ namespace UnitTestImpromptuInterface
   
 
         [Test, TestMethod]
-        public void TestMethodStaticPassAndGetValue()
+        public void TestMethodPocoPassAndGetValue()
         {
 
 
-            HelpTestStaticPassAndGetValue("Test", "Te");
+            HelpTestPocoPassAndGetValue("Test", "Te");
 
 
-            HelpTestStaticPassAndGetValue("Test", "st");
+            HelpTestPocoPassAndGetValue("Test", "st");
         }
 
-        private void HelpTestStaticPassAndGetValue(string tValue, string tParam)
+        private void HelpTestPocoPassAndGetValue(string tValue, string tParam)
         {
             var tExpected = tValue.StartsWith(tParam);
 
@@ -446,9 +446,26 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tOut);
 
         }
-		
-		
-		     
+        [Test, TestMethod]
+        public void TestStaticGet()
+        {
+            var tDate = Impromptu.InvokeGet(typeof(DateTime).WithStaticContext(), "Today");
+            Assert.AreEqual(DateTime.Today, tDate);
+        }
 
+        [Test, TestMethod]
+        public void TestStaticGet2()
+        {
+            var tVal = Impromptu.InvokeGet(typeof(StaticType).WithStaticContext(), "Test");
+            Assert.AreEqual(true, tVal);
+        }
+
+        [Test, TestMethod]
+        public void TestStaticDateTimeMethod()
+        {
+            object tDateDyn = "01/20/2009";
+            var tDate = Impromptu.InvokeMember(typeof(DateTime).WithStaticContext(), "Parse", tDateDyn);
+            Assert.AreEqual(new DateTime(2009,1,20), tDate);
+        }
     }
 }

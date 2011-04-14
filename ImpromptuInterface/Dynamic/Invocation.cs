@@ -63,19 +63,32 @@ namespace ImpromptuInterface.Dynamic
         InvokeMemberUnknown,
     }
 
+    /// <summary>
+    /// Storable representation of an invocation without the target
+    /// </summary>
     [Serializable]
     public class Invocation
     {
 
         /// <summary>
-        /// Defacto Binder Name for Convert Op
+        /// Defacto Binder Name for Explicit Convert Op
         /// </summary>
-        public static readonly string ConvertBinderName = "(Convert)";
+        public static readonly string ExplicitConvertBinderName = "(Explicit)";
+
+        /// <summary>
+        /// Defacto Binder Name for Implicit Convert Op
+        /// </summary>
+        public static readonly string ImplicitConvertBinderName = "(Implicit)";
 
         /// <summary>
         /// Defacto Binder Name for Indexer
         /// </summary>
         public static readonly string IndexBinderName = "Item";
+
+
+        /// <summary>
+        /// Defacto Binder Name for Construvter
+        /// </summary>
         public static readonly string ConstructorBinderName = "new()";
 
         /// <summary>
@@ -87,7 +100,7 @@ namespace ImpromptuInterface.Dynamic
         /// Gets or sets the name.
         /// </summary>
         /// <value>The name.</value>
-        public string Name { get; protected set; }
+        public String_OR_InvokeMemberName Name { get; protected set; }
         /// <summary>
         /// Gets or sets the args.
         /// </summary>
@@ -135,14 +148,14 @@ namespace ImpromptuInterface.Dynamic
                         tExplict = (bool) Args[1];
                     return Impromptu.InvokeConvert(target, (Type) Args[0], tExplict);
                 case InvocationKind.Get:
-                    return Impromptu.InvokeGet(target, Name);
+                    return Impromptu.InvokeGet(target, Name.Name);
                 case InvocationKind.Set:
-                    Impromptu.InvokeSet(target, Name, Args.FirstOrDefault());
+                    Impromptu.InvokeSet(target, Name.Name, Args.FirstOrDefault());
                     return null;
                 case InvocationKind.GetIndex:
-                    return Impromptu.InvokeGetIndex(target, Name, Args);
+                    return Impromptu.InvokeGetIndex(target, Args);
                 case InvocationKind.SetIndex:
-                    Impromptu.InvokeSetIndex(target, Name, Args);
+                    Impromptu.InvokeSetIndex(target, Args);
                     return null;
                 case InvocationKind.InvokeMember:
                     return Impromptu.InvokeMember(target, Name, Args);

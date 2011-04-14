@@ -104,7 +104,7 @@ namespace ImpromptuInterface.Optimization
 
 
         internal static void InvokeMemberAction(CallSiteBinder binder,
-                                                    InvokeMemberName name,
+                                                    String_OR_InvokeMemberName name,
 													bool staticContext,
                                                     Type context, 
                                                     string[] argNames,
@@ -266,7 +266,7 @@ namespace ImpromptuInterface.Optimization
 
 
         internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
-                                       InvokeMemberName name,
+                                       String_OR_InvokeMemberName name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,

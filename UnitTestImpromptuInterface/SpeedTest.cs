@@ -154,13 +154,13 @@ namespace UnitTestImpromptuInterface
             var tValue = new OverloadingMethPoco();
 
 
-
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, 500000);
+            var tInteration = 1000000;
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, tInteration);
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object)});
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = tMethodInfo.Invoke(tValue, new object[] { null});
-            }, 500000);
+            }, tInteration);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Reflection: " + tWatch2.Elapsed);
@@ -177,10 +177,10 @@ namespace UnitTestImpromptuInterface
             var tValue = new OverloadingMethPoco();
 
 
-
+            var tInteration = 500000;
             var tWatch = TimeIt.Go(() => { 
                 var tOut = Impromptu.InvokeMember(tValue, "Func", null); 
-                var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, 500000);
+                var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, tInteration);
 
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
             var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
@@ -188,7 +188,7 @@ namespace UnitTestImpromptuInterface
             {
                 var tOut = tMethodInfo.Invoke(tValue, new object[] { null });
                 var tOut2 = tMethodInfo2.Invoke(tValue, new object[] { 2 });
-            }, 500000);
+            }, tInteration);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Reflection: " + tWatch2.Elapsed);

@@ -127,25 +127,26 @@ namespace UnitTestImpromptuInterface
             dynamic New = new ClayFactory();
             IRobot tRobot = New.Robot().Name("Bender");
             IRobot tRobotI = Impromptu.ActLike<IRobot>(New.Robot().Name("Bender"));
-            
-            var tWatchC = TimeIt.Go(() =>
+
+             var tInteration = 50000;
+             var tWatchC = TimeIt.Go(() =>
                                          {
                                              var tOut =
                                                  Impromptu.ActLike<IRobot>(New.Robot().Name("Bender"));
-                                         }, 50000);
+                                         }, tInteration);
             var tWatchC2 = TimeIt.Go(() =>
                                          {
                                              IRobot tOut = New.Robot().Name("Bender");
-                                         },50000 );
+                                         },tInteration );
 
             Console.WriteLine("Impromptu: " + tWatchC.Elapsed);
             Console.WriteLine("Clay: " + tWatchC2.Elapsed);
             Console.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC2.ElapsedTicks / tWatchC.ElapsedTicks);
             Assert.Less(tWatchC.Elapsed, tWatchC2.Elapsed);
 
-            var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, 50000);
+            var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, tInteration);
 
-            var tWatch2 = TimeIt.Go(() => { var tOut = tRobot.Name; }, 50000);
+            var tWatch2 = TimeIt.Go(() => { var tOut = tRobot.Name; }, tInteration);
 
             Console.WriteLine("Impromptu: " + tWatch.Elapsed);
             Console.WriteLine("Clay: " + tWatch2.Elapsed);

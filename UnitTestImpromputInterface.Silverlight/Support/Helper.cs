@@ -30,7 +30,7 @@ namespace UnitTestImpromptuInterface
     {
         public void AreEqual(dynamic expected, dynamic actual)
         {
-            Test.Assert.AreEqual(expected,expected);
+            Test.Assert.AreEqual(expected, actual);
         }
 
         public void Less(dynamic smaller, dynamic larger)

@@ -22,7 +22,7 @@ namespace UnitTestImpromptuInterface
         [Test,TestMethod]
         public void TestGenericMeth()
         {
-
+       
             GenericMethHelper(3, "3");
             GenericMethHelper(4, "4");
             GenericMethHelper(true, "True");

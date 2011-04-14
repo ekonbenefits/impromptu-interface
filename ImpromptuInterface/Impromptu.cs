@@ -32,12 +32,10 @@ namespace ImpromptuInterface
     public static class Impromptu
     {
 
-#if !SILVERLIGHT
-        private static readonly IDictionary<BinderHash, CallSite> _binderCache = new FastLookupDictionary<BinderHash, CallSite>();
-#else
+
         private static readonly IDictionary<BinderHash, CallSite> _binderCache = new Dictionary<BinderHash, CallSite>();
 
-#endif
+
         private static readonly object _binderCacheLock = new object();
 
 
@@ -60,7 +58,7 @@ namespace ImpromptuInterface
         public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false)
         {
 
-            var tHash = BinderHash.Create(delegateType, (InvokeMemberName) name, context, argNames,binder.GetType(), staticContext);
+            var tHash = BinderHash.Create(delegateType, name, context, argNames,binder.GetType(), staticContext);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -111,7 +109,7 @@ namespace ImpromptuInterface
         /// <seealso cref="CreateCallSite"/>
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false) where T : class
         {
-            var tHash = BinderHash<T>.Create((InvokeMemberName)name, context, argNames, binder.GetType(), staticContext);
+            var tHash = BinderHash<T>.Create(name, context, argNames, binder.GetType(), staticContext);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -150,7 +148,7 @@ namespace ImpromptuInterface
         public static dynamic InvokeMember(object target, String_OR_InvokeMemberName name, params object[] args)
         {
             string[] tArgNames;
-            List<CSharp.CSharpArgumentInfo> tList;
+            IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
             bool tStaticContext;
             args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, out tStaticContext);
@@ -160,13 +158,13 @@ namespace ImpromptuInterface
                                        tContext,tList);
 
 
-            return InvokeHelper.InvokeMember<object>(tBinder, (InvokeMemberName)name, tStaticContext, tContext,tArgNames, target, args);
+            return InvokeHelper.InvokeMember<object>(tBinder, name, tStaticContext, tContext,tArgNames, target, args);
         }
 
-        private static object[] GetInvokeMemberArgs(ref object target, object[] args, out string[] tArgNames, out List<CSharp.CSharpArgumentInfo> tList, out Type tContext, out bool staticContext)
+        private static object[] GetInvokeMemberArgs(ref object target, object[] args, out string[] tArgNames, out IEnumerable<CSharp.CSharpArgumentInfo> outArgInfo, out Type tContext, out bool staticContext)
         {
 
-
+          
             target = target.GetTargetContext(out tContext, out staticContext);
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
             if (staticContext)
@@ -174,13 +172,15 @@ namespace ImpromptuInterface
                 tTargetFlag |= CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType;
             }
 
-            tList = new List<CSharp.CSharpArgumentInfo>()
-                        {
-                            CSharp.CSharpArgumentInfo.Create(tTargetFlag, null)
-                        };
             if (args == null)
                 args = new object[] { null };
 
+            var tList = new BareBonesList<CSharp.CSharpArgumentInfo>(args.Length+1)
+                        {
+                            CSharp.CSharpArgumentInfo.Create(tTargetFlag, null)
+                        };
+
+            outArgInfo = tList;
             //Optimization: linq statement creates a slight overhead in this case
             // ReSharper disable LoopCanBeConvertedToQuery
             // ReSharper disable ForCanBeConvertedToForeach
@@ -227,7 +227,7 @@ namespace ImpromptuInterface
         public static dynamic InvokeGetIndex(object target, params object[] indexes)
         {     
                         string[] tArgNames;
-            List<CSharp.CSharpArgumentInfo> tList;
+            IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
             bool tStaticContext;
             indexes = GetInvokeMemberArgs(ref target, indexes, out tArgNames, out tList, out tContext, out tStaticContext);
@@ -241,7 +241,7 @@ namespace ImpromptuInterface
         public static void InvokeSetIndex(object target, params object[] indexesThenValue)
         {
             string[] tArgNames;
-            List<CSharp.CSharpArgumentInfo> tList;
+            IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
             bool tStaticContext;
             indexesThenValue = GetInvokeMemberArgs(ref target, indexesThenValue, out tArgNames, out tList, out tContext, out tStaticContext);
@@ -276,7 +276,7 @@ namespace ImpromptuInterface
         public static void InvokeMemberAction(object target, String_OR_InvokeMemberName name, params object[] args)
         {
             string[] tArgNames;
-            List<CSharp.CSharpArgumentInfo> tList;
+            IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
             bool tStaticContext;
             args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, out tStaticContext);
@@ -285,7 +285,7 @@ namespace ImpromptuInterface
                                        tContext, tList);
 
 
-            InvokeHelper.InvokeMemberAction(tBinder, (InvokeMemberName)name, tStaticContext,tContext, tArgNames, target, args);
+            InvokeHelper.InvokeMemberAction(tBinder, name, tStaticContext,tContext, tArgNames, target, args);
 
         
         }
@@ -412,7 +412,7 @@ namespace ImpromptuInterface
 
             var tFunc=BuildProxy.GenerateCallSiteFuncType(new Type[]{}, type);
 
-            dynamic tCallSite = CreateCallSite(tFunc, tBinder, Invocation.ConvertBinderName, tContext);
+            dynamic tCallSite = CreateCallSite(tFunc, tBinder,explict ? Invocation.ExplicitConvertBinderName : Invocation.ImplicitConvertBinderName, tContext);
 
             return tCallSite.Target(tCallSite, target);
         }
@@ -427,7 +427,7 @@ namespace ImpromptuInterface
         {
             object tDummyTarget = String.Empty;
             string[] tArgNames;
-            List<CSharp.CSharpArgumentInfo> tList;
+            IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tDummyContex;
             bool tStaticContext;
             args = GetInvokeMemberArgs(ref tDummyTarget, args, out tArgNames, out tList, out tDummyContex, out tStaticContext);

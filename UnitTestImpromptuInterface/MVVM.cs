@@ -7,6 +7,8 @@ using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
 #elif !SELFRUNNER
+using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using NUnit.Framework;
 #endif
 
@@ -81,6 +83,19 @@ namespace UnitTestImpromptuInterface
              Assert.AreEqual(tAnon.GetType(), tAnon2.GetType());
          }
 
+
+         [Test, TestMethod]
+         public void TestToStringProxyDictionaryMassage()
+         {
+             var tPropPoco = new PropPoco() {Prop1 = "A"};
+
+             dynamic tData = Builder.New().Object(ReturnProp: tPropPoco.ProxyToString(it=>"Print Me"));
+
+             IPropPocoProp tInter =Impromptu.ActLike<IPropPocoProp>(tData);
+
+             Assert.AreEqual(tPropPoco.GetType(), tInter.ReturnProp.GetType());
+         }
+
         private T ExplictAnonCast<T>(T dummy, dynamic value)
         {
             return (T) value;
@@ -94,5 +109,7 @@ namespace UnitTestImpromptuInterface
         {
             return value;
         }
+
+        
     }
 }

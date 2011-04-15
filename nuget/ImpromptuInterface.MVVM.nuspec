@@ -2,7 +2,7 @@
 <package> 
   <metadata> 
     <id>ImpromptuInterface.MVVM</id> 
-    <version>2.0.4</version> 
+    <version>2.0.6</version> 
     <authors>Jay Tuley</authors> 
     <owners>Jay Tuley</owners>
     <description>A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.</description> 
@@ -14,7 +14,7 @@
       <frameworkAssembly assemblyName="Microsoft.CSharp" />
     </frameworkAssemblies>
     <dependencies>
-      <dependency id="ImpromptuInterface" version="4.0.4" />
+      <dependency id="ImpromptuInterface" version="4.0.6" />
     </dependencies>
   </metadata>
   <files>

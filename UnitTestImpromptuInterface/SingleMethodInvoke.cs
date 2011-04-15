@@ -102,11 +102,62 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestConstructOptional()
+        {
+            PocoOptConstructor tCast = Impromptu.InvokeConstuctor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
+
+            Assert.AreEqual("-1", tCast.One);
+            Assert.AreEqual("-2", tCast.Two);
+            Assert.AreEqual("3", tCast.Three);
+        }
+
+        [Test, TestMethod]
         public void TestConstructValueType()
         {
             var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);
 
             Assert.AreEqual(20, tCast.Day);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructprimativetype()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Int32));
+
+            Assert.AreEqual(default(Int32), tCast);
+        }
+
+
+        [Test, TestMethod]
+        public void TestConstructDateTimeNoParams()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime));
+
+            Assert.AreEqual(default(DateTime), tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructOBjectNoParams()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(object));
+
+            Assert.AreEqual(typeof(object), tCast.GetType());
+        }
+
+        [Test, TestMethod]
+        public void TestConstructNullableprimativetype()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Nullable<Int32>));
+
+            Assert.AreEqual(null, tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructGuid()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Guid));
+
+            Assert.AreEqual(default(Guid), tCast);
         }
 
         [Test, TestMethod]

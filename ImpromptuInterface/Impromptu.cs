@@ -467,12 +467,19 @@ namespace ImpromptuInterface
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tDummyContex;
             bool tStaticContext;
+
+            if (type.IsValueType && args.Length ==0)  //dynamic invocation doesn't see constructors of value types
+            {
+                return Activator.CreateInstance(type);
+            }
+
             args = GetInvokeMemberArgs(ref tDummyTarget, args, out tArgNames, out tList, out tDummyContex, out tStaticContext);
 
             var tBinder = CSharp.Binder.InvokeConstructor(CSharp.CSharpBinderFlags.None, type, tList);
 
             if (type.IsValueType)
             {
+
                 return InvokeHelper.DynamicInvokeMember(type, tBinder, Invocation.ConstructorBinderName, true, type,
                                                         tArgNames, type, args);
             }

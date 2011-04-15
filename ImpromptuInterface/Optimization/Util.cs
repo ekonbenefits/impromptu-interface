@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using ImpromptuInterface.Dynamic;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Optimization
 {
@@ -87,19 +88,34 @@ namespace ImpromptuInterface.Optimization
                         }
                         else
                         {
-
-                            if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
+                          
+                            try
                             {
-                                tType = tType.GetGenericArguments().First();
+                                object tResult;
+
+                                tResult = Impromptu.InvokeConvert(target, tType, explict: true);
+
+                                result = tResult;
+                            }catch(RuntimeBinderException)
+                            {
+                                if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
+                                {
+                                    tType = tType.GetGenericArguments().First();
+                                }
+
+
+                                if (result is IConvertible && typeof (IConvertible).IsAssignableFrom(tType))
+                                {
+
+                                    result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
+
+                                }
                             }
-
-
-                            result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
                         }
                     }
                     else if (result == null && tType.IsValueType)
                     {
-                        result = Activator.CreateInstance(tType);
+                        result = Impromptu.InvokeConstuctor(tType);
                     }
                 }
             }
@@ -113,7 +129,7 @@ namespace ImpromptuInterface.Optimization
                 }
                 if (tType.IsValueType)
                 {
-                    result = Activator.CreateInstance(tType);
+                    result = Impromptu.InvokeConstuctor(tType);
                 }
             }
             return true;

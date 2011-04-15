@@ -57,6 +57,25 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public interface IPropPocoProp
+    {
+        PropPoco ReturnProp { get; set; }
+    }
+
+    public class PocoOptConstructor
+    {
+        public string One { get; set; }
+        public string Two { get; set; }
+        public string Three { get; set; }
+
+        public PocoOptConstructor(string one="-1", string two="-2", string three="-3")
+        {
+            One = one;
+            Two = two;
+            Three = three;
+        }
+    }
+
     public interface IDynamicDict
     {
         int Test1 { get; }

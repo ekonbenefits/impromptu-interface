@@ -2,26 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface
 {
-    /// <summary>
-    /// Extensions methods for InvokeMemberName
-    /// </summary>
-    public static class InvokeMemberNameExtension
-    {
-        /// <summary>
-        /// attaches generic args to string
-        /// </summary>
-        /// <param name="name">The name.</param>
-        /// <param name="genericArgs">The generic args.</param>
-        /// <returns></returns>
-        public static InvokeMemberName WithGenericArgs(this string name, params Type[] genericArgs)
-        {
-            return new InvokeMemberName(name, genericArgs);
-        }
-    }
-
+  
 
     /// <summary>
     /// String or InvokeMemberName
@@ -56,6 +41,12 @@ namespace ImpromptuInterface
     /// </summary>
     public sealed class InvokeMemberName:String_OR_InvokeMemberName
     {
+        /// <summary>
+        /// Create Function can set to variable to make cleaner syntax;
+        /// </summary>
+        public static readonly Func<string, Type[], InvokeMemberName> Create =
+            Return<InvokeMemberName>.Arguments<string, Type[]>((n, a) => new InvokeMemberName(n, a));
+
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ImpromptuInterface.InvokeMemberName"/>.

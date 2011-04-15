@@ -130,6 +130,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImpromptuInterface.MVVM.Silverlight\ImpromptuInterface.MVVM %28Silverlight%29.csproj">
+      <Project>{56215C8D-85AE-4FCB-BD33-89E6ABBA407B}</Project>
+      <Name>ImpromptuInterface.MVVM %28Silverlight%29</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
       <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
       <Name>ImpromptuInterface %28Silverlight%29</Name>

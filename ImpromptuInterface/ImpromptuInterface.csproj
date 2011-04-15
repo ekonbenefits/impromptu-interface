@@ -93,6 +93,7 @@
     <Compile Include="Dynamic\ImpromptuObject.cs" />
     <Compile Include="InvokeArg.cs" />
     <Compile Include="InvokeContext.cs" />
+    <Compile Include="InvokeExt\InvokeExt.cs" />
     <Compile Include="InvokeMemberName.cs" />
     <Compile Include="Optimization\BareBonesList.cs" />
     <Compile Include="Optimization\BinderHash.cs" />

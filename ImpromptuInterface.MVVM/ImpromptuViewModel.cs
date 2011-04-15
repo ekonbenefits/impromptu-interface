@@ -31,14 +31,15 @@ namespace ImpromptuInterface.MVVM
     /// If you specific a TInterface it provides a guide to the dynamic properties
     /// </summary>
     /// <typeparam name="TInterface">The type of the interface.</typeparam>
-    public class ImpromptuViewModel<TInterface>:ImpromptuViewModel where TInterface:class 
+    [Serializable]
+    public class ImpromptuViewModel<TInterfaceContract> : ImpromptuViewModel where TInterfaceContract : class 
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuViewModel&lt;TInterface&gt;"/> class.
         /// </summary>
         public ImpromptuViewModel()
         {
-            _static = Impromptu.ActLike<TInterface>(this);
+            _contract = Impromptu.ActLike<TInterfaceContract>(this);
         }
 
 #if !SILVERLIGHT
@@ -46,19 +47,30 @@ namespace ImpromptuInterface.MVVM
            StreamingContext context)
             : base(info, context)
         {
-            _static = Impromptu.ActLike<TInterface>(this);
+            _contract = Impromptu.ActLike<TInterfaceContract>(this);
         }
 #endif
-        private readonly TInterface _static;
+        private readonly TInterfaceContract _contract;
 
         /// <summary>
         /// Convenient access to Dynamic Properties but represented by a Static Interface.
         ///  When subclassing you can use Static.PropertyName = x, etc
         /// </summary>
         /// <value>The static.</value>
-        public TInterface Static
+        [Obsolete("Use Contract Property instead")]
+        public TInterfaceContract Static
         {
-            get { return _static; }
+            get { return _contract; }
+        }
+
+        /// <summary>
+        /// Convenient access to Dynamic Properties but represented by a Static Interface.
+        ///  When subclassing you can use Contract.PropertyName = x, etc
+        /// </summary>
+        /// <value>The contract interface.</value>
+        public TInterfaceContract Contract
+        {
+            get { return _contract; }
         }
     }
 

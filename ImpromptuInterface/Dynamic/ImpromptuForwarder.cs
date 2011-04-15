@@ -133,6 +133,32 @@ namespace ImpromptuInterface.Dynamic
             Impromptu.InvokeSetIndex(tArgs);
             return true;
         }
-        
+
+        /// <summary>
+        /// Equalses the specified other.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns></returns>
+        public bool Equals(ImpromptuForwarder other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Target, Target);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if ((obj is ImpromptuForwarder))
+                return Equals((ImpromptuForwarder) obj);
+
+            return obj.Equals(Target);
+        }
+
+        public override int GetHashCode()
+        {
+            return Target.GetHashCode();
+        }
     }
 }

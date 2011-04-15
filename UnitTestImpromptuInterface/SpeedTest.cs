@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
+using ImpromptuInterface.InvokeExt;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
 #elif !SELFRUNNER
+using ImpromptuInterface.InvokeExt;
 using NUnit.Framework;
 #endif
 

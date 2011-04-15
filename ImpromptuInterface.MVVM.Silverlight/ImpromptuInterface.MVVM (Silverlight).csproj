@@ -65,6 +65,9 @@
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuRelayCommand.cs">
       <Link>ImpromptuRelayCommand.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuToString.cs">
+      <Link>ImpromptuToString.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuViewModel.cs">
       <Link>ImpromptuViewModel.cs</Link>
     </Compile>

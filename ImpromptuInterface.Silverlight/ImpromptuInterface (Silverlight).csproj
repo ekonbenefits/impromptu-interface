@@ -161,6 +161,9 @@
     <Compile Include="..\ImpromptuInterface\InvokeContext.cs">
       <Link>InvokeContext.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeExt\InvokeExt.cs">
+      <Link>InvokeExt\InvokeExt.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\InvokeMemberName.cs">
       <Link>InvokeMemberName.cs</Link>
     </Compile>

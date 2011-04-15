@@ -55,7 +55,7 @@ namespace ImpromptuInterface.MVVM
         /// <param name="executeName">Name of the execute method.</param>
         /// <param name="canExecuteTarget">The can execute target.</param>
         /// <param name="canExecuteName">Name of the can execute method.</param>
-        public ImpromptuRelayCommand(object executeTarget, string executeName, object canExecuteTarget, string canExecuteName)
+        public ImpromptuRelayCommand(object executeTarget, String_OR_InvokeMemberName executeName, object canExecuteTarget, String_OR_InvokeMemberName canExecuteName)
             :this(executeTarget, executeName)
         {
             _canExecuteTarget = canExecuteTarget;
@@ -71,7 +71,7 @@ namespace ImpromptuInterface.MVVM
         {
             if (_canExecuteTarget == null)
                 return true;
-            return (bool)_executeInvoke.InvokeWithArgs(_canExecuteTarget, parameter);
+            return (bool)_canExecuteInvoke.InvokeWithArgs(_canExecuteTarget, parameter);
         }
 
 

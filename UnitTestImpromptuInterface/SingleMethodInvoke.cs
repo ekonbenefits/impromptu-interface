@@ -25,6 +25,7 @@ using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
+using ImpromptuInterface.InvokeExt;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;

@@ -18,60 +18,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface
 {
 
-    /// <summary>
-    /// Extension Methods for Adding context to invocation
-    /// </summary>
-    public static class InvokeContextExtension
-    {
-        /// <summary>
-        /// Combines target with context.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public static InvokeContext WithContext(this object target, Type context)
-        {
-            return new InvokeContext(target, context);
-        }
-
-        /// <summary>
-        /// Combines target with context.
-        /// </summary>
-        /// <typeparam name="TContext">The type of the context.</typeparam>
-        /// <param name="target">The target.</param>
-        /// <returns></returns>
-        public static InvokeContext WithContext<TContext>(this object target)
-        {
-            return new InvokeContext(target, typeof(TContext));
-        }
-
-        /// <summary>
-        /// Combines target with context.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public static InvokeContext WithContext(this object target, object context)
-        {
-            return new InvokeContext(target, context);
-        }
-
-        /// <summary>
-        /// Withes the static context.
-        /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        public static InvokeContext WithStaticContext(this Type target, object context =null)
-        {
-
-            return new InvokeContext(target,true,context);
-        }
-    }
+ 
 
     /// <summary>
     /// Object that stores a context with a target for dynamic invocation
@@ -79,6 +31,26 @@ namespace ImpromptuInterface
     [Serializable]
     public class InvokeContext
     {
+
+        /// <summary>
+        /// Create Function can set to variable to make cleaner syntax;
+        /// </summary>
+        public static readonly Func<object, object, InvokeContext> CreateContext =
+            Return<InvokeContext>.Arguments<object, object>((t, c) => new InvokeContext(t, c));
+
+        /// <summary>
+        /// Create Function can set to variable to make cleaner syntax;
+        /// </summary>
+        public static readonly Func<Type, InvokeContext> CreateStatic =
+           Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
+       
+        /// <summary>
+        /// Create Function can set to variable to make cleaner syntax;
+        /// </summary>
+        public static readonly Func<Type, object, InvokeContext> CreateStaticWithContext =
+   Return<InvokeContext>.Arguments<Type, object>((t, c) => new InvokeContext(t, true, c));
+
+
         /// <summary>
         /// Gets or sets the target.
         /// </summary>

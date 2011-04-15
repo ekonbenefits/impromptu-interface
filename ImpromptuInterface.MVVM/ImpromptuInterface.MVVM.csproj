@@ -46,6 +46,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ImpromptuRelayCommand.cs" />
+    <Compile Include="ImpromptuToString.cs" />
     <Compile Include="ImpromptuViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

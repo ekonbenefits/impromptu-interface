@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
 using CSharp = Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface

@@ -63,8 +63,13 @@ namespace UnitTestImpromptuInterface
                         }
                         else
                         {
+							tFailed++;
                             Console.Write("*      ");
-                            throw ex.InnerException;
+							Console.Write("Exception: ");
+
+                            Console.WriteLine(ex.InnerException.Message);
+							Console.WriteLine(ex.InnerException.StackTrace);
+							Console.WriteLine();
                         }
                     }
                     catch (Exception ex)

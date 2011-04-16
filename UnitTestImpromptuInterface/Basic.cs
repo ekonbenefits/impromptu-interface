@@ -19,7 +19,7 @@ using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
-
+using ImpromptuInterface.Optimization;
 
 
 #if SILVERLIGHT
@@ -134,6 +134,7 @@ namespace UnitTestImpromptuInterface
         public void DictIndexTest()
         {
 
+			
             dynamic tNew = new ImpromptuDictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
@@ -150,7 +151,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void ArrayIndexTest()
         {
-
+			
+			
             var tNew = new[] { "Test1", "Test2" };
 
             var tActsLike = Impromptu.ActLike<IStringIntIndexer>(tNew);

@@ -75,6 +75,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void GetterArrayTest()
         {
+		
+			
             var tArray = new int[]{1,2,3};
 
             dynamic tTest =  ImpromptuGet.Create<IStringIntIndexer>(tArray);

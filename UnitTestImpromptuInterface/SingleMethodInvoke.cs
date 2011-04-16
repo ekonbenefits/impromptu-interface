@@ -26,6 +26,7 @@ using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
 using ImpromptuInterface.InvokeExt;
+using ImpromptuInterface.Optimization;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -237,7 +238,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestGetIndexerArray()
         {
-
+			
+			
             dynamic tSetValue = "1";
             var tAnon = new List<string> { tSetValue, "2" };
      

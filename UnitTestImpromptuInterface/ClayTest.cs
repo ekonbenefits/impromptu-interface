@@ -7,6 +7,7 @@ using ClaySharp;
 using ClaySharp.Behaviors;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Optimization;
 #if !SELFRUNNER
 using NUnit.Framework;
 #endif
@@ -82,6 +83,8 @@ namespace UnitTestImpromptuInterface
         [Test,TestMethod]
         public void TestBuilderWithClay()
           {
+		
+			
               var New = Builder.New<Clay>()
                   .ObjectSetup(
                    Return<object[]>.Arguments(

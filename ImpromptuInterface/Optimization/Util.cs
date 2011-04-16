@@ -151,10 +151,10 @@ namespace ImpromptuInterface.Optimization
         }
 #endif
 		
-		public static bool IsMono{
-			get{
-				return Type.GetType ("Mono.Runtime") != null;
-			}
+		static Util(){
+			IsMono = Type.GetType ("Mono.Runtime") != null;
 		}
+		
+		public static readonly bool IsMono;
     }
 }

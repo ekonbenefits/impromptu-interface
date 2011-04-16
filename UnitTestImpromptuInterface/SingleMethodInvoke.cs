@@ -119,6 +119,17 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(20, tCast.Day);
         }
+		
+		     [Test, TestMethod]
+        public void TestConstructValueTypeJustDynamic()
+        {
+			dynamic day =20;
+			dynamic year =2009;
+			dynamic month =1;
+            var tCast = new DateTime(year,month,day);
+			DateTime tDate = tCast;
+            Assert.AreEqual(20, tDate.Day);
+        }
 
         [Test, TestMethod]
         public void TestConstructprimativetype()

@@ -151,8 +151,8 @@ namespace ImpromptuInterface
             string[] tArgNames;
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            bool tStaticContext;
-            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, out tStaticContext);
+            bool tStaticContext =false;
+            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, ref tStaticContext);
           
 
             var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name.Name, name.GenericArgs,
@@ -162,11 +162,14 @@ namespace ImpromptuInterface
             return InvokeHelper.InvokeMember<object>(tBinder, name, tStaticContext, tContext,tArgNames, target, args);
         }
 
-        private static object[] GetInvokeMemberArgs(ref object target, object[] args, out string[] tArgNames, out IEnumerable<CSharp.CSharpArgumentInfo> outArgInfo, out Type tContext, out bool staticContext)
+        private static object[] GetInvokeMemberArgs(ref object target, object[] args, out string[] tArgNames, out IEnumerable<CSharp.CSharpArgumentInfo> outArgInfo, out Type tContext, ref bool staticContext)
         {
 
-          
-            target = target.GetTargetContext(out tContext, out staticContext);
+           	if(!staticContext)
+            	target = target.GetTargetContext(out tContext, out staticContext);
+			else{
+				tContext = null;
+			}
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
             if (staticContext)
             {
@@ -230,8 +233,8 @@ namespace ImpromptuInterface
                         string[] tArgNames;
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            bool tStaticContext;
-            indexes = GetInvokeMemberArgs(ref target, indexes, out tArgNames, out tList, out tContext, out tStaticContext);
+            bool tStaticContext =false;
+            indexes = GetInvokeMemberArgs(ref target, indexes, out tArgNames, out tList, out tContext, ref tStaticContext);
 
             var tBinder =  CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
@@ -244,8 +247,8 @@ namespace ImpromptuInterface
             string[] tArgNames;
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            bool tStaticContext;
-            indexesThenValue = GetInvokeMemberArgs(ref target, indexesThenValue, out tArgNames, out tList, out tContext, out tStaticContext);
+            bool tStaticContext =false;
+            indexesThenValue = GetInvokeMemberArgs(ref target, indexesThenValue, out tArgNames, out tList, out tContext, ref tStaticContext);
 
             var tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
 
@@ -279,8 +282,8 @@ namespace ImpromptuInterface
             string[] tArgNames;
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
-            bool tStaticContext;
-            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, out tStaticContext);
+            bool tStaticContext =false;
+            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, ref tStaticContext);
 
             var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name.Name, name.GenericArgs,
                                        tContext, tList);
@@ -326,8 +329,12 @@ namespace ImpromptuInterface
             CallSiteBinder tBinder;
             if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
             {
-
-                tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, "set_" + name,
+				
+				var tStaticFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
+				if(Util.IsMono) //Mono only works if InvokeSpecialName is set and .net only works if it isn't
+					tStaticFlag |=  CSharp.CSharpBinderFlags.InvokeSpecialName;
+				
+                tBinder = CSharp.Binder.InvokeMember(tStaticFlag, "set_" + name,
                                                      null,
                                                      tContext,
                                                      new List<CSharp.CSharpArgumentInfo>()
@@ -398,8 +405,11 @@ namespace ImpromptuInterface
             CallSiteBinder tBinder;
             if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
             {
+				var tStaticFlag = CSharp.CSharpBinderFlags.None;
+				if(Util.IsMono) //Mono only works if InvokeSpecialName is set and .net only works if it isn't
+					tStaticFlag |=  CSharp.CSharpBinderFlags.InvokeSpecialName;
 
-                tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, "get_" + name,
+                tBinder = CSharp.Binder.InvokeMember(tStaticFlag, "get_" + name,
                                                      null,
                                                      tContext,
                                                      new List<CSharp.CSharpArgumentInfo>()
@@ -466,20 +476,20 @@ namespace ImpromptuInterface
             string[] tArgNames;
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tDummyContex;
-            bool tStaticContext;
+            bool tStaticContext =true;
             bool tValue = type.IsValueType;
             if (tValue && args.Length == 0)  //dynamic invocation doesn't see constructors of value types
             {
                 return Activator.CreateInstance(type);
             }
 
-            args = GetInvokeMemberArgs(ref tDummyTarget, args, out tArgNames, out tList, out tDummyContex, out tStaticContext);
+            args = GetInvokeMemberArgs(ref tDummyTarget, args, out tArgNames, out tList, out tDummyContex, ref tStaticContext);
 
             var tBinder = CSharp.Binder.InvokeConstructor(CSharp.CSharpBinderFlags.None, type, tList);
 
             if (tValue)
             {
-
+				
                 return InvokeHelper.DynamicInvokeStaticMember(type, tBinder, Invocation.ConstructorBinderName, true, type,
                                                         tArgNames, type, args);
             }

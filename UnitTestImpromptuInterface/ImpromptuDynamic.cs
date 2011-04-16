@@ -79,7 +79,7 @@ namespace UnitTestImpromptuInterface
 			
             var tArray = new int[]{1,2,3};
 
-            dynamic tTest =  ImpromptuGet.Create<IStringIntIndexer>(tArray);
+            IStringIntIndexer tTest =  ImpromptuGet.Create<IStringIntIndexer>(tArray);
 
             Assert.AreEqual(tArray[2].ToString(), tTest[2]);
         }

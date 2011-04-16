@@ -17,7 +17,7 @@ namespace UnitTestImpromptuInterface
             var tTypes =
                 Assembly.GetAssembly(typeof (Program)).GetTypes()
                     .Where(it => it.GetCustomAttributes(typeof (TestFixtureAttribute), false).Any());
-
+			using(ImpromptuInterface.Build.BuildProxy.WriteOutDll("Emitted")){
 			Console.WriteLine("Press enter to start.");
 			Console.Read();
             foreach (var tType in tTypes.OrderBy(it => it.Name))
@@ -84,6 +84,7 @@ namespace UnitTestImpromptuInterface
             }
 			Console.WriteLine("Done. Successes:{0} Failures:{1} Ignored:{2}",tSuccess,tFailed,tIgnored);
 			Console.Read();
+			}
         }
 
        

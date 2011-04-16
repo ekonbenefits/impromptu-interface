@@ -99,7 +99,7 @@ namespace UnitTestImpromptuInterface
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
-            var tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
+            ISimpeleClassProps tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
    
 
 
@@ -140,7 +140,7 @@ namespace UnitTestImpromptuInterface
             tNew.Prop2 = "42";
             tNew.Prop3 = Guid.NewGuid();
 
-            var tActsLike = Impromptu.ActLike<IObjectStringIndexer>(tNew);
+            IObjectStringIndexer tActsLike = Impromptu.ActLike<IObjectStringIndexer>(tNew);
 
 
 

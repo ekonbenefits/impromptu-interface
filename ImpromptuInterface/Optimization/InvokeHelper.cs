@@ -220,26 +220,26 @@ namespace ImpromptuInterface.Optimization
 
         #region InvokeMember Optimizations
 
- internal static readonly IDictionary<Type,CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>
-            _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>();
+ internal static readonly IDictionary<Type,CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>>
+            _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>>();
 
-		internal static dynamic DynamicInvokeMember(Type tReturn, CallSiteBinder binder,
+		internal static dynamic DynamicInvokeStaticMember(Type tReturn, CallSiteBinder binder,
                                        string name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,
-                                     object target, params object [] args)
+                                     Type target, params object [] args)
 		{
-		    CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>> tSite;
+		    CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>> tSite;
             if (!_dynamicInvokeMemberSite.TryGetValue(tReturn, out tSite))
             {
                 tSite = CallSite
-                    <Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>.
+                    <Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>.
                     Create(
                         Microsoft.CSharp.RuntimeBinder.Binder.InvokeMember(
                             CSharpBinderFlags.None,
-                            "InvokeMember",
-                            new[] {tReturn},
+                            "InvokeMemberTargetType",
+                            new[] {typeof(Type),tReturn},
                             typeof (InvokeHelper),
                             new[]
                                 {
@@ -263,15 +263,23 @@ namespace ImpromptuInterface.Optimization
 		}
 
 
-
-
-
-        internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
+		internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
                                        String_OR_InvokeMemberName name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      object target, params object [] args)
+        {
+			return InvokeMemberTargetType<object,TReturn>(binder,name,staticContext, context, argNames, target, args);
+		}
+
+
+        internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(CallSiteBinder binder,
+                                       String_OR_InvokeMemberName name,
+									 bool staticContext,
+                                     Type context,
+                                     string[] argNames,
+                                     TTarget target, params object [] args)
         {
            
             var tSwitch = args.Length;
@@ -280,82 +288,82 @@ namespace ImpromptuInterface.Optimization
             {
                 case 0:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget, TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target);
                     }
                 case 1:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0]);
                     }
                 case 2:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1]);
                     }
                 case 3:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2]);
                     }
                 case 4:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3]);
                     }
                 case 5:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4]);
                     }
                 case 6:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5]);
                     }
                 case 7:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
                     }
                 case 8:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
                     }
                 case 9:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
                     }
                 case 10:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
                     }
                 case 11:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
                     }
                 case 12:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
                     }
                 case 13:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
                     }
                 case 14:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object,  object, object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
                     }
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
-                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
                     return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
 
             }

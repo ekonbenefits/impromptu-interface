@@ -122,26 +122,26 @@ namespace ImpromptuInterface.Optimization
 
         #region InvokeMember Optimizations
 
- internal static readonly IDictionary<Type,CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>
-            _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>>();
+ internal static readonly IDictionary<Type,CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>>
+            _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>>();
 
-		internal static dynamic DynamicInvokeMember(Type tReturn, CallSiteBinder binder,
+		internal static dynamic DynamicInvokeStaticMember(Type tReturn, CallSiteBinder binder,
                                        string name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,
-                                     object target, params object [] args)
+                                     Type target, params object [] args)
 		{
-		    CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>> tSite;
+		    CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>> tSite;
             if (!_dynamicInvokeMemberSite.TryGetValue(tReturn, out tSite))
             {
                 tSite = CallSite
-                    <Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], object, object[], object>>.
+                    <Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>.
                     Create(
                         Microsoft.CSharp.RuntimeBinder.Binder.InvokeMember(
                             CSharpBinderFlags.None,
-                            "InvokeMember",
-                            new[] {tReturn},
+                            "InvokeMemberTargetType",
+                            new[] {typeof(Type),tReturn},
                             typeof (InvokeHelper),
                             new[]
                                 {
@@ -165,15 +165,23 @@ namespace ImpromptuInterface.Optimization
 		}
 
 
-
-
-
-        internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
+		internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
                                        String_OR_InvokeMemberName name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      object target, params object [] args)
+        {
+			return InvokeMemberTargetType<object,TReturn>(binder,name,staticContext, context, argNames, target, args);
+		}
+
+
+        internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(CallSiteBinder binder,
+                                       String_OR_InvokeMemberName name,
+									 bool staticContext,
+                                     Type context,
+                                     string[] argNames,
+                                     TTarget target, params object [] args)
         {
            
             var tSwitch = args.Length;
@@ -186,13 +194,13 @@ namespace ImpromptuInterface.Optimization
 #>
                 case <#=i#>:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, object, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
                         return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                     }
 <# } #>
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
-                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(object));
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
                     return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
 
             }

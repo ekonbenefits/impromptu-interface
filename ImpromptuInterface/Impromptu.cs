@@ -480,10 +480,10 @@ namespace ImpromptuInterface
             if (tValue)
             {
 
-                return InvokeHelper.DynamicInvokeMember(type, tBinder, Invocation.ConstructorBinderName, true, type,
+                return InvokeHelper.DynamicInvokeStaticMember(type, tBinder, Invocation.ConstructorBinderName, true, type,
                                                         tArgNames, type, args);
             }
-            return InvokeHelper.InvokeMember<object>(tBinder, Invocation.ConstructorBinderName, true, type, tArgNames,
+            return InvokeHelper.InvokeMemberTargetType<Type,object>(tBinder, Invocation.ConstructorBinderName, true, type, tArgNames,
                                                      type, args);
         }
 

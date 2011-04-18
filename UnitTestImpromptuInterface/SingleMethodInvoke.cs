@@ -19,12 +19,14 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Xml.Linq;
 using ImpromptuInterface;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
-
+using ImpromptuInterface.InvokeExt;
+using ImpromptuInterface.Optimization;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -51,7 +53,7 @@ namespace UnitTestImpromptuInterface
 
         }
 		     [Test,TestMethod]
-        public void TestStaticSet()
+        public void TestPocoSet()
         {
             var tPoco = new PropPoco();
 
@@ -64,7 +66,7 @@ namespace UnitTestImpromptuInterface
         }
 
              [Test, TestMethod]
-             public void TestStaticSetNull()
+             public void TestPocoSetNull()
              {
                  var tPoco = new PropPoco(){Prop1 = "Test default"};
 
@@ -77,8 +79,119 @@ namespace UnitTestImpromptuInterface
 
 
              }
-		
+        
+        [Test, TestMethod]
+        public void TestConvert()
+        {
+            var tEl = new XElement("Test","45");
 
+            var tCast = Impromptu.InvokeConvert(tEl, typeof (int), explict:true);
+           
+            Assert.AreEqual(typeof(int), tCast.GetType());
+            Assert.AreEqual(45,tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestConstruct()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof (List<object>), new object[]
+                                                                              {
+                                                                                  new string[] {"one", "two", "three"}
+                                                                              });
+        
+            Assert.AreEqual("two", tCast[1]);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructOptional()
+        {
+            PocoOptConstructor tCast = Impromptu.InvokeConstuctor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
+
+            Assert.AreEqual("-1", tCast.One);
+            Assert.AreEqual("-2", tCast.Two);
+            Assert.AreEqual("3", tCast.Three);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructValueType()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);
+
+            Assert.AreEqual(20, tCast.Day);
+        }
+		
+		     [Test, TestMethod]
+        public void TestConstructValueTypeJustDynamic()
+        {
+			dynamic day =20;
+			dynamic year =2009;
+			dynamic month =1;
+            var tCast = new DateTime(year,month,day);
+			DateTime tDate = tCast;
+            Assert.AreEqual(20, tDate.Day);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructprimativetype()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Int32));
+
+            Assert.AreEqual(default(Int32), tCast);
+        }
+
+
+        [Test, TestMethod]
+        public void TestConstructDateTimeNoParams()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime));
+
+            Assert.AreEqual(default(DateTime), tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructOBjectNoParams()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(object));
+
+            Assert.AreEqual(typeof(object), tCast.GetType());
+        }
+
+        [Test, TestMethod]
+        public void TestConstructNullableprimativetype()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Nullable<Int32>));
+
+            Assert.AreEqual(null, tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructGuid()
+        {
+            var tCast = Impromptu.InvokeConstuctor(typeof(Guid));
+
+            Assert.AreEqual(default(Guid), tCast);
+        }
+
+        [Test, TestMethod]
+        public void TestStaticCall()
+        {
+            dynamic i = 1;
+
+            
+            var tOut = Impromptu.InvokeMember(typeof (StaticType).WithStaticContext(),
+                                              "Create".WithGenericArgs(typeof(bool)), 1);
+            Assert.AreEqual(false,tOut);
+        }
+
+        [Test, TestMethod]
+        public void TestImplicitConvert()
+        {
+            var tEl = 45;
+
+            var tCast = Impromptu.InvokeConvert(tEl, typeof(long));
+
+            Assert.AreEqual(typeof(long), tCast.GetType());
+        }
 
         [Test, TestMethod]
         public void TestGetStatic()
@@ -92,8 +205,81 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tOut);
 
         }
-	
+
+        [Test, TestMethod]
+        public void TestGetIndexer()
+        {
+       
+            dynamic tSetValue = "1";
+            var tAnon = new [] { tSetValue, "2" };
+
+
+            string tOut = Impromptu.InvokeGetIndex(tAnon,0);
+
+            Assert.AreEqual(tSetValue, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetIndexerValue()
+        {
+
+            
+            var tAnon = new int[] { 1, 2};
+
+
+            int tOut = Impromptu.InvokeGetIndex(tAnon, 1);
+
+            Assert.AreEqual(tAnon[1], tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetLengthArray()
+        {
+            var tAnon = new []  { "1", "2" };
+
+
+            int tOut = Impromptu.InvokeGet(tAnon, "Length");
+
+            Assert.AreEqual(2, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestGetIndexerArray()
+        {
 			
+			
+            dynamic tSetValue = "1";
+            var tAnon = new List<string> { tSetValue, "2" };
+     
+
+            string tOut = Impromptu.InvokeGetIndex(tAnon, 0);
+
+            Assert.AreEqual(tSetValue, tOut);
+
+        }
+
+        [Test, TestMethod]
+        public void TestSetIndexer()
+        {
+          
+            dynamic tSetValue = "3";
+            var tAnon =  new List<string> { "1", "2" };
+
+            dynamic index = 0;
+            dynamic tDyn = tAnon;
+
+
+            Impromptu.InvokeSetIndex(tAnon, 0, tSetValue);
+
+            Assert.AreEqual(tSetValue, tAnon[0]);
+
+        }
+
+     
+
 
 
         [Test, TestMethod]
@@ -276,7 +462,7 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValue()
+        public void TestMethodPocoGetValue()
         {
         
 
@@ -286,21 +472,21 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(tValue.ToString(), tOut);
         }
-		
 
+  
 
         [Test, TestMethod]
-        public void TestMethodStaticPassAndGetValue()
+        public void TestMethodPocoPassAndGetValue()
         {
 
 
-            HelpTestStaticPassAndGetValue("Test", "Te");
+            HelpTestPocoPassAndGetValue("Test", "Te");
 
 
-            HelpTestStaticPassAndGetValue("Test", "st");
+            HelpTestPocoPassAndGetValue("Test", "st");
         }
 
-        private void HelpTestStaticPassAndGetValue(string tValue, string tParam)
+        private void HelpTestPocoPassAndGetValue(string tValue, string tParam)
         {
             var tExpected = tValue.StartsWith(tParam);
 
@@ -325,9 +511,34 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tOut);
 
         }
-		
-		
-		     
+        [Test, TestMethod]
+        public void TestStaticGet()
+        {
+            var tDate = Impromptu.InvokeGet(typeof(DateTime).WithStaticContext(), "Today");
+            Assert.AreEqual(DateTime.Today, tDate);
+        }
 
+        [Test, TestMethod]
+        public void TestStaticGet2()
+        {
+            var tVal = Impromptu.InvokeGet(typeof(StaticType).WithStaticContext(), "Test");
+            Assert.AreEqual(true, tVal);
+        }
+
+        [Test, TestMethod]
+        public void TestStaticSet()
+        {
+            int tValue = 12;
+            Impromptu.InvokeSet(typeof(StaticType).WithStaticContext(), "TestSet", tValue);
+            Assert.AreEqual(tValue, StaticType.TestSet);
+        }
+
+        [Test, TestMethod]
+        public void TestStaticDateTimeMethod()
+        {
+            object tDateDyn = "01/20/2009";
+            var tDate = Impromptu.InvokeMember(typeof(DateTime).WithStaticContext(), "Parse", tDateDyn);
+            Assert.AreEqual(new DateTime(2009,1,20), tDate);
+        }
     }
 }

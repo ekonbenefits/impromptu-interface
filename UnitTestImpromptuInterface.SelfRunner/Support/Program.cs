@@ -17,10 +17,10 @@ namespace UnitTestImpromptuInterface
             var tTypes =
                 Assembly.GetAssembly(typeof (Program)).GetTypes()
                     .Where(it => it.GetCustomAttributes(typeof (TestFixtureAttribute), false).Any());
-
-			Console.WriteLine("Press a key to start.");
+			using(ImpromptuInterface.Build.BuildProxy.WriteOutDll("Emitted")){
+			Console.WriteLine("Press enter to start.");
 			Console.Read();
-            foreach (var tType in tTypes)
+            foreach (var tType in tTypes.OrderBy(it => it.Name))
             {
                 Console.WriteLine(tType.Name);
                 var tMethods =
@@ -63,8 +63,13 @@ namespace UnitTestImpromptuInterface
                         }
                         else
                         {
+							tFailed++;
                             Console.Write("*      ");
-                            throw ex.InnerException;
+							Console.Write("Exception: ");
+
+                            Console.WriteLine(ex.InnerException.Message);
+							Console.WriteLine(ex.InnerException.StackTrace);
+							Console.WriteLine();
                         }
                     }
                     catch (Exception ex)
@@ -79,6 +84,7 @@ namespace UnitTestImpromptuInterface
             }
 			Console.WriteLine("Done. Successes:{0} Failures:{1} Ignored:{2}",tSuccess,tFailed,tIgnored);
 			Console.Read();
+			}
         }
 
        

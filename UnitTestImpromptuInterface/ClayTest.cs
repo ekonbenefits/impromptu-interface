@@ -7,6 +7,7 @@ using ClaySharp;
 using ClaySharp.Behaviors;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Optimization;
 #if !SELFRUNNER
 using NUnit.Framework;
 #endif
@@ -42,7 +43,20 @@ namespace UnitTestImpromptuInterface
 
         }
 
-      
+        [Test, TestMethod]
+        public void TestRecorder()
+        {
+            dynamic New = Builder.New<ImpromptuRecorder>();
+
+            ImpromptuRecorder tRecording = New.Watson(Test: "One", Test2: 2, NameLast: "Watson");
+
+            
+            dynamic tVar =tRecording.ReplayOn(new ExpandoObject());
+
+            Assert.AreEqual("One", tVar.Test);
+            Assert.AreEqual(2, tVar.Test2);
+            Assert.AreEqual("Watson", tVar.NameLast);
+        }
 
         [Test,TestMethod]
         public void TestClay()
@@ -69,6 +83,8 @@ namespace UnitTestImpromptuInterface
         [Test,TestMethod]
         public void TestBuilderWithClay()
           {
+		
+			
               var New = Builder.New<Clay>()
                   .ObjectSetup(
                    Return<object[]>.Arguments(
@@ -114,31 +130,31 @@ namespace UnitTestImpromptuInterface
             dynamic New = new ClayFactory();
             IRobot tRobot = New.Robot().Name("Bender");
             IRobot tRobotI = Impromptu.ActLike<IRobot>(New.Robot().Name("Bender"));
-            
-            var tWatchC = TimeIt.Go(() =>
+
+             var tInteration = 50000;
+             var tWatchC = TimeIt.Go(() =>
                                          {
                                              var tOut =
                                                  Impromptu.ActLike<IRobot>(New.Robot().Name("Bender"));
-                                         }, 50000);
+                                         }, tInteration);
             var tWatchC2 = TimeIt.Go(() =>
                                          {
                                              IRobot tOut = New.Robot().Name("Bender");
-                                         },50000 );
+                                         },tInteration );
 
-            Console.WriteLine("Impromptu: " + tWatchC.Elapsed);
-            Console.WriteLine("Clay: " + tWatchC2.Elapsed);
-
+            TestContext.WriteLine("Impromptu: " + tWatchC.Elapsed);
+            TestContext.WriteLine("Clay: " + tWatchC2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC2.ElapsedTicks / tWatchC.ElapsedTicks);
             Assert.Less(tWatchC.Elapsed, tWatchC2.Elapsed);
 
-            var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, 50000);
+            var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, tInteration);
 
-            var tWatch2 = TimeIt.Go(() => { var tOut = tRobot.Name; }, 50000);
+            var tWatch2 = TimeIt.Go(() => { var tOut = tRobot.Name; }, tInteration);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Clay: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Clay: " + tWatch2.Elapsed);
 
-             var tDiffernce = (tWatch.Elapsed - tWatch2.Elapsed);
-             Console.WriteLine("50000 Difference: " + tDiffernce);
+            TestContext.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatch2.ElapsedTicks / tWatch.ElapsedTicks);
 
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
@@ -175,19 +191,19 @@ namespace UnitTestImpromptuInterface
             {
                 var tOut = tRobotP.Name;
             });
-            Console.WriteLine("Impromptu: " + tWatchI.Elapsed);
-            Console.WriteLine("Clay: " + tWatchC.Elapsed);
-            Console.WriteLine("Expando: " + tWatchE.Elapsed);
-            Console.WriteLine("POCO: " + tWatchP.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatchI.Elapsed);
+            TestContext.WriteLine("Clay: " + tWatchC.Elapsed);
+            TestContext.WriteLine("Expando: " + tWatchE.Elapsed);
+            TestContext.WriteLine("POCO: " + tWatchP.Elapsed);
 
             Assert.Less(tWatchI.Elapsed, tWatchC.Elapsed);
 
-            Console.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC.ElapsedTicks / tWatchI.ElapsedTicks);
-            Console.WriteLine("Expando  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchE.ElapsedTicks);
-            Console.WriteLine("POCO  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchP.ElapsedTicks);
-            Console.WriteLine("POCO  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchP.ElapsedTicks);
-            Console.WriteLine("POCO  VS Expando:{0:0.0}  x faster", (double)tWatchE.ElapsedTicks / tWatchP.ElapsedTicks);
-            Console.WriteLine("Expando  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchE.ElapsedTicks);
+            TestContext.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC.ElapsedTicks / tWatchI.ElapsedTicks);
+            TestContext.WriteLine("Expando  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchE.ElapsedTicks);
+            TestContext.WriteLine("POCO  VS Clay:{0:0.0}  x faster", (double)tWatchC.ElapsedTicks / tWatchP.ElapsedTicks);
+            TestContext.WriteLine("POCO  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchP.ElapsedTicks);
+            TestContext.WriteLine("POCO  VS Expando:{0:0.0}  x faster", (double)tWatchE.ElapsedTicks / tWatchP.ElapsedTicks);
+            TestContext.WriteLine("Expando  VS Impromptu:{0:0.0}  x faster", (double)tWatchI.ElapsedTicks / tWatchE.ElapsedTicks);
         }
 
         //TestBehavoir from MS-PL ClaySharp http://clay.codeplex.com

@@ -26,6 +26,28 @@ namespace UnitTestImpromptuInterface
 {
 
 
+    public class TestForwarder:ImpromptuForwarder
+    {
+        public TestForwarder(object target) : base(target)
+        {
+        }
+    }
+
+    public static class StaticType
+    {
+        public static TReturn Create<TReturn>(int type)
+        {
+            return default(TReturn);
+        }
+
+        public static bool Test
+        {
+            get { return true; }
+        }
+
+        public static int TestSet { get; set; }
+    }
+
     public interface ISimpeleClassProps
     {
         string Prop1 { get;  }
@@ -33,6 +55,25 @@ namespace UnitTestImpromptuInterface
         long Prop2 { get; }
 
         Guid Prop3 { get; }
+    }
+
+    public interface IPropPocoProp
+    {
+        PropPoco ReturnProp { get; set; }
+    }
+
+    public class PocoOptConstructor
+    {
+        public string One { get; set; }
+        public string Two { get; set; }
+        public string Three { get; set; }
+
+        public PocoOptConstructor(string one="-1", string two="-2", string three="-3")
+        {
+            One = one;
+            Two = two;
+            Three = three;
+        }
     }
 
     public interface IDynamicDict
@@ -94,7 +135,16 @@ namespace UnitTestImpromptuInterface
         T Action2<T>(T arg);
     }
 
-	
+    public interface IStringIntIndexer
+    {
+        string this[int index] { get; set; }
+    }
+
+    public interface IObjectStringIndexer
+    {
+        object this[string index] { get; set; }
+    }
+
 	 public interface IGenericMethWithConstraints
     {
         string Action<T>(T arg) where T:class;
@@ -133,6 +183,18 @@ namespace UnitTestImpromptuInterface
 	}
 
 
+    public interface IVoidMethod
+    {
+        void Action();
+    }
+
+    public class VoidMethodPoco
+    {
+        public void Action()
+        {
+           Console.WriteLine("VoidFunc");
+        }
+    }
 
     public class OverloadingMethPoco
     {

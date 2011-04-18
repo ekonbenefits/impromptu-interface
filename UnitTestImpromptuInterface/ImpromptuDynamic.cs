@@ -62,6 +62,28 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
         }
 
+        [Test, TestMethod]
+        public void GetterVoidTest()
+        {
+            var tPoco = new VoidMethodPoco();
+
+            dynamic tTest = new ImpromptuGet(tPoco);
+
+            tTest.Action();
+        }
+
+        [Test, TestMethod]
+        public void GetterArrayTest()
+        {
+		
+			
+            var tArray = new int[]{1,2,3};
+
+            IStringIntIndexer tTest =  ImpromptuGet.Create<IStringIntIndexer>(tArray);
+
+            Assert.AreEqual(tArray[2].ToString(), tTest[2]);
+        }
+
 
         [Test, TestMethod]
         public void GetterDynamicTest()
@@ -72,6 +94,46 @@ namespace UnitTestImpromptuInterface
             tNew.Prop3 = Guid.NewGuid();
 
             dynamic tTest = new ImpromptuGet(tNew);
+
+
+            Assert.AreEqual(tNew.Prop1, tTest.Prop1);
+            Assert.AreEqual(tNew.Prop2, tTest.Prop2);
+            Assert.AreEqual(tNew.Prop3, tTest.Prop3);
+        }
+
+        [Test, TestMethod]
+        public void ForwardAnonTest()
+        {
+            var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
+
+            dynamic tTest = new TestForwarder(tAnon);
+
+            Assert.AreEqual(tAnon.Prop1, tTest.Prop1);
+            Assert.AreEqual(tAnon.Prop2, tTest.Prop2);
+            Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
+        }
+
+        [Test, TestMethod]
+        public void ForwardVoidTest()
+        {
+            var tPoco = new VoidMethodPoco();
+
+            dynamic tTest = new TestForwarder(tPoco);
+
+            tTest.Action();
+        }
+
+
+
+        [Test, TestMethod]
+        public void ForwardDynamicTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            tNew.Prop3 = Guid.NewGuid();
+
+            dynamic tTest = new TestForwarder(tNew);
 
 
             Assert.AreEqual(tNew.Prop1, tTest.Prop1);
@@ -100,6 +162,29 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("test", tActsLike.Action3());
 
             Assert.AreEqual("test4", tActsLike.Action4(4));
+        }
+
+        [Test, TestMethod]
+        public void ForwardMethodsTest()
+        {
+
+            dynamic tNew = new ImpromptuDictionary();
+            tNew.Action1 = new Action(Assert.Fail);
+            tNew.Action2 = new Action<bool>(Assert.IsFalse);
+            tNew.Action3 = new Func<string>(() => "test");
+            tNew.Action4 = new Func<int, string>(arg => "test" + arg);
+
+
+            dynamic tFwd = new TestForwarder(tNew);
+
+
+
+            AssertException<AssertionException>(()=> tFwd.Action1());
+            AssertException<AssertionException>(() => tFwd.Action2(true));
+
+            Assert.AreEqual("test", tFwd.Action3());
+
+            Assert.AreEqual("test4", tFwd.Action4(4));
         }
 
         [Test, TestMethod]

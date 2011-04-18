@@ -19,7 +19,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Build;
-
+using ImpromptuInterface.Optimization;
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
@@ -142,17 +142,22 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            return HashForThisType().Select(it => it.Key);
+            var tHash = HashForThisType();
+            return tHash == null
+                ? new String[] { }
+                : tHash.Select(it => it.Key);
         }
 
         private IDictionary<string, Type> HashForThisType()
         {
+
             if (PropertySpec != null)
                 return PropertySpec;
+            IDictionary<string, Type> tOut;
+            if (_hash == null || !_returnTypHash.TryGetValue(_hash, out tOut))
+                return null;
 
-            return _hash == null || !_returnTypHash.ContainsKey(_hash)
-                ? new Dictionary<string, Type>() 
-                : _returnTypHash[_hash];
+            return tOut;
         }
 
         /// <summary>
@@ -161,15 +166,14 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="name">The name.</param>
         /// <param name="returnType">The return Type.</param>
         /// <returns></returns>
-        protected virtual bool TryTypeForName(string name, out Type returnType)
+        public virtual bool TryTypeForName(string name, out Type returnType)
         {
-            if (!HashForThisType().ContainsKey(name))
+            var tHash = HashForThisType();
+            if (tHash == null || !tHash.TryGetValue(name, out returnType))
             {
                 returnType = null;
                 return false;
             }
-
-            returnType = HashForThisType()[name];
             return true;
         }
 

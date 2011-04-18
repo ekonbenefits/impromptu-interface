@@ -61,14 +61,18 @@
   <ItemGroup>
     <Compile Include="Dynamic\ImpromptuBuilder.cs" />
     <Compile Include="Dynamic\ImpromptuDictionaryBase.cs" />
+    <Compile Include="Dynamic\ImpromptuDummy.cs" />
+    <Compile Include="Dynamic\ImpromptuForwarder.cs" />
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\ImpromptuList.cs" />
     <Compile Include="Dynamic\Builder.cs" />
+    <Compile Include="Dynamic\ImpromptuRecorder.cs" />
     <Compile Include="Dynamic\InlineLambdas.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>InlineLambdas.tt</DependentUpon>
     </Compile>
+    <Compile Include="Dynamic\Invocation.cs" />
     <Compile Include="Dynamic\ThisFunctions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -88,6 +92,10 @@
     <Compile Include="EmitProxy\EmitExtensions.cs" />
     <Compile Include="Dynamic\ImpromptuObject.cs" />
     <Compile Include="InvokeArg.cs" />
+    <Compile Include="InvokeContext.cs" />
+    <Compile Include="InvokeExt\InvokeExt.cs" />
+    <Compile Include="InvokeMemberName.cs" />
+    <Compile Include="Optimization\BareBonesList.cs" />
     <Compile Include="Optimization\BinderHash.cs" />
     <Compile Include="Optimization\InvokeHelper.cs">
       <AutoGen>True</AutoGen>

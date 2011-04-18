@@ -5,11 +5,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
+using ImpromptuInterface.InvokeExt;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
 #elif !SELFRUNNER
+using ImpromptuInterface.InvokeExt;
 using NUnit.Framework;
 #endif
 
@@ -19,6 +21,14 @@ namespace UnitTestImpromptuInterface
     [TestFixture, TestClass]
     public class SpeedTest : Helper
     {
+        [TestFixtureSetUp,TestInitialize]
+        public void WarmUpDlr()
+        {
+            dynamic i = 1;
+            i.ToString();
+        }
+
+
         [Test, TestMethod]
         public void TestSetTimed()
         {
@@ -30,9 +40,11 @@ namespace UnitTestImpromptuInterface
             var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
             var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            
 
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -47,15 +59,15 @@ namespace UnitTestImpromptuInterface
             var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
             var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
-
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
         
         [Test, TestMethod]
-        public void TestPropStaticGetValueTimed()
+        public void TestPropPocoGetValueTimed()
         {
 
 
@@ -73,15 +85,56 @@ namespace UnitTestImpromptuInterface
                                             var tOut = tPropertyInfo.GetValue(tAnon, null);
                                         }, 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
-
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValueTimed()
+        public void TestConstructorTimed()
+        {
+
+
+           
+
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(Tuple<string>), "Test" ); });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(Tuple<string>),"Test");
+            });
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+        [Test, TestMethod]
+        public void TestConstructorValueTypeTimed()
+        {
+
+
+            var tIter = 1000000;
+
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);
+            }, tIter);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+        [Test, TestMethod]
+        public void TestMethodPocoGetValueTimed()
         {
 
 
@@ -96,14 +149,59 @@ namespace UnitTestImpromptuInterface
                                             var tOut = tMethodInfo.Invoke(tValue, new object[] { });
                                         }, 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+        [Test, TestMethod]
+        public void TestGetStaticTimed()
+        {
+
+
+
+
+            var tStaticType = typeof(DateTime);
+            var tTarget = tStaticType.WithStaticContext();
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeGet(tTarget, "Today"); }, 500000);
+            var tMethodInfo = typeof (DateTime).GetProperty("Today").GetGetMethod();
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType, new object[] { });
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValuePassNullTimed()
+        public void TestMethodStaticMethodValueTimed()
+        {
+
+
+
+
+            var tStaticType = typeof (DateTime);
+            var tTarget = tStaticType.WithStaticContext();
+            string tDate = "01/20/2009";
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tTarget, "Parse", tDate); }, 500000);
+            var tMethodInfo = typeof(DateTime).GetMethod("Parse",new[]{typeof(string)});
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType,new object[]{tDate});
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodPocoGetValuePassNullTimed()
         {
 #if DEBUG
             Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
@@ -112,21 +210,22 @@ namespace UnitTestImpromptuInterface
             var tValue = new OverloadingMethPoco();
 
 
-
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, 500000);
+            var tInteration = 1000000;
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, tInteration);
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object)});
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = tMethodInfo.Invoke(tValue, new object[] { null});
-            }, 500000);
+            }, tInteration);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValuePassNullDoubleCallTimed()
+        public void TestMethodPocoGetValuePassNullDoubleCallTimed()
         {
 #if DEBUG
             Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
@@ -134,10 +233,10 @@ namespace UnitTestImpromptuInterface
             var tValue = new OverloadingMethPoco();
 
 
-
+            var tInteration = 500000;
             var tWatch = TimeIt.Go(() => { 
                 var tOut = Impromptu.InvokeMember(tValue, "Func", null); 
-                var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, 500000);
+                var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, tInteration);
 
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
             var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
@@ -145,15 +244,16 @@ namespace UnitTestImpromptuInterface
             {
                 var tOut = tMethodInfo.Invoke(tValue, new object[] { null });
                 var tOut2 = tMethodInfo2.Invoke(tValue, new object[] { 2 });
-            }, 500000);
+            }, tInteration);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticGetValue4argsTimed()
+        public void TestMethodPocoGetValue4argsTimed()
         {
 
 
@@ -168,15 +268,16 @@ namespace UnitTestImpromptuInterface
                                             var tOut = tMethodInfo.Invoke(tValue, new object[] { "45", 0, 14, StringComparison.InvariantCulture });
                                         }, 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
  
 
         [Test, TestMethod]
-        public void TestMethodStaticVoidTimed()
+        public void TestMethodPocoVoidTimed()
         {
 
 
@@ -188,8 +289,9 @@ namespace UnitTestImpromptuInterface
             var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
             var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }), 500000);
 
-            Console.WriteLine("Impromptu: " + tWatch.Elapsed);
-            Console.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
@@ -201,8 +303,9 @@ namespace UnitTestImpromptuInterface
 
             var tStopWatch2 = TimeIt.Go(() => tFunc.DynamicInvoke(5));
 
-            Console.WriteLine(tStopWatch1.Elapsed);
-            Console.WriteLine(tStopWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tStopWatch1.Elapsed);
+            TestContext.WriteLine("Reflection: " + tStopWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tStopWatch2.Elapsed.Ticks / tStopWatch1.Elapsed.Ticks);
             Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
         }
 
@@ -214,8 +317,9 @@ namespace UnitTestImpromptuInterface
 
             var tStopWatch2 = TimeIt.Go(() => tFunc.DynamicInvoke(5));
 
-            Console.WriteLine("Impromptu: " + tStopWatch1.Elapsed);
-            Console.WriteLine("Refelection: " + tStopWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu: " + tStopWatch1.Elapsed);
+            TestContext.WriteLine("Reflection: " + tStopWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tStopWatch2.Elapsed.Ticks / tStopWatch1.Elapsed.Ticks);
             Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
         }
 

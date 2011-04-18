@@ -105,6 +105,7 @@ namespace ImpromptuInterface.Build
         {
             lock (TypeCacheLock)
             {
+                contextType = contextType.FixContext();
                 var tNewHash = TypeHash.Create(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
                 Type tType = null;
                 if (!_typeHash.TryGetValue(tNewHash, out tType))

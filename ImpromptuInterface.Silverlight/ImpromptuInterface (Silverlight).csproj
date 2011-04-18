@@ -98,8 +98,14 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDictionaryBase.cs">
       <Link>Dynamic\ImpromptuDictionaryBase.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuDummy.cs">
+      <Link>Dynamic\ImpromptuDummy.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuFactory.cs">
       <Link>Dynamic\ImpromptuFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuForwarder.cs">
+      <Link>Dynamic\ImpromptuForwarder.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuGet.cs">
       <Link>Dynamic\ImpromptuGet.cs</Link>
@@ -110,8 +116,14 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuObject.cs">
       <Link>Dynamic\ImpromptuObject.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\ImpromptuRecorder.cs">
+      <Link>Dynamic\ImpromptuRecorder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\InlineLambdas.cs">
       <Link>Dynamic\InlineLambdas.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\Invocation.cs">
+      <Link>Dynamic\Invocation.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\ThisFunctions.cs">
       <Link>Dynamic\ThisFunctions.cs</Link>
@@ -145,6 +157,18 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\InvokeArg.cs">
       <Link>InvokeArg.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeContext.cs">
+      <Link>InvokeContext.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeExt\InvokeExt.cs">
+      <Link>InvokeExt\InvokeExt.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\InvokeMemberName.cs">
+      <Link>InvokeMemberName.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\BareBonesList.cs">
+      <Link>Optimization\BareBonesList.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\Optimization\BinderHash.cs">
       <Link>Optimization\BinderHash.cs</Link>

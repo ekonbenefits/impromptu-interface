@@ -21,6 +21,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM
 {
@@ -31,20 +32,21 @@ namespace ImpromptuInterface.MVVM
     public class ImpromptuRelayCommand : ICommand
     {
         private readonly object _executeTarget;
-        private readonly string _executeName;
+        private readonly Invocation _executeInvoke;
         private readonly object _canExecuteTarget;
-        private readonly string _canExecuteName;
+        private readonly Invocation _canExecuteInvoke;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuRelayCommand"/> class.
         /// </summary>
         /// <param name="executeTarget">The execute target.</param>
         /// <param name="executeName">Name of the execute.</param>
-        public ImpromptuRelayCommand(object executeTarget, string executeName)
+        public ImpromptuRelayCommand(object executeTarget, String_OR_InvokeMemberName executeName)
         {
             _executeTarget = executeTarget;
-            _executeName = executeName;
+            _executeInvoke = new Invocation(InvocationKind.InvokeMemberAction, executeName);
         }
+       
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuRelayCommand"/> class.
@@ -53,24 +55,23 @@ namespace ImpromptuInterface.MVVM
         /// <param name="executeName">Name of the execute method.</param>
         /// <param name="canExecuteTarget">The can execute target.</param>
         /// <param name="canExecuteName">Name of the can execute method.</param>
-        public ImpromptuRelayCommand(object executeTarget, string executeName, object canExecuteTarget, string canExecuteName)
+        public ImpromptuRelayCommand(object executeTarget, String_OR_InvokeMemberName executeName, object canExecuteTarget, String_OR_InvokeMemberName canExecuteName)
+            :this(executeTarget, executeName)
         {
-            _executeTarget = executeTarget;
-            _executeName = executeName;
             _canExecuteTarget = canExecuteTarget;
-            _canExecuteName = canExecuteName;
+            _canExecuteInvoke = new Invocation(InvocationKind.InvokeMember, canExecuteName);
         }
 
         public void Execute(object parameter)
         {
-            Impromptu.InvokeMemberAction(_executeTarget, _executeName, parameter);
+            _executeInvoke.InvokeWithArgs(_executeTarget, parameter);
         }
 
         public bool CanExecute(object parameter)
         {
             if (_canExecuteTarget == null)
                 return true;
-            return Impromptu.InvokeMember(_canExecuteTarget, _canExecuteName, parameter);
+            return (bool)_canExecuteInvoke.InvokeWithArgs(_canExecuteTarget, parameter);
         }
 
 

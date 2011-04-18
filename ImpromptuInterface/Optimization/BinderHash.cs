@@ -22,23 +22,28 @@ namespace ImpromptuInterface.Optimization
 {
     internal class BinderHash
     {
-        protected BinderHash(Type delegateType, string name, Type context, string[] argNames)
+
+        protected BinderHash(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
+            BinderType = binderType;
+            StaticContext = staticContext;
             DelegateType = delegateType;
             Name = name;
             Context = context;
             ArgNames = argNames;
+
         }
 
-        public static BinderHash Create(Type delType, string name, Type context, string[] argNames)
+        public static BinderHash Create(Type delType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
-            return new BinderHash(delType, name, context, argNames);
+            return new BinderHash(delType, name, context, argNames, binderType, staticContext);
         }
 
 
-
+        public Type BinderType { get; protected set; }
+        public bool StaticContext { get; protected set; }
         public Type DelegateType { get; protected set; }
-        public string Name { get; protected set; }
+        public String_OR_InvokeMemberName Name { get; protected set; }
         public Type Context { get; protected set; }
         public string[] ArgNames { get; protected set; }
 
@@ -46,17 +51,24 @@ namespace ImpromptuInterface.Optimization
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return 
-                !(other.ArgNames == null ^ ArgNames == null)
-                && Equals(other.DelegateType, DelegateType) 
-                && Equals(other.Name, Name) 
+
+            var tArgNames = ArgNames;
+            var tOtherArgNames = other.ArgNames;
+
+            return
+                !(tOtherArgNames == null ^ tArgNames == null)
+                && other.StaticContext == StaticContext
                 && Equals(other.Context, Context)
-                 && (ArgNames == null
+                && Equals(other.BinderType, BinderType)
+                && Equals(other.DelegateType, DelegateType)
+                && Equals(other.Name, Name)
+                && (tArgNames == null
                 // ReSharper disable AssignNullToNotNullAttribute
                 //Exclusive Or Makes Sure this doesn't happen
-                                 || other.ArgNames.SequenceEqual(ArgNames));
+                                 || tOtherArgNames.SequenceEqual(tArgNames));
             // ReSharper restore AssignNullToNotNullAttribute
         }
+
 
         public override bool Equals(object obj)
         {
@@ -70,9 +82,13 @@ namespace ImpromptuInterface.Optimization
         {
             unchecked
             {
-                int result = DelegateType.GetHashCode();
-                result = (result*397) ^ Name.GetHashCode();
-                result = (result*397) ^ Context.GetHashCode();
+                var tArgNames = ArgNames;
+
+                int result = (tArgNames == null ? 0 : tArgNames.Length * 397);
+                result = (result  ^ StaticContext.GetHashCode());
+                result = (result * 397) ^ DelegateType.GetHashCode();
+                result = (result * 397) ^ Context.GetHashCode();
+                result = (result * 397) ^ Name.GetHashCode();
                 return result;
             }
         }
@@ -80,8 +96,8 @@ namespace ImpromptuInterface.Optimization
 
     internal class GenericBinderHashBase : BinderHash
     {
-        protected GenericBinderHashBase(Type delegateType, string name, Type context, string[] argNames)
-            : base(delegateType, name, context,argNames)
+        protected GenericBinderHashBase(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
+            : base(delegateType, name, context, argNames, binderType, staticContext)
         {
         }
     }
@@ -89,13 +105,13 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash<T> : GenericBinderHashBase where T : class
     {
 
-        public static BinderHash<T> Create(string name, Type context, string[] argNames)
+        public static BinderHash<T> Create(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
         {
-            return new BinderHash<T>(name, context, argNames);
+            return new BinderHash<T>(name, context, argNames, binderType, staticContext );
         }
 
-        protected BinderHash(string name, Type context, string[] argNames)
-            : base(typeof(T), name, context, argNames)
+        protected BinderHash(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext)
+            : base(typeof(T), name, context, argNames, binderType, staticContext )
         {
         }
 
@@ -108,8 +124,10 @@ namespace ImpromptuInterface.Optimization
                 {
                     return 
                            !(other.ArgNames == null ^ ArgNames == null)
-                           && Equals(other.Name, Name)
+                           && other.StaticContext == StaticContext
+                           && Equals(other.BinderType, BinderType)
                            && Equals(other.Context, Context)
+                           && Equals(other.Name, Name)
                            && (ArgNames == null
                             // ReSharper disable AssignNullToNotNullAttribute
                                  //Exclusive Or Makes Sure this doesn't happen

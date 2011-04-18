@@ -71,9 +71,12 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClayTest.cs" />
+    <Compile Include="MVVM.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
     <Compile Include="Generics.cs" />
@@ -86,6 +89,10 @@
     <Compile Include="SingleMethodInvoke.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
+      <Project>{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}</Project>
+      <Name>ImpromptuInterface.MVVM</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromptuInterface</Name>

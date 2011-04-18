@@ -122,8 +122,11 @@ namespace ImpromptuInterface.Dynamic
             }
         }
     }
-       
-    
+
+
+    /// <summary>
+    /// Adds extra synatx to intialize properties to match up with clay
+    /// </summary>
         [Serializable]
 		public class ImpromptuChainableDictionary:ImpromptuDictionary{
 
@@ -156,13 +159,13 @@ namespace ImpromptuInterface.Dynamic
 					return true;
 				}
 				if(binder.CallInfo.ArgumentCount ==1){
-					_dictionary[binder.Name] = args.FirstOrDefault();
+					 SetProperty(binder.Name, args.FirstOrDefault());
 					result = this;
 					return true;
 				}
                 if (binder.CallInfo.ArgumentCount > 1)
                 {
-                    _dictionary[binder.Name] = new ImpromptuList(args);
+                    SetProperty(binder.Name,new ImpromptuList(args));
                     result = this;
                     return true;
                 }

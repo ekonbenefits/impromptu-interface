@@ -62,6 +62,24 @@ namespace UnitTestImpromptuInterface
         PropPoco ReturnProp { get; set; }
     }
 
+    public interface IEvent
+    {
+        event EventHandler<EventArgs> Event;
+        void OnEvent(object obj, EventArgs args);
+    }
+
+    public class PocoEvent
+    {
+        public event EventHandler<EventArgs> Event;
+
+        public void OnEvent(object obj, EventArgs args)
+        {
+            if (Event != null)
+                Event(obj, args);
+        }
+    }
+
+
     public class PocoOptConstructor
     {
         public string One { get; set; }

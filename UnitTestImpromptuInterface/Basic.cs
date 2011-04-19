@@ -207,6 +207,18 @@ namespace UnitTestImpromptuInterface
 		
           
         }
+        [Test, TestMethod]
+        public void EventPropertyTest()
+        {
+            var tPoco = new PocoEvent();
+            var tActsLike = tPoco.ActLike<IEvent>();
+            var tSet = false;
+            tActsLike.Event += (obj, args) => tSet = true;
+           
+            tActsLike.OnEvent(null,null);
+            Assert.AreEqual(true, tSet);
+            
+        }
 
       
 

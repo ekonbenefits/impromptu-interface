@@ -267,11 +267,16 @@ namespace ImpromptuInterface.Build
                 {
                     MakeMethod(builder,tInfo, tB, contextType);
                 }
+                foreach (var tInfo in tInterface.GetEvents(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
+                {
+                    MakeEvent(builder, tInfo, tB, contextType);
+                }
             }
             var tType = tB.CreateType();
             return tType;
         }
 
+    
         private static IEnumerable<Type> FlattenGenericParameters(Type type)
         {
             if (type.IsByRef || type.IsArray || type.IsPointer)
@@ -559,6 +564,12 @@ namespace ImpromptuInterface.Build
 
             MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType);
         }
+
+        private static void MakeEvent(ModuleBuilder builder, EventInfo info, TypeBuilder typeBuilder, Type contextType)
+        {
+            throw new NotImplementedException();
+        }
+
 
         private static void MakePropertyHelper(PropertyInfo info, string tName, ModuleBuilder builder, Type tReturnType, MethodInfo tSetMethod, TypeBuilder typeBuilder, string tGetName, Type contextType)
         {

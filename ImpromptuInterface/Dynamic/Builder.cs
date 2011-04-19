@@ -33,6 +33,8 @@ namespace ImpromptuInterface.Dynamic
             return new ImpromptuBuilder<ImpromptuChainableDictionary>();
         }
 
+       
+
         /// <summary>
         /// New Builder
         /// </summary>
@@ -41,6 +43,41 @@ namespace ImpromptuInterface.Dynamic
         public static IImpromptuBuilder New<TObjectPrototype>() where TObjectPrototype : new()
         {
             return new ImpromptuBuilder<TObjectPrototype>();
+        }
+
+        
+    }
+
+    /// <summary>
+    /// Syntax for a quick new inline prototype object
+    /// </summary>
+    public static class Build
+    {
+        public static dynamic NewObject
+        {
+            get
+            {
+                return new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
+            }
+        }
+    }
+
+    /// <summary>
+    /// Syntax for a quick inline object property setup
+    /// </summary>
+    /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+    public static class Build<TObjectPrototype> where TObjectPrototype : new()
+    {
+        /// <summary>
+        /// Gets the new builder.
+        /// </summary>
+        /// <value>The new.</value>
+        public static dynamic NewObject
+        {
+            get
+            {
+                return new ImpromptuBuilder<TObjectPrototype>().Object;
+            }
         }
     }
 

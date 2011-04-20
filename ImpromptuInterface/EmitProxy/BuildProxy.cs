@@ -600,7 +600,7 @@ namespace ImpromptuInterface.Build
 
             var tInvokeSet = "Invoke_Set";
 
-            var tInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof(object), tReturnType);
+            var tInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof(object), typeof(object));
 
             var tCallSite = tCStp.CreateType();
 

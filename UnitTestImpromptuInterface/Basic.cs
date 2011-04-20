@@ -238,7 +238,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void EventDynamicPropertyTest()
         {
-            var tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+            object tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
             IEvent tActsLike = tPoco.ActLike<IEvent>();
             var tSet = false;
             tActsLike.Event += (obj, args) => tSet = true;
@@ -252,7 +252,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void EventDynamicPropertyTest2()
         {
-            var tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+            object tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
             IEvent tActsLike = tPoco.ActLike<IEvent>();
             var tSet = false;
             EventHandler<EventArgs> tActsLikeOnEvent = (obj, args) => tSet = true;

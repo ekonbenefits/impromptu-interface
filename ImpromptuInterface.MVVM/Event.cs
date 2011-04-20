@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Windows;
 using ImpromptuInterface;
@@ -14,38 +15,40 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public static class Event
     {
-        internal abstract class EventHandlerHash
+        internal class EventHandlerHash
         {
-
-        }
-
-        internal class EventHandlerHash<T>:EventHandlerHash
-        {
+            
+        
             private readonly string _name;
+            private readonly Type _type;
 
-            public EventHandlerHash(string name)
-                {
-                    _name = name;
-                }
+            public EventHandlerHash(string name, Type type)
+            {
+                _name = name;
+                _type = type;
+            }
 
-            public bool Equals(EventHandlerHash<T> other)
+            public bool Equals(EventHandlerHash other)
             {
                 if (ReferenceEquals(null, other)) return false;
                 if (ReferenceEquals(this, other)) return true;
-                return Equals(other._name, _name);
+                return Equals(other._name, _name) && Equals(other._type, _type);
             }
 
             public override bool Equals(object obj)
             {
                 if (ReferenceEquals(null, obj)) return false;
                 if (ReferenceEquals(this, obj)) return true;
-                if (obj.GetType() != typeof (EventHandlerHash<T>)) return false;
-                return Equals((EventHandlerHash<T>) obj);
+                if (obj.GetType() != typeof (EventHandlerHash)) return false;
+                return Equals((EventHandlerHash) obj);
             }
 
             public override int GetHashCode()
             {
-                return (_name != null ? _name.GetHashCode() : 0);
+                unchecked
+                {
+                    return ((_name != null ? _name.GetHashCode() : 0)*397) ^ (_type != null ? _type.GetHashCode() : 0);
+                }
             }
         }
 
@@ -109,42 +112,60 @@ namespace ImpromptuInterface.MVVM
             return (sender, e) => func(sender, e);
         }
 
-        public static EventHandler<T> GenerateEventHandler<T>(string memberName) where T: EventArgs
+        public class BinderEventHandlerMemberName
         {
-            var tHash = new EventHandlerHash<T>(memberName);
 
-            object tReturn;
+            public static readonly MethodInfo InvokeMethodInfo =
+                typeof (BinderEventHandlerMemberName).GetMethod("Invoke");
+
+            private readonly string _name;
+
+            public BinderEventHandlerMemberName(string name)
+            {
+                _name = name;
+            }
+
+            public void Invoke(object sender, object e)
+            {
+                 var tSender = sender as DependencyObject;
+                    if (tSender != null)
+                    {
+                        EventBinder tBinder = GetBind(tSender);
+                        if (tBinder != null)
+                        {
+                            try
+                            {
+                                Impromptu.InvokeMemberAction(tBinder.Target,
+                                                            _name, tSender, e);
+                            }
+                            catch (RuntimeBinderException)
+                            {
+
+                            }
+
+                        }
+                    }
+            }
+        }
+
+        public static object GenerateEventHandler(Type delType, string membername)
+        {
+            var tHash = new EventHandlerHash(membername, delType);
+            
 
             lock (_eventHandlerStoreLock)
             {
+                object tReturn;
                 if (!_eventHandlerStore.TryGetValue(tHash, out tReturn))
                 {
-                    tReturn = new EventHandler<T>((sender, e) =>
-                                                      {
-                                                          var tSender = sender as DependencyObject;
-                                                          if (tSender != null)
-                                                          {
-                                                              EventBinder tBinder = GetBind(tSender);
-                                                              if (tBinder != null)
-                                                              {
-                                                                  try
-                                                                  {
-                                                                      Impromptu.InvokeMemberAction(tBinder.Target,
-                                                                                                   memberName, tSender, e);
-                                                                  }
-                                                                  catch (RuntimeBinderException)
-                                                                  {
-
-                                                                  }
-
-                                                              }
-                                                          }
-                                                      });
+                    tReturn = Delegate.CreateDelegate(delType, new BinderEventHandlerMemberName(membername), 
+                                                      BinderEventHandlerMemberName.InvokeMethodInfo);
                 }
+                return tReturn;
             }
-
-            return (EventHandler<T>)tReturn;
         }
+
+     
     }
 
     public class EventBinder:DynamicObject
@@ -184,35 +205,14 @@ namespace ImpromptuInterface.MVVM
             if (Impromptu.InvokeIsEvent(source, eventName))
             {
                var tEvent = source.GetType().GetEvent(eventName);
-                Type[] tArgType = null;
-                var tPlainEventHandler = tEvent.EventHandlerType == typeof (EventHandler);
-                if (tPlainEventHandler)
-               {
-                   tArgType = new[]{typeof(EventArgs)};
-               }
-               else if (tEvent.EventHandlerType.IsGenericType && tEvent.EventHandlerType.GetGenericTypeDefinition() == typeof(EventHandler<>))
-               {
-                   tArgType = tEvent.EventHandlerType.GetGenericArguments();
-               }
+               
 
-                if(tArgType !=null){
-         
+                var tEventHandler = Event.GenerateEventHandler(tEvent.EventHandlerType, targetName);
 
-                  object tEventHandler =  Impromptu.InvokeMember(
-                       typeof (Event).WithStaticContext(),
-                       "GenerateEventHandler".WithGenericArgs(tArgType),
-                       targetName ?? string.Format("On{0}", eventName));
-
-                  if (tPlainEventHandler)
-                  {
-                      tEventHandler = Event.FixEventHandler((EventHandler<EventArgs>) tEventHandler);
-                  }
                   if (un)
                     Impromptu.InvokeSubtractAssign(source, eventName, tEventHandler);
                   else
                     Impromptu.InvokeAddAssign(source,eventName, tEventHandler);
-               }
-
             }
         }
 

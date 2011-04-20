@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
+using System.Windows;
+using System.Windows.Controls;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
 #elif !SELFRUNNER
-using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using NUnit.Framework;
 #endif
 
@@ -110,6 +112,67 @@ namespace UnitTestImpromptuInterface
             return value;
         }
 
-        
+        internal class TestDependency:DependencyObject
+        {
+
+
+            public event TextChangedEventHandler TextChange;
+
+
+            public void OnTextChanged(object sender,TextChangedEventArgs e)
+            {
+                if (TextChange != null)
+                {
+                    TextChange(sender, e);
+                }
+            }
+
+
+            public event EventHandler<TextChangedEventArgs> TextChange2;
+
+
+            public void OnTextChanged2(object sender, TextChangedEventArgs e)
+            {
+                if (TextChange2 != null)
+                {
+                    TextChange2(sender, e);
+                }
+            }
+        }
+
+
+
+
+   
+
+        [Test, TestMethod]
+        public void TestEventBindingNonGenericType()
+        {
+            var tRun = false;
+            var tTextBox = new TestDependency();
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestEvent:new Action<object,EventArgs>((sender,e)=>tRun =true));
+
+
+            Event.SetBind(tTextBox, tViewModel.Events.TextChange.To["TestEvent"]);
+
+            tTextBox.OnTextChanged(tTextBox, null);
+
+            Assert.AreEqual(true, tRun);
+        }
+
+        [Test, TestMethod]
+        public void TestEventBindingGenericType()
+        {
+            var tRun = false;
+            var tTextBox = new TestDependency();
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestEvent: new Action<object, EventArgs>((sender, e) => tRun = true));
+
+
+            Event.SetBind(tTextBox, tViewModel.Events.TextChange2.To["TestEvent"]);
+
+            tTextBox.OnTextChanged2(tTextBox, null);
+
+            Assert.AreEqual(true, tRun);
+        }
     }
 }

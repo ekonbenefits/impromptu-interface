@@ -94,6 +94,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\ImpromptuDynamic.cs">
       <Link>ImpromptuDynamic.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\MVVM.cs">
+      <Link>MVVM.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\PrivateTest.cs">
       <Link>PrivateTest.cs</Link>
     </Compile>

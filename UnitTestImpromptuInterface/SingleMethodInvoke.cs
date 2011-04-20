@@ -627,6 +627,8 @@ namespace UnitTestImpromptuInterface
 
              Assert.AreEqual(false, tTest);
 
+             Impromptu.InvokeSubtractAssign(tPoco, "Event", tEvent);//Test Second Time
+
              var tPoco2 = new PropPoco() {Prop2 = 3};
 
              Impromptu.InvokeSubtractAssign(tPoco2, "Prop2", 4);
@@ -654,7 +656,7 @@ namespace UnitTestImpromptuInterface
          [Test, TestMethod]
          public void TestDynamicSubtractAssign()
          {
-             var tDyanmic = Build.NewObject(Prop2:3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              bool tTest = false;
              var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
 
@@ -665,6 +667,7 @@ namespace UnitTestImpromptuInterface
              tDyanmic.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
+
 
              Impromptu.InvokeSubtractAssign(tDyanmic, "Prop2", 4);
 

@@ -62,6 +62,9 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ImpromptuInterface.MVVM\Event.cs">
+      <Link>Event.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuRelayCommand.cs">
       <Link>ImpromptuRelayCommand.cs</Link>
     </Compile>

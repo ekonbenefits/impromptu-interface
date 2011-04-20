@@ -25,12 +25,11 @@ using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.MVVM
 {
-
     /// <summary>
     /// View Model that uses a Dynamic Implementation to remove boilerplate for Two-Way bound properties and commands to methods. 
     /// If you specific a TInterface it provides a guide to the dynamic properties
     /// </summary>
-    /// <typeparam name="TInterface">The type of the interface.</typeparam>
+    /// <typeparam name="TInterfaceContract">The type of the interface.</typeparam>
     [Serializable]
     public class ImpromptuViewModel<TInterfaceContract> : ImpromptuViewModel where TInterfaceContract : class 
     {
@@ -107,6 +106,7 @@ namespace ImpromptuInterface.MVVM
         private ImpropmtuCommands _trampoline;
         private PropertyDepends _depTrampoline;
         protected readonly IDictionary<string, List<string>> _linkedProperties;
+        private EventBinder _eventsTramponline;
 
         /// <summary>
         /// Convenient access to Dynamic Properties. When subclassing you can use Dynamic.PropertyName = x, etc.
@@ -125,6 +125,16 @@ namespace ImpromptuInterface.MVVM
         {
             get { return _trampoline ?? (_trampoline = new ImpropmtuCommands(this)); }
         }
+
+        /// <summary>
+        /// Gets the EventBinder to bind events to this model.
+        /// </summary>
+        /// <value>The events.</value>
+        public virtual dynamic Events
+        {
+            get { return _eventsTramponline ?? (_eventsTramponline = new EventBinder(this)); }
+        }
+
 
 
         /// <summary>

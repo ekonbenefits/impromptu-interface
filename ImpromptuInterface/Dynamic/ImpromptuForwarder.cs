@@ -55,6 +55,21 @@ namespace ImpromptuInterface.Dynamic
         }
 #endif
 
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            if (!KnownInterfaces.Any())
+            {
+                if (Target is DynamicObject)
+                {
+                    return ((DynamicObject) Target).GetDynamicMemberNames();
+                }
+                if (!(Target is IDynamicMetaObjectProvider))
+                    return Target.GetType().GetMembers(BindingFlags.Public).Select(it => it.Name).ToList();
+            }
+            return base.GetDynamicMemberNames();
+        }
+
+
         /// <summary>
         /// Gets or sets the target.
         /// </summary>

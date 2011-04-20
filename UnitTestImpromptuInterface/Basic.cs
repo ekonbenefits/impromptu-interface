@@ -208,7 +208,7 @@ namespace UnitTestImpromptuInterface
           
         }
         [Test, TestMethod]
-        public void EventPropertyTest()
+        public void EventPocoPropertyTest()
         {
             var tPoco = new PocoEvent();
             var tActsLike = tPoco.ActLike<IEvent>();
@@ -220,7 +220,48 @@ namespace UnitTestImpromptuInterface
             
         }
 
-      
+
+        [Test, TestMethod]
+        public void EventPocoPropertyTest2()
+        {
+            var tPoco = new PocoEvent();
+            var tActsLike = tPoco.ActLike<IEvent>();
+            var tSet = false;
+            EventHandler<EventArgs> tActsLikeOnEvent = (obj, args) => tSet = true;
+            tActsLike.Event += tActsLikeOnEvent;
+            tActsLike.Event -= tActsLikeOnEvent;
+            tActsLike.OnEvent(null, null);
+            Assert.AreEqual(false, tSet);
+
+        }
+
+        [Test, TestMethod]
+        public void EventDynamicPropertyTest()
+        {
+            var tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+            IEvent tActsLike = tPoco.ActLike<IEvent>();
+            var tSet = false;
+            tActsLike.Event += (obj, args) => tSet = true;
+
+            tActsLike.OnEvent(null, null);
+            Assert.AreEqual(true, tSet);
+
+        }
+
+
+        [Test, TestMethod]
+        public void EventDynamicPropertyTest2()
+        {
+            var tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+            IEvent tActsLike = tPoco.ActLike<IEvent>();
+            var tSet = false;
+            EventHandler<EventArgs> tActsLikeOnEvent = (obj, args) => tSet = true;
+            tActsLike.Event += tActsLikeOnEvent;
+            tActsLike.Event -= tActsLikeOnEvent;
+            tActsLike.OnEvent(null, null);
+            Assert.AreEqual(false, tSet);
+
+        }
 
         [Test, TestMethod]
         public void StringPropertyTest()

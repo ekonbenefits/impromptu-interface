@@ -132,7 +132,7 @@ namespace ImpromptuInterface.MVVM
         /// <value>The events.</value>
         public virtual dynamic Events
         {
-            get { return _eventsTramponline ?? (_eventsTramponline = new EventBinder(this)); }
+            get { return new EventBinder(this); }
         }
 
 

@@ -53,12 +53,25 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
     public static class Build
     {
+        /// <summary>
+        /// Gets the new object builder.
+        /// </summary>
+        /// <value>The new object.</value>
         public static dynamic NewObject
         {
             get
             {
                 return new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
             }
+        }
+
+        /// <summary>
+        /// Gets the new list builder.
+        /// </summary>
+        /// <value>The new list.</value>
+        public static dynamic NewList(params object[] args)
+        {
+                return new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>().List(args);
         }
     }
 
@@ -69,7 +82,7 @@ namespace ImpromptuInterface.Dynamic
     public static class Build<TObjectPrototype> where TObjectPrototype : new()
     {
         /// <summary>
-        /// Gets the new builder.
+        /// Gets the new object builder.
         /// </summary>
         /// <value>The new.</value>
         public static dynamic NewObject
@@ -78,6 +91,16 @@ namespace ImpromptuInterface.Dynamic
             {
                 return new ImpromptuBuilder<TObjectPrototype>().Object;
             }
+        }
+
+        /// <summary>
+        /// Gets the new list builder.
+        /// </summary>
+        /// <value>The new list.</value>
+        public static dynamic NewList(params object[] args)
+        {
+            
+                return new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>().List(args);
         }
     }
 
@@ -167,9 +190,20 @@ namespace ImpromptuInterface.Dynamic
         {
             var tArgs = Arguments();
 
-            return tArgs.Any() 
-                ? base.Create() 
-                : Activator.CreateInstance<TObjectPrototype>();
+            if(tArgs.Any())
+                return base.Create();
+
+
+            TObjectPrototype tObjectPrototype;
+            try
+            {
+                tObjectPrototype = Activator.CreateInstance<TObjectPrototype>();//Try first because it's really fast, but won't work with optional parameters
+            }
+            catch (MissingMethodException)
+            {
+                tObjectPrototype = Impromptu.InvokeConstuctor(typeof(TObjectPrototype));
+            }
+            return tObjectPrototype;
         }
     }
 

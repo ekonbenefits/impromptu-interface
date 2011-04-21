@@ -114,6 +114,18 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestOptionalArgumentActivationNone()
+            {
+                AssertException<MissingMethodException>(() => Activator.CreateInstance<ImpromptuList>());
+
+               var tList= Impromptu.InvokeConstuctor(typeof (ImpromptuList));
+
+
+               Assert.AreEqual(typeof(ImpromptuList),tList.GetType());
+          }
+
+
+        [Test, TestMethod]
         public void TestConstructValueType()
         {
             var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);

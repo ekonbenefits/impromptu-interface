@@ -16,16 +16,19 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
+
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Expando-Type List for dynamic objects
     /// </summary>
     [Serializable]
-    public class ImpromptuList : ImpromptuDictionaryBase, IList<object>, IDictionary<string, object>, INotifyCollectionChanged
+    public class ImpromptuList : ImpromptuDictionaryBase, IList<object>, IDictionary<string, object>, INotifyCollectionChanged, ITypedList, IList
 
     {
 
@@ -38,7 +41,6 @@ namespace ImpromptuInterface.Dynamic
         /// Initializes a new instance of the <see cref="ImpromptuDictionary"/> class.
         /// </summary>
         private static readonly object ListLock = new object();
-
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuList"/> class.
@@ -301,5 +303,120 @@ namespace ImpromptuInterface.Dynamic
                 return (base.GetHashCode()*397) ^ _list.GetHashCode();
             }
         }
+
+
+        /// <summary>
+        /// Gets or sets the override getting item method names. USED for GetItemProperties
+        /// </summary>
+        /// <value>The override getting item method names.</value>
+        public Func<IEnumerable<object>, IEnumerable<string>> OverrideGettingItemMethodNames { get; set; }
+
+
+
+        /// <summary>
+        /// Gets the represented item. USED fOR GetItemProperties
+        /// </summary>
+        /// <returns></returns>
+        protected virtual dynamic GetRepresentedItem()
+        {
+            var tItem = ((IEnumerable<object>)this).FirstOrDefault();
+            return tItem;
+        }
+
+    
+      
+#region Implementation of ITypedList
+
+#if !SILVERLIGHT
+
+        /// <summary>
+        /// Returns the name of the list.
+        /// </summary>
+        /// <param name="listAccessors">An array of <see cref="T:System.ComponentModel.PropertyDescriptor"/> objects, for which the list name is returned. This can be null.</param>
+        /// <returns>The name of the list.</returns>
+        public string GetListName(PropertyDescriptor[] listAccessors)
+        {
+            return null;
+        }
+
+
+        public PropertyDescriptorCollection GetItemProperties(PropertyDescriptor[] listAccessors)
+        {
+            IEnumerable<string> tList = new string[] { };
+            if (OverrideGettingItemMethodNames != null)
+            {
+                tList = OverrideGettingItemMethodNames(this);
+            }
+            else
+            {
+                var tGetItem = GetRepresentedItem();
+                if (tGetItem != null)
+                {
+
+                    try
+                    {
+                        tList = tGetItem.GetDynamicMemberNames();
+                    }
+                    catch (RuntimeBinderException)
+                    {
+                        var tDict = tGetItem as IDictionary<string, object>;
+                        if (tDict != null)
+                        {
+                            tList = tGetItem.Keys;
+                        }
+                    }
+
+
+                }
+            }
+
+            return new PropertyDescriptorCollection(tList.Select(it => new ImpromptuPropertyDescriptor(it)).ToArray());
+        }
+
+#endif
+
+#endregion
+
+
+        #region Implementation of ICollection
+
+        public void CopyTo(Array array, int index)
+        {
+            ((IList)_list).CopyTo(array, index);
+        }
+        private readonly object _syncRoot = new object();
+        public object SyncRoot
+        {
+            get { return _syncRoot; }
+        }
+
+
+        public bool IsSynchronized
+        {
+            get { return false; }
+        }
+
+        #endregion
+
+        #region Implementation of IList
+
+
+        int IList.Add(object value)
+        {
+            Add(value);
+            return Count - 1;
+        }
+
+        void IList.Remove(object value)
+        {
+            Remove(value);
+        }
+
+        public bool IsFixedSize
+        {
+            get { return false; }
+        }
+
+        #endregion
     }
 }

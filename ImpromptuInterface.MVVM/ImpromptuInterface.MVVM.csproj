@@ -48,6 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Event.cs" />
+    <Compile Include="ImpromptuBindingList.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="ImpromptuRelayCommand.cs" />
     <Compile Include="ImpromptuToString.cs" />
     <Compile Include="ImpromptuViewModel.cs" />

@@ -44,12 +44,25 @@ namespace ImpromptuInterface.Dynamic
         dynamic ListSetup(params dynamic[] constructorArgs);
 
         /// <summary>
+        /// Setup List or Array if list has a default constrcutor
+        /// </summary>
+        /// <typeparam name="TList"></typeparam>
+        /// <returns></returns>
+        dynamic ListSetup<TList>();
+
+        /// <summary>
         /// Setup List or Array, takes either one <see cref="Activate"/> or a list of constructor args that will use objects Type
         /// </summary>
         /// <param name="constructorArgsFactory">The constructor args factory.</param>
         /// <returns></returns>
         dynamic ListSetup(Func<object[]> constructorArgsFactory);
 
+        /// <summary>
+        /// Setup List or Array if list has a default constrcutor
+        /// </summary>
+        /// <typeparam name="TList"></typeparam>
+        /// <returns></returns>
+        dynamic ArraySetup<TList>();
 
         /// <summary>
         /// Alternative name for <see cref="ListSetup"/>
@@ -171,9 +184,19 @@ namespace ImpromptuInterface.Dynamic
             return this;
         }
 
+        public dynamic ListSetup<TList>()
+        {
+            return ListSetup(new Activate<TList>());
+        }
+
         public dynamic ListSetup(Func<object[]> constructorArgsFactory)
         {
             return ListSetup((object)constructorArgsFactory);
+        }
+
+        public dynamic ArraySetup<TList>()
+        {
+            return ListSetup(new Activate<TList>());
         }
 
         public dynamic ArraySetup(params dynamic[] constructorArgs)
@@ -355,9 +378,22 @@ namespace ImpromptuInterface.Dynamic
 
             if (keyValues == null && callinfo.ArgumentNames.Count != callinfo.ArgumentCount)
                 throw new ArgumentException("Requires argument names for every argument");
-            var result = buildType !=null 
-				? buildType.Create() 
-					: Activator.CreateInstance<TObjectProtoType>();
+            object result;
+            if (buildType != null)
+            {
+                result = buildType.Create();
+            }
+            else{
+                try
+                {
+                    result = Activator.CreateInstance<TObjectProtoType>();//Try first because faster but doens't work with optional parameters
+                }
+                catch (MissingMethodException)
+                {
+                    result = Impromptu.InvokeConstuctor(typeof (TObjectProtoType));
+                }
+
+            }
             var tDict = result as IDictionary<string, object>;
             keyValues = keyValues ?? callinfo.ArgumentNames.Zip(args, (n, a) => new KeyValuePair<string, object>(n, a));
             foreach (var tArgs in keyValues)

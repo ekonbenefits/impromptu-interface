@@ -9,13 +9,9 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.MVVM
 {
 #if SILVERLIGHT
-    public class SerializableAttribute:Attribute{
-    }
-    public interface IObjectReference {}
-    public interface ISerializable {}
-    public interface ITypedList { }
+   public interface IBindingList{ }
 #endif
 }

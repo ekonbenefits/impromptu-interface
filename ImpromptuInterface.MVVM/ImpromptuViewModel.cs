@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -39,6 +40,7 @@ namespace ImpromptuInterface.MVVM
         public ImpromptuViewModel()
         {
             _contract = Impromptu.ActLike<TInterfaceContract>(this);
+     
         }
 
 #if !SILVERLIGHT
@@ -77,36 +79,37 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// View Model that uses a Dynamic Implementation to remove boilerplate for Two-Way bound properties and commands to methods
     /// </summary>
-    public class ImpromptuViewModel:ImpromptuDictionary
+    public partial class ImpromptuViewModel:ImpromptuDictionary
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuViewModel"/> class.
         /// </summary>
         public ImpromptuViewModel()
         {
-            _linkedProperties = new Dictionary<string, List<string>>();
+            LinkedProperties = new Dictionary<string, List<string>>();
         }
 
 #if !SILVERLIGHT
         protected ImpromptuViewModel(SerializationInfo info, 
            StreamingContext context):base(info,context)
         {
-            _linkedProperties = info.GetValue <IDictionary<string, List<string>>> ("_linkedProperties");
+            LinkedProperties = info.GetValue <IDictionary<string, List<string>>> ("_linkedProperties");
         }
 
 
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info, context);
-            info.AddValue("_linkedProperties", _linkedProperties);
+            info.AddValue("LinkedProperties", LinkedProperties);
         }
 #endif
 
 
-        private ImpropmtuCommands _trampoline;
-        private PropertyDepends _depTrampoline;
-        protected readonly IDictionary<string, List<string>> _linkedProperties;
-        private EventBinder _eventsTramponline;
+        private ImpropmtuCommandBinder _commandTrampoline;
+        private PropertyDepends _dependencyTrampoline;
+        private FireOnPropertyChanged _onChangedTrampoline;
+
+        protected readonly IDictionary<string, List<string>> LinkedProperties;
 
         /// <summary>
         /// Convenient access to Dynamic Properties. When subclassing you can use Dynamic.PropertyName = x, etc.
@@ -123,7 +126,7 @@ namespace ImpromptuInterface.MVVM
         /// <value>The command.</value>
         public virtual dynamic Command
         {
-            get { return _trampoline ?? (_trampoline = new ImpropmtuCommands(this)); }
+            get { return _commandTrampoline ?? (_commandTrampoline = new ImpropmtuCommandBinder(this)); }
         }
 
         /// <summary>
@@ -135,8 +138,6 @@ namespace ImpromptuInterface.MVVM
             get { return new EventBinder(this); }
         }
 
-
-
         /// <summary>
         /// Sets up dependency relations amoung dependenant properties
         /// </summary>
@@ -144,7 +145,30 @@ namespace ImpromptuInterface.MVVM
         public dynamic Dependencies
         {
             get {
-                return _depTrampoline ?? (_depTrampoline = new PropertyDepends(this));
+                return _dependencyTrampoline ?? (_dependencyTrampoline = new PropertyDepends(this));
+            }
+        }
+
+
+        /// <summary>
+        /// Properties the changed.
+        /// </summary>
+        /// <param name="delegate">The @delegate.</param>
+        /// <returns></returns>
+        public static PropertyChangedEventHandler ChangedHandler(PropertyChangedEventHandler @delegate)
+        {
+            return @delegate;
+        }
+
+        /// <summary>
+        /// Subscribe to OnProeprtyChanged notififcations of specific properties
+        /// </summary>
+        /// <value>The on changed.</value>
+        public dynamic OnChanged
+        {
+            get
+            {
+                return _onChangedTrampoline ?? (_onChangedTrampoline = new FireOnPropertyChangedDependencyAware(this));
             }
         }
 
@@ -156,12 +180,27 @@ namespace ImpromptuInterface.MVVM
         public void DependencyLink(string property, string dependency)
         {
             List<string> tList;
-            if(!_linkedProperties.TryGetValue(dependency,out tList))
+            if(!LinkedProperties.TryGetValue(dependency,out tList))
             {
                 tList = new List<string>();
-                _linkedProperties[dependency] = tList;
+                LinkedProperties[dependency] = tList;
             }
-            tList.Add(property);
+            if(!tList.Contains(property))
+                tList.Add(property);
+        }
+
+        /// <summary>
+        /// Unlinks a dependencies.
+        /// </summary>
+        /// <param name="property">The property.</param>
+        /// <param name="dependency">The dependency.</param>
+        public void DependencyUnlink(string property, string dependency)
+        {
+            List<string> tList;
+            if (LinkedProperties.TryGetValue(dependency, out tList))
+            {
+                tList.Remove(property);
+            }
         }
 
 
@@ -174,13 +213,18 @@ namespace ImpromptuInterface.MVVM
                 alreadyRaised.Add(key);
 
                 List<string> tList;
-                if (!_linkedProperties.TryGetValue(key, out tList)) return;
+                if (!LinkedProperties.TryGetValue(key, out tList)) return;
                 foreach (var tKey in tList.Distinct())
                 {
                     OnPropertyChanged(tKey, alreadyRaised);
                 }
             }
         }
+
+
+   
+
+    
 
         protected override void OnPropertyChanged(string key)
         {
@@ -203,7 +247,7 @@ namespace ImpromptuInterface.MVVM
 
             public override IEnumerable<string> GetDynamicMemberNames()
             {
-                return _parent._linkedProperties.SelectMany(it => it.Value).Distinct();
+                return _parent.LinkedProperties.SelectMany(it => it.Value).Distinct();
             }
 
             public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -211,109 +255,6 @@ namespace ImpromptuInterface.MVVM
                 result = new DependsOn(_parent, binder.Name);
 
                 return true;
-            }
-        }
-
-        /// <summary>
-        /// Trampoline object to add dependency
-        /// </summary>
-        public class DependsOn : DynamicObject
-        {
-            private readonly ImpromptuViewModel _parent;
-            private readonly string _property;
-
-            internal DependsOn(ImpromptuViewModel parent, string property)
-            {
-                _parent = parent;
-                _property = property;
-            }
-
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                result = new LinkFinal(_parent, _property, binder.Name);
-
-                return true;
-            }
-
-            public override IEnumerable<string> GetDynamicMemberNames()
-            {
-                return _parent._linkedProperties.Where(it => it.Value.Contains(_property)).Select(it=>it.Key);
-            }
-        }
-
-        /// <summary>
-        /// Trampoline object to finish dependency link
-        /// </summary>
-        public class LinkFinal
-        {
-            private readonly ImpromptuViewModel _parent;
-            private readonly string _property;
-            private readonly string _dependency;
-
-            internal LinkFinal(ImpromptuViewModel parent, string property, string dependency)
-            {
-                _parent = parent;
-                _property = property;
-                _dependency = dependency;
-            }
-
-            /// <summary>
-            /// Links the property with the dependency.
-            /// </summary>
-            public void Link()
-            {
-                _parent.DependencyLink(_property,_dependency);
-            }
-        }
-
-        /// <summary>
-        /// Trampoline object to give access to methods as Commands of original viewmodal
-        /// </summary>
-        public class ImpropmtuCommands : DynamicObject
-        {
-            private readonly ImpromptuDictionary _parent;
-
-            private readonly Dictionary<string, ImpromptuRelayCommand> _commands =
-                new Dictionary<string, ImpromptuRelayCommand>();
-
-
-            internal ImpropmtuCommands(ImpromptuDictionary parent)
-            {
-                _parent = parent;
-            }
-
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                result = this[binder.Name];
-                return true;
-            }
-
-            /// <summary>
-            /// Gets the <see cref="ImpromptuInterface.MVVM.ImpromptuRelayCommand"/> with the specified key.
-            /// </summary>
-            /// <value></value>
-            public ImpromptuRelayCommand this[String key]
-            {
-                get
-                {
-                    ImpromptuRelayCommand result;
-
-                    if (!_commands.TryGetValue(key, out result))
-                    {
-
-                        var tCanExecute = "Can" + key;
-                        if (_parent.ContainsKey(tCanExecute) || _parent.GetType().GetMethod(tCanExecute) != null)
-                        {
-                            result = new ImpromptuRelayCommand(_parent, key, _parent, tCanExecute);
-                        }
-                        else
-                        {
-                            result = new ImpromptuRelayCommand(_parent, key);
-                        }
-                        _commands[key] = result;
-                    }
-                    return result;
-                }
             }
         }
 

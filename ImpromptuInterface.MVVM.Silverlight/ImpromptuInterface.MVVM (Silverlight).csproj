@@ -65,6 +65,9 @@
     <Compile Include="..\ImpromptuInterface.MVVM\Event.cs">
       <Link>Event.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\FireOnChange.cs">
+      <Link>FireOnChange.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuBindingList.cs">
       <Link>ImpromptuBindingList.cs</Link>
     </Compile>
@@ -74,8 +77,14 @@
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuToString.cs">
       <Link>ImpromptuToString.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuViewModel-Nested.cs">
+      <Link>ImpromptuViewModel-Nested.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuViewModel.cs">
       <Link>ImpromptuViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\ImpropmtuCommandBinder.cs">
+      <Link>ImpropmtuCommandBinder.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>

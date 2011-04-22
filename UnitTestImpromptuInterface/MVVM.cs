@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
@@ -173,6 +174,36 @@ namespace UnitTestImpromptuInterface
             tTextBox.OnTextChanged2(tTextBox, null);
 
             Assert.AreEqual(true, tRun);
+        }
+
+        [Test, TestMethod]
+        public void TestOnChangeDependencyCalls()
+        {
+            dynamic tNewViewModel = new ImpromptuViewModel();
+
+            tNewViewModel.Prop1 = "Setup";
+
+            tNewViewModel.Dependencies.Prop2.Prop1.Link();
+
+            int tEvent1Count = 0;
+            int tEvent2Count = 0;
+
+            var tEvent1 =ImpromptuViewModel.ChangedHandler((sender, e) => tEvent1Count++);
+            Action<object,EventArgs> tEvent2Func = (sender, e) => tEvent2Count++;
+            var tEvent2 = new PropertyChangedEventHandler(tEvent2Func);
+            var tEvent2Again = new PropertyChangedEventHandler(tEvent2Func);
+
+            tNewViewModel.OnChanged.Prop1 += tEvent1;
+            tNewViewModel.OnChanged.Prop1 += tEvent2;
+            tNewViewModel.OnChanged.Prop2 += tEvent2Again;
+
+
+            tNewViewModel.Prop1 = "Run";
+
+            Assert.AreEqual(1,tEvent1Count);
+
+            Assert.AreEqual(1, tEvent2Count);
+        
         }
     }
 }

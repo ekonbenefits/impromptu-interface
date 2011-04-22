@@ -48,12 +48,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Event.cs" />
+    <Compile Include="FireOnChange.cs" />
     <Compile Include="ImpromptuBindingList.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ImpromptuRelayCommand.cs" />
     <Compile Include="ImpromptuToString.cs" />
+    <Compile Include="ImpromptuViewModel-Nested.cs" />
     <Compile Include="ImpromptuViewModel.cs" />
+    <Compile Include="ImpropmtuCommandBinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

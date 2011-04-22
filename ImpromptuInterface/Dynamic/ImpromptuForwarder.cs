@@ -78,7 +78,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-          
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
             result = Impromptu.InvokeGet(Target, binder.Name);
 
             return true;
@@ -87,6 +91,12 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
+
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, args);
 
             try
@@ -125,6 +135,10 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
+            if (Target == null)
+            {
+                return false;
+            }
 
             Impromptu.InvokeSet(Target, binder.Name, value);
 
@@ -133,6 +147,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
 
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, indexes);
 
@@ -142,6 +161,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
+            if (Target == null)
+            {
+                return false;
+            }
+
             var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
 
@@ -149,8 +173,9 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
+
         /// <summary>
-        /// Equalses the specified other.
+        /// Equals the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns></returns>
@@ -165,15 +190,13 @@ namespace ImpromptuInterface.Dynamic
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if ((obj is ImpromptuForwarder))
-                return Equals((ImpromptuForwarder) obj);
-
-            return obj.Equals(Target);
+            if (obj.GetType() != typeof (ImpromptuForwarder)) return false;
+            return Equals((ImpromptuForwarder) obj);
         }
 
         public override int GetHashCode()
         {
-            return Target.GetHashCode();
+            return (Target != null ? Target.GetHashCode() : 0);
         }
     }
 }

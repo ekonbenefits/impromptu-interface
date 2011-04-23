@@ -156,21 +156,30 @@ namespace ImpromptuInterface
             bool tStaticContext =false;
             target = target.GetTargetContext(out tContext, out tStaticContext);
             args = GetArgsAndNames(args, out tArgNames);
+            CallSite tCallSite = null;
 
+            return InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+        }
+
+        internal static object InvokeMemberCallSite(object target,  String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)
+        {
             CallSiteBinder tBinder = null;
-       
-                tList = Impromptu.GetInvokeMemberArgsSimplified(args, tArgNames, tContext, tStaticContext);
+
+            if (callSite == null)
+            {
+                var tList = GetBindingArgumentList(args, tArgNames,  tContext, tStaticContext);
                 var tFlag = CSharpBinderFlags.None;
                 if (name.IsSpecialName)
                 {
                     tFlag |= CSharpBinderFlags.InvokeSpecialName;
                 }
                 tBinder = Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
-                                           tContext, tList);
+                                              tContext, tList);
+
+            }
 
 
-            CallSite tCallSite =null;
-            return InvokeHelper.InvokeMember<object>(ref tCallSite, tBinder, name, tStaticContext, tContext,tArgNames, target, args);
+            return InvokeHelper.InvokeMember<object>(ref callSite, tBinder, name, tStaticContext, tContext,tArgNames, target, args);
         }
 
         internal static object[] GetArgsAndNames(object[]args,out string[]argNames)
@@ -205,7 +214,7 @@ namespace ImpromptuInterface
             return args;
         }
 
-        internal static IEnumerable<CSharp.CSharpArgumentInfo> GetInvokeMemberArgsSimplified(object[] args, string[] argNames, Type tContext, bool staticContext)
+        internal static IEnumerable<CSharp.CSharpArgumentInfo> GetBindingArgumentList(object[] args, string[] argNames, Type tContext, bool staticContext)
         {
 
             var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
@@ -378,17 +387,23 @@ namespace ImpromptuInterface
 
         internal static void InvokeMemberActionCallSite(object target,String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext,ref CallSite callSite)
         {
-            IEnumerable<CSharpArgumentInfo> tList;
-            tList = GetInvokeMemberArgsSimplified(args, tArgNames, tContext, tStaticContext);
-
-            var tFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
-            if (name.IsSpecialName)
+            CallSiteBinder tBinder =null;
+            if (callSite == null)
             {
-                tFlag |= CSharp.CSharpBinderFlags.InvokeSpecialName;
-            }
 
-            var tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
+
+                IEnumerable<CSharpArgumentInfo> tList;
+                tList = GetBindingArgumentList(args, tArgNames, tContext, tStaticContext);
+
+                var tFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
+                if (name.IsSpecialName)
+                {
+                    tFlag |= CSharp.CSharpBinderFlags.InvokeSpecialName;
+                }
+
+                tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
                                                      tContext, tList);
+            }
 
 
             InvokeHelper.InvokeMemberAction(ref callSite, tBinder, name, tStaticContext, tContext, tArgNames, target, args);

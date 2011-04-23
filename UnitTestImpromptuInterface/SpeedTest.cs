@@ -335,6 +335,33 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheableMethodPocoGetValuePassNullDoubleCallTimed()
+        {
+            var tValue = new OverloadingMethPoco();
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Func", 1);
+            var tInteration = 500000;
+            var tWatch = TimeIt.Go(() =>
+            {
+                var tOut = tCachedInvoke.Invoke(tValue, null);
+                var tOut2 = tCachedInvoke.Invoke(tValue, 2);
+            }, tInteration);
+
+            var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
+            var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { null });
+                var tOut2 = tMethodInfo2.Invoke(tValue, new object[] { 2 });
+            }, tInteration);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
         public void TestMethodPocoGetValue4argsTimed()
         {
 

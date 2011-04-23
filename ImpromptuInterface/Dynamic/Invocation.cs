@@ -112,14 +112,47 @@ namespace ImpromptuInterface.Dynamic
                                    bool staticContext = false, 
                                    Type context =null) : base(kind, name, null)
         {
-            _argCount = argCount;
-            _argNames = argNames;
+
+            _argNames = argNames ?? new string[] {};
+
+            switch (kind) //Set required argcount values
+            {
+                case InvocationKind.Set:
+                    _argCount = 1;
+                    break;
+                case InvocationKind.Get:
+                case InvocationKind.IsEvent:
+                    _argCount = 0;
+                    break;
+                default:
+                    _argCount = Math.Max(argCount, _argNames.Length);
+                    break;
+            }
+
+            if(_argCount > 0)//setup argname array
+            {
+                var tBlank = new string[_argCount];
+                if(_argNames.Length !=0)
+                    Array.Copy(_argNames,0, tBlank, tBlank.Length - _argNames.Length, tBlank.Length);
+                _argNames = tBlank;
+            }
             _staticContext = staticContext;
             _context = context ?? typeof(object);
         }
 
         public override object Invoke(object target, params object[] args)
         {
+
+            if (args == null)
+            {
+                args = new object[]{null};
+            }
+
+            if (args.Length != _argCount)
+            {
+                throw new ArgumentException("args",string.Format("Incorrect number of Arguments for CachedInvocation, Expected:{0}", _argCount));
+            }
+
             switch (Kind)
             {
                 case InvocationKind.Constructor:
@@ -140,7 +173,7 @@ namespace ImpromptuInterface.Dynamic
                     Impromptu.InvokeSetIndex(target, args);
                     return null;
                 case InvocationKind.InvokeMember:
-                    return Impromptu.InvokeMember(target, Name, args);
+                    return Impromptu.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                 case InvocationKind.InvokeMemberAction:
                     Impromptu.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                     return null;

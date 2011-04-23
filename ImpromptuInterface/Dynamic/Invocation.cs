@@ -22,6 +22,9 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
 {
+    /// <summary>
+    /// Type of Invocation
+    /// </summary>
     [Serializable]
     public enum InvocationKind
     {
@@ -65,6 +68,18 @@ namespace ImpromptuInterface.Dynamic
         /// Invoke Constructor
         /// </summary>
         Constructor,
+        /// <summary>
+        /// Invoke +=
+        /// </summary>
+        AddAssign,
+        /// <summary>
+        /// Invoke -=
+        /// </summary>
+        SubtractAssign,
+        /// <summary>
+        /// Invoke Event Property Test
+        /// </summary>
+        IsEvent,
     }
 
     /// <summary>
@@ -183,6 +198,14 @@ namespace ImpromptuInterface.Dynamic
                             return null;
                         }
                     }
+                case InvocationKind.AddAssign:
+                    Impromptu.InvokeAddAssign(target, Name.Name, args.FirstOrDefault());
+                    return null;
+                case InvocationKind.SubtractAssign:
+                    Impromptu.InvokeSubtractAssign(target, Name.Name, args.FirstOrDefault());
+                    return null;
+                case InvocationKind.IsEvent:
+                    return Impromptu.InvokeIsEvent(target, Name.Name);
                 default:
                     throw new InvalidOperationException("Unknown Invocation Kind: " + Kind);
             }

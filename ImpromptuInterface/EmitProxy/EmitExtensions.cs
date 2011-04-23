@@ -133,20 +133,20 @@ namespace ImpromptuInterface.Build
         /// Emits branch true. expects using keyword.
         /// </summary>
         /// <param name="generator">The generator.</param>
+        /// <param name="condition">The condition.</param>
         /// <returns></returns>
         /// <example>
         /// Using keyword allows you to set the emit code you are branching over and then automatically emits label when disposing
         /// <code>
-        /// <![CDATA[
-        ///       tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
-        ///        using (tIlGen.EmitBranchTrue())
-        ///       {
-        ///            tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, returnType, contextType);
-        ///            tIlGen.EmitCallsiteCreate(convertFuncType);
-        ///            tIlGen.Emit(OpCodes.Stsfld, tConvertField);
-        ///        }
+        /// 		<![CDATA[
+        /// using (tIlGen.EmitBranchTrue(g=>g.Emit(OpCodes.Ldsfld, tConvertField)))
+        /// {
+        /// tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, returnType, contextType);
+        /// tIlGen.EmitCallsiteCreate(convertFuncType);
+        /// tIlGen.Emit(OpCodes.Stsfld, tConvertField);
+        /// }
         /// ]]>
-        /// </code>
+        /// 	</code>
         /// </example>
         public static BranchTrueOverBlock EmitBranchTrue(this ILGenerator generator, Action<ILGenerator> condition)
         {
@@ -315,6 +315,7 @@ namespace ImpromptuInterface.Build
         /// <param name="name">The name.</param>
         /// <param name="context">The context.</param>
         /// <param name="argInfo">The arg info.</param>
+        /// <param name="argNames">The arg names.</param>
         public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo, IEnumerable<string> argNames)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);

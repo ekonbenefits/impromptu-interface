@@ -9,8 +9,15 @@ using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
 {
+    /// <summary>
+    /// Property Descriptor for Dynamic Objects
+    /// </summary>
     public class ImpromptuPropertyDescriptor:PropertyDescriptor
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuPropertyDescriptor"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
         public ImpromptuPropertyDescriptor(string name) : base(name, null)
         {
         }

@@ -181,14 +181,14 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public bool Equals(ImpromptuForwarder other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(null, other)) return ReferenceEquals(null, Target);
             if (ReferenceEquals(this, other)) return true;
             return Equals(other.Target, Target);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj)) return ReferenceEquals(null, Target); 
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof (ImpromptuForwarder)) return false;
             return Equals((ImpromptuForwarder) obj);

@@ -52,6 +52,8 @@ namespace ImpromptuInterface
         /// <param name="name">Member Name</param>
         /// <param name="context">Permissions Context type</param>
         /// <param name="argNames">The arg names.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="isEvent">if set to <c>true</c> [is event].</param>
         /// <returns>The CallSite</returns>
         /// <remarks>
         /// Advanced usage only for serious custom dynamic invocation.
@@ -73,7 +75,7 @@ namespace ImpromptuInterface
             }
         }
 
-      
+
 
         /// <summary>
         /// Creates the call site.
@@ -83,30 +85,29 @@ namespace ImpromptuInterface
         /// <param name="name">The name.</param>
         /// <param name="context">The context.</param>
         /// <param name="argNames">The arg names.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="isEvent">if set to <c>true</c> [is event].</param>
         /// <returns></returns>
-        ///    /// <example>
+        /// /// 
+        /// <example>
         /// Unit test that exhibits usage
-        ///<code><![CDATA[
-        /// 
-        ///    string tResult = String.Empty;
-        ///    var tPoco = new MethOutPoco();
-        ///    var tBinder =
-        ///        Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
-        ///                                    new[]
-        ///                                        {
-        ///                                            Info.Create(
-        ///                                                InfoFlags.None, null),
-        ///                                            Info.Create(
-        ///                                                InfoFlags.IsOut |
-        ///                                                InfoFlags.UseCompileTimeType, null)
-        ///                                        });
-        ///
-        ///    var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
-        /// 
-        ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
-        ///
-        ///    Assert.AreEqual("success", tResult);
-        ///  ]]></code>
+        /// <code><![CDATA[
+        /// string tResult = String.Empty;
+        /// var tPoco = new MethOutPoco();
+        /// var tBinder =
+        /// Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+        /// new[]
+        /// {
+        /// Info.Create(
+        /// InfoFlags.None, null),
+        /// Info.Create(
+        /// InfoFlags.IsOut |
+        /// InfoFlags.UseCompileTimeType, null)
+        /// });
+        /// var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
+        /// tSite.Target.Invoke(tSite, tPoco, out tResult);
+        /// Assert.AreEqual("success", tResult);
+        /// ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false, bool isEvent =false) where T : class

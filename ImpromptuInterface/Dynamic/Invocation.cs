@@ -95,6 +95,9 @@ namespace ImpromptuInterface.Dynamic
         private readonly bool _staticContext;
         private Type _context;
         private CallSite _callSite;
+        private CallSite _callSite2;
+        private CallSite _callSite3;
+        private CallSite _callSite4;
         private bool _convertExplict;
         private Type _convertType;
         private bool? _invokeAction;
@@ -181,12 +184,12 @@ namespace ImpromptuInterface.Dynamic
                     return Impromptu.InvokeConvertCallSite(target, _convertExplict, _convertType, _context,
                                                            ref _callSite);
                 case InvocationKind.Get:
-                    return InvokeHelper.InvokeGetCallSite(target, _context, _staticContext, Name.Name, ref _callSite);
+                    return InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);
                 case InvocationKind.Set:
-                    InvokeHelper.InvokeGetCallSite(target, _context, _staticContext, Name.Name, ref _callSite);
+                    InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);
                     return null;
                 case InvocationKind.GetIndex:
-                    return Impromptu.InvokeGetIndex(target, args);
+                    return Impromptu.InvokeGetIndexCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
                 case InvocationKind.SetIndex:
                     Impromptu.InvokeSetIndex(target, args);
                     return null;
@@ -201,7 +204,7 @@ namespace ImpromptuInterface.Dynamic
                         {
                             try
                             {
-                                var tObj= Impromptu.InvokeMember(target, Name, args);
+                                var tObj = Impromptu.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                                 _invokeAction = false;
                                 return tObj;
                             }
@@ -215,19 +218,19 @@ namespace ImpromptuInterface.Dynamic
 
                         if (_invokeAction.Value)
                         {
-                            Impromptu.InvokeMemberAction(target, Name, args);
+                            Impromptu.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                             return null;
                         }
                         return null;
                     }
                 case InvocationKind.AddAssign:
-                    Impromptu.InvokeAddAssign(target, Name.Name, args.FirstOrDefault());
+                    Impromptu.InvokeAddAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext,ref _callSite,ref  _callSite2,ref _callSite3, ref _callSite4);
                     return null;
                 case InvocationKind.SubtractAssign:
-                    Impromptu.InvokeSubtractAssign(target, Name.Name, args.FirstOrDefault());
+                    Impromptu.InvokeSubtractAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext, ref _callSite, ref _callSite2, ref _callSite3, ref _callSite4);
                     return null;
                 case InvocationKind.IsEvent:
-                    return Impromptu.InvokeIsEvent(target, Name.Name);
+                    return Impromptu.InvokeIsEventCallSite(target, Name.Name, _context, ref _callSite);
                 default:
                     throw new InvalidOperationException("Unknown Invocation Kind: " + Kind);
             }

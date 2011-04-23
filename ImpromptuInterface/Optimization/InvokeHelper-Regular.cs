@@ -101,13 +101,13 @@ namespace ImpromptuInterface.Optimization
             return InvokeMemberTargetType<object, TReturn>(ref callsite, binder, name, staticContext, context, argNames, target, args);
         }
 
-        internal static object InvokeGetCallSite(object target, Type tContext, bool tStaticContext, string name, ref CallSite callsite)
+        internal static object InvokeGetCallSite(object target, string name, Type context, bool staticContext, ref CallSite callsite)
         {
             if (callsite == null)
             {
                 var tTargetFlag = CSharpArgumentInfoFlags.None;
                 CallSiteBinder tBinder;
-                if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
+                if (staticContext) //CSharp Binder won't call Static properties, grrr.
                 {
                     var tStaticFlag = CSharpBinderFlags.None;
                     if (Util.IsMono) //Mono only works if InvokeSpecialName is set and .net only works if it isn't
@@ -115,7 +115,7 @@ namespace ImpromptuInterface.Optimization
 
                     tBinder = Binder.InvokeMember(tStaticFlag, "get_" + name,
                                                          null,
-                                                         tContext,
+                                                         context,
                                                          new List<CSharpArgumentInfo>()
                                                              {
                                                                  CSharpArgumentInfo.Create(
@@ -128,7 +128,7 @@ namespace ImpromptuInterface.Optimization
                 {
 
                     tBinder = Binder.GetMember(CSharpBinderFlags.None, name,
-                                                      tContext,
+                                                      context,
                                                       new List<CSharpArgumentInfo>()
                                                           {
                                                               CSharpArgumentInfo.Create(
@@ -138,19 +138,19 @@ namespace ImpromptuInterface.Optimization
                 }
 
 
-                callsite = Impromptu.CreateCallSite<Func<CallSite, object, object>>(tBinder, name, tContext);
+                callsite = Impromptu.CreateCallSite<Func<CallSite, object, object>>(tBinder, name, context);
             }
             var tCallSite = (CallSite<Func<CallSite, object, object>>) callsite;
             return tCallSite.Target(tCallSite, target);
             
         }
 
-        internal static void InvokeSetCallSite(object target, Type tContext, bool tStaticContext, string name, object value, ref CallSite callSite)
+        internal static void InvokeSetCallSite(object target, string name, object value, Type context, bool staticContext, ref CallSite callSite)
         {
             if (callSite == null)
             {
                 CallSiteBinder tBinder;
-                if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
+                if (staticContext) //CSharp Binder won't call Static properties, grrr.
                 {
 
                     var tStaticFlag = CSharpBinderFlags.ResultDiscarded;
@@ -159,7 +159,7 @@ namespace ImpromptuInterface.Optimization
 
                     tBinder = Binder.InvokeMember(tStaticFlag, "set_" + name,
                                                   null,
-                                                  tContext,
+                                                  context,
                                                   new List<Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo>()
                                                       {
                                                           CSharpArgumentInfo.Create(
@@ -176,7 +176,7 @@ namespace ImpromptuInterface.Optimization
                 {
 
                     tBinder = Binder.SetMember(CSharpBinderFlags.ResultDiscarded, name,
-                                               tContext,
+                                               context,
                                                new List<Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo>()
                                                    {
                                                        CSharpArgumentInfo.Create(
@@ -191,7 +191,7 @@ namespace ImpromptuInterface.Optimization
                 }
 
 
-                callSite = Impromptu.CreateCallSite<Action<CallSite, object, object>>(tBinder, name, tContext);
+                callSite = Impromptu.CreateCallSite<Action<CallSite, object, object>>(tBinder, name, context);
             }
             var tCallSite = (CallSite<Action<CallSite, object, object>>) callSite;
             tCallSite.Target(callSite, target, value);

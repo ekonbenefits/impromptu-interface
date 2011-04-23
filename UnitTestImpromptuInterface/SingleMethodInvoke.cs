@@ -95,7 +95,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstruct()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof (List<object>), new object[]
+            var tCast = Impromptu.InvokeConstructor(typeof (List<object>), new object[]
                                                                               {
                                                                                   new string[] {"one", "two", "three"}
                                                                               });
@@ -106,7 +106,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructOptional()
         {
-            PocoOptConstructor tCast = Impromptu.InvokeConstuctor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
+            PocoOptConstructor tCast = Impromptu.InvokeConstructor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
 
             Assert.AreEqual("-1", tCast.One);
             Assert.AreEqual("-2", tCast.Two);
@@ -118,7 +118,7 @@ namespace UnitTestImpromptuInterface
             {
                 AssertException<MissingMethodException>(() => Activator.CreateInstance<ImpromptuList>());
 
-               var tList= Impromptu.InvokeConstuctor(typeof (ImpromptuList));
+               var tList= Impromptu.InvokeConstructor(typeof (ImpromptuList));
 
 
                Assert.AreEqual(typeof(ImpromptuList),tList.GetType());
@@ -128,7 +128,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructValueType()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);
+            var tCast = Impromptu.InvokeConstructor(typeof(DateTime), 2009,1,20);
 
             Assert.AreEqual(20, tCast.Day);
         }
@@ -147,7 +147,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructprimativetype()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Int32));
+            var tCast = Impromptu.InvokeConstructor(typeof(Int32));
 
             Assert.AreEqual(default(Int32), tCast);
         }
@@ -156,7 +156,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructDateTimeNoParams()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime));
+            var tCast = Impromptu.InvokeConstructor(typeof(DateTime));
 
             Assert.AreEqual(default(DateTime), tCast);
         }
@@ -164,7 +164,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructOBjectNoParams()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(object));
+            var tCast = Impromptu.InvokeConstructor(typeof(object));
 
             Assert.AreEqual(typeof(object), tCast.GetType());
         }
@@ -172,7 +172,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructNullableprimativetype()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Nullable<Int32>));
+            var tCast = Impromptu.InvokeConstructor(typeof(Nullable<Int32>));
 
             Assert.AreEqual(null, tCast);
         }
@@ -180,7 +180,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructGuid()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Guid));
+            var tCast = Impromptu.InvokeConstructor(typeof(Guid));
 
             Assert.AreEqual(default(Guid), tCast);
         }

@@ -567,39 +567,56 @@ namespace ImpromptuInterface
             return tCallSite.Target(tCallSite, target);
         }
 
+        [Obsolete("use InvokeConstructor, this was a spelling mistract")]
+                public static dynamic InvokeConstuctor(Type type, params object[] args)
+                {
+                    return InvokeConstructor(type, args);
+                }
+
+
         /// <summary>
         /// Invokes the constuctor.
         /// </summary>
         /// <param name="type">The type.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public static dynamic InvokeConstuctor(Type type, params object[] args)
+        public static dynamic InvokeConstructor(Type type, params object[] args)
         {
-            object tDummyTarget = String.Empty;
             string[] tArgNames;
-            IEnumerable<CSharp.CSharpArgumentInfo> tList;
-            Type tDummyContex;
-            bool tStaticContext =true;
             bool tValue = type.IsValueType;
             if (tValue && args.Length == 0)  //dynamic invocation doesn't see constructors of value types
             {
                 return Activator.CreateInstance(type);
             }
 
-            args = GetInvokeMemberArgs(ref tDummyTarget, args, out tArgNames, out tList, out tDummyContex, ref tStaticContext);
+           args = GetArgsAndNames( args, out tArgNames);
+           CallSite tCallSite = null;
 
-            var tBinder = CSharp.Binder.InvokeConstructor(CSharp.CSharpBinderFlags.None, type, tList);
+           var tContext = type.FixContext();
 
-            CallSite tCallSite = null;
 
-            if (tValue)
+            return InvokeConstructorCallSite(type, tValue, args, tArgNames,tContext, ref tCallSite);
+        }
+
+        internal static object InvokeConstructorCallSite(Type type, bool isValueType, object[] args, string[] argNames,Type context, ref CallSite callSite)
+        {
+            CallSiteBinder tBinder = null;
+            if (callSite == null || isValueType)
             {
-				
-                return InvokeHelper.DynamicInvokeStaticMember(type, ref tCallSite,tBinder, Invocation.ConstructorBinderName, true, type,
-                                                        tArgNames, type, args);
+
+                var tList = GetBindingArgumentList(args, argNames, context, true);
+                tBinder = CSharp.Binder.InvokeConstructor(CSharp.CSharpBinderFlags.None, type, tList);
             }
-            return InvokeHelper.InvokeMemberTargetType<Type, object>(ref tCallSite, tBinder, Invocation.ConstructorBinderName, true, type, tArgNames,
-                                                     type, args);
+
+
+            if (isValueType)
+            {
+                CallSite tDummy =null;
+                return InvokeHelper.DynamicInvokeStaticMember(type, ref tDummy, tBinder, Invocation.ConstructorBinderName, true, type,
+                                                              argNames, type, args);
+            }
+            return InvokeHelper.InvokeMemberTargetType<Type, object>(ref callSite, tBinder, Invocation.ConstructorBinderName, true, type, argNames,
+                                                                     type, args);
         }
 
 

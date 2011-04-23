@@ -106,7 +106,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="staticContext">if set to <c>true</c> [static context].</param>
         /// <param name="context">The context.</param>
         public CacheableInvocation(InvocationKind kind,
-                                   String_OR_InvokeMemberName name,
+                                   String_OR_InvokeMemberName name=null,
                                    int argCount =0,
                                    string[] argNames =null,
                                    object context =null) : base(kind, name, null)
@@ -164,7 +164,9 @@ namespace ImpromptuInterface.Dynamic
             switch (Kind)
             {
                 case InvocationKind.Constructor:
-                    return Impromptu.InvokeConstuctor((Type)target, args);
+                    var tTarget = (Type) target;
+                    return Impromptu.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
+                                                               ref _callSite);
                 case InvocationKind.Convert:
                     bool tExplict = false;
                     if (Args.Length == 2)
@@ -300,7 +302,7 @@ namespace ImpromptuInterface.Dynamic
             switch (Kind)
             {
                 case InvocationKind.Constructor:
-                    return Impromptu.InvokeConstuctor((Type)target, args);
+                    return Impromptu.InvokeConstructor((Type)target, args);
                 case InvocationKind.Convert:
                     bool tExplict = false;
                     if (Args.Length == 2)

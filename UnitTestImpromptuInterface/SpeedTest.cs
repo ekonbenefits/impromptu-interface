@@ -148,7 +148,7 @@ namespace UnitTestImpromptuInterface
            
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(Tuple<string>), "Test" ); });
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(Tuple<string>), "Test" ); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(Tuple<string>),"Test");
@@ -163,7 +163,25 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructorNoARgTimed()
         {
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(List<string>)); });
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(List<string>)); });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(List<string>));
+            });
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+
+            Assert.Ignore("I don't think this is beatable at the moment");
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestCachableConstructorNoARgTimed()
+        {
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(typeof(List<string>)); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(List<string>));
@@ -180,7 +198,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructorNoARgTimedKnownType()
         {
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(List<string>)); });
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(List<string>)); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance<List<string>>();
@@ -202,7 +220,7 @@ namespace UnitTestImpromptuInterface
 
             var tIter = 1000000;
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(DateTime), 2010, 1, 20); }, tIter);
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);

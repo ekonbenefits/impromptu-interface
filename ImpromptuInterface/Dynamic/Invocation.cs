@@ -91,10 +91,10 @@ namespace ImpromptuInterface.Dynamic
     public class CacheableInvocation:Invocation
     {
         private readonly int _argCount;
-        private readonly IList<string> _argNames;
+        private readonly string[] _argNames;
         private readonly bool _staticContext;
-        private readonly Type _context;
-        private CallSite<Func<CallSite, object, object>> _callSite;
+        private Type _context;
+        private CallSite _callSite;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheableInvocation"/> class.
@@ -108,7 +108,7 @@ namespace ImpromptuInterface.Dynamic
         public CacheableInvocation(InvocationKind kind,
                                    String_OR_InvokeMemberName name,
                                    int argCount =0,
-                                   IList<string> argNames =null,
+                                   string[] argNames =null,
                                    bool staticContext = false, 
                                    Type context =null) : base(kind, name, null)
         {
@@ -142,7 +142,7 @@ namespace ImpromptuInterface.Dynamic
                 case InvocationKind.InvokeMember:
                     return Impromptu.InvokeMember(target, Name, args);
                 case InvocationKind.InvokeMemberAction:
-                    Impromptu.InvokeMemberAction(target, Name, args);
+                    Impromptu.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                     return null;
                 case InvocationKind.InvokeMemberUnknown:
                     {
@@ -152,7 +152,7 @@ namespace ImpromptuInterface.Dynamic
                         }
                         catch (RuntimeBinderException)
                         {
-
+                            
                             Impromptu.InvokeMemberAction(target, Name, args);
                             return null;
                         }

@@ -378,6 +378,25 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheableMethodPocoVoidTimed()
+        {
+
+
+            var tValue = new Dictionary<object, object>();
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMemberAction, "Clear");
+
+            var tWatch = TimeIt.Go(() => tCachedInvoke.Invoke(tValue));
+            var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
+            var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }));
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
         public void TestFastDynamicInvoke()
         {
             Func<int, bool> tFunc = it => it > 10;

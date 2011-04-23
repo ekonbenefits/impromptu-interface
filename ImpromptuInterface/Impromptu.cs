@@ -368,7 +368,18 @@ namespace ImpromptuInterface
             IEnumerable<CSharp.CSharpArgumentInfo> tList;
             Type tContext;
             bool tStaticContext =false;
-            args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, ref tStaticContext);
+
+            target = target.GetTargetContext(out tContext, out tStaticContext);
+            args = GetArgsAndNames(args, out tArgNames);
+
+            CallSite tCallSite = null;
+            InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+        }
+
+        internal static void InvokeMemberActionCallSite(object target,String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext,ref CallSite callSite)
+        {
+            IEnumerable<CSharpArgumentInfo> tList;
+            tList = GetInvokeMemberArgsSimplified(args, tArgNames, tContext, tStaticContext);
 
             var tFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
             if (name.IsSpecialName)
@@ -377,14 +388,12 @@ namespace ImpromptuInterface
             }
 
             var tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
-                                       tContext, tList);
+                                                     tContext, tList);
 
-            CallSite tCallSite = null;
-            InvokeHelper.InvokeMemberAction(ref tCallSite, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
 
-        
+            InvokeHelper.InvokeMemberAction(ref callSite, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
         }
-	
+
 
         /// <summary>
         /// Dynamically Invokes a set member using the DLR.
@@ -417,7 +426,7 @@ namespace ImpromptuInterface
             tContext = tContext.FixContext();
 
 
-            CallSite<Action<CallSite, object, object>> tCallSite =null;
+            CallSite tCallSite =null;
             InvokeHelper.InvokeSetCallSite(target, tContext, tStaticContext, name, value, ref tCallSite);
         }
 
@@ -449,7 +458,7 @@ namespace ImpromptuInterface
             bool tStaticContext;
             target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
-            CallSite<Func<CallSite, object, object>> tSite = null;
+            CallSite tSite = null;
             return InvokeHelper.InvokeGetCallSite(target, tContext, tStaticContext, name, ref tSite);
         }
 

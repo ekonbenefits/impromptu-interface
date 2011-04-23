@@ -101,7 +101,7 @@ namespace ImpromptuInterface.Optimization
             return InvokeMemberTargetType<object, TReturn>(ref callsite, binder, name, staticContext, context, argNames, target, args);
         }
 
-        internal static object InvokeGetCallSite(object target, Type tContext, bool tStaticContext, string name, ref CallSite<Func<CallSite, object, object>> callsite)
+        internal static object InvokeGetCallSite(object target, Type tContext, bool tStaticContext, string name, ref CallSite callsite)
         {
             if (callsite == null)
             {
@@ -140,12 +140,12 @@ namespace ImpromptuInterface.Optimization
 
                 callsite = Impromptu.CreateCallSite<Func<CallSite, object, object>>(tBinder, name, tContext);
             }
-
-            return callsite.Target(callsite, target);
+            var tCallSite = (CallSite<Func<CallSite, object, object>>) callsite;
+            return tCallSite.Target(tCallSite, target);
             
         }
 
-        internal static void InvokeSetCallSite(object target, Type tContext, bool tStaticContext, string name, object value, ref CallSite<Action<CallSite,object,object>> callSite)
+        internal static void InvokeSetCallSite(object target, Type tContext, bool tStaticContext, string name, object value, ref CallSite callSite)
         {
             if (callSite == null)
             {
@@ -193,7 +193,8 @@ namespace ImpromptuInterface.Optimization
 
                 callSite = Impromptu.CreateCallSite<Action<CallSite, object, object>>(tBinder, name, tContext);
             }
-            callSite.Target(callSite, target, value);
+            var tCallSite = (CallSite<Action<CallSite, object, object>>) callSite;
+            tCallSite.Target(callSite, target, value);
         }
     }
 }

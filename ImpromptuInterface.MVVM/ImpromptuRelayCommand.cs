@@ -64,14 +64,14 @@ namespace ImpromptuInterface.MVVM
 
         public void Execute(object parameter)
         {
-            _executeInvoke.InvokeWithArgs(_executeTarget, parameter);
+            _executeInvoke.Invoke(_executeTarget, parameter);
         }
 
         public bool CanExecute(object parameter)
         {
             if (_canExecuteTarget == null)
                 return true;
-            return (bool)_canExecuteInvoke.InvokeWithArgs(_canExecuteTarget, parameter);
+            return (bool)_canExecuteInvoke.Invoke(_canExecuteTarget, parameter);
         }
 
 

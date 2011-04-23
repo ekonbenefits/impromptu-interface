@@ -14,12 +14,18 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
     public class ImpromptuPropertyDescriptor:PropertyDescriptor
     {
+
+        private readonly CacheableInvocation _invokeGet;
+        private readonly CacheableInvocation _invokeSet;
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuPropertyDescriptor"/> class.
         /// </summary>
         /// <param name="name">The name.</param>
         public ImpromptuPropertyDescriptor(string name) : base(name, null)
         {
+            _invokeGet = new CacheableInvocation(InvocationKind.Get, name);
+            _invokeSet = new CacheableInvocation(InvocationKind.Set, name);
+
         }
 
         public override bool CanResetValue(object component)
@@ -31,7 +37,7 @@ namespace ImpromptuInterface.Dynamic
         {
             try
             {
-                return Impromptu.InvokeGet(component, Name);
+                return _invokeGet.Invoke(component);
             }
             catch (RuntimeBinderException)
             {
@@ -50,7 +56,7 @@ namespace ImpromptuInterface.Dynamic
         {   
             try
             {
-            Impromptu.InvokeSet(component, Name, value);
+                _invokeSet.Invoke(component, value);
             }
             catch (RuntimeBinderException)
             {

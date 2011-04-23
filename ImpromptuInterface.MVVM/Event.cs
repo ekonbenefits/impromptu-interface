@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface.InvokeExt;
 namespace ImpromptuInterface.MVVM
@@ -137,7 +138,7 @@ namespace ImpromptuInterface.MVVM
             public static readonly MethodInfo InvokeMethodInfo =
                 typeof (BinderEventHandlerMemberName).GetMethod("Invoke");
 
-            private readonly string _name;
+            private readonly CacheableInvocation _invocation;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="BinderEventHandlerMemberName"/> class.
@@ -145,7 +146,7 @@ namespace ImpromptuInterface.MVVM
             /// <param name="name">The name.</param>
             public BinderEventHandlerMemberName(string name)
             {
-                _name = name;
+                _invocation = new CacheableInvocation(InvocationKind.InvokeMemberAction, name, 2);
             }
 
             /// <summary>
@@ -163,8 +164,7 @@ namespace ImpromptuInterface.MVVM
                         {
                             try
                             {
-                                Impromptu.InvokeMemberAction(tBinder.Target,
-                                                            _name, tSender, e);
+                                _invocation.Invoke(tBinder.Target, tSender, e);
                             }
                             catch (RuntimeBinderException)
                             {

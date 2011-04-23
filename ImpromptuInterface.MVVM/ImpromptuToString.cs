@@ -47,6 +47,24 @@ namespace ImpromptuInterface.MVVM
     {
 
         /// <summary>
+        /// Null value representative object.
+        /// </summary>
+        /// <returns></returns>
+        public static ImpromptuToString<TTarget>  NullValue(string toStringValue)
+        {
+            return NullValue(it => toStringValue);
+        }
+
+        /// <summary>
+        /// Null  value representative object.
+        /// </summary>
+        /// <returns></returns>
+        public static ImpromptuToString<TTarget> NullValue(Func<TTarget, string> toStringDelegate)
+        {
+            return new ImpromptuToString<TTarget>(default(TTarget), toStringDelegate);
+        }
+
+        /// <summary>
         /// Performs an implicit conversion from <see cref="ImpromptuInterface.MVVM.ImpromptuToString&lt;TTarget&gt;"/> to <see cref="TTarget"/>.
         /// </summary>
         /// <param name="proxy">The proxy.</param>
@@ -57,6 +75,7 @@ namespace ImpromptuInterface.MVVM
         }
 
         private readonly Func<TTarget, string> _toStringDelegate;
+
 
 
         /// <summary>

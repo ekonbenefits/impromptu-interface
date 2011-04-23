@@ -66,6 +66,9 @@
     <Compile Include="Dynamic\ImpromptuGet.cs" />
     <Compile Include="Dynamic\ImpromptuList.cs" />
     <Compile Include="Dynamic\Builder.cs" />
+    <Compile Include="Dynamic\ImpromptuPropertyDescriptor.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Dynamic\ImpromptuRecorder.cs" />
     <Compile Include="Dynamic\InlineLambdas.cs">
       <AutoGen>True</AutoGen>

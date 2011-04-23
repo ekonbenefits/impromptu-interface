@@ -21,6 +21,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
@@ -111,6 +112,18 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("-2", tCast.Two);
             Assert.AreEqual("3", tCast.Three);
         }
+
+        [Test, TestMethod]
+        public void TestOptionalArgumentActivationNone()
+            {
+                AssertException<MissingMethodException>(() => Activator.CreateInstance<ImpromptuList>());
+
+               var tList= Impromptu.InvokeConstuctor(typeof (ImpromptuList));
+
+
+               Assert.AreEqual(typeof(ImpromptuList),tList.GetType());
+          }
+
 
         [Test, TestMethod]
         public void TestConstructValueType()
@@ -540,5 +553,139 @@ namespace UnitTestImpromptuInterface
             var tDate = Impromptu.InvokeMember(typeof(DateTime).WithStaticContext(), "Parse", tDateDyn);
             Assert.AreEqual(new DateTime(2009,1,20), tDate);
         }
+
+        
+        [Test, TestMethod]
+        public void TestActionDynamicEvent()
+        {
+            dynamic tPoco = new PocoEvent();
+
+            tPoco.Event += new EventHandler<EventArgs>((@object,args) => { });
+
+        }
+
+        [Test, TestMethod]
+        public void TestIsEvent()
+        {
+            dynamic tPoco = new PocoEvent();
+
+            var tResult = Impromptu.InvokeIsEvent(tPoco, "Event");
+
+            Assert.AreEqual(true, tResult);
+        }
+
+         [Test, TestMethod]
+        public void TestIsNotEvent()
+        {
+            dynamic tDynamic = new ImpromptuDictionary();
+
+            tDynamic.Event = null;
+        
+            var tResult = Impromptu.InvokeIsEvent(tDynamic, "Event");
+
+            Assert.AreEqual(false, tResult);
+
+            bool tTest = false;
+            bool tTest2 = false;
+
+
+            tDynamic.Event += new EventHandler<EventArgs>((@object, args) => { tTest = true; });
+
+            tDynamic.Event += new EventHandler<EventArgs>((@object, args) => { tTest2 = true; });
+           
+             Assert.AreEqual(false, tTest);
+
+             Assert.AreEqual(false, tTest2);
+
+             tDynamic.Event(null, null);
+
+             Assert.AreEqual(true, tTest);
+
+             Assert.AreEqual(true, tTest2);
+
+        }
+
+         [Test, TestMethod]
+         public void TestPocoAddAssign()
+         {
+             var tPoco = new PocoEvent();
+             bool tTest = false;
+
+             Impromptu.InvokeAddAssign(tPoco, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+
+             tPoco.OnEvent(null, null);
+
+             Assert.AreEqual(true, tTest);
+
+             var tPoco2 = new PropPoco() { Prop2 = 3 };
+
+             Impromptu.InvokeAddAssign(tPoco2, "Prop2", 4);
+
+             Assert.AreEqual(7L, tPoco2.Prop2);
+         }
+
+         [Test, TestMethod]
+         public void TestPocoSubtractAssign()
+         {
+             var tPoco = new PocoEvent();
+             bool tTest = false;
+             var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
+
+             tPoco.Event += tEvent;
+
+             Impromptu.InvokeSubtractAssign(tPoco, "Event", tEvent);
+
+             tPoco.OnEvent(null, null);
+
+             Assert.AreEqual(false, tTest);
+
+             Impromptu.InvokeSubtractAssign(tPoco, "Event", tEvent);//Test Second Time
+
+             var tPoco2 = new PropPoco() {Prop2 = 3};
+
+             Impromptu.InvokeSubtractAssign(tPoco2, "Prop2", 4);
+
+             Assert.AreEqual( -1L,tPoco2.Prop2);
+         }
+
+         [Test, TestMethod]
+         public void TestDynamicAddAssign()
+         {
+             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             bool tTest = false;
+
+             Impromptu.InvokeAddAssign(tDyanmic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+
+             tDyanmic.OnEvent(null, null);
+
+             Assert.AreEqual(true, tTest);
+
+             Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4);
+
+             Assert.AreEqual(7L, tDyanmic.Prop2);
+         }
+
+         [Test, TestMethod]
+         public void TestDynamicSubtractAssign()
+         {
+             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             bool tTest = false;
+             var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
+
+             tDyanmic.Event += tEvent;
+
+             Impromptu.InvokeSubtractAssign(tDyanmic, "Event", tEvent);
+
+             tDyanmic.OnEvent(null, null);
+
+             Assert.AreEqual(false, tTest);
+
+
+             Impromptu.InvokeSubtractAssign(tDyanmic, "Prop2", 4);
+
+             Assert.AreEqual(-1L, tDyanmic.Prop2);
+         }
+
     }
+    
 }

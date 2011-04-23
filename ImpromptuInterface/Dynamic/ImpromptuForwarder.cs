@@ -55,6 +55,21 @@ namespace ImpromptuInterface.Dynamic
         }
 #endif
 
+        public override IEnumerable<string> GetDynamicMemberNames()
+        {
+            if (!KnownInterfaces.Any())
+            {
+                if (Target is DynamicObject)
+                {
+                    return ((DynamicObject) Target).GetDynamicMemberNames();
+                }
+                if (!(Target is IDynamicMetaObjectProvider))
+                    return Target.GetType().GetMembers(BindingFlags.Public).Select(it => it.Name).ToList();
+            }
+            return base.GetDynamicMemberNames();
+        }
+
+
         /// <summary>
         /// Gets or sets the target.
         /// </summary>
@@ -63,7 +78,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-          
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
             result = Impromptu.InvokeGet(Target, binder.Name);
 
             return true;
@@ -72,6 +91,12 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
+
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, args);
 
             try
@@ -110,6 +135,10 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
+            if (Target == null)
+            {
+                return false;
+            }
 
             Impromptu.InvokeSet(Target, binder.Name, value);
 
@@ -118,6 +147,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
 
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, indexes);
 
@@ -127,6 +161,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
+            if (Target == null)
+            {
+                return false;
+            }
+
             var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
             object[] tArgs = NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
 
@@ -134,31 +173,30 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
+
         /// <summary>
-        /// Equalses the specified other.
+        /// Equals the specified other.
         /// </summary>
         /// <param name="other">The other.</param>
         /// <returns></returns>
         public bool Equals(ImpromptuForwarder other)
         {
-            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(null, other)) return ReferenceEquals(null, Target);
             if (ReferenceEquals(this, other)) return true;
             return Equals(other.Target, Target);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(null, obj)) return ReferenceEquals(null, Target); 
             if (ReferenceEquals(this, obj)) return true;
-            if ((obj is ImpromptuForwarder))
-                return Equals((ImpromptuForwarder) obj);
-
-            return obj.Equals(Target);
+            if (obj.GetType() != typeof (ImpromptuForwarder)) return false;
+            return Equals((ImpromptuForwarder) obj);
         }
 
         public override int GetHashCode()
         {
-            return Target.GetHashCode();
+            return (Target != null ? Target.GetHashCode() : 0);
         }
     }
 }

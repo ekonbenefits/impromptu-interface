@@ -13,6 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Linq.Expressions;
+
 namespace ImpromptuInterface.Build
 {
     using System;
@@ -131,24 +133,47 @@ namespace ImpromptuInterface.Build
         /// Emits branch true. expects using keyword.
         /// </summary>
         /// <param name="generator">The generator.</param>
+        /// <param name="condition">The condition.</param>
         /// <returns></returns>
         /// <example>
         /// Using keyword allows you to set the emit code you are branching over and then automatically emits label when disposing
         /// <code>
-        /// <![CDATA[
-        ///       tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
-        ///        using (tIlGen.EmitBranchTrue())
-        ///       {
-        ///            tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, returnType, contextType);
-        ///            tIlGen.EmitCallsiteCreate(convertFuncType);
-        ///            tIlGen.Emit(OpCodes.Stsfld, tConvertField);
-        ///        }
+        /// 		<![CDATA[
+        /// using (tIlGen.EmitBranchTrue(g=>g.Emit(OpCodes.Ldsfld, tConvertField)))
+        /// {
+        /// tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, returnType, contextType);
+        /// tIlGen.EmitCallsiteCreate(convertFuncType);
+        /// tIlGen.Emit(OpCodes.Stsfld, tConvertField);
+        /// }
         /// ]]>
-        /// </code>
+        /// 	</code>
         /// </example>
-        public static BranchTrueOverBlock EmitBranchTrue(this ILGenerator generator)
+        public static BranchTrueOverBlock EmitBranchTrue(this ILGenerator generator, Action<ILGenerator> condition)
         {
+            condition(generator);
             return new BranchTrueOverBlock(generator);
+        }
+
+        /// <summary>
+        /// Emits the call.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="target">The target.</param>
+        /// <param name="call">The call.</param>
+        /// <param name="parameters">The parameters.</param>
+        public static void EmitInvocation(
+            this ILGenerator generator, 
+            Action<ILGenerator> target, 
+            Action<ILGenerator> call,
+            params Action<ILGenerator>[] parameters
+            )
+        {
+            target(generator);
+            foreach (var tParameter in parameters)
+            {
+                tParameter(generator);
+            }
+            call(generator);
         }
 
 
@@ -290,6 +315,7 @@ namespace ImpromptuInterface.Build
         /// <param name="name">The name.</param>
         /// <param name="context">The context.</param>
         /// <param name="argInfo">The arg info.</param>
+        /// <param name="argNames">The arg names.</param>
         public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo, IEnumerable<string> argNames)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
@@ -357,6 +383,37 @@ namespace ImpromptuInterface.Build
 
         }
 
+        public static void EmitDynamicSetBinderDynamicParams(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, params Type[] argTypes)
+        {
+            generator.Emit(OpCodes.Ldc_I4, (int)flag);
+            if (argTypes.Length == 1)
+                generator.Emit(OpCodes.Ldstr, name);
+            generator.EmitTypeOf(context);
+            var tList = new List<Action<ILGenerator>> { gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.None) };
+            tList.AddRange(argTypes.Select(tArg => (Action<ILGenerator>)(gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.None))));
+            generator.EmitArray(typeof(CSharpArgumentInfo), tList);
+
+            if (argTypes.Length == 1)
+                generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("SetMember", new[] { typeof(CSharpBinderFlags), typeof(string), typeof(Type), typeof(CSharpArgumentInfo[]) }));
+            else
+                generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("SetIndex", new[] { typeof(CSharpBinderFlags), typeof(Type), typeof(CSharpArgumentInfo[]) }));
+
+
+        }
+
+        public static void EmitDynamicBinaryOpBinder(this ILGenerator generator, CSharpBinderFlags flag, ExpressionType
+ exprType, Type context, params Type[] argTypes)
+        {
+            generator.Emit(OpCodes.Ldc_I4, (int)flag);
+            generator.Emit(OpCodes.Ldc_I4, (int)exprType);
+            generator.EmitTypeOf(context);
+            var tList = new List<Action<ILGenerator>> { gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.None) };
+            tList.AddRange(argTypes.Select(tArg => (Action<ILGenerator>)(gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.UseCompileTimeType))));
+            generator.EmitArray(typeof(CSharpArgumentInfo), tList);
+
+            generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("BinaryOperation", new[] { typeof(CSharpBinderFlags), typeof(ExpressionType), typeof(Type), typeof(CSharpArgumentInfo[]) }));
+            
+        }
 
         /// <summary>
         /// Emits the dynamic get binder.
@@ -413,6 +470,15 @@ namespace ImpromptuInterface.Build
             generator.EmitTypeOf(returnType);
             generator.EmitTypeOf(context);
             generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("Convert", new[] { typeof(CSharpBinderFlags), typeof(Type), typeof(Type) }));
+        }
+
+
+        public static void EmitDynamicIsEventBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context)
+        {
+            generator.Emit(OpCodes.Ldc_I4, (int)flag);
+            generator.Emit(OpCodes.Ldstr, name);
+            generator.EmitTypeOf(context);
+            generator.Emit(OpCodes.Call, typeof(Binder).GetMethod("IsEvent", new[] { typeof(CSharpBinderFlags), typeof(string), typeof(Type) }));
         }
 
 

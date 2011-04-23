@@ -33,6 +33,8 @@ namespace ImpromptuInterface.Dynamic
             return new ImpromptuBuilder<ImpromptuChainableDictionary>();
         }
 
+       
+
         /// <summary>
         /// New Builder
         /// </summary>
@@ -41,6 +43,64 @@ namespace ImpromptuInterface.Dynamic
         public static IImpromptuBuilder New<TObjectPrototype>() where TObjectPrototype : new()
         {
             return new ImpromptuBuilder<TObjectPrototype>();
+        }
+
+        
+    }
+
+    /// <summary>
+    /// Syntax for a quick new inline prototype object
+    /// </summary>
+    public static class Build
+    {
+        /// <summary>
+        /// Gets the new object builder.
+        /// </summary>
+        /// <value>The new object.</value>
+        public static dynamic NewObject
+        {
+            get
+            {
+                return new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
+            }
+        }
+
+        /// <summary>
+        /// Gets the new list builder.
+        /// </summary>
+        /// <value>The new list.</value>
+        public static dynamic NewList(params object[] args)
+        {
+                return new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>().List(args);
+        }
+    }
+
+    /// <summary>
+    /// Syntax for a quick inline object property setup
+    /// </summary>
+    /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+    public static class Build<TObjectPrototype> where TObjectPrototype : new()
+    {
+        /// <summary>
+        /// Gets the new object builder.
+        /// </summary>
+        /// <value>The new.</value>
+        public static dynamic NewObject
+        {
+            get
+            {
+                return new ImpromptuBuilder<TObjectPrototype>().Object;
+            }
+        }
+
+        /// <summary>
+        /// Gets the new list builder.
+        /// </summary>
+        /// <value>The new list.</value>
+        public static dynamic NewList(params object[] args)
+        {
+            
+                return new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>().List(args);
         }
     }
 
@@ -130,9 +190,20 @@ namespace ImpromptuInterface.Dynamic
         {
             var tArgs = Arguments();
 
-            return tArgs.Any() 
-                ? base.Create() 
-                : Activator.CreateInstance<TObjectPrototype>();
+            if(tArgs.Any())
+                return base.Create();
+
+
+            TObjectPrototype tObjectPrototype;
+            try
+            {
+                tObjectPrototype = Activator.CreateInstance<TObjectPrototype>();//Try first because it's really fast, but won't work with optional parameters
+            }
+            catch (MissingMethodException)
+            {
+                tObjectPrototype = Impromptu.InvokeConstuctor(typeof(TObjectPrototype));
+            }
+            return tObjectPrototype;
         }
     }
 

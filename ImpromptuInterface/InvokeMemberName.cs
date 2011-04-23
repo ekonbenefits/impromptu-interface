@@ -34,6 +34,14 @@ namespace ImpromptuInterface
         /// </summary>
         /// <value>The generic args.</value>
         public Type[] GenericArgs { get; protected set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether this member is special name.
+        /// </summary>
+        /// <value>
+        /// 	<c>true</c> if this instance is special name; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsSpecialName { get;  protected set; }
     }
 
     /// <summary>
@@ -47,6 +55,11 @@ namespace ImpromptuInterface
         public static readonly Func<string, Type[], InvokeMemberName> Create =
             Return<InvokeMemberName>.Arguments<string, Type[]>((n, a) => new InvokeMemberName(n, a));
 
+        /// <summary>
+        /// Create Function can set to variable to make cleaner syntax;
+        /// </summary>
+        public static readonly Func<string, InvokeMemberName> CreateSpecialName =
+          Return<InvokeMemberName>.Arguments<string>(n => new InvokeMemberName(n, true));
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ImpromptuInterface.InvokeMemberName"/>.
@@ -70,6 +83,18 @@ namespace ImpromptuInterface
             GenericArgs = genericArgs;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvokeMemberName"/> class.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="isSpecialName">if set to <c>true</c> [is special name].</param>
+        public InvokeMemberName(string name, bool isSpecialName)
+        {
+            Name = name;
+            GenericArgs = new Type[]{};
+            IsSpecialName = isSpecialName;
+        }
+
         public bool Equals(InvokeMemberName other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -85,6 +110,7 @@ namespace ImpromptuInterface
 
 
             return Equals(other.Name, Name)
+                && !(other.IsSpecialName ^ IsSpecialName)
                 && !(tOtherGenArgs == null ^ tGenArgs == null)
                 && (tGenArgs == null || 
                 //Exclusive Or makes sure this doesn't happen

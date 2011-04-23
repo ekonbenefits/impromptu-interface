@@ -21,6 +21,7 @@ using ImpromptuInterface.Build;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
 using CSharp = Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface
 {
@@ -51,15 +52,17 @@ namespace ImpromptuInterface
         /// <param name="name">Member Name</param>
         /// <param name="context">Permissions Context type</param>
         /// <param name="argNames">The arg names.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="isEvent">if set to <c>true</c> [is event].</param>
         /// <returns>The CallSite</returns>
         /// <remarks>
         /// Advanced usage only for serious custom dynamic invocation.
         /// </remarks>
         /// <seealso cref="CreateCallSite{T}"/>
-        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false)
+        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false, bool isEvent =false)
         {
 
-            var tHash = BinderHash.Create(delegateType, name, context, argNames,binder.GetType(), staticContext);
+            var tHash = BinderHash.Create(delegateType, name, context, argNames,binder.GetType(), staticContext, isEvent);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -72,7 +75,7 @@ namespace ImpromptuInterface
             }
         }
 
-      
+
 
         /// <summary>
         /// Creates the call site.
@@ -82,35 +85,34 @@ namespace ImpromptuInterface
         /// <param name="name">The name.</param>
         /// <param name="context">The context.</param>
         /// <param name="argNames">The arg names.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="isEvent">if set to <c>true</c> [is event].</param>
         /// <returns></returns>
-        ///    /// <example>
+        /// /// 
+        /// <example>
         /// Unit test that exhibits usage
-        ///<code><![CDATA[
-        /// 
-        ///    string tResult = String.Empty;
-        ///    var tPoco = new MethOutPoco();
-        ///    var tBinder =
-        ///        Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
-        ///                                    new[]
-        ///                                        {
-        ///                                            Info.Create(
-        ///                                                InfoFlags.None, null),
-        ///                                            Info.Create(
-        ///                                                InfoFlags.IsOut |
-        ///                                                InfoFlags.UseCompileTimeType, null)
-        ///                                        });
-        ///
-        ///    var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
-        /// 
-        ///    tSite.Target.Invoke(tSite, tPoco, out tResult);
-        ///
-        ///    Assert.AreEqual("success", tResult);
-        ///  ]]></code>
+        /// <code><![CDATA[
+        /// string tResult = String.Empty;
+        /// var tPoco = new MethOutPoco();
+        /// var tBinder =
+        /// Binder.InvokeMember(BinderFlags.None, "Func", null, GetType(),
+        /// new[]
+        /// {
+        /// Info.Create(
+        /// InfoFlags.None, null),
+        /// Info.Create(
+        /// InfoFlags.IsOut |
+        /// InfoFlags.UseCompileTimeType, null)
+        /// });
+        /// var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder);
+        /// tSite.Target.Invoke(tSite, tPoco, out tResult);
+        /// Assert.AreEqual("success", tResult);
+        /// ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
-        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false) where T : class
+        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false, bool isEvent =false) where T : class
         {
-            var tHash = BinderHash<T>.Create(name, context, argNames, binder.GetType(), staticContext);
+            var tHash = BinderHash<T>.Create(name, context, argNames, binder.GetType(), staticContext, isEvent);
             lock (_binderCacheLock)
             {
                 CallSite tOut = null;
@@ -153,9 +155,13 @@ namespace ImpromptuInterface
             Type tContext;
             bool tStaticContext =false;
             args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, ref tStaticContext);
-          
 
-            var tBinder =CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.None, name.Name, name.GenericArgs,
+            var tFlag = CSharp.CSharpBinderFlags.None;
+            if (name.IsSpecialName)
+            {
+                tFlag |= CSharp.CSharpBinderFlags.InvokeSpecialName;
+            }
+            var tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
                                        tContext,tList);
 
 
@@ -285,7 +291,13 @@ namespace ImpromptuInterface
             bool tStaticContext =false;
             args = GetInvokeMemberArgs(ref target, args, out tArgNames, out tList, out tContext, ref tStaticContext);
 
-            var tBinder = CSharp.Binder.InvokeMember(CSharp.CSharpBinderFlags.ResultDiscarded, name.Name, name.GenericArgs,
+            var tFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
+            if (name.IsSpecialName)
+            {
+                tFlag |= CSharp.CSharpBinderFlags.InvokeSpecialName;
+            }
+
+            var tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
                                        tContext, tList);
 
 
@@ -437,8 +449,71 @@ namespace ImpromptuInterface
             return tCallSite.Target(tCallSite, target);
         }
 
-      
 
+        /// <summary>
+        /// Determines whether the specified name on target is event. This allows you to know whether to InvokeMemberAction
+        ///  add_{name} or a combo of {invokeget, +=, invokeset} and the corresponding remove_{name} 
+        /// or a combon of {invokeget, -=, invokeset}
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <returns>
+        /// 	<c>true</c> if the specified target is event; otherwise, <c>false</c>.
+        /// </returns>
+        public static bool InvokeIsEvent(object target, string name)
+        {
+            Type tContext;
+            bool tStaticContext;
+            target = target.GetTargetContext(out tContext, out tStaticContext);
+            tContext = tContext.FixContext();
+
+            var tBinder = CSharp.Binder.IsEvent(CSharpBinderFlags.None, name, tContext);
+
+            var tCallSite = CreateCallSite<Func<CallSite,object, bool>>(tBinder, name, tContext,isEvent:true);
+
+            return tCallSite.Target(tCallSite, target);
+        }
+
+
+        /// <summary>
+        /// Invokes add assign with correct behavior for events.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public static void InvokeAddAssign(object target, string name, object value)
+        {
+            if (InvokeIsEvent(target, name))
+            {
+                InvokeMemberAction(target, InvokeMemberName.CreateSpecialName("add_"+name),value);
+            }
+            else
+            {
+                var tGet = InvokeGet(target, name);
+                tGet += (dynamic)value;
+                InvokeSet(target, name, tGet);
+            }
+        }
+
+        /// <summary>
+        /// Invokes subtract assign with correct behavior for events.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public static void InvokeSubtractAssign(object target, string name, object value)
+        {
+            if (InvokeIsEvent(target, name))
+            {
+                InvokeMemberAction(target, InvokeMemberName.CreateSpecialName("remove_" + name), value);
+            }
+            else
+            {
+                var tGet = InvokeGet(target, name);
+                tGet -= (dynamic)value;
+                InvokeSet(target, name, tGet);
+            }
+        }
 
         /// <summary>
         /// Invokes  convert using the DLR.
@@ -533,6 +608,8 @@ namespace ImpromptuInterface
                 ? InvokeHelper.ActionKinds[tParamCount]
                 : InvokeHelper.FuncKinds[tParamCount];
         }
+
+
 
         /// <summary>
         /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type

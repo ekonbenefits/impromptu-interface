@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.InvokeExt;
 using Microsoft.CSharp.RuntimeBinder;
 
 #if SILVERLIGHT
@@ -30,7 +31,7 @@ namespace UnitTestImpromptuInterface
         public void TestDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
-            var tNonExposed = this.CallActLike<IExposePrivateMethod>(tTest);
+            var tNonExposed = tTest.WithContext(this).ActLike<IExposePrivateMethod>();
             AssertException<RuntimeBinderException>(() => tNonExposed.Test());
         }
     }

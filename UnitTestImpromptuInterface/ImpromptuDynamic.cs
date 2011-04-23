@@ -509,6 +509,13 @@ namespace UnitTestImpromptuInterface
 		  	Assert.AreEqual("RobotDevil",people2[1].Name);
 
 		}
+              
+        [Test, TestMethod]
+            public void TestQuicListSyntax()
+            {
+                var tList =Build.NewList("test", "one", "two");
+                Assert.AreEqual("one", tList[1]);
+            }
 		
     }
 }

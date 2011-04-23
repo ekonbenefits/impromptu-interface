@@ -78,7 +78,7 @@ namespace ImpromptuInterface.Optimization
         /// <returns></returns>
         public IEnumerator<T> GetEnumerator()
         {
-            return new BareBonesEnumerator<T>(_list,_addIndex);
+            return new BareBonesEnumerator(_list,_addIndex);
         }
 
         IEnumerator IEnumerable.GetEnumerator()
@@ -86,7 +86,9 @@ namespace ImpromptuInterface.Optimization
             return GetEnumerator();
         }
 
-        internal class BareBonesEnumerator<T> : IEnumerator<T>
+
+        internal class BareBonesEnumerator : IEnumerator<T>
+
         {
             private T[] _list;
             private int _enumerateInex = -1;

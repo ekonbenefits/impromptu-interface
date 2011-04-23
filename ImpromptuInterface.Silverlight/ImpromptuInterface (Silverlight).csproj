@@ -173,6 +173,9 @@
     <Compile Include="..\ImpromptuInterface\Optimization\BinderHash.cs">
       <Link>Optimization\BinderHash.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper-Regular.cs">
+      <Link>Optimization\InvokeHelper-Regular.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Optimization\InvokeHelper.cs">
       <Link>Optimization\InvokeHelper.cs</Link>
     </Compile>

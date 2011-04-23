@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.InvokeExt;
 
 #if SILVERLIGHT
@@ -41,6 +42,27 @@ namespace UnitTestImpromptuInterface
             var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
             
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+        [Test, TestMethod]
+        public void TestCacheableSetTimed()
+        {
+            var tPoco = new PropPoco();
+
+            var tSetValue = "1";
+
+            var tCacheable = new CacheableInvocation(InvocationKind.Set, "Prop1");
+            var tWatch = TimeIt.Go(() => tCacheable.Invoke(tPoco, tSetValue), 500000);
+            var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
+
+
 
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
             TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
@@ -91,6 +113,32 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+
+
+        [Test, TestMethod]
+        public void TestCacheableGetValueTimed()
+        {
+
+
+
+            var tSetValue = "1";
+            var tAnon = new PropPoco() {Prop1 = tSetValue};
+
+
+            var tInvoke = new CacheableInvocation(InvocationKind.Get, "Prop1");
+            var tWatch = TimeIt.Go(() => { var tOut = tInvoke.Invoke(tAnon); }, 500000);
+
+            var tPropertyInfo = tAnon.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tPropertyInfo.GetValue(tAnon, null);
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
 
         [Test, TestMethod]
         public void TestConstructorTimed()

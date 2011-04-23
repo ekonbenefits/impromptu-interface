@@ -337,51 +337,9 @@ namespace ImpromptuInterface
             target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
 
-    
-            CallSiteBinder tBinder;
-            if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
-            {
-				
-				var tStaticFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
-				if(Util.IsMono) //Mono only works if InvokeSpecialName is set and .net only works if it isn't
-					tStaticFlag |=  CSharp.CSharpBinderFlags.InvokeSpecialName;
-				
-                tBinder = CSharp.Binder.InvokeMember(tStaticFlag, "set_" + name,
-                                                     null,
-                                                     tContext,
-                                                     new List<CSharp.CSharpArgumentInfo>()
-                                                        {
-                                                            CSharp.CSharpArgumentInfo.Create(
-                                                                CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null),
-                                                                   CSharp.CSharpArgumentInfo.Create(
 
-                                                              CSharp.CSharpArgumentInfoFlags.None
-
-                                                              , null)
-                                                        });
-            }
-            else
-            {
-
-                tBinder = CSharp.Binder.SetMember(CSharp.CSharpBinderFlags.ResultDiscarded, name,
-                                                  tContext,
-                                                  new List<CSharp.CSharpArgumentInfo>()
-                                                      {
-                                                          CSharp.CSharpArgumentInfo.Create(
-                                                              CSharp.CSharpArgumentInfoFlags.None, null),
-                                                          CSharp.CSharpArgumentInfo.Create(
-
-                                                              CSharp.CSharpArgumentInfoFlags.None
-
-                                                              , null)
-
-                                                      });
-            }
-
-
-            var tCallSite = CreateCallSite<Action<CallSite, object, object>>(tBinder, name, tContext);
-            tCallSite.Target(tCallSite, target, value);
-          
+            CallSite<Action<CallSite, object, object>> tCallSite =null;
+            InvokeHelper.InvokeSetCallSite(target, tContext, tStaticContext, name, value, ref tCallSite);
         }
 
         /// <summary>
@@ -412,41 +370,8 @@ namespace ImpromptuInterface
             bool tStaticContext;
             target =target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
-
-            var tTargetFlag = CSharp.CSharpArgumentInfoFlags.None;
-            CallSiteBinder tBinder;
-            if (tStaticContext) //CSharp Binder won't call Static properties, grrr.
-            {
-				var tStaticFlag = CSharp.CSharpBinderFlags.None;
-				if(Util.IsMono) //Mono only works if InvokeSpecialName is set and .net only works if it isn't
-					tStaticFlag |=  CSharp.CSharpBinderFlags.InvokeSpecialName;
-
-                tBinder = CSharp.Binder.InvokeMember(tStaticFlag, "get_" + name,
-                                                     null,
-                                                     tContext,
-                                                     new List<CSharp.CSharpArgumentInfo>()
-                                                         {
-                                                             CSharp.CSharpArgumentInfo.Create(
-                                                                 CSharp.CSharpArgumentInfoFlags.IsStaticType | CSharp.CSharpArgumentInfoFlags.UseCompileTimeType, null)
-                                                         });
-            }
-            else
-            {
-
-                tBinder = CSharp.Binder.GetMember(CSharp.CSharpBinderFlags.None, name,
-                                                  tContext,
-                                                  new List<CSharp.CSharpArgumentInfo>()
-                                                      {
-                                                          CSharp.CSharpArgumentInfo.Create(
-                                                              tTargetFlag, null)
-                                                      });
-
-            }
-
-
-            var tCallSite = CreateCallSite<Func<CallSite,object,object>>(tBinder, name, tContext);
-            
-            return tCallSite.Target(tCallSite, target);
+            CallSite<Func<CallSite, object, object>> tSite = null;
+            return InvokeHelper.InvokeGetCallSite(target, tContext, tStaticContext, name, ref tSite);
         }
 
 

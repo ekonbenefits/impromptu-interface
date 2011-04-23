@@ -17,7 +17,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
+using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
@@ -83,6 +85,100 @@ namespace ImpromptuInterface.Dynamic
     }
 
     /// <summary>
+    /// Cachrable representation of an invocation without the target or arguments  
+    ///  /// </summary>
+    [Serializable]
+    public class CacheableInvocation:Invocation
+    {
+        private readonly int _argCount;
+        private readonly IList<string> _argNames;
+        private readonly bool _staticContext;
+        private readonly Type _context;
+        private CallSite<Func<CallSite, object, object>> _callSite;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CacheableInvocation"/> class.
+        /// </summary>
+        /// <param name="kind">The kind.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="argCount">The arg count.</param>
+        /// <param name="argNames">The arg names.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="context">The context.</param>
+        public CacheableInvocation(InvocationKind kind,
+                                   String_OR_InvokeMemberName name,
+                                   int argCount =0,
+                                   IList<string> argNames =null,
+                                   bool staticContext = false, 
+                                   Type context =null) : base(kind, name, null)
+        {
+            _argCount = argCount;
+            _argNames = argNames;
+            _staticContext = staticContext;
+            _context = context ?? typeof(object);
+        }
+
+        public override object Invoke(object target, params object[] args)
+        {
+            switch (Kind)
+            {
+                case InvocationKind.Constructor:
+                    return Impromptu.InvokeConstuctor((Type)target, args);
+                case InvocationKind.Convert:
+                    bool tExplict = false;
+                    if (Args.Length == 2)
+                        tExplict = (bool)args[1];
+                    return Impromptu.InvokeConvert(target, (Type)args[0], tExplict);
+                case InvocationKind.Get:
+                    return InvokeHelper.InvokeGetCallSite(target, _context, _staticContext, Name.Name, ref _callSite);
+                case InvocationKind.Set:
+                    InvokeHelper.InvokeGetCallSite(target, _context, _staticContext, Name.Name, ref _callSite);
+                    return null;
+                case InvocationKind.GetIndex:
+                    return Impromptu.InvokeGetIndex(target, args);
+                case InvocationKind.SetIndex:
+                    Impromptu.InvokeSetIndex(target, args);
+                    return null;
+                case InvocationKind.InvokeMember:
+                    return Impromptu.InvokeMember(target, Name, args);
+                case InvocationKind.InvokeMemberAction:
+                    Impromptu.InvokeMemberAction(target, Name, args);
+                    return null;
+                case InvocationKind.InvokeMemberUnknown:
+                    {
+                        try
+                        {
+                            return Impromptu.InvokeMember(target, Name, args);
+                        }
+                        catch (RuntimeBinderException)
+                        {
+
+                            Impromptu.InvokeMemberAction(target, Name, args);
+                            return null;
+                        }
+                    }
+                case InvocationKind.AddAssign:
+                    Impromptu.InvokeAddAssign(target, Name.Name, args.FirstOrDefault());
+                    return null;
+                case InvocationKind.SubtractAssign:
+                    Impromptu.InvokeSubtractAssign(target, Name.Name, args.FirstOrDefault());
+                    return null;
+                case InvocationKind.IsEvent:
+                    return Impromptu.InvokeIsEvent(target, Name.Name);
+                default:
+                    throw new InvalidOperationException("Unknown Invocation Kind: " + Kind);
+            }
+        }
+
+        [Obsolete]
+        public override object InvokeWithStoredArgs(object target)
+        {
+            throw new NotSupportedException("Cacheable Doesn't Store Arguments");
+        }
+    }
+
+
+    /// <summary>
     /// Storable representation of an invocation without the target
     /// </summary>
     [Serializable]
@@ -126,7 +222,6 @@ namespace ImpromptuInterface.Dynamic
         /// <value>The args.</value>
         public object[] Args { get; protected set; }
 
-
         /// <summary>
         /// Creates the invocation.
         /// </summary>
@@ -159,7 +254,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="target">The target.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public object InvokeWithArgs(object target, params object[] args)
+        public virtual object Invoke(object target, params object[] args)
         {
             switch (Kind)
             {
@@ -218,9 +313,9 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns></returns>
-        public object Invoke(object target)
+        public virtual object InvokeWithStoredArgs(object target)
         {
-            return InvokeWithArgs(target, Args);
+            return Invoke(target, Args);
         }
     }
 }

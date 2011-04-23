@@ -31,7 +31,7 @@ namespace ImpromptuInterface.Optimization
 {
   
 
-    partial internal static class InvokeHelper
+    internal static partial class InvokeHelper
     {
 
 
@@ -63,7 +63,8 @@ namespace ImpromptuInterface.Optimization
         #region InvokeMemberAction Optimizations
 
 
-        internal static void InvokeMemberAction(CallSiteBinder binder,
+        internal static void InvokeMemberAction(ref CallSite callsite,
+													CallSiteBinder binder,
                                                     String_OR_InvokeMemberName name,
 													bool staticContext,
                                                     Type context, 
@@ -71,7 +72,7 @@ namespace ImpromptuInterface.Optimization
                                                     object target,
                                                     params object [] args)
         {
-          
+
             var tSwitch = args.Length;
             switch (tSwitch)
             {
@@ -81,7 +82,11 @@ namespace ImpromptuInterface.Optimization
 #>
                 case <#=i#>:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+						var tCallSite = (CallSite<Action<CallSite, <#=tobjectArgs#>>>)callsite;
+						if(tCallSite == null){
+							tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+						    callsite=tCallSite;
+						}
                         tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                         break;
                     }
@@ -102,14 +107,18 @@ namespace ImpromptuInterface.Optimization
         #region InvokeMember Optimizations
 
 
-        internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(CallSiteBinder binder,
+        internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(
+										ref CallSite callsite,
+										CallSiteBinder binder,
                                        String_OR_InvokeMemberName name,
 									 bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      TTarget target, params object [] args)
         {
-           
+
+        
+
             var tSwitch = args.Length;
 
             switch (tSwitch)
@@ -120,7 +129,11 @@ namespace ImpromptuInterface.Optimization
 #>
                 case <#=i#>:
                     {
-                        var tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+					    var tCallSite = (CallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>)callsite;
+					    if(tCallSite==null){
+							 tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+							 callsite =tCallSite;
+						}
                         return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                     }
 <# } #>

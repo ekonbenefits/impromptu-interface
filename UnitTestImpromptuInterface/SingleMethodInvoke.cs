@@ -207,15 +207,24 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestGetStatic()
+        public void TestGetCached()
         {
-            
+            var tCached =new CacheableInvocation(InvocationKind.Get, "Prop1");
+
             var tSetValue = "1";
-            var tAnon = new { Test = tSetValue };
+            var tAnon = new PropPoco{ Prop1 = tSetValue };
 
-            var tOut =Impromptu.InvokeGet(tAnon, "Test");
-
+            var tOut = tCached.Invoke(tAnon);
             Assert.AreEqual(tSetValue, tOut);
+
+            var tSetValue2 = "2";
+            tAnon = new PropPoco { Prop1 = tSetValue2 };
+
+
+            var tOut2 = tCached.Invoke(tAnon);
+
+
+            Assert.AreEqual(tSetValue2, tOut2);
 
         }
 

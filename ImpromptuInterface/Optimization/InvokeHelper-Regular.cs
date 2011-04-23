@@ -38,20 +38,31 @@ namespace ImpromptuInterface.Optimization
             return result;
         }
 
+        internal delegate object DynamicInvokeMemberConstructorValueType(
+            CallSite funcSite,
+            Type funcTarget,
+            ref CallSite callsite,
+            CallSiteBinder binder,
+            String_OR_InvokeMemberName name,
+            bool staticContext,
+            Type context,
+            string[] argNames,
+            Type target,
+            object[] args);
 
-        internal static readonly IDictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>> _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>>();
+        internal static readonly IDictionary<Type, CallSite<DynamicInvokeMemberConstructorValueType>> _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<DynamicInvokeMemberConstructorValueType>>();
 
-        internal static dynamic DynamicInvokeStaticMember(Type tReturn, CallSiteBinder binder,
+        internal static dynamic DynamicInvokeStaticMember(Type tReturn, ref CallSite callsite, CallSiteBinder binder,
                                        string name,
                                      bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      Type target, params object[] args)
         {
-            CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>> tSite;
+            CallSite<DynamicInvokeMemberConstructorValueType> tSite;
             if (!_dynamicInvokeMemberSite.TryGetValue(tReturn, out tSite))
             {
-                tSite = CallSite<Func<CallSite, Type, CallSiteBinder, string, bool, Type, string[], Type, object[], object>>.Create(
+                tSite = CallSite<DynamicInvokeMemberConstructorValueType>.Create(
                         Binder.InvokeMember(
                             CSharpBinderFlags.None,
                             "InvokeMemberTargetType",
@@ -62,6 +73,7 @@ namespace ImpromptuInterface.Optimization
                                     CSharpArgumentInfo.Create(
                                         CSharpArgumentInfoFlags.IsStaticType |
                                         CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType | CSharpArgumentInfoFlags.IsRef, null),
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
@@ -75,18 +87,18 @@ namespace ImpromptuInterface.Optimization
                 _dynamicInvokeMemberSite[tReturn] = tSite;
             }
 
-            return tSite.Target(tSite, typeof(InvokeHelper), binder, name, staticContext, context, argNames, target, args);
+            return tSite.Target(tSite, typeof(InvokeHelper), ref callsite, binder, name, staticContext, context, argNames, target, args);
         }
 
 
-        internal static TReturn InvokeMember<TReturn>(CallSiteBinder binder,
+        internal static TReturn InvokeMember<TReturn>(ref CallSite callsite, CallSiteBinder binder,
                                        String_OR_InvokeMemberName name,
                                      bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      object target, params object[] args)
         {
-            return InvokeMemberTargetType<object, TReturn>(binder, name, staticContext, context, argNames, target, args);
+            return InvokeMemberTargetType<object, TReturn>(ref callsite, binder, name, staticContext, context, argNames, target, args);
         }
 
         internal static object InvokeGetCallSite(object target, Type tContext, bool tStaticContext, string name, ref CallSite<Func<CallSite, object, object>> callsite)

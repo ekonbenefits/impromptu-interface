@@ -178,10 +178,10 @@ namespace ImpromptuInterface.Dynamic
             {
                 case InvocationKind.Constructor:
                     var tTarget = (Type) target;
-                    return Impromptu.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
+                    return InvokeHelper.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
                                                                ref _callSite);
                 case InvocationKind.Convert:
-                    return Impromptu.InvokeConvertCallSite(target, _convertExplict, _convertType, _context,
+                    return InvokeHelper.InvokeConvertCallSite(target, _convertExplict, _convertType, _context,
                                                            ref _callSite);
                 case InvocationKind.Get:
                     return InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);
@@ -189,14 +189,14 @@ namespace ImpromptuInterface.Dynamic
                     InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);
                     return null;
                 case InvocationKind.GetIndex:
-                    return Impromptu.InvokeGetIndexCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
+                    return InvokeHelper.InvokeGetIndexCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
                 case InvocationKind.SetIndex:
                     Impromptu.InvokeSetIndex(target, args);
                     return null;
                 case InvocationKind.InvokeMember:
-                    return Impromptu.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
+                    return InvokeHelper.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                 case InvocationKind.InvokeMemberAction:
-                    Impromptu.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
+                    InvokeHelper.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                     return null;
                 case InvocationKind.InvokeMemberUnknown:
                     {
@@ -204,7 +204,7 @@ namespace ImpromptuInterface.Dynamic
                         {
                             try
                             {
-                                var tObj = Impromptu.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
+                                var tObj = InvokeHelper.InvokeMemberCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                                 _invokeAction = false;
                                 return tObj;
                             }
@@ -218,19 +218,19 @@ namespace ImpromptuInterface.Dynamic
 
                         if (_invokeAction.Value)
                         {
-                            Impromptu.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
+                            InvokeHelper.InvokeMemberActionCallSite(target, Name, args, _argNames, _context, _staticContext, ref _callSite);
                             return null;
                         }
                         return null;
                     }
                 case InvocationKind.AddAssign:
-                    Impromptu.InvokeAddAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext,ref _callSite,ref  _callSite2,ref _callSite3, ref _callSite4);
+                    InvokeHelper.InvokeAddAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext,ref _callSite,ref  _callSite2,ref _callSite3, ref _callSite4);
                     return null;
                 case InvocationKind.SubtractAssign:
-                    Impromptu.InvokeSubtractAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext, ref _callSite, ref _callSite2, ref _callSite3, ref _callSite4);
+                    InvokeHelper.InvokeSubtractAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext, ref _callSite, ref _callSite2, ref _callSite3, ref _callSite4);
                     return null;
                 case InvocationKind.IsEvent:
-                    return Impromptu.InvokeIsEventCallSite(target, Name.Name, _context, ref _callSite);
+                    return InvokeHelper.InvokeIsEventCallSite(target, Name.Name, _context, ref _callSite);
                 default:
                     throw new InvalidOperationException("Unknown Invocation Kind: " + Kind);
             }

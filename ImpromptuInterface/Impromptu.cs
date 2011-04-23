@@ -158,28 +158,7 @@ namespace ImpromptuInterface
             args = GetArgsAndNames(args, out tArgNames);
             CallSite tCallSite = null;
 
-            return InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
-        }
-
-        internal static object InvokeMemberCallSite(object target,  String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)
-        {
-            CallSiteBinder tBinder = null;
-
-            if (callSite == null)
-            {
-                var tList = GetBindingArgumentList(args, tArgNames,  tContext, tStaticContext);
-                var tFlag = CSharpBinderFlags.None;
-                if (name.IsSpecialName)
-                {
-                    tFlag |= CSharpBinderFlags.InvokeSpecialName;
-                }
-                tBinder = Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
-                                              tContext, tList);
-
-            }
-
-
-            return InvokeHelper.InvokeMember<object>(ref callSite, tBinder, name, tStaticContext, tContext,tArgNames, target, args);
+            return InvokeHelper.InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
 
         internal static object[] GetArgsAndNames(object[]args,out string[]argNames)
@@ -329,19 +308,7 @@ namespace ImpromptuInterface
             indexes = GetArgsAndNames( indexes, out tArgNames);
             CallSite tCallSite = null;
 
-            return InvokeGetIndexCallSite(target, indexes, tArgNames, tContext, tStaticContext,ref tCallSite);
-        }
-
-        internal static object InvokeGetIndexCallSite(object target, object[] indexes, string[] argNames, Type context, bool tStaticContext,ref CallSite callSite)
-        {
-            CallSiteBinder tBinder=null;
-            if (callSite == null)
-            {
-                var tList = GetBindingArgumentList(indexes, argNames, context, tStaticContext);
-                tBinder = CSharp.Binder.GetIndex(CSharp.CSharpBinderFlags.None, context, tList);
-            }
-
-            return InvokeHelper.InvokeMember<object>(ref callSite, tBinder, Invocation.IndexBinderName, tStaticContext, context, argNames, target, indexes);
+            return InvokeHelper.InvokeGetIndexCallSite(target, indexes, tArgNames, tContext, tStaticContext,ref tCallSite);
         }
 
 
@@ -359,19 +326,7 @@ namespace ImpromptuInterface
             indexesThenValue = GetArgsAndNames(indexesThenValue, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext, tCallSite);
-        }
-
-        internal static void InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, CallSite tCallSite)
-        {
-            CallSiteBinder tBinder =null;
-            if (tCallSite == null)
-            {
-                var tList = GetBindingArgumentList(indexesThenValue, tArgNames, tContext, tStaticContext);
-                tBinder = CSharp.Binder.SetIndex(CSharp.CSharpBinderFlags.None, tContext, tList);
-            }
-
-            InvokeHelper.InvokeMemberAction(ref tCallSite, tBinder, Invocation.IndexBinderName, tStaticContext, tContext, tArgNames, target, indexesThenValue);
+            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext, tCallSite);
         }
 
         /// <summary>
@@ -407,31 +362,7 @@ namespace ImpromptuInterface
             args = GetArgsAndNames(args, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
-        }
-
-        internal static void InvokeMemberActionCallSite(object target,String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext,ref CallSite callSite)
-        {
-            CallSiteBinder tBinder =null;
-            if (callSite == null)
-            {
-
-
-                IEnumerable<CSharpArgumentInfo> tList;
-                tList = GetBindingArgumentList(args, tArgNames, tContext, tStaticContext);
-
-                var tFlag = CSharp.CSharpBinderFlags.ResultDiscarded;
-                if (name.IsSpecialName)
-                {
-                    tFlag |= CSharp.CSharpBinderFlags.InvokeSpecialName;
-                }
-
-                tBinder = CSharp.Binder.InvokeMember(tFlag, name.Name, name.GenericArgs,
-                                                     tContext, tList);
-            }
-
-
-            InvokeHelper.InvokeMemberAction(ref callSite, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
+            InvokeHelper.InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
 
 
@@ -520,20 +451,7 @@ namespace ImpromptuInterface
             target = target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
             CallSite tCallSite = null;
-            return InvokeIsEventCallSite(target, name, tContext, ref tCallSite);
-        }
-
-        internal static bool InvokeIsEventCallSite(object target, string name, Type tContext, ref CallSite callSite)
-        {
-            if (callSite == null)
-            {
-                var tBinder = CSharp.Binder.IsEvent(CSharpBinderFlags.None, name, tContext);
-
-                callSite = CreateCallSite<Func<CallSite, object, bool>>(tBinder, name, tContext, isEvent: true);
-            }
-            var tCallSite = (CallSite<Func<CallSite, object, bool>>)callSite;
-
-            return tCallSite.Target(tCallSite, target);
+            return InvokeHelper.InvokeIsEventCallSite(target, name, tContext, ref tCallSite);
         }
 
 
@@ -557,25 +475,9 @@ namespace ImpromptuInterface
             string[] argNames;
             args = GetArgsAndNames(args, out argNames);
 
-            InvokeAddAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteAdd, ref callSiteGet, ref callSiteSet);
+            InvokeHelper.InvokeAddAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteAdd, ref callSiteGet, ref callSiteSet);
         }
 
-     
-
-        internal static void InvokeAddAssignCallSite(object target, string name, object[] args, string[] argNames, Type context, bool staticContext, ref CallSite callSiteIsEvent, ref CallSite callSiteAdd, ref CallSite callSiteGet, ref CallSite callSiteSet)
-        {
-
-            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent))
-            {
-                InvokeMemberActionCallSite(target, InvokeMemberName.CreateSpecialName("add_" + name), args, argNames, context, staticContext, ref callSiteAdd);
-            }
-            else
-            {
-                dynamic tGet = InvokeHelper.InvokeGetCallSite(target,name, context, staticContext, ref callSiteGet);
-                tGet += (dynamic)(args.First());
-                InvokeHelper.InvokeSetCallSite(target, name,  (object)tGet, context, staticContext, ref callSiteSet);
-            }
-        }
 
         /// <summary>
         /// Invokes subtract assign with correct behavior for events.
@@ -601,21 +503,7 @@ namespace ImpromptuInterface
             CallSite callSiteSet = null;
 
 
-            InvokeSubtractAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteRemove, ref callSiteGet,ref  callSiteSet);
-        }
-
-        internal static void InvokeSubtractAssignCallSite(object target, string name, object[] args, string[] argNames, Type context, bool staticContext, ref CallSite callSiteIsEvent, ref CallSite callSiteRemove, ref CallSite callSiteGet, ref CallSite callSiteSet)
-        {
-            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent))
-            {
-                InvokeMemberActionCallSite(target, InvokeMemberName.CreateSpecialName("remove_" + name), args, argNames, context, staticContext, ref callSiteRemove);
-            }
-            else
-            {
-                dynamic tGet = InvokeHelper.InvokeGetCallSite(target, name, context, staticContext, ref callSiteGet);
-                tGet -= (dynamic)(args.First());
-                InvokeHelper.InvokeSetCallSite(target, name, tGet, context, staticContext, ref callSiteSet);
-            }
+            InvokeHelper.InvokeSubtractAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteRemove, ref callSiteGet,ref  callSiteSet);
         }
 
         /// <summary>
@@ -632,28 +520,7 @@ namespace ImpromptuInterface
             target = target.GetTargetContext(out tContext, out tDummy);
 
             CallSite tCallSite =null;
-            return InvokeConvertCallSite(target, explict, type, tContext, ref tCallSite);
-
-        }
-
-        internal static object InvokeConvertCallSite(object target, bool explict, Type type, Type context, ref CallSite callSite)
-        {
-            if (callSite == null)
-            {
-                var tFlags = explict ? CSharp.CSharpBinderFlags.ConvertExplicit : CSharp.CSharpBinderFlags.None;
-
-                var tBinder = CSharp.Binder.Convert(tFlags, type, context);
-
-                var tFunc = BuildProxy.GenerateCallSiteFuncType(new Type[] {}, type);
-
-
-                callSite = CreateCallSite(tFunc, tBinder,
-                                           explict
-                                               ? Invocation.ExplicitConvertBinderName
-                                               : Invocation.ImplicitConvertBinderName, context);
-            }
-            dynamic tDynCallSite = callSite;
-            return tDynCallSite.Target(callSite, target);
+            return InvokeHelper.InvokeConvertCallSite(target, explict, type, tContext, ref tCallSite);
 
         }
 
@@ -685,28 +552,7 @@ namespace ImpromptuInterface
            var tContext = type.FixContext();
 
 
-            return InvokeConstructorCallSite(type, tValue, args, tArgNames,tContext, ref tCallSite);
-        }
-
-        internal static object InvokeConstructorCallSite(Type type, bool isValueType, object[] args, string[] argNames,Type context, ref CallSite callSite)
-        {
-            CallSiteBinder tBinder = null;
-            if (callSite == null || isValueType)
-            {
-
-                var tList = GetBindingArgumentList(args, argNames, context, true);
-                tBinder = CSharp.Binder.InvokeConstructor(CSharp.CSharpBinderFlags.None, type, tList);
-            }
-
-
-            if (isValueType)
-            {
-                CallSite tDummy =null;
-                return InvokeHelper.DynamicInvokeStaticMember(type, ref tDummy, tBinder, Invocation.ConstructorBinderName, true, type,
-                                                              argNames, type, args);
-            }
-            return InvokeHelper.InvokeMemberTargetType<Type, object>(ref callSite, tBinder, Invocation.ConstructorBinderName, true, type, argNames,
-                                                                     type, args);
+            return InvokeHelper.InvokeConstructorCallSite(type, tValue, args, tArgNames,tContext, ref tCallSite);
         }
 
 

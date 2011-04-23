@@ -556,15 +556,30 @@ namespace ImpromptuInterface
             bool tDummy;
             target = target.GetTargetContext(out tContext, out tDummy);
 
-            var tFlags = explict ? CSharp.CSharpBinderFlags.ConvertExplicit: CSharp.CSharpBinderFlags.None;
+            CallSite tCallSite =null;
+            return InvokeConvertCallSite(target, explict, type, tContext, ref tCallSite);
 
-            var tBinder = CSharp.Binder.Convert(tFlags, type, tContext);
+        }
 
-            var tFunc=BuildProxy.GenerateCallSiteFuncType(new Type[]{}, type);
+        internal static object InvokeConvertCallSite(object target, bool explict, Type type, Type context, ref CallSite callSite)
+        {
+            if (callSite == null)
+            {
+                var tFlags = explict ? CSharp.CSharpBinderFlags.ConvertExplicit : CSharp.CSharpBinderFlags.None;
 
-            dynamic tCallSite = CreateCallSite(tFunc, tBinder,explict ? Invocation.ExplicitConvertBinderName : Invocation.ImplicitConvertBinderName, tContext);
+                var tBinder = CSharp.Binder.Convert(tFlags, type, context);
 
-            return tCallSite.Target(tCallSite, target);
+                var tFunc = BuildProxy.GenerateCallSiteFuncType(new Type[] {}, type);
+
+
+                callSite = CreateCallSite(tFunc, tBinder,
+                                           explict
+                                               ? Invocation.ExplicitConvertBinderName
+                                               : Invocation.ImplicitConvertBinderName, context);
+            }
+            dynamic tDynCallSite = callSite;
+            return tDynCallSite.Target(callSite, target);
+
         }
 
         [Obsolete("use InvokeConstructor, this was a spelling mistract")]

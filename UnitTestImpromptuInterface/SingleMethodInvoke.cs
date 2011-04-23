@@ -93,6 +93,19 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestConvertCacheable()
+        {
+            var tEl = new XElement("Test", "45");
+
+            var tCacheInvoke = new CacheableInvocation(InvocationKind.Convert, convertType: typeof (int),
+                                                       convertExplict: true);
+            var tCast = tCacheInvoke.Invoke(tEl);
+
+            Assert.AreEqual(typeof(int), tCast.GetType());
+            Assert.AreEqual(45, tCast);
+        }
+
+        [Test, TestMethod]
         public void TestConstruct()
         {
             var tCast = Impromptu.InvokeConstructor(typeof (List<object>), new object[]

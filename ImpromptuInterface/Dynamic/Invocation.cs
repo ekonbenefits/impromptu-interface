@@ -35,7 +35,7 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         NotSet=0,
         /// <summary>
-        /// Convert, Implicit or Explict depending on arguments
+        /// Convert Implicit or Explicity
         /// </summary>
         Convert,
         /// <summary>
@@ -95,7 +95,9 @@ namespace ImpromptuInterface.Dynamic
         private readonly bool _staticContext;
         private Type _context;
         private CallSite _callSite;
-
+        private bool _convertExplict;
+        private Type _convertType;
+        private bool? _invokeAction;
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheableInvocation"/> class.
         /// </summary>
@@ -103,19 +105,27 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="name">The name.</param>
         /// <param name="argCount">The arg count.</param>
         /// <param name="argNames">The arg names.</param>
-        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
         /// <param name="context">The context.</param>
+        /// <param name="convertType">Type of the convert.</param>
+        /// <param name="convertExplict">if set to <c>true</c> [convert explict].</param>
         public CacheableInvocation(InvocationKind kind,
                                    String_OR_InvokeMemberName name=null,
                                    int argCount =0,
                                    string[] argNames =null,
-                                   object context =null) : base(kind, name, null)
+                                   object context =null, Type convertType = null, bool convertExplict=false ) : base(kind, name, null)
         {
+
+            _convertType = convertType;
+            _convertExplict = convertExplict;
 
             _argNames = argNames ?? new string[] {};
 
             switch (kind) //Set required argcount values
             {
+                case InvocationKind.Convert:
+                    if(convertType==null)
+                        throw new ArgumentNullException("convertType"," Convert Requires Convert Type ");
+                    break;
                 case InvocationKind.Set:
                     _argCount = 1;
                     break;
@@ -168,10 +178,8 @@ namespace ImpromptuInterface.Dynamic
                     return Impromptu.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
                                                                ref _callSite);
                 case InvocationKind.Convert:
-                    bool tExplict = false;
-                    if (Args.Length == 2)
-                        tExplict = (bool)args[1];
-                    return Impromptu.InvokeConvert(target, (Type)args[0], tExplict);
+                    return Impromptu.InvokeConvertCallSite(target, _convertExplict, _convertType, _context,
+                                                           ref _callSite);
                 case InvocationKind.Get:
                     return InvokeHelper.InvokeGetCallSite(target, _context, _staticContext, Name.Name, ref _callSite);
                 case InvocationKind.Set:
@@ -189,16 +197,28 @@ namespace ImpromptuInterface.Dynamic
                     return null;
                 case InvocationKind.InvokeMemberUnknown:
                     {
-                        try
+                        if (!_invokeAction.HasValue || !_invokeAction.Value)
                         {
-                            return Impromptu.InvokeMember(target, Name, args);
+                            try
+                            {
+                                var tObj= Impromptu.InvokeMember(target, Name, args);
+                                _invokeAction = false;
+                                return tObj;
+                            }
+                            catch (RuntimeBinderException)
+                            {
+                                if(!_invokeAction.HasValue)
+                                _invokeAction = true;
+
+                            }
                         }
-                        catch (RuntimeBinderException)
+
+                        if (_invokeAction.Value)
                         {
-                            
                             Impromptu.InvokeMemberAction(target, Name, args);
                             return null;
                         }
+                        return null;
                     }
                 case InvocationKind.AddAssign:
                     Impromptu.InvokeAddAssign(target, Name.Name, args.FirstOrDefault());

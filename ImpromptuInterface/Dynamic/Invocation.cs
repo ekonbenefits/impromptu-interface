@@ -109,8 +109,7 @@ namespace ImpromptuInterface.Dynamic
                                    String_OR_InvokeMemberName name,
                                    int argCount =0,
                                    string[] argNames =null,
-                                   bool staticContext = false, 
-                                   Type context =null) : base(kind, name, null)
+                                   object context =null) : base(kind, name, null)
         {
 
             _argNames = argNames ?? new string[] {};
@@ -136,8 +135,17 @@ namespace ImpromptuInterface.Dynamic
                     Array.Copy(_argNames,0, tBlank, tBlank.Length - _argNames.Length, tBlank.Length);
                 _argNames = tBlank;
             }
-            _staticContext = staticContext;
-            _context = context ?? typeof(object);
+
+            if (context != null)
+            {
+                var tDummy = context.GetTargetContext(out _context, out _staticContext);
+            }
+            else
+            {
+                _context = typeof (object);
+            }
+
+
         }
 
         public override object Invoke(object target, params object[] args)

@@ -524,7 +524,7 @@ namespace ImpromptuInterface
 
         }
 
-        [Obsolete("use InvokeConstructor, this was a spelling mistract")]
+        [Obsolete("use InvokeConstructor, this was a spelling mistake")]
                 public static dynamic InvokeConstuctor(Type type, params object[] args)
                 {
                     return InvokeConstructor(type, args);

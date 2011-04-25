@@ -83,6 +83,9 @@
     <Compile Include="..\ImpromptuInterface\Dynamic\Builder.cs">
       <Link>Dynamic\Builder.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\Dynamic\CacheableInvocation.cs">
+      <Link>Dynamic\CacheableInvocation.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\Dynamic\IActLike.cs">
       <Link>Dynamic\IActLike.cs</Link>
     </Compile>

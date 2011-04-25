@@ -335,6 +335,10 @@ namespace ImpromptuInterface.Optimization
             CallSiteBinder tBinder = null;
             if (callSite == null || isValueType)
             {
+                if (isValueType && args.Length == 0)  //dynamic invocation doesn't see constructors of value types
+                {
+                    return Activator.CreateInstance(type);
+                }
 
                 var tList = Impromptu.GetBindingArgumentList(args, argNames, context, true);
                 tBinder = Binder.InvokeConstructor(CSharpBinderFlags.None, type, tList);

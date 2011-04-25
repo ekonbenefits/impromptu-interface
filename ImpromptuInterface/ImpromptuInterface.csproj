@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Dynamic\CacheableInvocation.cs" />
     <Compile Include="Dynamic\ImpromptuBuilder.cs" />
     <Compile Include="Dynamic\ImpromptuDictionaryBase.cs" />
     <Compile Include="Dynamic\ImpromptuDummy.cs" />

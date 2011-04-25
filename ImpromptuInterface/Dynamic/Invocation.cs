@@ -211,8 +211,18 @@ namespace ImpromptuInterface.Dynamic
             }
 
         }
-
-
+        /// <summary>
+        /// Deprecated use <see cref="Invoke"/>
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        [Obsolete("Use Invoke instead")]
+        public object InvokeWithArgs(object target, params object[] args)
+        {
+            return Invoke(target, args);
+        }
+      
         /// <summary>
         /// Invokes the invocation on specified target.
         /// </summary>

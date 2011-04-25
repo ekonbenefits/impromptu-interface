@@ -63,6 +63,9 @@ namespace ImpromptuInterface.Optimization
 
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {
+            if (result is ImpromptuForwarderAddRemove) //Don't massage AddRemove Proxies
+                return true;
+
             Type tType;
             var tTryType = target.TryTypeForName(binderName, out tType);
             if (tTryType && tType == typeof(void))

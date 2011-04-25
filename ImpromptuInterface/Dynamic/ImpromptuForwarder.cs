@@ -83,6 +83,13 @@ namespace ImpromptuInterface.Dynamic
                 result = null;
                 return false;
             }
+
+            if (Impromptu.InvokeIsEvent(Target, binder.Name))
+            {
+                result = new ImpromptuForwarderAddRemove();
+                return true;
+            }
+
             result = Impromptu.InvokeGet(Target, binder.Name);
 
             return true;
@@ -138,6 +145,22 @@ namespace ImpromptuInterface.Dynamic
             if (Target == null)
             {
                 return false;
+            }
+
+            if (Impromptu.InvokeIsEvent(Target, binder.Name) && value is ImpromptuForwarderAddRemove)
+            {
+                var tValue = value as ImpromptuForwarderAddRemove;
+
+                if (tValue.IsAdding)
+                {
+                    Impromptu.InvokeAddAssign(Target,binder.Name, tValue.Delegate);
+                }
+                else
+                {
+                    Impromptu.InvokeSubtractAssign(Target, binder.Name, tValue.Delegate);
+                }
+
+                return true;
             }
 
             Impromptu.InvokeSet(Target, binder.Name, value);

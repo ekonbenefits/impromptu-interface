@@ -84,6 +84,32 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tArray[2].ToString(), tTest[2]);
         }
 
+        [Test, TestMethod]
+        public void GetterEventTest()
+        {
+            var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
+            var tSet = false;
+            tActsLike.Event += (obj, args) => tSet = true;
+
+            tActsLike.OnEvent(null, null);
+            Assert.AreEqual(true, tSet);
+
+        }
+
+
+        [Test, TestMethod]
+        public void GetterEventTest2()
+        {
+            var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
+            var tSet = false;
+            EventHandler<EventArgs> tActsLikeOnEvent = (obj, args) => tSet = true;
+            tActsLike.Event += tActsLikeOnEvent;
+            tActsLike.Event -= tActsLikeOnEvent;
+            tActsLike.OnEvent(null, null);
+            Assert.AreEqual(false, tSet);
+
+        }
+
 
         [Test, TestMethod]
         public void GetterDynamicTest()

@@ -1,0 +1,8 @@
+﻿<#@ output extension=".nuspec" #>
+<?xml version="1.0" encoding="utf-8"?> 
+<package> 
+<#@ include file="ImpromptuInterface.MVVM.MetaData.xml" #>
+  <files>
+ 
+  </files>
+</package>

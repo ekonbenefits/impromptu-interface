@@ -62,34 +62,34 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\ImpromptuInterface.MVVM\Event.cs">
-      <Link>Event.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\FireOnChange.cs">
-      <Link>FireOnChange.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuBindingList.cs">
-      <Link>ImpromptuBindingList.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuRelayCommand.cs">
-      <Link>ImpromptuRelayCommand.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuToString.cs">
-      <Link>ImpromptuToString.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuViewModel-Nested.cs">
-      <Link>ImpromptuViewModel-Nested.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpromptuViewModel.cs">
-      <Link>ImpromptuViewModel.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\ImpropmtuCommandBinder.cs">
-      <Link>ImpropmtuCommandBinder.cs</Link>
-    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
-    <Compile Include="Support.cs" />
+    <Compile Include="..\ImpromptuInterface.MVVM\src\Event.cs">
+      <Link>src\Event.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\FireOnChange.cs">
+      <Link>src\FireOnChange.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuBindingList.cs">
+      <Link>src\ImpromptuBindingList.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuRelayCommand.cs">
+      <Link>src\ImpromptuRelayCommand.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuToString.cs">
+      <Link>src\ImpromptuToString.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuViewModel-Nested.cs">
+      <Link>src\ImpromptuViewModel-Nested.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuViewModel.cs">
+      <Link>src\ImpromptuViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpropmtuCommandBinder.cs">
+      <Link>src\ImpropmtuCommandBinder.cs</Link>
+    </Compile>
+    <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">

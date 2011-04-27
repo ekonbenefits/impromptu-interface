@@ -6,12 +6,13 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{114BB5F5-AA44-4932-99E1-328A11F6C497}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>NuGetBuild</RootNamespace>
     <AssemblyName>NuGetBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Client</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -33,17 +34,66 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Content Include="NuGet.exe">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">
-      <Link>ImpromptuInterface.MVVM.nuspec</Link>
+    <Content Include="Core\ImpromptuInterface.MetaData.xml" />
+    <Content Include="MVVM\ImpromptuInterface.MVVM.MetaData.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Microsoft.VisualStudio.TextTemplating.10.0, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
+    <Reference Include="System" />
+    <Reference Include="T4Toolbox.10.0, Version=10.3.7.1, Culture=neutral, PublicKeyToken=7e313accbcce84dc, processorArchitecture=x86" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Core\ImpromptuInterface.nuspec">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImpromptuInterface.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="..\nuget\ImpromptuInterface.nuspec">
-      <Link>ImpromptuInterface.nuspec</Link>
+    <None Include="Core\ImpromptuInterface.Symbol.nuspec">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImpromptuInterface.Symbol.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="Core\ImpromptuInterface.Symbol.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.Symbol.nuspec</LastGenOutput>
+    </None>
+    <None Include="Core\ImpromptuInterface.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.nuspec</LastGenOutput>
+    </None>
+    <None Include="MVVM\ImpromptuInterface.MVVM.nuspec">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImpromptuInterface.MVVM.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MVVM\ImpromptuInterface.MVVM.Symbol.nuspec">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ImpromptuInterface.MVVM.Symbol.tt</DependentUpon>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="MVVM\ImpromptuInterface.MVVM.Symbol.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.MVVM.Symbol.nuspec</LastGenOutput>
+    </None>
+    <None Include="MVVM\ImpromptuInterface.MVVM.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.MVVM.nuspec</LastGenOutput>
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -59,73 +59,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Dynamic\CacheableInvocation.cs" />
-    <Compile Include="Dynamic\ImpromptuBuilder.cs" />
-    <Compile Include="Dynamic\ImpromptuDictionaryBase.cs" />
-    <Compile Include="Dynamic\ImpromptuDummy.cs" />
-    <Compile Include="Dynamic\ImpromptuForwarder.cs" />
-    <Compile Include="Dynamic\ImpromptuForwarderAddRemove.cs" />
-    <Compile Include="Dynamic\ImpromptuGet.cs" />
-    <Compile Include="Dynamic\ImpromptuList.cs" />
-    <Compile Include="Dynamic\Builder.cs" />
-    <Compile Include="Dynamic\ImpromptuPropertyDescriptor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Dynamic\ImpromptuRecorder.cs" />
-    <Compile Include="Dynamic\InlineLambdas.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InlineLambdas.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Dynamic\Invocation.cs" />
-    <Compile Include="Dynamic\ThisFunctions.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>ThisFunctions.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Dynamic\UseNamedArgumentAttribute.cs" />
-    <Compile Include="EmitProxy\ActLikeProxyAttribute.cs" />
-    <Compile Include="Dynamic\IDynamicKnowLike.cs" />
-    <Compile Include="Dynamic\IActLike.cs" />
-    <Compile Include="EmitProxy\ActLikeProxySerializationHelper.cs" />
-    <Compile Include="IActLikeProxy.cs" />
-    <Compile Include="Impromptu.cs" />
-    <Compile Include="Dynamic\ImpromptuDictionary.cs" />
-    <Compile Include="Dynamic\ImpromptuFactory.cs" />
-    <Compile Include="EmitProxy\ActLikeProxy.cs" />
-    <Compile Include="EmitProxy\BuildProxy.cs" />
-    <Compile Include="EmitProxy\EmitExtensions.cs" />
-    <Compile Include="Dynamic\ImpromptuObject.cs" />
-    <Compile Include="InvokeArg.cs" />
-    <Compile Include="InvokeContext.cs" />
-    <Compile Include="InvokeExt\InvokeExt.cs" />
-    <Compile Include="InvokeMemberName.cs" />
-    <Compile Include="Optimization\BareBonesList.cs" />
-    <Compile Include="Optimization\BinderHash.cs" />
-    <Compile Include="Optimization\InvokeHelper-Regular.cs" />
-    <Compile Include="Optimization\InvokeHelper.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>InvokeHelper.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Optimization\Util.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="EmitProxy\TypeHash.cs" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="..\nuget\ImpromptuInterface.nuspec">
       <Link>Properties\ImpromptuInterface.nuspec</Link>
       <SubType>Designer</SubType>
     </None>
-    <None Include="Dynamic\InlineLambdas.tt">
+    <None Include="src\Dynamic\InlineLambdas.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>InlineLambdas.cs</LastGenOutput>
     </None>
-    <None Include="Dynamic\ThisFunctions.tt">
+    <None Include="src\Dynamic\ThisFunctions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ThisFunctions.cs</LastGenOutput>
     </None>
-    <None Include="Optimization\InvokeHelper.tt">
+    <None Include="src\EmitProxy\BuildProxy.cs.orig" />
+    <None Include="src\Optimization\InvokeHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>InvokeHelper.cs</LastGenOutput>
     </None>
@@ -154,6 +101,58 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\Dynamic\Builder.cs" />
+    <Compile Include="src\Dynamic\CacheableInvocation.cs" />
+    <Compile Include="src\Dynamic\IActLike.cs" />
+    <Compile Include="src\Dynamic\IDynamicKnowLike.cs" />
+    <Compile Include="src\Dynamic\ImpromptuBuilder.cs" />
+    <Compile Include="src\Dynamic\ImpromptuDictionary.cs" />
+    <Compile Include="src\Dynamic\ImpromptuDictionaryBase.cs" />
+    <Compile Include="src\Dynamic\ImpromptuDummy.cs" />
+    <Compile Include="src\Dynamic\ImpromptuFactory.cs" />
+    <Compile Include="src\Dynamic\ImpromptuForwarder.cs" />
+    <Compile Include="src\Dynamic\ImpromptuForwarderAddRemove.cs" />
+    <Compile Include="src\Dynamic\ImpromptuGet.cs" />
+    <Compile Include="src\Dynamic\ImpromptuList.cs" />
+    <Compile Include="src\Dynamic\ImpromptuObject.cs" />
+    <Compile Include="src\Dynamic\ImpromptuPropertyDescriptor.cs" />
+    <Compile Include="src\Dynamic\ImpromptuRecorder.cs" />
+    <Compile Include="src\Dynamic\InlineLambdas.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InlineLambdas.tt</DependentUpon>
+    </Compile>
+    <Compile Include="src\Dynamic\Invocation.cs" />
+    <Compile Include="src\Dynamic\ThisFunctions.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ThisFunctions.tt</DependentUpon>
+    </Compile>
+    <Compile Include="src\Dynamic\UseNamedArgumentAttribute.cs" />
+    <Compile Include="src\EmitProxy\ActLikeProxy.cs" />
+    <Compile Include="src\EmitProxy\ActLikeProxyAttribute.cs" />
+    <Compile Include="src\EmitProxy\ActLikeProxySerializationHelper.cs" />
+    <Compile Include="src\EmitProxy\BuildProxy.cs" />
+    <Compile Include="src\EmitProxy\EmitExtensions.cs" />
+    <Compile Include="src\EmitProxy\TypeHash.cs" />
+    <Compile Include="src\IActLikeProxy.cs" />
+    <Compile Include="src\Impromptu.cs" />
+    <Compile Include="src\InvokeArg.cs" />
+    <Compile Include="src\InvokeContext.cs" />
+    <Compile Include="src\InvokeExt\InvokeExt.cs" />
+    <Compile Include="src\InvokeMemberName.cs" />
+    <Compile Include="src\Optimization\BareBonesList.cs" />
+    <Compile Include="src\Optimization\BinderHash.cs" />
+    <Compile Include="src\Optimization\InvokeHelper-Regular.cs" />
+    <Compile Include="src\Optimization\InvokeHelper.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>InvokeHelper.tt</DependentUpon>
+    </Compile>
+    <Compile Include="src\Optimization\Util.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

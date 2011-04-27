@@ -8,9 +8,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface", "UnitTestImpromptuInterface\UnitTestImpromptuInterface.csproj", "{A559B4F8-8D9D-4761-B2D2-BB4104760450}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface (Silverlight)", "ImpromptuInterface.Silverlight\ImpromptuInterface (Silverlight).csproj", "{9181A92F-9A17-45A3-BBDB-EAC085A901A0}"
-	ProjectSection(ProjectDependencies) = postProject
-		{DAB7C056-660A-4153-8FF2-B80A41310AD7} = {DAB7C056-660A-4153-8FF2-B80A41310AD7}
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface.Silverlight", "UnitTestImpromputInterface.Silverlight\UnitTestImpromptuInterface.Silverlight.csproj", "{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1}"
 EndProject

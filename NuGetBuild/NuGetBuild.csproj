@@ -38,11 +38,10 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="NuGet.exe">
+    <Content Include="..\packages\NuGet.CommandLine.1.3.20425.372\tools\NuGet.exe">
+      <Link>NuGet.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Content Include="Core\ImpromptuInterface.MetaData.xml" />
     <Content Include="MVVM\ImpromptuInterface.MVVM.MetaData.xml" />
   </ItemGroup>
@@ -97,6 +96,13 @@
     </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent>call $(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.tt" "$(ProjectDir)Core\ImpromptuInterface.nuspec"
+call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.Symbol.tt" "$(ProjectDir)Core\ImpromptuInterface.Symbol.nuspec"
+call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.nuspec"
+call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec"
+</PreBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

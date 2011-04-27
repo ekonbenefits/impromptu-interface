@@ -103,6 +103,12 @@ call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec"
 </PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+    <PostBuildEvent>call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

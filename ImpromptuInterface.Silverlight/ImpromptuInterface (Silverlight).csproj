@@ -194,12 +194,6 @@
     <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nuget\ImpromptuInterface.nuspec">
-      <Link>Properties\ImpromptuInterface.nuspec</Link>
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -216,7 +210,11 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="..\NuGetBuild\Core\ImpromptuInterface.MetaData.xml">
+      <Link>Properties\ImpromptuInterface.MetaData.xml</Link>
+    </Content>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

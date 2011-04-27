@@ -97,7 +97,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>call $(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.tt" "$(ProjectDir)Core\ImpromptuInterface.nuspec"
+    <PreBuildEvent>call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.tt" "$(ProjectDir)Core\ImpromptuInterface.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.Symbol.tt" "$(ProjectDir)Core\ImpromptuInterface.Symbol.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec"

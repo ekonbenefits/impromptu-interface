@@ -58,10 +58,9 @@
     <Compile Include="src\ImpropmtuCommandBinder.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">
-      <Link>Properties\ImpromptuInterface.MVVM.nuspec</Link>
-      <SubType>Designer</SubType>
-    </None>
+    <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
+      <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

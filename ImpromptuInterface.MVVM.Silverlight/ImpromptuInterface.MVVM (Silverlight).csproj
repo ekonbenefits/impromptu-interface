@@ -92,10 +92,9 @@
     <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\nuget\ImpromptuInterface.MVVM.nuspec">
-      <Link>Properties\ImpromptuInterface.MVVM.nuspec</Link>
-      <SubType>Designer</SubType>
-    </None>
+    <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
+      <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

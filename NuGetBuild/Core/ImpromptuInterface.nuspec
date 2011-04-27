@@ -18,7 +18,7 @@
     <file src="..\..\..\..\docs\License.txt" />
     <file src="..\..\..\..\docs\Readme.txt" />
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
-    <file src="..\..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
   </files>

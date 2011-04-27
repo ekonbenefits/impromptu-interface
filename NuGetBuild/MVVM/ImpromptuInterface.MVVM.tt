@@ -3,6 +3,12 @@
 <package> 
 <#@ include file="ImpromptuInterface.MVVM.MetaData.xml" #>
   <files>
- 
+    <file src="..\..\..\..\docs\License.txt" />
+    <file src="..\..\..\..\docs\Readme.MVVM.txt" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM\bin\Release\ImpromptuInterface.MVVM.xml" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM\bin\Release\ImpromptuInterface.MVVM.dll" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\bin\Release\ImpromptuInterface.MVVM.xml" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\bin\Release\ImpromptuInterface.MVVM.dll" target="lib\SL40" />
+
   </files>
 </package>

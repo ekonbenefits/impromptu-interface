@@ -2,14 +2,20 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <package> 
 <#@ include file="ImpromptuInterface.MetaData.xml" #>
-  <files>
-    <file src="..\License.txt" />
-    <file src="..\Readme.txt" />
-    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
-    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
-    <file src="..\ImpromptuInterface\bin\Release\Impromptu*.pdb" target="lib\net40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
-    <file src="..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.pdb" target="lib\SL40" />
+  <files>    
+    <file src="..\..\..\..\docs\License.txt" />
+    <file src="..\..\..\..\docs\Readme.txt" />
+    <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
+    
+    <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.pdb" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.pdb" target="lib\SL40" />
+
+	
+	<file src="..\..\..\..\ImpromptuInterface\src\**\*" target="src\src" />
+
+	<file src="..\..\..\..\ImpromptuInterface.Silverlight\src\**\*" target="src\src" />
   </files>
 </package>

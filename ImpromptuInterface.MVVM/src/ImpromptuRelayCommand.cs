@@ -32,9 +32,9 @@ namespace ImpromptuInterface.MVVM
     public class ImpromptuRelayCommand : ICommand
     {
         private readonly object _executeTarget;
-        private readonly Invocation _executeInvoke;
+        private readonly CacheableInvocation _executeInvoke;
         private readonly object _canExecuteTarget;
-        private readonly Invocation _canExecuteInvoke;
+        private readonly CacheableInvocation _canExecuteInvoke;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuRelayCommand"/> class.
@@ -44,7 +44,7 @@ namespace ImpromptuInterface.MVVM
         public ImpromptuRelayCommand(object executeTarget, String_OR_InvokeMemberName executeName)
         {
             _executeTarget = executeTarget;
-            _executeInvoke = new Invocation(InvocationKind.InvokeMemberAction, executeName);
+            _executeInvoke = new CacheableInvocation(InvocationKind.InvokeMemberAction, executeName,1);
         }
        
 
@@ -59,19 +59,19 @@ namespace ImpromptuInterface.MVVM
             :this(executeTarget, executeName)
         {
             _canExecuteTarget = canExecuteTarget;
-            _canExecuteInvoke = new Invocation(InvocationKind.InvokeMember, canExecuteName);
+            _canExecuteInvoke = new CacheableInvocation(InvocationKind.InvokeMember, canExecuteName ,1);
         }
 
         public void Execute(object parameter)
         {
-            _executeInvoke.InvokeWithArgs(_executeTarget, parameter);
+            _executeInvoke.Invoke(_executeTarget, parameter);
         }
 
         public bool CanExecute(object parameter)
         {
             if (_canExecuteTarget == null)
                 return true;
-            return (bool)_canExecuteInvoke.InvokeWithArgs(_canExecuteTarget, parameter);
+            return (bool)_canExecuteInvoke.Invoke(_canExecuteTarget, parameter);
         }
 
 

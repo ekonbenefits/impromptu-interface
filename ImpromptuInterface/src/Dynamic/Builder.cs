@@ -159,7 +159,7 @@ namespace ImpromptuInterface.Dynamic
         public virtual dynamic Create()
         {
             object[] tArgs = Arguments();
-            return Impromptu.InvokeConstuctor(Type, tArgs);
+            return Impromptu.InvokeConstructor(Type, tArgs);
         }
     }
 
@@ -201,7 +201,7 @@ namespace ImpromptuInterface.Dynamic
             }
             catch (MissingMethodException)
             {
-                tObjectPrototype = Impromptu.InvokeConstuctor(typeof(TObjectPrototype));
+                tObjectPrototype = Impromptu.InvokeConstructor(typeof(TObjectPrototype));
             }
             return tObjectPrototype;
         }

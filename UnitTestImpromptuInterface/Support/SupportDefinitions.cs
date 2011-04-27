@@ -198,6 +198,7 @@ namespace UnitTestImpromptuInterface
 
         public Guid Prop3 { get;set; }
 
+        public int Event { get; set; }
 	}
 
 

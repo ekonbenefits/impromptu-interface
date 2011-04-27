@@ -63,6 +63,9 @@ namespace ImpromptuInterface.Optimization
 
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {
+            if (result is ImpromptuForwarderAddRemove) //Don't massage AddRemove Proxies
+                return true;
+
             Type tType;
             var tTryType = target.TryTypeForName(binderName, out tType);
             if (tTryType && tType == typeof(void))
@@ -115,7 +118,7 @@ namespace ImpromptuInterface.Optimization
                     }
                     else if (result == null && tType.IsValueType)
                     {
-                        result = Impromptu.InvokeConstuctor(tType);
+                        result = Impromptu.InvokeConstructor(tType);
                     }
                 }
             }
@@ -129,7 +132,7 @@ namespace ImpromptuInterface.Optimization
                 }
                 if (tType.IsValueType)
                 {
-                    result = Impromptu.InvokeConstuctor(tType);
+                    result = Impromptu.InvokeConstructor(tType);
                 }
             }
             return true;

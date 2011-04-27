@@ -53,6 +53,9 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tExpando.Test);
 
         }
+
+ 
+
 		     [Test,TestMethod]
         public void TestPocoSet()
         {
@@ -67,19 +70,34 @@ namespace UnitTestImpromptuInterface
         }
 
              [Test, TestMethod]
-             public void TestPocoSetNull()
+             public void TestCacheableDyanmicSetAndPocoSetAndSetNull()
              {
-                 var tPoco = new PropPoco(){Prop1 = "Test default"};
+                 dynamic tExpando = new ExpandoObject();
+                 var tSetValueD = "4";
 
-                 String tSetValue = null;
 
+                 var tCachedInvoke = new CacheableInvocation(InvocationKind.Set, "Prop1");
 
-                 Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
+                 tCachedInvoke.Invoke((object)tExpando, tSetValueD);
+             
+
+                 Assert.AreEqual(tSetValueD, tExpando.Prop1);
+
+                 var tPoco = new PropPoco();
+                 var tSetValue = "1";
+
+                 tCachedInvoke.Invoke(tPoco, tSetValue);
 
                  Assert.AreEqual(tSetValue, tPoco.Prop1);
+                 
+                 String tSetValue2 = null;
 
+                 tCachedInvoke.Invoke(tPoco, tSetValue2);
 
+                 Assert.AreEqual(tSetValue2, tPoco.Prop1);
              }
+
+      
         
         [Test, TestMethod]
         public void TestConvert()
@@ -93,9 +111,22 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestConvertCacheable()
+        {
+            var tEl = new XElement("Test", "45");
+
+            var tCacheInvoke = new CacheableInvocation(InvocationKind.Convert, convertType: typeof (int),
+                                                       convertExplict: true);
+            var tCast = tCacheInvoke.Invoke(tEl);
+
+            Assert.AreEqual(typeof(int), tCast.GetType());
+            Assert.AreEqual(45, tCast);
+        }
+
+        [Test, TestMethod]
         public void TestConstruct()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof (List<object>), new object[]
+            var tCast = Impromptu.InvokeConstructor(typeof (List<object>), new object[]
                                                                               {
                                                                                   new string[] {"one", "two", "three"}
                                                                               });
@@ -103,10 +134,25 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("two", tCast[1]);
         }
 
+
+        [Test, TestMethod]
+        public void TestCacheableConstruct()
+        {
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor, argCount: 1);
+
+            dynamic tCast = tCachedInvoke.Invoke(typeof(List<object>), new object[]
+                                                                              {
+                                                                                  new string[] {"one", "two", "three"}
+                                                                              });
+
+            Assert.AreEqual("two", tCast[1]);
+        }
+
+
         [Test, TestMethod]
         public void TestConstructOptional()
         {
-            PocoOptConstructor tCast = Impromptu.InvokeConstuctor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
+            PocoOptConstructor tCast = Impromptu.InvokeConstructor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
 
             Assert.AreEqual("-1", tCast.One);
             Assert.AreEqual("-2", tCast.Two);
@@ -114,23 +160,54 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestOptionalArgumentActivationNone()
+        public void TestCacheableConstructOptional()
+        {
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor, argCount: 1, argNames:new[]{"three"});
+
+            var tCast = (PocoOptConstructor)tCachedInvoke.Invoke(typeof(PocoOptConstructor), "3");
+
+            Assert.AreEqual("-1", tCast.One);
+            Assert.AreEqual("-2", tCast.Two);
+            Assert.AreEqual("3", tCast.Three);
+        }
+
+        [Test, TestMethod]
+        public void TestOptionalArgumentActivationNoneAndCacheable()
             {
                 AssertException<MissingMethodException>(() => Activator.CreateInstance<ImpromptuList>());
 
-               var tList= Impromptu.InvokeConstuctor(typeof (ImpromptuList));
+               var tList= Impromptu.InvokeConstructor(typeof (ImpromptuList));
 
 
                Assert.AreEqual(typeof(ImpromptuList),tList.GetType());
+
+               var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
+
+               var tList1 = tCachedInvoke.Invoke(typeof(ImpromptuList));
+
+
+               Assert.AreEqual(typeof(ImpromptuList), tList1.GetType());
           }
 
+   
 
         [Test, TestMethod]
         public void TestConstructValueType()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime), 2009,1,20);
+            var tCast = Impromptu.InvokeConstructor(typeof(DateTime), 2009,1,20);
 
             Assert.AreEqual(20, tCast.Day);
+
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableConstructValueType()
+        {
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor, argCount: 3);
+            dynamic tCast = tCachedInvoke.Invoke(typeof(DateTime), 2009, 1, 20);
+
+            Assert.AreEqual(20, tCast.Day);
+
         }
 		
 		     [Test, TestMethod]
@@ -147,7 +224,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructprimativetype()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Int32));
+            var tCast = Impromptu.InvokeConstructor(typeof(Int32));
 
             Assert.AreEqual(default(Int32), tCast);
         }
@@ -156,7 +233,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructDateTimeNoParams()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(DateTime));
+            var tCast = Impromptu.InvokeConstructor(typeof(DateTime));
 
             Assert.AreEqual(default(DateTime), tCast);
         }
@@ -164,7 +241,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructOBjectNoParams()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(object));
+            var tCast = Impromptu.InvokeConstructor(typeof(object));
 
             Assert.AreEqual(typeof(object), tCast.GetType());
         }
@@ -172,7 +249,7 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructNullableprimativetype()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Nullable<Int32>));
+            var tCast = Impromptu.InvokeConstructor(typeof(Nullable<Int32>));
 
             Assert.AreEqual(null, tCast);
         }
@@ -180,10 +257,41 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestConstructGuid()
         {
-            var tCast = Impromptu.InvokeConstuctor(typeof(Guid));
+            var tCast = Impromptu.InvokeConstructor(typeof(Guid));
 
             Assert.AreEqual(default(Guid), tCast);
         }
+          
+        [Test, TestMethod]
+        public void TestCacheablePrimativeDateTimeObjectNullableAndGuidNoParams()
+        {
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
+
+            dynamic tCast = tCachedInvoke.Invoke(typeof(Int32));
+
+            Assert.AreEqual(default(Int32), tCast);
+
+            tCast = tCachedInvoke.Invoke(typeof(DateTime));
+
+            Assert.AreEqual(default(DateTime), tCast);
+
+            tCast = tCachedInvoke.Invoke(typeof(List<string>));
+
+            Assert.AreEqual(typeof(List<string>), tCast.GetType());
+
+            tCast = tCachedInvoke.Invoke(typeof(object));
+
+            Assert.AreEqual(typeof(object), tCast.GetType());
+
+            tCast = tCachedInvoke.Invoke(typeof(Nullable<Int32>));
+
+            Assert.AreEqual(null, tCast);
+
+            tCast = tCachedInvoke.Invoke(typeof(Guid));
+
+            Assert.AreEqual(default(Guid), tCast);
+        }
+
 
         [Test, TestMethod]
         public void TestStaticCall()
@@ -197,6 +305,18 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheableStaticCall()
+        {
+            dynamic i = 1;
+
+            var tCached = new CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(typeof (bool)), argCount: 1,
+                                    context: typeof (StaticType).WithStaticContext());
+
+            var tOut = tCached.Invoke(typeof(StaticType), 1);
+            Assert.AreEqual(false, tOut);
+        }
+
+        [Test, TestMethod]
         public void TestImplicitConvert()
         {
             var tEl = 45;
@@ -207,15 +327,37 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestGetStatic()
+        public void TestCacheableImplicitConvert()
         {
-            
+            var tEl = 45;
+
+            var tCachedInvoke = CacheableInvocation.CreateConvert(typeof (long));
+
+            var tCast = tCachedInvoke.Invoke(tEl);
+
+            Assert.AreEqual(typeof(long), tCast.GetType());
+        }
+
+
+        [Test, TestMethod]
+        public void TestCacheableGet()
+        {
+            var tCached =new CacheableInvocation(InvocationKind.Get, "Prop1");
+
             var tSetValue = "1";
-            var tAnon = new { Test = tSetValue };
+            var tAnon = new PropPoco{ Prop1 = tSetValue };
 
-            var tOut =Impromptu.InvokeGet(tAnon, "Test");
-
+            var tOut = tCached.Invoke(tAnon);
             Assert.AreEqual(tSetValue, tOut);
+
+            var tSetValue2 = "2";
+            tAnon = new PropPoco { Prop1 = tSetValue2 };
+
+
+            var tOut2 = tCached.Invoke(tAnon);
+
+
+            Assert.AreEqual(tSetValue2, tOut2);
 
         }
 
@@ -233,6 +375,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
+ 
         [Test, TestMethod]
         public void TestGetIndexerValue()
         {
@@ -246,6 +389,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon[1], tOut);
 
         }
+
 
         [Test, TestMethod]
         public void TestGetLengthArray()
@@ -262,8 +406,6 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestGetIndexerArray()
         {
-			
-			
             dynamic tSetValue = "1";
             var tAnon = new List<string> { tSetValue, "2" };
      
@@ -274,6 +416,44 @@ namespace UnitTestImpromptuInterface
 
         }
 
+
+        [Test, TestMethod]
+        public void TestCacheableIndexer()
+        {
+
+            var tStrings = new[] { "1", "2" };
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.GetIndex, argCount: 1);
+
+            var tOut = (string)tCachedInvoke.Invoke(tStrings, 0);
+
+            Assert.AreEqual(tStrings[0], tOut);
+
+            var tOut2 = (string)tCachedInvoke.Invoke(tStrings, 1);
+
+            Assert.AreEqual(tStrings[1], tOut2);
+
+            var tInts = new int[] { 3, 4 };
+
+            var tOut3 = (int)tCachedInvoke.Invoke(tInts, 0);
+
+            Assert.AreEqual(tInts[0], tOut3);
+
+            var tOut4 = (int)tCachedInvoke.Invoke(tInts, 1);
+
+            Assert.AreEqual(tInts[1], tOut4);
+
+            var tList = new List<string> { "5", "6" };
+
+            var tOut5 = (string)tCachedInvoke.Invoke(tList, 0);
+
+            Assert.AreEqual(tList[0], tOut5);
+
+            var tOut6 = (string)tCachedInvoke.Invoke(tList, 0);
+
+            Assert.AreEqual(tList[0], tOut6);
+        }
+
         [Test, TestMethod]
         public void TestSetIndexer()
         {
@@ -281,17 +461,27 @@ namespace UnitTestImpromptuInterface
             dynamic tSetValue = "3";
             var tAnon =  new List<string> { "1", "2" };
 
-            dynamic index = 0;
-            dynamic tDyn = tAnon;
-
-
             Impromptu.InvokeSetIndex(tAnon, 0, tSetValue);
 
             Assert.AreEqual(tSetValue, tAnon[0]);
 
         }
 
-     
+        [Test, TestMethod]
+        public void TestCacheableSetIndexer()
+        {
+
+            dynamic tSetValue = "3";
+            var tList = new List<string> { "1", "2" };
+
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.SetIndex, argCount:2);
+
+            tCachedInvoke.Invoke(tList, 0, tSetValue);
+
+            Assert.AreEqual(tSetValue, tList[0]);
+
+        }
 
 
 
@@ -304,6 +494,22 @@ namespace UnitTestImpromptuInterface
             var tValue = 1;
 
             var tOut = Impromptu.InvokeMember(tExpando, "Func", tValue);
+
+            Assert.AreEqual(tValue.ToString(), tOut);
+        }
+
+
+        [Test, TestMethod]
+        public void TestCacheableMethodDynamicPassAndGetValue()
+        {
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Func = new Func<int, string>(it => it.ToString());
+
+            var tValue = 1;
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Func", 1);
+
+            var tOut = tCachedInvoke.Invoke((object) tExpando, tValue);
 
             Assert.AreEqual(tValue.ToString(), tOut);
         }
@@ -333,7 +539,33 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticOverloadingPassAndGetValueArg()
+        public void TestCachedMethodStaticOverloadingPassAndGetValue()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Func", argCount: 1);
+
+
+            var tOut = tCachedInvoke.Invoke(tPoco, tValue);
+
+            Assert.AreEqual("int", tOut);
+
+            Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
+
+
+            var tOut2 = tCachedInvoke.Invoke(tPoco, 1m);
+
+            Assert.AreEqual("object", tOut2);
+
+            var tOut3 = tCachedInvoke.Invoke(tPoco, new { Anon = 1 });
+
+            Assert.AreEqual("object", tOut3);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodPocoOverloadingPassAndGetValueArg()
         {
             var tPoco = new OverloadingMethPoco();
 
@@ -356,7 +588,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticOverloadingPassAndGetValueArgOptional()
+        public void TestMethodPocoOverloadingPassAndGetValueArgOptional()
         {
             var tPoco = new OverloadingMethPoco();
 
@@ -372,7 +604,25 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticOverloadingPass2AndGetValueArgOptional()
+        public void TestCacheableMethodPocoOverloadingPassAndGetValueArgOptional()
+        {
+            var tPoco = new OverloadingMethPoco();
+
+            var tValue = 1;
+
+            var tCachedIvnocation = new CacheableInvocation(InvocationKind.InvokeMember, "Func", argCount: 1,
+                                                            argNames: new[] {"two"});
+
+            var tOut = tCachedIvnocation.Invoke(tPoco, tValue);
+
+            Assert.AreEqual("object named", tOut);
+
+            Assert.AreEqual("object named", (object)tOut);
+        }
+
+
+        [Test, TestMethod]
+        public void TestMethodPocoOverloadingPass2AndGetValueArgOptional()
         {
             var tPoco = new OverloadingMethPoco();
 
@@ -388,7 +638,7 @@ namespace UnitTestImpromptuInterface
         }
 
          [Test, TestMethod]
-        public void TestMethodStaticOverloadingPassAndGetValueNull()
+        public void TestMethodPocoOverloadingPassAndGetValueNull()
         {
             var tPoco = new OverloadingMethPoco();
 
@@ -473,6 +723,48 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tValue, tTest);
         }
 
+        [Test, TestMethod]
+        public void TestCacheableMethodDynamicPassVoid()
+        {
+            var tTest = "Wrong";
+
+            var tValue = "Correct";
+
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Action = new Action<string>(it => tTest = it);
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMemberAction, "Action", argCount: 1);
+
+            tCachedInvoke.Invoke((object) tExpando, tValue);
+
+            Assert.AreEqual(tValue, tTest);
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableMethodDynamicUnknowns()
+        {
+            var tTest = "Wrong";
+
+            var tValue = "Correct";
+
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Action = new Action<string>(it => tTest = it);
+            tExpando.Func = new Func<string,string>(it => it);
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Action", argCount: 1);
+
+            tCachedInvoke.Invoke((object)tExpando, tValue);
+
+            Assert.AreEqual(tValue, tTest);
+
+            var tCachedInvoke2 = new CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Func", argCount: 1);
+
+            var Test2 =tCachedInvoke2.Invoke((object)tExpando, tValue);
+
+            Assert.AreEqual(tValue, Test2);
+        }
+
+
 
         [Test, TestMethod]
         public void TestMethodPocoGetValue()
@@ -522,14 +814,39 @@ namespace UnitTestImpromptuInterface
             var tOut = Impromptu.InvokeGet(tExpando, "Test");
 
             Assert.AreEqual(tSetValue, tOut);
-
         }
+
+        [Test, TestMethod]
+        public void TestCacheableGetDynamic()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Test = tSetValue;
+
+            var tCached = new CacheableInvocation(InvocationKind.Get, "Test");
+
+            var tOut = tCached.Invoke((object) tExpando);
+
+            Assert.AreEqual(tSetValue, tOut);
+        }
+
         [Test, TestMethod]
         public void TestStaticGet()
         {
             var tDate = Impromptu.InvokeGet(typeof(DateTime).WithStaticContext(), "Today");
             Assert.AreEqual(DateTime.Today, tDate);
         }
+
+        [Test, TestMethod]
+        public void TestCacheableStaticGet()
+        {
+            var tCached = new CacheableInvocation(InvocationKind.Get, "Today", context: typeof(DateTime).WithStaticContext());
+
+            var tDate = tCached.Invoke(typeof(DateTime));
+            Assert.AreEqual(DateTime.Today, tDate);
+        }
+
 
         [Test, TestMethod]
         public void TestStaticGet2()
@@ -547,6 +864,17 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheableStaticSet()
+        {
+            int tValue = 12;
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Set, "TestSet",
+                                                        context: typeof (StaticType).WithStaticContext());
+            tCachedInvoke.Invoke(typeof(StaticType), tValue);
+            Assert.AreEqual(tValue, StaticType.TestSet);
+        }
+
+        [Test, TestMethod]
         public void TestStaticDateTimeMethod()
         {
             object tDateDyn = "01/20/2009";
@@ -554,6 +882,15 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(new DateTime(2009,1,20), tDate);
         }
 
+        [Test, TestMethod]
+        public void TestCacheableStaticDateTimeMethod()
+        {
+            object tDateDyn = "01/20/2009";
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1,
+                                                        context: typeof (DateTime).WithStaticContext());
+            var tDate = tCachedInvoke.Invoke(typeof(DateTime), tDateDyn);
+            Assert.AreEqual(new DateTime(2009, 1, 20), tDate);
+        }
         
         [Test, TestMethod]
         public void TestActionDynamicEvent()
@@ -572,6 +909,26 @@ namespace UnitTestImpromptuInterface
             var tResult = Impromptu.InvokeIsEvent(tPoco, "Event");
 
             Assert.AreEqual(true, tResult);
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableIsEventAndIsNotEvent()
+        {
+            object tPoco = new PocoEvent();
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.IsEvent, "Event");
+
+            var tResult = tCachedInvoke.Invoke(tPoco);
+
+            Assert.AreEqual(true, tResult);
+
+            dynamic tDynamic = new ImpromptuDictionary();
+
+            tDynamic.Event = null;
+
+            var tResult2 = tCachedInvoke.Invoke((object) tDynamic);
+
+            Assert.AreEqual(false, tResult2);
         }
 
          [Test, TestMethod]
@@ -625,6 +982,27 @@ namespace UnitTestImpromptuInterface
          }
 
          [Test, TestMethod]
+         public void TestCacheablePocoAddAssign()
+         {
+             var tPoco = new PocoEvent();
+             bool tTest = false;
+
+             var tCachedInvoke = new CacheableInvocation(InvocationKind.AddAssign, "Event");
+
+             tCachedInvoke.Invoke(tPoco, new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+
+             tPoco.OnEvent(null, null);
+
+             Assert.AreEqual(true, tTest);
+
+             var tPoco2 = new PropPoco() { Event = 3 };
+
+             tCachedInvoke.Invoke(tPoco2, 4);
+
+             Assert.AreEqual(7L, tPoco2.Event);
+         }
+
+         [Test, TestMethod]
          public void TestPocoSubtractAssign()
          {
              var tPoco = new PocoEvent();
@@ -649,6 +1027,32 @@ namespace UnitTestImpromptuInterface
          }
 
          [Test, TestMethod]
+         public void TestCacheablePocoSubtractAssign()
+         {
+             var tPoco = new PocoEvent();
+             bool tTest = false;
+             var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
+
+             var tCachedInvoke = new CacheableInvocation(InvocationKind.SubtractAssign, "Event");
+
+             tPoco.Event += tEvent;
+
+             tCachedInvoke.Invoke(tPoco, tEvent);
+
+             tPoco.OnEvent(null, null);
+
+             Assert.AreEqual(false, tTest);
+
+             tCachedInvoke.Invoke(tPoco, tEvent);//Test Second Time
+
+             var tPoco2 = new PropPoco() { Event = 3 };
+
+             tCachedInvoke.Invoke(tPoco2, 4);
+
+             Assert.AreEqual(-1, tPoco2.Event);
+         }
+
+         [Test, TestMethod]
          public void TestDynamicAddAssign()
          {
              var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
@@ -663,6 +1067,26 @@ namespace UnitTestImpromptuInterface
              Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4);
 
              Assert.AreEqual(7L, tDyanmic.Prop2);
+         }
+
+         [Test, TestMethod]
+         public void TestCacheableDynamicAddAssign()
+         {
+             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic2 = Build.NewObject(Event: 3);
+             bool tTest = false;
+
+             var tCachedInvoke = new CacheableInvocation(InvocationKind.AddAssign, "Event");
+
+             tCachedInvoke.Invoke((object) tDyanmic, new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+
+             tDyanmic.OnEvent(null, null);
+
+             Assert.AreEqual(true, tTest);
+
+             tCachedInvoke.Invoke((object)tDynamic2, 4);
+
+             Assert.AreEqual(7, tDynamic2.Event);
          }
 
          [Test, TestMethod]
@@ -686,6 +1110,31 @@ namespace UnitTestImpromptuInterface
              Assert.AreEqual(-1L, tDyanmic.Prop2);
          }
 
+
+         [Test, TestMethod]
+         public void TestCacheableDynamicSubtractAssign()
+         {
+             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic2 = Build.NewObject(Event: 3);
+
+             bool tTest = false;
+             var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
+           
+             var tCachedInvoke = new CacheableInvocation(InvocationKind.SubtractAssign, "Event");
+
+             tDyanmic.Event += tEvent;
+
+             tCachedInvoke.Invoke((object) tDyanmic, tEvent);
+
+             tDyanmic.OnEvent(null, null);
+
+             Assert.AreEqual(false, tTest);
+
+
+             tCachedInvoke.Invoke((object)tDynamic2, 4);
+
+             Assert.AreEqual(-1, tDynamic2.Event);
+         }
     }
     
 }

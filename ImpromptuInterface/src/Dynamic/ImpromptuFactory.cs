@@ -47,7 +47,7 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         protected virtual object CreateType(Type type)
         {
-            return Impromptu.InvokeConstuctor(type);
+            return Impromptu.InvokeConstructor(type);
         }
 
         /// <summary>

@@ -78,7 +78,7 @@ namespace ImpromptuInterface.Dynamic
         {
             foreach (var tInvocation in Recording)
             {
-                tInvocation.Invoke(target);
+                tInvocation.InvokeWithStoredArgs(target);
             }
 
             return target;

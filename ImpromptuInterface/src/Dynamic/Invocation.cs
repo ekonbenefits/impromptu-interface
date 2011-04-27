@@ -33,7 +33,7 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         NotSet=0,
         /// <summary>
-        /// Convert, Implicit or Explict depending on arguments
+        /// Convert Implicit or Explicity
         /// </summary>
         Convert,
         /// <summary>
@@ -82,6 +82,7 @@ namespace ImpromptuInterface.Dynamic
         IsEvent,
     }
 
+
     /// <summary>
     /// Storable representation of an invocation without the target
     /// </summary>
@@ -126,17 +127,16 @@ namespace ImpromptuInterface.Dynamic
         /// <value>The args.</value>
         public object[] Args { get; protected set; }
 
-
         /// <summary>
         /// Creates the invocation.
         /// </summary>
         /// <param name="kind">The kind.</param>
         /// <param name="name">The name.</param>
-        /// <param name="args">The args.</param>
+        /// <param name="storedArgs">The args.</param>
         /// <returns></returns>
-        public static Invocation Create(InvocationKind kind, String_OR_InvokeMemberName name, params object[] args)
+        public static Invocation Create(InvocationKind kind, String_OR_InvokeMemberName name, params object[] storedArgs)
         {
-            return new Invocation(kind,name,args);
+            return new Invocation(kind,name,storedArgs);
         }
 
         /// <summary>
@@ -144,12 +144,12 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         /// <param name="kind">The kind.</param>
         /// <param name="name">The name.</param>
-        /// <param name="args">The args.</param>
-        public Invocation(InvocationKind kind, String_OR_InvokeMemberName name, params object[] args)
+        /// <param name="storedArgs">The args.</param>
+        public Invocation(InvocationKind kind, String_OR_InvokeMemberName name, params object[] storedArgs)
         {
             Kind = kind;
             Name = name;
-            Args = args;
+            Args = storedArgs;
         }
 
 
@@ -159,12 +159,12 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="target">The target.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-        public object InvokeWithArgs(object target, params object[] args)
+        public virtual object Invoke(object target, params object[] args)
         {
             switch (Kind)
             {
                 case InvocationKind.Constructor:
-                    return Impromptu.InvokeConstuctor((Type)target, args);
+                    return Impromptu.InvokeConstructor((Type)target, args);
                 case InvocationKind.Convert:
                     bool tExplict = false;
                     if (Args.Length == 2)
@@ -211,16 +211,26 @@ namespace ImpromptuInterface.Dynamic
             }
 
         }
-
-
+        /// <summary>
+        /// Deprecated use <see cref="Invoke"/>
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        [Obsolete("Use Invoke instead")]
+        public object InvokeWithArgs(object target, params object[] args)
+        {
+            return Invoke(target, args);
+        }
+      
         /// <summary>
         /// Invokes the invocation on specified target.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns></returns>
-        public object Invoke(object target)
+        public virtual object InvokeWithStoredArgs(object target)
         {
-            return InvokeWithArgs(target, Args);
+            return Invoke(target, Args);
         }
     }
 }

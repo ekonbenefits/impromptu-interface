@@ -390,7 +390,7 @@ namespace ImpromptuInterface.Dynamic
                 }
                 catch (MissingMethodException)
                 {
-                    result = Impromptu.InvokeConstuctor(typeof (TObjectProtoType));
+                    result = Impromptu.InvokeConstructor(typeof (TObjectProtoType));
                 }
 
             }

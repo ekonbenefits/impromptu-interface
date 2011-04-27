@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.InvokeExt;
 
 #if SILVERLIGHT
@@ -48,6 +49,27 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+
+        [Test, TestMethod]
+        public void TestCacheableSetTimed()
+        {
+            var tPoco = new PropPoco();
+
+            var tSetValue = "1";
+
+            var tCacheable = new CacheableInvocation(InvocationKind.Set, "Prop1");
+            var tWatch = TimeIt.Go(() => tCacheable.Invoke(tPoco, tSetValue), 500000);
+            var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
+
+
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
         [Test, TestMethod]
         public void TestSetNullTimed()
         {
@@ -65,7 +87,25 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        
+        [Test, TestMethod]
+        public void TestCacheableSetNullTimed()
+        {
+            var tPoco = new PropPoco();
+
+            String tSetValue = null;
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Set, "Prop1");
+            var tWatch = TimeIt.Go(() => tCachedInvoke.Invoke(tPoco, tSetValue), 500000);
+            var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+
         [Test, TestMethod]
         public void TestPropPocoGetValueTimed()
         {
@@ -92,6 +132,32 @@ namespace UnitTestImpromptuInterface
         }
 
 
+
+        [Test, TestMethod]
+        public void TestCacheableGetValueTimed()
+        {
+
+
+
+            var tSetValue = "1";
+            var tAnon = new PropPoco() {Prop1 = tSetValue};
+
+
+            var tInvoke = new CacheableInvocation(InvocationKind.Get, "Prop1");
+            var tWatch = TimeIt.Go(() => { var tOut = tInvoke.Invoke(tAnon); }, 500000);
+
+            var tPropertyInfo = tAnon.GetType().GetProperty("Prop1");
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tPropertyInfo.GetValue(tAnon, null);
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
         [Test, TestMethod]
         public void TestConstructorTimed()
         {
@@ -100,7 +166,7 @@ namespace UnitTestImpromptuInterface
            
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(Tuple<string>), "Test" ); });
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(Tuple<string>), "Test" ); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(Tuple<string>),"Test");
@@ -113,16 +179,40 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestConstructorNoARgTimed()
+        public void TestCacheableConstructorTimed()
         {
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(List<string>)); });
+
+
+
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor, argCount: 1);
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(typeof(Tuple<string>), "Test"); });
             var tWatch2 = TimeIt.Go(() =>
             {
-                var tOut = Activator.CreateInstance(typeof(List<string>));
+                var tOut = Activator.CreateInstance(typeof(Tuple<string>), "Test");
             });
 
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
             TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestConstructorNoARgTimed()
+        {
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(List<string>)); });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(List<string>));
+            });
+            var tWatch3 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance<List<string>>();
+            });
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Refelection Generic: " + tWatch3.Elapsed);
             TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
 
             Assert.Ignore("I don't think this is beatable at the moment");
@@ -130,16 +220,22 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestConstructorNoARgTimedKnownType()
+        public void TestCachableConstructorNoARgTimed()
         {
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(List<string>)); });
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(typeof(List<string>)); });
             var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(List<string>));
+            });
+            var tWatch3 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance<List<string>>();
             });
 
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
             TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Refelection Generic: " + tWatch3.Elapsed);
             TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
 
             Assert.Ignore("I don't think this is beatable at the moment");
@@ -154,7 +250,26 @@ namespace UnitTestImpromptuInterface
 
             var tIter = 1000000;
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstuctor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);
+            }, tIter);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestCachedConstructorValueTypeTimed()
+        {
+
+
+            var tIter = 1000000;
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor, argCount: 3);
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(typeof(DateTime), 2010, 1, 20); }, tIter);
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);
@@ -190,6 +305,28 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheablePocoGetValueTimed()
+        {
+
+
+            var tValue = 1;
+
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember,"ToString");
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(tValue); }, 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("ToString", new Type[] { });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { });
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
         public void TestGetStaticTimed()
         {
 
@@ -212,11 +349,33 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestMethodStaticMethodValueTimed()
+        public void TestCacheableGetStaticTimed()
         {
 
+            var tStaticType = typeof(DateTime);
+            var tContext = tStaticType.WithStaticContext();
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.Get, "Today", context: tContext);
 
+            var tWatch = TimeIt.Go(() =>
+                                       {
+                                           var tOut = tCachedInvoke.Invoke(tStaticType);
+                                       }, 500000);
+            var tMethodInfo = typeof(DateTime).GetProperty("Today").GetGetMethod();
 
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType, new object[] { });
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestMethodStaticMethodValueTimed()
+        {
 
             var tStaticType = typeof (DateTime);
             var tTarget = tStaticType.WithStaticContext();
@@ -226,6 +385,29 @@ namespace UnitTestImpromptuInterface
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = tMethodInfo.Invoke(tStaticType,new object[]{tDate});
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Refelection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableMethodStaticMethodValueTimed()
+        {
+
+            var tStaticType = typeof(DateTime);
+            var tContext = tStaticType.WithStaticContext();
+            string tDate = "01/20/2009";
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Parse", argCount: 1,
+                                                        context: tContext);
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(tStaticType, tDate); }, 500000);
+            var tMethodInfo = typeof(DateTime).GetMethod("Parse", new[] { typeof(string) });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tStaticType, new object[] { tDate });
             }, 500000);
 
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
@@ -259,6 +441,34 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestCacheableMethodPocoGetValuePassNullTimed()
+        {
+#if DEBUG
+            Assert.Ignore("Visual Studio slows down dynamic too much in debug mode");
+#endif
+
+            var tValue = new OverloadingMethPoco();
+
+
+            var tInteration = 1000000;
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Func", argCount:1);
+
+            var tWatch = TimeIt.Go(() => { var tOut = tCachedInvoke.Invoke(tValue, null); }, tInteration);
+            var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { null });
+            }, tInteration);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+
+        [Test, TestMethod]
         public void TestMethodPocoGetValuePassNullDoubleCallTimed()
         {
 #if DEBUG
@@ -271,6 +481,33 @@ namespace UnitTestImpromptuInterface
             var tWatch = TimeIt.Go(() => { 
                 var tOut = Impromptu.InvokeMember(tValue, "Func", null); 
                 var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, tInteration);
+
+            var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
+            var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { null });
+                var tOut2 = tMethodInfo2.Invoke(tValue, new object[] { 2 });
+            }, tInteration);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableMethodPocoGetValuePassNullDoubleCallTimed()
+        {
+            var tValue = new OverloadingMethPoco();
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Func", 1);
+            var tInteration = 500000;
+            var tWatch = TimeIt.Go(() =>
+            {
+                var tOut = tCachedInvoke.Invoke(tValue, null);
+                var tOut2 = tCachedInvoke.Invoke(tValue, 2);
+            }, tInteration);
 
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
             var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
@@ -308,6 +545,30 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+        [Test, TestMethod]
+        public void TestCacheableMethodPocoGetValue4argsTimed()
+        {
+
+
+            var tValue = "test 123 45 string";
+
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "IndexOf", 4);
+            var tWatch = TimeIt.Go(() =>
+                                       {
+                                           var tOut = tCachedInvoke.Invoke(tValue,"45", 0, 14, StringComparison.InvariantCulture);
+                                       }, 500000);
+            var tMethodInfo = tValue.GetType().GetMethod("IndexOf", new Type[] { typeof(string), typeof(int), typeof(int), typeof(StringComparison) });
+            var tWatch2 = TimeIt.Go(() =>
+            {
+                var tOut = tMethodInfo.Invoke(tValue, new object[] { "45", 0, 14, StringComparison.InvariantCulture });
+            }, 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
  
 
         [Test, TestMethod]
@@ -322,6 +583,25 @@ namespace UnitTestImpromptuInterface
             var tWatch = TimeIt.Go(() => Impromptu.InvokeMemberAction(tValue, "Clear"), 500000);
             var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
             var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }), 500000);
+
+            TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
+            TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);
+            TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
+            Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableMethodPocoVoidTimed()
+        {
+
+
+            var tValue = new Dictionary<object, object>();
+
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMemberAction, "Clear");
+
+            var tWatch = TimeIt.Go(() => tCachedInvoke.Invoke(tValue));
+            var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
+            var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }));
 
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
             TestContext.WriteLine("Reflection: " + tWatch2.Elapsed);

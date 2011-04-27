@@ -1,1 +1,1 @@
-nuget.exe ImpromptuInterface <apikey> -source http://nuget.gw.symbolsource.org/Public/NuGet
+nuget.exe <pkg> <apikey> -source http://nuget.gw.symbolsource.org/Public/NuGet

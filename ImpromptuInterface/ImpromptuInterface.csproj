@@ -67,7 +67,6 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ThisFunctions.cs</LastGenOutput>
     </None>
-    <None Include="src\EmitProxy\BuildProxy.cs.orig" />
     <None Include="src\Optimization\InvokeHelper.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>InvokeHelper.cs</LastGenOutput>

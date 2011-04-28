@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Optimization;
@@ -23,6 +24,21 @@ namespace ImpromptuInterface.Dynamic
             return new CacheableInvocation(InvocationKind.Convert, convertType: convertType, convertExplict: convertExplict);
         }
 
+        /// <summary>
+        /// Creates the cacheable method or indexer or property call.
+        /// </summary>
+        /// <param name="kind">The kind.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="callinfo">The callinfo.</param>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public static CacheableInvocation CreateCall(InvocationKind kind, String_OR_InvokeMemberName name = null, CallInfo callinfo = null,object context = null)
+        {
+            var tArgCount = callinfo != null ? callinfo.ArgumentCount : 0;
+            var tArgNames = callinfo != null ? callinfo.ArgumentNames.ToArray() : null;
+
+            return new CacheableInvocation(kind, name, tArgCount, tArgNames, context);
+        }
 
         private readonly int _argCount;
         private readonly string[] _argNames;
@@ -34,6 +50,9 @@ namespace ImpromptuInterface.Dynamic
         private CallSite _callSite4;
         private bool _convertExplict;
         private Type _convertType;
+
+     
+
         /// <summary>
         /// Initializes a new instance of the <see cref="CacheableInvocation"/> class.
         /// </summary>
@@ -137,7 +156,26 @@ namespace ImpromptuInterface.Dynamic
 
             if (args.Length != _argCount)
             {
-                throw new ArgumentException("args",string.Format("Incorrect number of Arguments for CachedInvocation, Expected:{0}", _argCount));
+                switch (Kind)
+                {
+                    case InvocationKind.Convert:
+                        if (args.Length > 0)
+                        {
+                            if (!Equals(args[0], _convertType))
+                                throw new ArgumentException("CacheableInvocation can't change conversion type on invoke.", "args");
+                        }
+                        if (args.Length > 1)
+                        {
+                            if(!Equals(args[1], _convertExplict))
+                                throw new ArgumentException("CacheableInvocation can't change explict/implict conversion on invoke.", "args");
+                        }
+
+                        if(args.Length > 2)
+                            goto default;
+                        break;
+                    default:
+                        throw new ArgumentException("args", string.Format("Incorrect number of Arguments for CachedInvocation, Expected:{0}", _argCount));
+                }
             }
 
             switch (Kind)

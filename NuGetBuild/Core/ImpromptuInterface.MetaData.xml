@@ -6,7 +6,7 @@
   <description>A Lightweight Duck Casting Framework for dynamic C# 4.0 (.net4 &amp; silverlight4). Includes helper methods for dynamic invocation via method and property names known only at runtime (runs faster than reflection).</description>
   <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
   <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-  <tags>ducktyping duckcasting dynamic .net40 silverlight proxy impromptu interface</tags>
+  <tags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr</tags>
   <language>en-US</language>
   <frameworkAssemblies>
     <frameworkAssembly assemblyName="Microsoft.CSharp" />

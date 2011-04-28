@@ -345,7 +345,7 @@ namespace ImpromptuInterface.Optimization
             }
 
 
-            if (isValueType)
+            if (isValueType || Util.IsMono)
             {
                 CallSite tDummy =null;
                 return DynamicInvokeStaticMember(type, ref tDummy, tBinder, Invocation.ConstructorBinderName, true, type,

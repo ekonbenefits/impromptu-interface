@@ -296,8 +296,6 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestStaticCall()
         {
-            dynamic i = 1;
-
             
             var tOut = Impromptu.InvokeMember(typeof (StaticType).WithStaticContext(),
                                               "Create".WithGenericArgs(typeof(bool)), 1);
@@ -307,7 +305,6 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestCacheableStaticCall()
         {
-            dynamic i = 1;
 
             var tCached = new CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(typeof (bool)), argCount: 1,
                                     context: typeof (StaticType).WithStaticContext());

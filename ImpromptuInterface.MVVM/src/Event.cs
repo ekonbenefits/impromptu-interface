@@ -207,11 +207,19 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public class EventBinder:DynamicObject
     {
+        /// <summary>
+        /// Gets or sets the target.
+        /// </summary>
+        /// <value>The target.</value>
         public object Target { get; protected set; }
         private Lazy<EventBinderTo> Child;
         private IDictionary<string,string> List= new Dictionary<string, string>();
         private string _lastKey;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="EventBinder"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
         public EventBinder(object target)
         {
             Target = target;

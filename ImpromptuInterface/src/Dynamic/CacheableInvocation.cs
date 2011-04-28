@@ -125,18 +125,23 @@ namespace ImpromptuInterface.Dynamic
                     _argCount = Math.Max(argCount, _argNames.Length);
                     break;
             }
-            
-            if(_argCount > 0)//setup argname array
+
+            if (_argCount > 0)//setup argname array
             {
                 var tBlank = new string[_argCount];
-                if(_argNames.Length !=0)
-                    Array.Copy(_argNames,0, tBlank, tBlank.Length - _argNames.Length, tBlank.Length);
+                if (_argNames.Length != 0)
+                    Array.Copy(_argNames, 0, tBlank, tBlank.Length - _argNames.Length, tBlank.Length);
+                else
+                    tBlank = null;
                 _argNames = tBlank;
             }
 
+
             if (context != null)
             {
+#pragma warning disable 168
                 var tDummy = context.GetTargetContext(out _context, out _staticContext);
+#pragma warning restore 168
             }
             else
             {
@@ -146,6 +151,47 @@ namespace ImpromptuInterface.Dynamic
 
         }
 
+        /// <summary>
+        /// Equalses the specified other.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns></returns>
+        public bool Equals(CacheableInvocation other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return base.Equals(other) 
+                && other._argCount == _argCount 
+                && Equals(other._argNames, _argNames) 
+                && other._staticContext.Equals(_staticContext)
+                && Equals(other._context, _context) 
+                && other._convertExplict.Equals(_convertExplict)
+                && Equals(other._convertType, _convertType);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return Equals(obj as CacheableInvocation);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = base.GetHashCode();
+                result = (result*397) ^ _argCount;
+                result = (result*397) ^ (_argNames != null ? _argNames.GetHashCode() : 0);
+                result = (result*397) ^ _staticContext.GetHashCode();
+                result = (result*397) ^ (_context != null ? _context.GetHashCode() : 0);
+                result = (result*397) ^ _convertExplict.GetHashCode();
+                result = (result*397) ^ (_convertType != null ? _convertType.GetHashCode() : 0);
+                return result;
+            }
+        }
+      
+
         public override object Invoke(object target, params object[] args)
         {
 
@@ -153,6 +199,7 @@ namespace ImpromptuInterface.Dynamic
             {
                 args = new object[]{null};
             }
+           
 
             if (args.Length != _argCount)
             {
@@ -190,7 +237,7 @@ namespace ImpromptuInterface.Dynamic
                 case InvocationKind.Get:
                     return InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);
                 case InvocationKind.Set:
-                    InvokeHelper.InvokeSetCallSite(target, Name.Name, args.First(), _context, _staticContext, ref _callSite);
+                    InvokeHelper.InvokeSetCallSite(target, Name.Name, args[0], _context, _staticContext, ref _callSite);
                     return null;
                 case InvocationKind.GetIndex:
                     return InvokeHelper.InvokeGetIndexCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);

@@ -68,6 +68,7 @@ namespace ImpromptuInterface.Optimization
                 && (tArgNames == null
                 // ReSharper disable AssignNullToNotNullAttribute
                 //Exclusive Or Makes Sure this doesn't happen
+                                 
                                  || tOtherArgNames.SequenceEqual(tArgNames));
             // ReSharper restore AssignNullToNotNullAttribute
         }

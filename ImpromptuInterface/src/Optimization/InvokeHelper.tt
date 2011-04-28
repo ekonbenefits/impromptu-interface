@@ -64,7 +64,8 @@ namespace ImpromptuInterface.Optimization
 
 
         internal static void InvokeMemberAction(ref CallSite callsite,
-													CallSiteBinder binder,
+		                                            Type binderType,
+													LazyBinder binder,
                                                     String_OR_InvokeMemberName name,
 													bool staticContext,
                                                     Type context, 
@@ -84,7 +85,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite, <#=tobjectArgs#>>>)callsite;
 						if(tCallSite == null){
-							tCallSite = Impromptu.CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite, <#=tobjectArgs#>>>(binderType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
@@ -94,7 +95,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
+                    Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -109,7 +110,8 @@ namespace ImpromptuInterface.Optimization
 
         internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(
 										ref CallSite callsite,
-										CallSiteBinder binder,
+										Type binderType,
+										LazyBinder binder,
                                        String_OR_InvokeMemberName name,
 									 bool staticContext,
                                      Type context,
@@ -131,7 +133,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = Impromptu.CreateCallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>(binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget, <#=tobjectArgs#>>>(binderType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
@@ -140,7 +142,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.Invoke(Impromptu.CreateCallSite(tDelagateType, binder, name, context, argNames), target, args);
+                    return Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
         }

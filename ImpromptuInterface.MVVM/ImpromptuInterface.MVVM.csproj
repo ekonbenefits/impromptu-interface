@@ -60,6 +60,7 @@
   <ItemGroup>
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
       <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

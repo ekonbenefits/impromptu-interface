@@ -284,6 +284,39 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void DynamicArgMethodTest()
+        {
+            var tPoco = new PocoNonDynamicArg();
+            var tActsLike = tPoco.ActLike<IDynamicArg>();
+
+            var tList = new List<string>();
+
+            Assert.AreEqual(1, tActsLike.ReturnIt(1));
+            Assert.AreEqual(tList, tActsLike.ReturnIt(tList));
+        }
+
+
+   
+        [Test, TestMethod]
+        public void DynamicArgMethodTest2()
+        {
+            dynamic tPoco = new PocoNonDynamicArg();
+            dynamic tActsLike = Impromptu.ActLike<IDynamicArg>(tPoco);
+
+
+          
+            Assert.AreEqual(DynamicArgsHelper(tPoco,new[] { 1, 2, 3 }), tActsLike.Params(1, 2, 3));
+            Assert.AreEqual(tPoco.Params("test"), tActsLike.Params("test"));
+        }
+
+        private bool DynamicArgsHelper(dynamic obj,params dynamic [] objects)
+        {
+            return obj.Params(objects);
+        }
+
+
+
+        [Test, TestMethod]
         public void InformalPropTest()
         {
             dynamic tNew = new ExpandoObject();

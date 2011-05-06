@@ -33,6 +33,37 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+    public interface IDynamicArg
+    {
+        dynamic ReturnIt(dynamic arg);
+
+        bool Params(params dynamic [] args);
+    }
+
+    public class PocoNonDynamicArg
+    {
+        public int ReturnIt(int i)
+        {
+            return i;
+        }
+
+
+        public List<string> ReturnIt(List<string> i)
+        {
+            return i;
+        }
+
+        public bool Params(object fallback)
+        {
+            return false;
+        }
+
+        public bool Params(params int [] args)
+        {
+            return true;
+        }
+    }
+
     public static class StaticType
     {
         public static TReturn Create<TReturn>(int type)

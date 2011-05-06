@@ -331,6 +331,11 @@ namespace ImpromptuInterface.Build
                                                                                 var tStart = CSharpArgumentInfoFlags.
                                                                                     UseCompileTimeType;
 
+                                                                                if (arg.p.IsDefined(typeof(DynamicAttribute), true))
+                                                                                {
+                                                                                    tStart = CSharpArgumentInfoFlags.None;
+                                                                                }
+
                                                                                 if (arg.p.IsOut)
                                                                                 {
                                                                                     tStart |=

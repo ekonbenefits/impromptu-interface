@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using ImpromptuInterface.Dynamic;
 using System.Linq;
 
@@ -38,6 +40,67 @@ namespace ImpromptuInterface.MVVM
         }
     }
 
+  
+    /// <summary>
+    /// Proxies Result to String
+    /// </summary>
+    public class ImpromptuResultToString: ImpromptuForwarder, IEnumerable
+    {
+     
+        private IDictionary<Type, Func<object, string>> _dictionary = new Dictionary<Type, Func<object, string>>();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuResultToString"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="toStringDelegate">To string delegate.</param>
+        public ImpromptuResultToString(object target)
+            : base(target)
+        {
+        
+        }
+
+        public bool ContainsKey(Type type)
+        {
+            return _dictionary.ContainsKey(type);
+        }
+
+        public void Add<T>(Func<T, string> value)
+        {
+            Add(typeof(T), it => value((T)it));
+        }
+
+        public void Add(Type key, Func<object, string> value)
+        {
+            _dictionary.Add(key, value);
+        }
+
+        protected ImpromptuToString<T> GetProxy<T>(T value)
+        {
+            Func<object, string> tDelegate;
+
+            if (!_dictionary.TryGetValue(typeof(T), out tDelegate))
+            {
+                tDelegate = it => it.ToString();
+            }
+
+
+            return new ImpromptuToString<T>(value, it => tDelegate(it));
+        }
+        public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
+        {
+            var tReturn = base.TryGetMember(binder, out result);
+            if (!tReturn)
+                return false;
+            result = GetProxy((dynamic)result);
+            return true;
+        }
+
+        public IEnumerator GetEnumerator()
+        {
+            return _dictionary.GetEnumerator();
+        }
+    }
 
     /// <summary>
     /// Proxy to override to string

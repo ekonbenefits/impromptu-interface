@@ -36,6 +36,28 @@ namespace UnitTestImpromptuInterface
          }
 
          [Test, TestMethod]
+         public void TestResultToStringProxyDictionary()
+         {
+
+             object tTarget =
+                 new {Test1 = "One", Test2 = 5.24d, TestAgain = 5, TestFinal = new List<string>()};
+
+             dynamic tProxy = new ImpromptuResultToString(tTarget)
+                             {
+                                 new Func<int, string>(it => "int"),
+                                 new Func<double, string>(it => "double"),
+                                 new Func<string, string>(it => "string"),
+                                  new Func<List<string>, string>(it => "List"),
+                             };
+
+             Assert.AreEqual("string", tProxy.Test1.ToString());
+             Assert.AreEqual("double", tProxy.Test2.ToString());
+             Assert.AreEqual("int", tProxy.TestAgain.ToString());
+             Assert.AreEqual("List", tProxy.TestFinal.ToString());
+         }
+
+
+         [Test, TestMethod]
          public void TestToStringProxyCall()
          {
              var tAnon = new PropPoco() { Prop1 = "A", Prop2 = 1 };
@@ -85,6 +107,9 @@ namespace UnitTestImpromptuInterface
              var tAnon2 = ImplicitCastDynamic(tProxy);
              Assert.AreEqual(tAnon.GetType(), tAnon2.GetType());
          }
+        
+        
+       
 
 
          [Test, TestMethod]
@@ -98,6 +123,8 @@ namespace UnitTestImpromptuInterface
 
              Assert.AreEqual(tPropPoco.GetType(), tInter.ReturnProp.GetType());
          }
+
+     
 
         private T ExplictAnonCast<T>(T dummy, dynamic value)
         {

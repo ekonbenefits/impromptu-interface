@@ -47,7 +47,7 @@ namespace UnitTestImpromptuInterface
                                  new Func<int, string>(it => "int"),
                                  new Func<double, string>(it => "double"),
                                  new Func<string, string>(it => "string"),
-                                  new Func<List<string>, string>(it => "List"),
+                                  new Func<IList<string>, string>(it => "List"),
                              };
 
              Assert.AreEqual("string", tProxy.Test1.ToString());

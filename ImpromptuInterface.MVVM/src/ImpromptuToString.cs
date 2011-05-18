@@ -75,13 +75,43 @@ namespace ImpromptuInterface.MVVM
             _dictionary.Add(key, value);
         }
 
+        private IList<Type> BaseTypes(Type type, IList<Type> baseTypes = null)
+        {
+            if (baseTypes == null)
+            {
+                baseTypes = new List<Type>() { typeof(object) };
+                foreach (var tType in type.GetInterfaces())
+                {
+                    baseTypes.Add(tType);
+                }
+            }
+            baseTypes = baseTypes ?? new List<Type>();
+            if (type.BaseType != null)
+            {
+                baseTypes = BaseTypes(type.BaseType, baseTypes);
+                baseTypes.Add(type);
+            }
+
+            return baseTypes;
+        }
+
         protected ImpromptuToString<T> GetProxy<T>(T value)
         {
             Func<object, string> tDelegate;
 
             if (!_dictionary.TryGetValue(typeof(T), out tDelegate))
             {
-                tDelegate = it => it.ToString();
+                var tList = _dictionary.Keys.Where(it => it.IsAssignableFrom(typeof (T)));
+                if (tList.Any())
+                {
+                    var tListOfBaseTypes = BaseTypes(typeof (T));
+                    tList =tList.OrderByDescending(tListOfBaseTypes.IndexOf);
+                    tDelegate =_dictionary[tList.First()];
+                }
+                else
+                {
+                    tDelegate = it => it.ToString();
+                }
             }
 
 

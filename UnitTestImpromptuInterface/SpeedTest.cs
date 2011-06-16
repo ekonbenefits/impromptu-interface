@@ -305,7 +305,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestCacheablePocoGetValueTimed()
+        public void TestCacheableMethodPocoGetValueTimed()
         {
 
 

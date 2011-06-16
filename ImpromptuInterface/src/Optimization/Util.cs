@@ -41,13 +41,12 @@ namespace ImpromptuInterface.Optimization
             {
                 staticContext = tInvokeContext.StaticContext;
                 context = tInvokeContext.Context;
-                if (context.IsArray)
-                    context = typeof(object);
+                context = context.FixContext();
                 return tInvokeContext.Target;
             }
-            context = target.GetType();
-            if (context.IsArray)
-                context = typeof (object);
+
+            context = target as Type ?? target.GetType();
+            context = context.FixContext();
             return target;
         }
 

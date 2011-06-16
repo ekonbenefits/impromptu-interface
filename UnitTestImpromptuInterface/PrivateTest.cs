@@ -34,6 +34,44 @@ namespace UnitTestImpromptuInterface
             var tNonExposed = tTest.WithContext(this).ActLike<IExposePrivateMethod>();
             AssertException<RuntimeBinderException>(() => tNonExposed.Test());
         }
+
+        [Test, TestMethod]
+        public void TestInvokePrivateMethod()
+        {
+            var tTest = new TestWithPrivateMethod();
+            Assert.AreEqual(3, Impromptu.InvokeMember(tTest,"Test"));
+        }
+
+        [Test, TestMethod]
+        public void TestInvokeDoNotExposePrivateMethod()
+        {
+            var tTest = new TestWithPrivateMethod();
+            AssertException<RuntimeBinderException>(() => Impromptu.InvokeMember(tTest.WithContext(this), "Test"));
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableDoNotExposePrivateMethod()
+        {
+            var tTest = new TestWithPrivateMethod();
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Test");
+            AssertException<RuntimeBinderException>(() => tCachedInvoke.Invoke(tTest));
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableExposePrivateMethodViaInstance()
+        {
+            var tTest = new TestWithPrivateMethod();
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Test", context: tTest);
+            Assert.AreEqual(3, tCachedInvoke.Invoke(tTest));
+        }
+
+        [Test, TestMethod]
+        public void TestCacheableExposePrivateMethodViaType()
+        {
+            var tTest = new TestWithPrivateMethod();
+            var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Test", context:typeof(TestWithPrivateMethod));
+            Assert.AreEqual(3, tCachedInvoke.Invoke(tTest)); 
+        }
     }
 
     public class TestWithPrivateMethod

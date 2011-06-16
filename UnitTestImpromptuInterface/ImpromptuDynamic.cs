@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
@@ -212,6 +213,31 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual("test4", tFwd.Action4(4));
         }
+
+        [Test, TestMethod]
+        public void DictionaryMethodsOutTest()
+        {
+
+            dynamic tNew = new ImpromptuDictionary();
+            tNew.Func = new DynamicTryString(TestOut);
+
+            String tOut;
+
+            Assert.AreEqual(true, tNew.Func(null, "Test", out tOut));
+            Assert.AreEqual("Test", tOut);
+
+            String tOut2;
+            Assert.AreEqual(false, tNew.Func(null, 1, out tOut2));
+            Assert.AreEqual(null, tOut2);
+        }
+
+        private static object TestOut(CallSite dummy, object @in, out string @out)
+        {
+            @out = @in as string;
+
+            return @out != null;
+        }
+
 
         [Test, TestMethod]
         public void DictionaryMethodsTestWithPropertyAccess()

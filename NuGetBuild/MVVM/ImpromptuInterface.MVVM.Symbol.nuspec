@@ -2,19 +2,20 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface.MVVM</id>
-  <version>3.0.3</version>
+  <version>3.1.1</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.</description>
   <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
   <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-  <tags>MVVM dynamic .net40 Silverlight wpf</tags>
+  <iconUrl>http://impromptu-interface.googlecode.com/files/ImpromptuInterface.MVVM-Icon.png</iconUrl>
+  <tags>MVVM dynamic .net40 Silverlight wpf impromptu interface</tags>
   <language>en-US</language>
   <frameworkAssemblies>
     <frameworkAssembly assemblyName="Microsoft.CSharp" />
   </frameworkAssemblies>
   <dependencies>
-    <dependency id="ImpromptuInterface" version="5.0.3" />
+    <dependency id="ImpromptuInterface" version="5.1.1" />
   </dependencies>
 </metadata>
   <files>

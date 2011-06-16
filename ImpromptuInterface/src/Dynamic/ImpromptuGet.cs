@@ -106,8 +106,16 @@ namespace ImpromptuInterface.Dynamic
                 var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
                 if (tDel == null)
                     return false;
-
-                result = this.InvokeMethodDelegate(tDel, args);
+                try
+                {
+                    result = this.InvokeMethodDelegate(tDel, args);
+                }
+                catch (RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
+                //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                {
+                    return false;
+                }
+               
             }
 
             return this.MassageResultBasedOnInterface(binder.Name, true, ref result);

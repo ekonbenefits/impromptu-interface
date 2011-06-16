@@ -152,6 +152,36 @@ namespace ImpromptuInterface.Dynamic
             Args = storedArgs;
         }
 
+        /// <summary>
+        /// Equalses the specified other.
+        /// </summary>
+        /// <param name="other">The other.</param>
+        /// <returns></returns>
+        public bool Equals(Invocation other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(other.Kind, Kind) && Equals(other.Name, Name) && (Equals(other.Args, Args) || Enumerable.SequenceEqual(other.Args, Args));
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != typeof (Invocation)) return false;
+            return Equals((Invocation) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                int result = Kind.GetHashCode();
+                result = (result*397) ^ (Name != null ? Name.GetHashCode() : 0);
+                result = (result*397) ^ (Args != null ? Args.GetHashCode() : 0);
+                return result;
+            }
+        }
 
         /// <summary>
         /// Invokes the invocation on specified target with specific args.

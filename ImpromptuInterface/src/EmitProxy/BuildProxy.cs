@@ -13,6 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using System.Collections;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using ImpromptuInterface.Optimization;
 
@@ -346,6 +348,56 @@ namespace ImpromptuInterface.Build
 
             return tReturnType;
         }
+#if !SILVERLIGHT
+        private static object CustomAttributeTypeArgument(CustomAttributeTypedArgument argument)
+        {
+            if (argument.Value is ReadOnlyCollection<CustomAttributeTypedArgument>)
+            {
+                var tValue = argument.Value as ReadOnlyCollection<CustomAttributeTypedArgument>;
+                return
+                    new ArrayList(tValue.Select(it => it.Value).ToList()).ToArray(argument.ArgumentType.GetElementType());
+            }
+
+            return argument.Value;
+        }
+       
+
+        private static CustomAttributeBuilder GetAttributeBuilder(CustomAttributeData data)
+        {
+            var tPropertyInfos = new List<PropertyInfo>();
+            var tPropertyValues = new List<object>();
+            var tFieldInfos = new List<FieldInfo>();
+            var tFieldValues = new List<object>();
+
+            if (data.NamedArguments != null)
+            {
+                foreach (var namedArg in data.NamedArguments)
+                {
+                    var fi = namedArg.MemberInfo as FieldInfo;
+                    var pi = namedArg.MemberInfo as PropertyInfo;
+
+                    if (fi != null)
+                    {
+                        tFieldInfos.Add(fi);
+                        tFieldValues.Add(namedArg.TypedValue.Value);
+                    }
+                    else if (pi != null)
+                    {
+                        tPropertyInfos.Add(pi);
+                        tPropertyValues.Add(namedArg.TypedValue.Value);
+                    }
+                }
+            }
+
+            return new CustomAttributeBuilder(
+              data.Constructor,
+              data.ConstructorArguments.Select(CustomAttributeTypeArgument).ToArray(),
+              tPropertyInfos.ToArray(),
+              tPropertyValues.ToArray(),
+              tFieldInfos.ToArray(),
+              tFieldValues.ToArray());
+        }
+#endif
 
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
         {
@@ -432,7 +484,32 @@ namespace ImpromptuInterface.Build
 
             foreach (var tParam in info.GetParameters())
             {
-                tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+               var tParamBuilder = tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+#if !SILVERLIGHT
+
+               
+                   var tCustomAttributes = tParam.GetCustomAttributesData();
+                   foreach (var tCustomAttribute in tCustomAttributes)
+                   {
+                       try
+                       {
+                           tParamBuilder.SetCustomAttribute(GetAttributeBuilder(tCustomAttribute));
+                       }
+                       catch { }//For most proxies not having the same attributes won't really matter,
+                       //but just incase we don't want to stop for some unknown attribute that we can't initialize
+                   }
+#else
+               var tAny =tParam.GetCustomAttributes(typeof(ParamArrayAttribute), true).Any();
+               if(tAny)
+                    tParamBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(ParamArrayAttribute).GetConstructor(Type.EmptyTypes),new object[]{}));
+               var tDynAttr =(DynamicAttribute)tParam.GetCustomAttributes(typeof(DynamicAttribute), true).FirstOrDefault();
+                if(tDynAttr !=null)
+                {
+                    tParamBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(DynamicAttribute).GetConstructor(new[]{typeof(bool[])}
+), new object[] { tDynAttr.TransformFlags.ToArray() }));
+                }
+#endif
+
             }
 
 

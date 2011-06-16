@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -146,7 +147,14 @@ namespace ImpromptuInterface.Dynamic
                 var tFunc = result as Delegate;
                 if (tFunc !=null)
                 {
-                    result = this.InvokeMethodDelegate(tFunc, args);
+                    try
+                    {
+                        result = this.InvokeMethodDelegate(tFunc, args);
+                    }catch(RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
+                                                  //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    {
+                        return false;
+                    }
                     return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
                 }
                 return false;

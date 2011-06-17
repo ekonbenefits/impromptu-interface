@@ -266,6 +266,21 @@ namespace ImpromptuInterface
         }
 
         /// <summary>
+        /// Invokes the set on the end of a property chain.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="propertyChain">The property chain.</param>
+        /// <param name="value">The value.</param>
+        public static void InvokeSetChain(object target, string propertyChain, object value)
+        {
+            var tProperties = propertyChain.Split('.');
+            var tGetProperties = tProperties.Take(tProperties.Length - 1);
+            var tSetProperty = tProperties.Last();
+            var tSetTarget = tGetProperties.Aggregate(target, InvokeGet);
+            InvokeSet(tSetTarget, tSetProperty, value);
+        }
+
+        /// <summary>
         /// Dynamically Invokes a get member using the DLR.
         /// </summary>
         /// <param name="target">The target.</param>
@@ -284,9 +299,6 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
-        /// <remarks>
-        /// if you call a static property off a type with a static context the csharp dlr binder won't do it, so this method reverts to reflection
-        /// </remarks>
         public static dynamic InvokeGet(object target, string name)
         {
             Type tContext;
@@ -297,6 +309,17 @@ namespace ImpromptuInterface
             return InvokeHelper.InvokeGetCallSite(target, name, tContext, tStaticContext, ref tSite);
         }
 
+        /// <summary>
+        /// Invokes the getter property chain.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="propertyChain">The property chain.</param>
+        /// <returns></returns>
+        public static dynamic InvokeGetChain(object target, string propertyChain)
+        {
+            var tProperties =propertyChain.Split('.');
+            return tProperties.Aggregate(target, InvokeGet);
+        }
 
         /// <summary>
         /// Determines whether the specified name on target is event. This allows you to know whether to InvokeMemberAction

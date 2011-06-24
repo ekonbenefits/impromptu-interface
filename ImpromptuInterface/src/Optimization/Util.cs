@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -100,17 +101,37 @@ namespace ImpromptuInterface.Optimization
                                 result = tResult;
                             }catch(RuntimeBinderException)
                             {
+                                Type tReducedType = tType;
                                 if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
                                 {
-                                    tType = tType.GetGenericArguments().First();
+                                    tReducedType = tType.GetGenericArguments().First();
                                 }
 
 
-                                if (result is IConvertible && typeof (IConvertible).IsAssignableFrom(tType))
+                                if (result is IConvertible && typeof(IConvertible).IsAssignableFrom(tReducedType))
                                 {
 
-                                    result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
+                                    result = Convert.ChangeType(result, tReducedType, Thread.CurrentThread.CurrentCulture);
 
+                                }else
+                                {  //finally check type converter since it's the slowest.
+
+#if !SILVERLIGHT
+                                    var tConverter = TypeDescriptor.GetConverter(tType);
+#else
+                                    TypeConverter tConverter = null;
+                                    var tAttributes = tType.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+                                    var tAttribute  =tAttributes.OfType<TypeConverterAttribute>().FirstOrDefault();
+                                    if(tAttribute !=null)
+                                    {
+                                        tConverter =
+                                            Impromptu.InvokeConstructor(Type.GetType(tAttribute.ConverterTypeName));
+                                    }
+#endif
+                                    if (tConverter !=null && tConverter.CanConvertFrom(result.GetType()))
+                                    {
+                                        result = tConverter.ConvertFrom(result);
+                                    }
                                 }
                             }
                         }

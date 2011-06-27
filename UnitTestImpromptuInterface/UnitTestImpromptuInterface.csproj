@@ -101,6 +101,10 @@
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromptuInterface</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj">
+      <Project>{0EC76091-958A-4020-BA6B-39B00EE55659}</Project>
+      <Name>UnitTestSupportLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.0">

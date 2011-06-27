@@ -191,6 +191,7 @@
     <Compile Include="..\ImpromptuInterface\src\Optimization\Util.cs">
       <Link>src\Optimization\Util.cs</Link>
     </Compile>
+    <Compile Include="src\Optimization\SilverlightConverter.cs" />
     <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>

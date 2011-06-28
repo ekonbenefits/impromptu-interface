@@ -14,7 +14,9 @@
 //    limitations under the License.
 
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
 using ImpromptuInterface.InvokeExt;
@@ -485,7 +487,27 @@ namespace ImpromptuInterface
                 : InvokeHelper.FuncKinds[tParamCount];
         }
 
+        /// <summary>
+        /// Gets the member names of properties. Not all IDynamicMetaObjectProvider have support for this.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="dynamicOnly">if set to <c>true</c> [dynamic only]. Won't add reflected properties</param>
+        /// <returns></returns>
+        public static IEnumerable<string> GetMemberNames(object target, bool dynamicOnly = false)
+        {
+            var tList = new List<string>();
+            if (!dynamicOnly)
+            {
+               tList.AddRange(target.GetType().GetProperties().Select(it => it.Name));
+            }
 
+            var tTarget = target as IDynamicMetaObjectProvider;
+            if (tTarget !=null)
+            {
+                tList.AddRange(tTarget.GetMetaObject(Expression.Constant(tTarget)).GetDynamicMemberNames());
+            }
+            return tList;
+        } 
 
         /// <summary>
         /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type

@@ -1193,6 +1193,22 @@ namespace UnitTestImpromptuInterface
 
              Assert.AreEqual(-1, tDynamic2.Event);
          }
+
+        [Test, TestMethod]
+        public void TestDynamicMemberNamesExpando()
+        {
+            ExpandoObject tExpando = Build<ExpandoObject>.NewObject(One: 1);
+
+            Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando,dynamicOnly:true).Single());
+        }
+
+        [Test, TestMethod]
+        public void TestDynamicMemberNamesImpromput()
+        {
+            ImpromptuDictionary tDict = Build.NewObject(Two: 2);
+
+            Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly: true).Single());
+        }
     }
     
 }

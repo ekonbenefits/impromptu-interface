@@ -1,0 +1,1 @@
+"C:\Program Files\Lighthouse\1.0\Lighthouse.exe" -m:Dll -tests:"UnitTestImpromptuInterface.Silverlight.dll" -references:"ImpromptuInterface.dll,ImpromptuInterface.MVVM.dll,Microsoft.CSharp.dll,System.Xml.Linq.dll,UnitTestSupportLibrary.Silverlight.dll" TestResults.xml

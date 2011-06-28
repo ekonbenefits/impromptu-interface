@@ -351,12 +351,8 @@ namespace ImpromptuInterface.Dynamic
             }
             else
             {
-                var tMeta = GetRepresentedItem() as IDynamicMetaObjectProvider;
-               
-                    if(tMeta != null)
-                    {
-                        tList = tMeta.GetMetaObject(Expression.Constant(tMeta)).GetDynamicMemberNames();
-                    }
+
+                tList = Impromptu.GetMemberNames(GetRepresentedItem(), dynamicOnly: true);
             }
 
             return new PropertyDescriptorCollection(tList.Select(it => new ImpromptuPropertyDescriptor(it)).ToArray());

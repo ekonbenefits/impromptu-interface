@@ -16,6 +16,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -23,6 +24,8 @@ using System.Text;
 using System.Threading;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+
+
 
 namespace ImpromptuInterface.Optimization
 {
@@ -59,6 +62,8 @@ namespace ImpromptuInterface.Optimization
             }
             return context;
         }
+
+        internal static CacheableInvocation CacheDynamicConverter = null;
 
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {
@@ -100,17 +105,65 @@ namespace ImpromptuInterface.Optimization
                                 result = tResult;
                             }catch(RuntimeBinderException)
                             {
+                                Type tReducedType = tType;
                                 if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
                                 {
-                                    tType = tType.GetGenericArguments().First();
+                                    tReducedType = tType.GetGenericArguments().First();
                                 }
 
 
-                                if (result is IConvertible && typeof (IConvertible).IsAssignableFrom(tType))
+                                if (result is IConvertible && typeof(IConvertible).IsAssignableFrom(tReducedType))
                                 {
 
-                                    result = Convert.ChangeType(result, tType, Thread.CurrentThread.CurrentCulture);
+                                    result = Convert.ChangeType(result, tReducedType, Thread.CurrentThread.CurrentCulture);
 
+                                }else
+                                {  //finally check type converter since it's the slowest.
+
+#if !SILVERLIGHT
+                                    var tConverter = TypeDescriptor.GetConverter(tType);
+#else
+                                    
+                                    TypeConverter tConverter = null;
+                                    var tAttributes = tType.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+                                    var tAttribute  =tAttributes.OfType<TypeConverterAttribute>().FirstOrDefault();
+                                    if(tAttribute !=null)
+                                    {
+                                        tConverter =
+                                            Impromptu.InvokeConstructor(Type.GetType(tAttribute.ConverterTypeName));
+                                    }
+
+                                  
+#endif
+                                    if (tConverter !=null && tConverter.CanConvertFrom(result.GetType()))
+                                    {
+                                        result = tConverter.ConvertFrom(result);
+                                    } 
+                                    
+ #if SILVERLIGHT                                   
+                                    else if (result is string)
+                                    {
+
+                                        var tDC = new SilverConvertertDC(result as String);
+                                        var tFE = new SilverConverterFE
+                                        {
+                                            DataContext = tDC
+                                        };
+
+
+                                        var tProp = SilverConverterFE.GetProperty(tType);
+
+                                        tFE.SetBinding(tProp, new System.Windows.Data.Binding("StringValue"));
+
+                                        var tResult = tFE.GetValue(tProp);
+
+                                        if(tResult != null)
+                                        {
+                                            result = tResult;
+                                        }
+                                    }
+
+#endif
                                 }
                             }
                         }

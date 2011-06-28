@@ -277,8 +277,12 @@ namespace ImpromptuInterface.Dynamic
 
         protected void SetProperty(string key, object value)
         {
-            _dictionary[key] = value;
-            OnPropertyChanged(key);
+            object tOldValue;
+            if (!_dictionary.TryGetValue(key, out tOldValue) || value != tOldValue)
+            {
+                _dictionary[key] = value;
+                OnPropertyChanged(key);
+            }
         }
 
         /// <summary>

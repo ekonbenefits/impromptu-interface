@@ -6,6 +6,7 @@ using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.InvokeExt;
 using Microsoft.CSharp.RuntimeBinder;
+using UnitTestSupportLibrary;
 
 #if SILVERLIGHT
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -40,6 +41,20 @@ namespace UnitTestImpromptuInterface
         {
             var tTest = new TestWithPrivateMethod();
             Assert.AreEqual(3, Impromptu.InvokeMember(tTest,"Test"));
+        }
+
+        [Test, TestMethod]
+        public void TestInvokePrivateMethodAcrossAssemblyBoundries()
+        {
+            var tTest = new PublicType();
+            Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "PrivateMethod", 3));
+        }
+
+        [Test, TestMethod]
+        public void TestInvokeInternalTypeMethodAcrossAssemblyBoundries()
+        {
+            var tTest = PublicType.InternalInstance;
+            Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "InternalMethod", 3));
         }
 
         [Test, TestMethod]

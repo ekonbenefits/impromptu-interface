@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Media;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using System.Windows;
@@ -202,6 +203,17 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(true, tRun);
         }
+
+             [Test, TestMethod]
+         public void TestTypeConverter()
+             {
+                 object tNew = Build.NewObject(ColorViaString: "Blue");
+                var tColorHolder = tNew.ActLike<IColor>();
+
+                Assert.AreEqual(Colors.Blue, tColorHolder.ColorViaString);
+
+
+             }
 
         [Test, TestMethod]
         public void TestOnChangeDependencyCalls()

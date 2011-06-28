@@ -814,6 +814,67 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestGetDynamicChained()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Test = new ExpandoObject();
+            tExpando.Test.Test2 = new ExpandoObject();
+            tExpando.Test.Test2.Test3 = tSetValue;
+
+
+            var tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2.Test3");
+
+            Assert.AreEqual(tSetValue, tOut);
+        }
+
+
+
+        [Test, TestMethod]
+        public void TestSetDynamicChained()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Test = new ExpandoObject();
+            tExpando.Test.Test2 = new ExpandoObject();
+
+
+           Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
+
+            Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
+        }
+
+        [Test, TestMethod]
+        public void TestSetDynamicChainedOne()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+
+
+            Impromptu.InvokeSetChain(tExpando, "Test", tSetValue);
+
+            Assert.AreEqual(tSetValue, tExpando.Test);
+        }
+
+        [Test, TestMethod]
+        public void TestGetDynamicChainedOne()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Test = tSetValue;
+
+
+
+            var tOut = Impromptu.InvokeGetChain(tExpando, "Test");
+
+            Assert.AreEqual(tSetValue, tOut);
+        }
+
+        [Test, TestMethod]
         public void TestCacheableGetDynamic()
         {
 
@@ -1132,6 +1193,22 @@ namespace UnitTestImpromptuInterface
 
              Assert.AreEqual(-1, tDynamic2.Event);
          }
+
+        [Test, TestMethod]
+        public void TestDynamicMemberNamesExpando()
+        {
+            ExpandoObject tExpando = Build<ExpandoObject>.NewObject(One: 1);
+
+            Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando,dynamicOnly:true).Single());
+        }
+
+        [Test, TestMethod]
+        public void TestDynamicMemberNamesImpromput()
+        {
+            ImpromptuDictionary tDict = Build.NewObject(Two: 2);
+
+            Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly: true).Single());
+        }
     }
     
 }

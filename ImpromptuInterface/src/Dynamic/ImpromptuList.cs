@@ -17,7 +17,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
@@ -349,25 +351,8 @@ namespace ImpromptuInterface.Dynamic
             }
             else
             {
-                var tGetItem = GetRepresentedItem();
-                if (tGetItem != null)
-                {
 
-                    try
-                    {
-                        tList = tGetItem.GetDynamicMemberNames();
-                    }
-                    catch (RuntimeBinderException)
-                    {
-                        var tDict = tGetItem as IDictionary<string, object>;
-                        if (tDict != null)
-                        {
-                            tList = tGetItem.Keys;
-                        }
-                    }
-
-
-                }
+                tList = Impromptu.GetMemberNames(GetRepresentedItem(), dynamicOnly: true);
             }
 
             return new PropertyDescriptorCollection(tList.Select(it => new ImpromptuPropertyDescriptor(it)).ToArray());

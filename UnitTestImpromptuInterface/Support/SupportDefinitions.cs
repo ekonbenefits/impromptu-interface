@@ -22,6 +22,10 @@ using System.Text;
 using System.Diagnostics;
 using ImpromptuInterface.Dynamic;
 
+#if !SELFRUNNER
+using System.Windows.Media;
+#endif
+
 namespace UnitTestImpromptuInterface
 {
 
@@ -344,4 +348,11 @@ namespace UnitTestImpromptuInterface
     {
 		string NameLevel2 {get;}
     }
+
+#if !SELFRUNNER
+    public interface IColor
+    {
+        Color ColorViaString { get; }
+    }
+#endif
 }

@@ -141,6 +141,10 @@
       <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
       <Name>ImpromptuInterface %28Silverlight%29</Name>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestSupportLibrary.Silverlight\UnitTestSupportLibrary.Silverlight.csproj">
+      <Project>{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}</Project>
+      <Name>UnitTestSupportLibrary.Silverlight</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

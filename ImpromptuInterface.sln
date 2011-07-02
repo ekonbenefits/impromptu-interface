@@ -37,6 +37,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestSupportLibrary", "U
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestSupportLibrary.Silverlight", "UnitTestSupportLibrary.Silverlight\UnitTestSupportLibrary.Silverlight.csproj", "{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}"
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "UnitTestImpromptuInterface.VBNET", "UnitTestImpromptuInterface.VBNet\UnitTestImpromptuInterface.VBNET.vbproj", "{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -147,6 +149,16 @@ Global
 		{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}.Release|x86.ActiveCfg = Release|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -157,6 +169,7 @@ Global
 		{0DE22C5D-71F4-4ABF-88B1-842AEAF46A80} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{0EC76091-958A-4020-BA6B-39B00EE55659} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{EE860CF5-6707-42F2-8091-3D4DC3ED1D30} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
+		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Test\Test.csproj

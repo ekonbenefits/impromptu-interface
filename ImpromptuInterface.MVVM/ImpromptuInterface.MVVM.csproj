@@ -39,6 +39,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -48,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="src\DialogBox.cs" />
     <Compile Include="src\Event.cs" />
     <Compile Include="src\FireOnChange.cs" />
     <Compile Include="src\ImpromptuBindingList.cs" />
@@ -55,6 +57,7 @@
     <Compile Include="src\ImpromptuToString.cs" />
     <Compile Include="src\ImpromptuViewModel-Nested.cs" />
     <Compile Include="src\ImpromptuViewModel.cs" />
+    <Compile Include="src\ImpromptuWindowFactory.cs" />
     <Compile Include="src\ImpropmtuCommandBinder.cs" />
   </ItemGroup>
   <ItemGroup>

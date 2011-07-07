@@ -25,6 +25,15 @@ namespace ImpromptuInterface.Dynamic
     [Serializable]
     public class ImpromptuFactory:ImpromptuObject
     {
+        /// <summary>
+        /// Creates this instance with Interface;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static T Create<T>() where T : class
+        {
+            return new ImpromptuFactory().ActLike<T>();
+        }
 
         /// <summary>
         /// Provides the default implementation for operations that get instance as defined by <see cref="GetInstanceForDynamicMember"/>. Classes derived from the <see cref="T:ImpromptuInterface.ImpromptuObject"/> class can override this method to specify dynamic behavior for operations such as getting a value for a property.
@@ -40,29 +49,34 @@ namespace ImpromptuInterface.Dynamic
             return result != null;
         }
 
+        public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
+        {
+            result = GetInstanceForDynamicMember(binder.Name, args);
+            return result != null;
+        }
+
+
         /// <summary>
         /// Constructs the type. Override for changing type intialization property changes.
         /// </summary>
         /// <param name="type">The type.</param>
+        /// <param name="args">The args.</param>
         /// <returns></returns>
-        protected virtual object CreateType(Type type)
+        protected virtual object CreateType(Type type, params object[] args)
         {
-            return Impromptu.InvokeConstructor(type);
+            return Impromptu.InvokeConstructor(type, args);
         }
 
         /// <summary>
         /// Gets the instance for a dynamic member. Override for type constrcution behavoir changes based on property name.
         /// </summary>
         /// <param name="memberName">Name of the member.</param>
+        /// <param name="args">The args.</param>
         /// <returns></returns>
-        public virtual object GetInstanceForDynamicMember(string memberName)
+        protected virtual object GetInstanceForDynamicMember(string memberName, params object[] args)
         {
             Type type;
-            if (TryTypeForName(memberName, out type))
-            {
-                return CreateType(type);
-            }
-            return null;
+            return TryTypeForName(memberName, out type) ? CreateType(type, args) : null;
         }
     }
 
@@ -71,7 +85,17 @@ namespace ImpromptuInterface.Dynamic
     /// Base Class for making a singleton fluent factory using an Impromptu Interface return type.
     /// </summary>
     public class ImpromptuSingleInstancesFactory : ImpromptuFactory
-    {
+    { 
+        
+        /// <summary>
+        /// Creates this instance with Interface;
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public new static T Create<T>() where T : class
+        {
+            return new ImpromptuSingleInstancesFactory().ActLike<T>();
+        }
         /// <summary>
         /// Store Singletons
         /// </summary>
@@ -87,8 +111,9 @@ namespace ImpromptuInterface.Dynamic
         /// Gets the instance for a dynamic member. Override for type constrcution behavoir changes based on property name.
         /// </summary>
         /// <param name="memberName">Name of the member.</param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        public override object GetInstanceForDynamicMember(string memberName)
+        protected override object GetInstanceForDynamicMember(string memberName, params object[] args)
         {
             lock (_lockTable)
             {
@@ -97,7 +122,7 @@ namespace ImpromptuInterface.Dynamic
                     Type type;
                     if (TryTypeForName(memberName, out type))
                     {
-                        _hashFactoryTypes.Add(memberName, CreateType(type));
+                        _hashFactoryTypes.Add(memberName, CreateType(type, args));
                     }
                     else
                     {

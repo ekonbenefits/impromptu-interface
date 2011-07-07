@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface.Optimization;
 
 
 namespace ImpromptuInterface.Dynamic
@@ -362,12 +363,7 @@ namespace ImpromptuInterface.Dynamic
 				var tArg =args.FirstOrDefault();
                 keyValues = tArg as IDictionary<string, object>;
 				if(keyValues ==null 
-					&& tArg !=null
-					&& tArg.GetType().IsNotPublic  
-					&& Attribute.IsDefined(
-									tArg.GetType(), 
-									typeof(System.Runtime.CompilerServices.CompilerGeneratedAttribute), 
-									false)){
+					&& Util.IsAnonymousType(tArg)){
 					var keyDict = new Dictionary<string,object>();
 					foreach(var tProp in tArg.GetType().GetProperties()){
 						keyDict[tProp.Name] = Impromptu.InvokeGet(tArg, tProp.Name);

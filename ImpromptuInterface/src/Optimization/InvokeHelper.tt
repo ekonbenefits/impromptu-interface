@@ -37,6 +37,8 @@ namespace ImpromptuInterface.Optimization
 
         internal static readonly Type[] FuncKinds;
         internal static readonly Type[] ActionKinds;
+		internal static readonly IDictionary<Type,int> FuncArgs;
+		internal static readonly IDictionary<Type,int> ActionArgs;
 
         static InvokeHelper()
         {
@@ -58,6 +60,11 @@ namespace ImpromptuInterface.Optimization
 								typeof(Action<<#=tCommas#>>), //<#=i#>
 <# } #>
                             };
+
+
+			FuncArgs = FuncKinds.Zip(Enumerable.Range(0, FuncKinds.Length), (key, value) => new { key, value }).ToDictionary(k => k.key, v => v.value);
+            ActionArgs = ActionKinds.Zip(Enumerable.Range(0, ActionKinds.Length), (key, value) => new { key, value }).ToDictionary(k => k.key, v => v.value);
+
         }
 
         #region InvokeMemberAction Optimizations
@@ -105,6 +112,8 @@ namespace ImpromptuInterface.Optimization
 
        
 
+	
+
         #region InvokeMember Optimizations
 
 
@@ -150,6 +159,38 @@ namespace ImpromptuInterface.Optimization
      
 
         #endregion
+
+		private static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
+        {
+			 switch(length){
+			 <# for(int i=0; i <= 16; i++){ 
+				var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{" TReturn"}));
+  				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
+#>  					case <#=i#>:
+						return new Func<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
+<# } #>	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
+
+		
+
+        internal static Delegate WrapAction(dynamic invokable, int length)
+        {
+           	 switch(length){
+				    case 0:
+					    return new Action(()=>invokable());
+<# for(int i=1; i <= 16; i++){ 
+				var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i));
+				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
+#>  					case <#=i#>:
+						return new Action<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
+<# } #>	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
 
 
         internal static object FastDynamicInvokeReturn(Delegate del, dynamic [] args)

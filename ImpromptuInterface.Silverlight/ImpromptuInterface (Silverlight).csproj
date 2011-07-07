@@ -164,6 +164,12 @@
     <Compile Include="..\ImpromptuInterface\src\Impromptu.cs">
       <Link>src\Impromptu.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Internal\Curry.cs">
+      <Link>src\Internal\Curry.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Internal\InvokeSetters.cs">
+      <Link>src\Internal\InvokeSetters.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\InvokeArg.cs">
       <Link>src\InvokeArg.cs</Link>
     </Compile>

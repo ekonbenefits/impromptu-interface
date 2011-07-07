@@ -221,6 +221,8 @@ namespace ImpromptuInterface.Build
                 typeof(ActLikeProxy));
 
 
+
+
             foreach (var tInterface in informalInterface)
             {
                 
@@ -262,6 +264,37 @@ namespace ImpromptuInterface.Build
 
             foreach (var tInterface in tInterfaces)
             {
+
+#if !SILVERLIGHT
+                
+                    if (tInterface != null)
+                    {
+                        var tCustomAttributes = tInterface.GetCustomAttributesData();
+                        foreach (var tCustomAttribute in tCustomAttributes.Where(it=>typeof(DefaultMemberAttribute).IsAssignableFrom(it.Constructor.DeclaringType)))
+                        {
+                            try
+                            {
+                                tB.SetCustomAttribute(GetAttributeBuilder(tCustomAttribute));
+                            }
+                            catch
+                            {
+                            } //For most proxies not having the same attributes won't really matter,
+                            //but just incase we don't want to stop for some unknown attribute that we can't initialize
+                        }
+                    }
+
+#else
+                if (tInterface != null){
+                        var tAttrs =tInterface.GetCustomAttributes(typeof(DefaultMemberAttribute),true);
+
+                        var tAttr = tAttrs.FirstOrDefault();
+                        if(tAttr !=null){
+                             tB.SetCustomAttribute(new CustomAttributeBuilder(typeof(DefaultMemberAttribute)
+                                 .GetConstructor(new[]{typeof(String)}),new object[]{"Item"}));
+                        }
+                }
+#endif
+
                 foreach (var tInfo in tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     MakeProperty(builder,tInfo, tB, contextType);
@@ -402,12 +435,12 @@ namespace ImpromptuInterface.Build
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
         {
 
-       
+
             var tName = info.Name;
-            
+
             var tParamAttri = info.GetParameters();
             Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
-           
+
 
             IEnumerable<string> tArgNames;
             if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any())
@@ -416,16 +449,16 @@ namespace ImpromptuInterface.Build
             }
             else
             {
-                var tParam = tParamAttri.Zip(Enumerable.Range(0, tParamTypes.Count()), (p,i) => new { i, p })
+                var tParam = tParamAttri.Zip(Enumerable.Range(0, tParamTypes.Count()), (p, i) => new { i, p })
                     .FirstOrDefault(it => it.p.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any());
 
                 tArgNames = tParam == null
-                    ? Enumerable.Repeat(default(string), tParamTypes.Length) 
-                    : Enumerable.Repeat(default(string), tParam.i).Concat(tParamAttri.Skip(Math.Min(tParam.i - 1,0)).Select(it=>it.Name)).ToList();
+                    ? Enumerable.Repeat(default(string), tParamTypes.Length)
+                    : Enumerable.Repeat(default(string), tParam.i).Concat(tParamAttri.Skip(Math.Min(tParam.i - 1, 0)).Select(it => it.Name)).ToList();
             }
 
 
-            var tReturnType = typeof (void);
+            var tReturnType = typeof(void);
             if (info.ReturnParameter != null)
                 tReturnType = info.ReturnParameter.ParameterType;
 
@@ -433,7 +466,7 @@ namespace ImpromptuInterface.Build
             var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
             var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
-           
+
 
             var tReplacedTypes = GetParamTypes(tCStp, info);
             if (tReplacedTypes != null)
@@ -462,8 +495,6 @@ namespace ImpromptuInterface.Build
                                                 MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot);
 
 
-
-
             tReplacedTypes = GetParamTypes(tMethodBuilder, info);
             var tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
             if (tReplacedTypes != null)
@@ -474,7 +505,7 @@ namespace ImpromptuInterface.Build
                 tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
 
                 tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams);
-                if(tConvertFuncType !=null)
+                if (tConvertFuncType != null)
                     tConvertFuncType = UpdateCallsiteFuncType(tConvertFuncType, tReturnType);
                 tInvokeFuncType = UpdateCallsiteFuncType(tInvokeFuncType, tReturnType != typeof(void) ? typeof(object) : typeof(void), tReducedParams);
             }
@@ -484,20 +515,20 @@ namespace ImpromptuInterface.Build
 
             foreach (var tParam in info.GetParameters())
             {
-               var tParamBuilder = tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+                var tParamBuilder = tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
 #if !SILVERLIGHT
 
-               
-                   var tCustomAttributes = tParam.GetCustomAttributesData();
-                   foreach (var tCustomAttribute in tCustomAttributes)
-                   {
-                       try
-                       {
-                           tParamBuilder.SetCustomAttribute(GetAttributeBuilder(tCustomAttribute));
-                       }
-                       catch { }//For most proxies not having the same attributes won't really matter,
-                       //but just incase we don't want to stop for some unknown attribute that we can't initialize
-                   }
+
+                var tCustomAttributes = tParam.GetCustomAttributesData();
+                foreach (var tCustomAttribute in tCustomAttributes)
+                {
+                    try
+                    {
+                        tParamBuilder.SetCustomAttribute(GetAttributeBuilder(tCustomAttribute));
+                    }
+                    catch { }//For most proxies not having the same attributes won't really matter,
+                    //but just incase we don't want to stop for some unknown attribute that we can't initialize
+                }
 #else
                var tAny =tParam.GetCustomAttributes(typeof(ParamArrayAttribute), true).Any();
                if(tAny)
@@ -956,8 +987,13 @@ namespace ImpromptuInterface.Build
             }
 
             var tCallSite = tCStp.CreateType();
+           
+    
+
+
 
             var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, tReturnType, tIndexParamTypes);
+
 
 
 
@@ -967,6 +1003,9 @@ namespace ImpromptuInterface.Build
                                                              MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
                                                              tReturnType,
                                                              tIndexParamTypes);
+
+
+          
 
 
 

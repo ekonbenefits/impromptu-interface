@@ -255,7 +255,7 @@ namespace ImpromptuInterface
         /// <remarks>
         /// if you call a static property off a type with a static context the csharp dlr binder won't do it, so this method reverts to reflection
         /// </remarks>
-        public static void InvokeSet(object target, string name, object value)
+        public static object InvokeSet(object target, string name, object value)
         {
             Type tContext;
             bool tStaticContext;
@@ -264,7 +264,7 @@ namespace ImpromptuInterface
 
 
             CallSite tCallSite =null;
-            InvokeHelper.InvokeSetCallSite(target, name, value, tContext, tStaticContext, ref tCallSite);
+            return InvokeHelper.InvokeSetCallSite(target, name, value, tContext, tStaticContext, ref tCallSite);
         }
 
         /// <summary>
@@ -273,13 +273,13 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="propertyChain">The property chain.</param>
         /// <param name="value">The value.</param>
-        public static void InvokeSetChain(object target, string propertyChain, object value)
+        public static object InvokeSetChain(object target, string propertyChain, object value)
         {
             var tProperties = propertyChain.Split('.');
             var tGetProperties = tProperties.Take(tProperties.Length - 1);
             var tSetProperty = tProperties.Last();
             var tSetTarget = tGetProperties.Aggregate(target, InvokeGet);
-            InvokeSet(tSetTarget, tSetProperty, value);
+            return InvokeSet(tSetTarget, tSetProperty, value);
         }
 
         /// <summary>

@@ -69,6 +69,20 @@ namespace UnitTestImpromptuInterface
 
         }
 
+
+             [Test, TestMethod]
+             public void TestStructSet()
+             {
+                 object tPoco = new PropStruct();
+
+                 var tSetValue = "1";
+
+                 Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
+
+                 Assert.AreEqual(tSetValue, ((PropStruct)tPoco).Prop1);
+
+             }
+
              [Test, TestMethod]
              public void TestCacheableDyanmicSetAndPocoSetAndSetNull()
              {

@@ -237,6 +237,17 @@ namespace UnitTestImpromptuInterface
         public int Event { get; set; }
 	}
 
+    public struct PropStruct
+    {
+        public string Prop1 { get; set; }
+
+        public long Prop2 { get; set; }
+
+        public Guid Prop3 { get; set; }
+
+        public int Event { get; set; }
+    }
+
 
     public interface IVoidMethod
     {

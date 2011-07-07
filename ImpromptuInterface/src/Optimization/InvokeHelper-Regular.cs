@@ -255,7 +255,7 @@ namespace ImpromptuInterface.Optimization
             
         }
 
-        internal static void InvokeSetCallSite(object target, string name, object value, Type context, bool staticContext, ref CallSite callSite)
+        internal static object InvokeSetCallSite(object target, string name, object value, Type context, bool staticContext, ref CallSite callSite)
         {
             if (callSite == null)
             {
@@ -286,12 +286,12 @@ namespace ImpromptuInterface.Optimization
                                   };
 
                     tBinderType = typeof(InvokeMemberBinder);
-
+                    callSite = CreateCallSite<Action<CallSite, object, object>>(tBinderType, tBinder, name, context);
                 }
                 else
                 {
 
-                    tBinder = ()=> Binder.SetMember(CSharpBinderFlags.ResultDiscarded, name,
+                    tBinder = ()=> Binder.SetMember(CSharpBinderFlags.None, name,
                                                context,
                                                new List<CSharpArgumentInfo>
                                                    {
@@ -307,13 +307,22 @@ namespace ImpromptuInterface.Optimization
 
 
                     tBinderType = typeof(SetMemberBinder);
+                    callSite = CreateCallSite<Func<CallSite, object, object, object>>(tBinderType, tBinder, name, context);
                 }
-
-
-                callSite = CreateCallSite<Action<CallSite, object, object>>(tBinderType, tBinder, name, context);
             }
-            var tCallSite = (CallSite<Action<CallSite, object, object>>) callSite;
-            tCallSite.Target(callSite, target, value);
+
+            if (staticContext)
+            {
+                var tCallSite = (CallSite<Action<CallSite, object, object>>) callSite;
+                tCallSite.Target(callSite, target, value);
+                return value;
+            }
+            else
+            {
+                var tCallSite = (CallSite<Func<CallSite, object, object, object>>) callSite;
+                var tResult = tCallSite.Target(callSite, target, value);
+                return tResult;
+            }
         }
 
         internal static object InvokeMemberCallSite(object target,  String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)

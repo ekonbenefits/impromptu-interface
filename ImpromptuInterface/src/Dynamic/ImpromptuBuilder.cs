@@ -355,24 +355,22 @@ namespace ImpromptuInterface.Dynamic
 
         }
 
-        private static object InvokeHelper(CallInfo callinfo, IEnumerable<object> args, Activate buildType =null)
+        private static object InvokeHelper(CallInfo callinfo, IList<object> args, Activate buildType =null)
         {
-            IEnumerable<KeyValuePair<string, object>> keyValues =null;
+           
+            bool tSetWithName = true;
+            object tArg = null;
             if (callinfo.ArgumentNames.Count == 0 && callinfo.ArgumentCount == 1)
             {
-				var tArg =args.FirstOrDefault();
-                keyValues = tArg as IDictionary<string, object>;
-				if(keyValues ==null 
-					&& Util.IsAnonymousType(tArg)){
-					var keyDict = new Dictionary<string,object>();
-					foreach(var tProp in tArg.GetType().GetProperties()){
-						keyDict[tProp.Name] = Impromptu.InvokeGet(tArg, tProp.Name);
-					}
-					keyValues = keyDict;
-				}
+                tArg =args[0];
+                
+                if (Util.IsAnonymousType(tArg) || tArg is IEnumerable<KeyValuePair<string, object>>)
+                {
+                    tSetWithName = false;
+                }
             }
 
-            if (keyValues == null && callinfo.ArgumentNames.Count != callinfo.ArgumentCount)
+            if (tSetWithName && callinfo.ArgumentNames.Count != callinfo.ArgumentCount)
                 throw new ArgumentException("Requires argument names for every argument");
             object result;
             if (buildType != null)
@@ -390,20 +388,12 @@ namespace ImpromptuInterface.Dynamic
                 }
 
             }
-            var tDict = result as IDictionary<string, object>;
-            keyValues = keyValues ?? callinfo.ArgumentNames.Zip(args, (n, a) => new KeyValuePair<string, object>(n, a));
-            foreach (var tArgs in keyValues)
+            if(tSetWithName)
             {
-                if (tDict != null)
-                {
-                    tDict[tArgs.Key] = tArgs.Value;
-                }
-                else
-                {
-                    Impromptu.InvokeSet(result, tArgs.Key, tArgs.Value);
-                }
+                tArg = callinfo.ArgumentNames.Zip(args, (n, a) => new KeyValuePair<string, object>(n, a));
             }
-            return result;
+
+            return Impromptu.InvokeSetAll(result, tArg);
         }
     }
 }

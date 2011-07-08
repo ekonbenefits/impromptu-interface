@@ -4,6 +4,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Internal
 {
@@ -22,25 +23,17 @@ namespace ImpromptuInterface.Internal
             //Setup Properties as dictionary
             if (binder.CallInfo.ArgumentNames.Any())
             {
-                if (binder.CallInfo.ArgumentNames.Count == binder.CallInfo.ArgumentCount)
-                {
-                    var tList = binder.CallInfo.ArgumentNames.Zip(args, (key, value) => new { key, value }).ToList();
-
-                    target =
-                        tList
-                            .Where(it => it.key.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                            .Select(it => it.value).FirstOrDefault();
-
-                    tDict = tList.Where(it => !it.key.Equals("target", StringComparison.InvariantCultureIgnoreCase))
-                        .ToDictionary(k => k.key, v => v.value);
-                }
-                else if (binder.CallInfo.ArgumentNames.Count + 1 == binder.CallInfo.ArgumentCount)
+                
+                if (binder.CallInfo.ArgumentNames.Count + 1 == binder.CallInfo.ArgumentCount)
                 {
                     target = args.First();
                     tDict = binder.CallInfo.ArgumentNames
                         .Zip(args.Skip(1), (key, value) => new { key, value })
                         .ToDictionary(k => k.key, v => v.value);
 
+                }else
+                {
+                    throw new RuntimeBinderException("InvokeSetAll requires first parameter to be target unamed, and all other parameters to be named.");
                 }
             }
             else if (args.Length == 2)
@@ -67,6 +60,7 @@ namespace ImpromptuInterface.Internal
                 {
                     Impromptu.InvokeSetChain(target, tPair.Key, tPair.Value);
                 }
+                result = target;
                 return true;
             }
             return false;

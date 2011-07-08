@@ -264,6 +264,26 @@ namespace ImpromptuInterface.Dynamic
 
                             }
                     }
+                case InvocationKind.Invoke:
+                    return InvokeHelper.InvokeDirectCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
+                case InvocationKind.InvokeAction:
+                    InvokeHelper.InvokeDirectActionCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
+                    return null;
+                case InvocationKind.InvokeUnknown:
+                    {
+
+                        try
+                        {
+                            var tObj = InvokeHelper.InvokeDirectCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);
+                            return tObj;
+                        }
+                        catch (RuntimeBinderException)
+                        {
+                            InvokeHelper.InvokeDirectActionCallSite(target, args, _argNames, _context, _staticContext, ref _callSite2);
+                            return null;
+
+                        }
+                    }
                 case InvocationKind.AddAssign:
                     InvokeHelper.InvokeAddAssignCallSite(target, Name.Name, args, _argNames, _context, _staticContext,ref _callSite,ref  _callSite2,ref _callSite3, ref _callSite4);
                     return null;

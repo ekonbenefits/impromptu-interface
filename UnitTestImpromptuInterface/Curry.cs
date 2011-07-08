@@ -104,6 +104,9 @@ namespace UnitTestImpromptuInterface
             var tCurry = Impromptu.Curry(tNewObj).Add(4);
             var tResult = tCurry(10);
             Assert.AreEqual(14, tResult);
+            //Test cached invocation;
+            var tResult2 = tCurry(30);
+            Assert.AreEqual(34, tResult2);
         }
 
         [Test, TestMethod]
@@ -114,6 +117,9 @@ namespace UnitTestImpromptuInterface
             var tCurry = Impromptu.Curry(tNewObj).Add(4);
             var tResult = tCurry(10);
             Assert.AreEqual(14,tResult);
+            //Test cached invocation;
+            var tResult2 = tCurry(30);
+            Assert.AreEqual(34, tResult2);
         }
 
         [Test, TestMethod]
@@ -132,6 +138,18 @@ namespace UnitTestImpromptuInterface
             var tNewObject = Impromptu.Curry(Build.NewObject);
             tNewObject = tNewObject(One: 1);
             tNewObject = Impromptu.Curry(tNewObject)(Two: 2);
+            var tResult = tNewObject(Three: 3);
+            Assert.AreEqual(1, tResult.One);
+            Assert.AreEqual(2, tResult.Two);
+            Assert.AreEqual(3, tResult.Three);
+        }
+
+        [Test, TestMethod]
+        public void BoundedCurryCont()
+        {
+            var tNewObject = Impromptu.Curry(Build.NewObject,3);
+            tNewObject = tNewObject(One: 1);
+            tNewObject = tNewObject(Two: 2); 
             var tResult = tNewObject(Three: 3);
             Assert.AreEqual(1, tResult.One);
             Assert.AreEqual(2, tResult.Two);

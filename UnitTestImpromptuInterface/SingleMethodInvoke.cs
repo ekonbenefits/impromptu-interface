@@ -860,6 +860,52 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
         }
 
+
+        [Test, TestMethod]
+        public void TestSetDynamicAllDict()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = new ExpandoObject();
+            tExpando.Test = new ExpandoObject();
+            tExpando.Test.Test2 = new ExpandoObject();
+
+
+            Impromptu.InvokeSetAll(tExpando, new Dictionary<string, object> {{"Test.Test2.Test3", tSetValue},{"One",1},{"Two",2}});
+
+            Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
+
+            Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
+            Assert.AreEqual(1, tExpando.One);
+            Assert.AreEqual(2, tExpando.Two);
+        }
+
+        [Test, TestMethod]
+        public void TestSetDynamicAllAnonymous()
+        {
+            dynamic tExpando = new ExpandoObject();
+
+            Impromptu.InvokeSetAll(tExpando, new{One=1,Two=2,Three=3});
+
+        
+            Assert.AreEqual(1, tExpando.One);
+            Assert.AreEqual(2, tExpando.Two);
+            Assert.AreEqual(3, tExpando.Three);
+        }
+
+        [Test, TestMethod]
+        public void TestSetDynamicAllNamed()
+        {
+            dynamic tExpando = new ExpandoObject();
+
+            Impromptu.InvokeSetAll(tExpando,  One:1, Two:2, Three:3);
+
+
+            Assert.AreEqual(1, tExpando.One);
+            Assert.AreEqual(2, tExpando.Two);
+            Assert.AreEqual(3, tExpando.Three);
+        }
+
         [Test, TestMethod]
         public void TestSetDynamicChainedOne()
         {

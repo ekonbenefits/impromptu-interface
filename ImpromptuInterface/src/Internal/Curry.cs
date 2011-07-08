@@ -51,7 +51,7 @@ namespace ImpromptuInterface.Internal
                              //If already currying append
                              ? new Currying(tCurrying.Target, tCurrying.MemberName,
                                             tCurrying.Args.Concat(Util.NameArgsIfNecessary(binder.CallInfo, args)).
-                                                ToArray(), _totalArgCount)
+                                                ToArray(), tCurrying.TotalArgCount, tCurrying.InvocationKind)
                              : new Currying(_target, String.Empty, Util.NameArgsIfNecessary(binder.CallInfo, args), _totalArgCount);
                 return true;
            }
@@ -109,10 +109,13 @@ namespace ImpromptuInterface.Internal
                 return true;
             }
 
-            internal Currying(object target, string memberName, object[] args, int? totalCount=null)
+            internal Currying(object target, string memberName, object[] args, int? totalCount=null, InvocationKind? invocationKind=null)
             {
                 _target = target;
                 _memberName = memberName;
+                _invocationKind = invocationKind ?? (String.IsNullOrWhiteSpace(_memberName)
+                                         ? InvocationKind.InvokeUnknown
+                                         : InvocationKind.InvokeMemberUnknown);
                 _totalArgCount = totalCount;
                 _args = args;
             }
@@ -121,6 +124,7 @@ namespace ImpromptuInterface.Internal
             private readonly object _target;
             private readonly string _memberName;
             private readonly object[] _args;
+            private readonly InvocationKind _invocationKind;
 
             public object Target
             {
@@ -142,6 +146,12 @@ namespace ImpromptuInterface.Internal
                 get { return _totalArgCount; }
             }
 
+            public InvocationKind InvocationKind
+            {
+                get { return _invocationKind; }
+            }
+
+            private CacheableInvocation _cacheableInvocation;
 
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
@@ -152,7 +162,7 @@ namespace ImpromptuInterface.Internal
                     //Not Done currying
                 {
                     result= new Currying(Target, MemberName, tNewArgs,
-                                       TotalArgCount);
+                                       TotalArgCount, InvocationKind);
 
                     return true;
                 }
@@ -167,13 +177,20 @@ namespace ImpromptuInterface.Internal
                     return true;
                 }
 
-                var tInvocationKind = String.IsNullOrWhiteSpace(_memberName)
-                                          ? InvocationKind.InvokeUnknown
-                                          : InvocationKind.InvokeMemberUnknown;
-
-                var tInvocation = new Invocation(tInvocationKind, _memberName);
-
-                
+               
+                Invocation tInvocation;
+                if (binder.CallInfo.ArgumentNames.Count == 0) //If no argument names we can cache the callsite
+                {
+                    if (_cacheableInvocation == null)
+                    {
+                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target.GetType());
+                    }
+                    tInvocation = _cacheableInvocation;
+                }
+                else
+                {
+                    tInvocation = new Invocation(InvocationKind, _memberName);
+                }
 
                 result =tInvocation.Invoke(_target, tNewArgs);
 

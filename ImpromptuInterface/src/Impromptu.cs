@@ -19,8 +19,11 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
+using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Internal;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
+
 namespace ImpromptuInterface
 {
     using System;
@@ -125,6 +128,25 @@ namespace ImpromptuInterface
 
             return InvokeHelper.InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
+
+        /// <summary>
+        /// Invokes the specified target using the DLR;
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        public static dynamic Invoke(object target, params object[] args)
+        {
+            string[] tArgNames;
+            Type tContext;
+            bool tStaticContext;
+            target = target.GetTargetContext(out tContext, out tStaticContext);
+            args = GetArgsAndNames(args, out tArgNames);
+            CallSite tCallSite = null;
+
+            return InvokeHelper.InvokeDirectCallSite(target, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+        }
+
 
         internal static object[] GetArgsAndNames(object[]args,out string[]argNames)
         {
@@ -231,6 +253,25 @@ namespace ImpromptuInterface
             InvokeHelper.InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
 
+        /// <summary>
+        /// Invokes the action using the DLR
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="args">The args.</param>
+        public static void InvokeAction(object target, params object[] args)
+        {
+            string[] tArgNames;
+            Type tContext;
+            bool tStaticContext;
+
+            target = target.GetTargetContext(out tContext, out tStaticContext);
+            args = GetArgsAndNames(args, out tArgNames);
+
+            CallSite tCallSite = null;
+            InvokeHelper.InvokeDirectActionCallSite(target, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+        }
+
 
         /// <summary>
         /// Dynamically Invokes a set member using the DLR.
@@ -280,6 +321,41 @@ namespace ImpromptuInterface
             var tSetProperty = tProperties.Last();
             var tSetTarget = tGetProperties.Aggregate(target, InvokeGet);
             return InvokeSet(tSetTarget, tSetProperty, value);
+        }
+
+
+      
+
+        private static readonly dynamic _invokeSetAll = new InvokeSetters();
+        /// <summary>
+        /// Call Like method invokes set on target and a list of property/value. Invoke with dictionary, anonymous type or named arguments.
+        /// </summary>
+        /// <value>The invoke set all.</value>
+        public static dynamic InvokeSetAll
+        {
+            get { return _invokeSetAll; }
+        }
+      
+        /// <summary>
+        /// Wraps a target to partial apply a method (or target if you can invoke target directly eg delegate).
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public static dynamic Curry(object target, int? totalArgCount=null)
+        {
+            if (target is Delegate && !totalArgCount.HasValue)
+                return Curry((Delegate) target);
+            return new Curry(target, totalArgCount);
+        }
+
+        /// <summary>
+        /// Wraps a delegate to partially apply it.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public static dynamic Curry(Delegate target)
+        {
+            return new Curry(target, target.Method.GetParameters().Length);
         }
 
         /// <summary>
@@ -520,11 +596,35 @@ namespace ImpromptuInterface
         /// Advanced use only. Use this method for serious custom invocation, otherwise there are other convenience methods such as
         /// <see cref="InvokeMember"></see>, <see cref="InvokeGet"></see>, <see cref="InvokeSet"></see> and <see cref="InvokeMemberAction"></see>
         /// </remarks>
-        public static dynamic Invoke(CallSite callSite, object target, params object[] args)
+        public static dynamic InvokeCallSite(CallSite callSite, object target, params object[] args)
         {
          
             
             var tParameters = new List<object> {callSite, target};
+            tParameters.AddRange(args);
+
+            MulticastDelegate tDelegate = ((dynamic)callSite).Target;
+
+            return tDelegate.FastDynamicInvoke(tParameters.ToArray());
+        }
+
+        /// <summary>
+        /// Dynamically invokes a method determined by the CallSite binder and be given an appropriate delegate type
+        /// </summary>
+        /// <param name="callSite">The Callsite</param>
+        /// <param name="target">The target.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// Advanced use only. Use this method for serious custom invocation, otherwise there are other convenience methods such as
+        /// <see cref="InvokeMember"></see>, <see cref="InvokeGet"></see>, <see cref="InvokeSet"></see> and <see cref="InvokeMemberAction"></see>
+        /// </remarks>
+        [Obsolete("Use InvokeCallSite instead;")]
+        public static dynamic Invoke(CallSite callSite, object target, params object[] args)
+        {
+
+
+            var tParameters = new List<object> { callSite, target };
             tParameters.AddRange(args);
 
             MulticastDelegate tDelegate = ((dynamic)callSite).Target;

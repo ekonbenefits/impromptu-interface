@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Internal;
 using Microsoft.CSharp.RuntimeBinder;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 
@@ -41,6 +42,8 @@ namespace ImpromptuInterface.Optimization
 
         private static readonly IDictionary<BinderHash, CallSite> _binderCache = new Dictionary<BinderHash, CallSite>();
 
+
+        
 
         private static readonly object _binderCacheLock = new object();
 
@@ -350,6 +353,26 @@ namespace ImpromptuInterface.Optimization
             return InvokeMember<object>(ref callSite, tBinderType, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
         }
 
+        internal static object InvokeDirectCallSite(object target, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)
+        {
+            LazyBinder tBinder = null;
+            Type tBinderType = null;
+            if (callSite == null)
+            {
+
+                tBinder = () =>
+                {
+                    var tList = GetBindingArgumentList(args, tArgNames, tStaticContext);
+                    var tFlag = CSharpBinderFlags.None;
+                    return Binder.Invoke(tFlag,tContext, tList);
+                };
+                tBinderType = typeof(InvokeBinder);
+            }
+
+
+            return InvokeMember<object>(ref callSite, tBinderType, tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
+        }
+
         internal static object InvokeGetIndexCallSite(object target, object[] indexes, string[] argNames, Type context, bool tStaticContext,ref CallSite callSite)
         {
             LazyBinder tBinder=null;
@@ -417,6 +440,32 @@ namespace ImpromptuInterface.Optimization
 
             InvokeMemberAction(ref callSite,tBinderType, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
         }
+
+
+        internal static void InvokeDirectActionCallSite(object target, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)
+        {
+            LazyBinder tBinder = null;
+            Type tBinderType = null;
+            if (callSite == null)
+            {
+
+                tBinder = () =>
+                {
+                    IEnumerable<CSharpArgumentInfo> tList;
+                    tList = GetBindingArgumentList(args, tArgNames, tStaticContext);
+
+                    var tFlag = CSharpBinderFlags.ResultDiscarded;
+                   
+
+                    return Binder.Invoke(tFlag,tContext, tList);
+                };
+                tBinderType = typeof(InvokeBinder);
+            }
+
+
+            InvokeMemberAction(ref callSite, tBinderType, tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
+        }
+
         internal class IsEventBinderDummy{
             
         }
@@ -518,6 +567,40 @@ namespace ImpromptuInterface.Optimization
 
             return InvokeMemberTargetType<Type, object>(ref callSite,tBinderType, tBinder, Invocation.ConstructorBinderName, true, type, argNames,
                                                                      type, args);
+        }
+
+        internal static readonly IDictionary<Type, CallSite<DynamicInvokeWrapFunc>> _dynamicInvokeWrapFunc = new Dictionary<Type, CallSite<DynamicInvokeWrapFunc>>();
+
+        internal delegate object DynamicInvokeWrapFunc(
+         CallSite funcSite,
+         Type funcTarget,
+         object invokable,
+         int length
+         );
+
+        internal static Delegate WrapFunc(Type returnType, object invokable, int length)
+        {
+            CallSite<DynamicInvokeWrapFunc> tSite;
+            if (!_dynamicInvokeWrapFunc.TryGetValue(returnType, out tSite))
+            {
+                tSite = CallSite<DynamicInvokeWrapFunc>.Create(
+                    Binder.InvokeMember(
+                        CSharpBinderFlags.None,
+                        "WrapFuncHelper",
+                        new[] {returnType},
+                        typeof (InvokeHelper),
+                        new[]
+                            {
+                                CSharpArgumentInfo.Create(
+                                    CSharpArgumentInfoFlags.IsStaticType | CSharpArgumentInfoFlags.UseCompileTimeType,
+                                    null),
+                                CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                            }
+                        )); 
+                _dynamicInvokeWrapFunc[returnType] = tSite;
+            }
+            return (Delegate) tSite.Target(tSite, typeof(InvokeHelper), invokable, length);
         }
     }
 }

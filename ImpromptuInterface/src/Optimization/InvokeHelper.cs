@@ -33,6 +33,8 @@ namespace ImpromptuInterface.Optimization
 
         internal static readonly Type[] FuncKinds;
         internal static readonly Type[] ActionKinds;
+		internal static readonly IDictionary<Type,int> FuncArgs;
+		internal static readonly IDictionary<Type,int> ActionArgs;
 
         static InvokeHelper()
         {
@@ -77,6 +79,25 @@ namespace ImpromptuInterface.Optimization
 								typeof(Action<,,,,,,,,,,,,,,>), //15
 								typeof(Action<,,,,,,,,,,,,,,,>), //16
                             };
+
+
+			FuncArgs = FuncKinds.Zip(Enumerable.Range(0, FuncKinds.Length), (key, value) => new { key, value }).ToDictionary(k => k.key, v => v.value);
+            ActionArgs = ActionKinds.Zip(Enumerable.Range(0, ActionKinds.Length), (key, value) => new { key, value }).ToDictionary(k => k.key, v => v.value);
+
+        }
+
+        public static bool IsActionOrFunc(object target)
+        {
+            if (target == null)
+                return false;
+            var tType = target as Type ?? target.GetType();
+
+            if (tType.IsGenericType)
+            {
+                tType = tType.GetGenericTypeDefinition();
+            }
+
+            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
         }
 
         #region InvokeMemberAction Optimizations
@@ -259,6 +280,8 @@ namespace ImpromptuInterface.Optimization
 
        
 
+	
+
         #region InvokeMember Optimizations
 
 
@@ -425,6 +448,94 @@ namespace ImpromptuInterface.Optimization
      
 
         #endregion
+
+		private static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
+        {
+			 switch(length){
+			   					case 0:
+						return new Func< TReturn>(()=> invokable());
+  					case 1:
+						return new Func< object, TReturn>((a1)=> invokable(a1));
+  					case 2:
+						return new Func< object, object, TReturn>((a1,a2)=> invokable(a1,a2));
+  					case 3:
+						return new Func< object, object, object, TReturn>((a1,a2,a3)=> invokable(a1,a2,a3));
+  					case 4:
+						return new Func< object, object, object, object, TReturn>((a1,a2,a3,a4)=> invokable(a1,a2,a3,a4));
+  					case 5:
+						return new Func< object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5)=> invokable(a1,a2,a3,a4,a5));
+  					case 6:
+						return new Func< object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6)=> invokable(a1,a2,a3,a4,a5,a6));
+  					case 7:
+						return new Func< object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7)=> invokable(a1,a2,a3,a4,a5,a6,a7));
+  					case 8:
+						return new Func< object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8));
+  					case 9:
+						return new Func< object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9));
+  					case 10:
+						return new Func< object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10));
+  					case 11:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11));
+  					case 12:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12));
+  					case 13:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13));
+  					case 14:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14));
+  					case 15:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15));
+  					case 16:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
+	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
+
+		
+
+        internal static Delegate WrapAction(dynamic invokable, int length)
+        {
+           	 switch(length){
+				    case 0:
+					    return new Action(()=>invokable());
+  					case 1:
+						return new Action< object>((a1)=> invokable(a1));
+  					case 2:
+						return new Action< object, object>((a1,a2)=> invokable(a1,a2));
+  					case 3:
+						return new Action< object, object, object>((a1,a2,a3)=> invokable(a1,a2,a3));
+  					case 4:
+						return new Action< object, object, object, object>((a1,a2,a3,a4)=> invokable(a1,a2,a3,a4));
+  					case 5:
+						return new Action< object, object, object, object, object>((a1,a2,a3,a4,a5)=> invokable(a1,a2,a3,a4,a5));
+  					case 6:
+						return new Action< object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6)=> invokable(a1,a2,a3,a4,a5,a6));
+  					case 7:
+						return new Action< object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7)=> invokable(a1,a2,a3,a4,a5,a6,a7));
+  					case 8:
+						return new Action< object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8));
+  					case 9:
+						return new Action< object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9));
+  					case 10:
+						return new Action< object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10));
+  					case 11:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11));
+  					case 12:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12));
+  					case 13:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13));
+  					case 14:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14));
+  					case 15:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15));
+  					case 16:
+						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
+	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
 
 
         internal static object FastDynamicInvokeReturn(Delegate del, dynamic [] args)

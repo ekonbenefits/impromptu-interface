@@ -65,6 +65,9 @@
     <Compile Include="..\ImpromptuInterface.MVVM\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\DialogBox.cs">
+      <Link>src\DialogBox.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Event.cs">
       <Link>src\Event.cs</Link>
     </Compile>
@@ -85,6 +88,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuViewModel.cs">
       <Link>src\ImpromptuViewModel.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuWindowFactory.cs">
+      <Link>src\ImpromptuWindowFactory.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpropmtuCommandBinder.cs">
       <Link>src\ImpropmtuCommandBinder.cs</Link>

@@ -80,6 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ClayTest.cs" />
+    <Compile Include="Curry.cs" />
     <Compile Include="MVVM.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />

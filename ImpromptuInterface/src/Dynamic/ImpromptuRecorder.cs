@@ -108,7 +108,7 @@ namespace ImpromptuInterface.Dynamic
         {
             if (base.TryInvokeMember(binder, args, out result))
             {
-                Recording.Add(new Invocation(InvocationKind.InvokeMemberUnknown, binder.Name, NameArgsIfNecessary(binder.CallInfo, args)));
+                Recording.Add(new Invocation(InvocationKind.InvokeMemberUnknown, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo, args)));
                 return true;
             }
             return false;
@@ -118,7 +118,7 @@ namespace ImpromptuInterface.Dynamic
         {
             if (base.TryGetIndex(binder, indexes, out result))
             {
-                Recording.Add(new Invocation(InvocationKind.GetIndex, Invocation.IndexBinderName, NameArgsIfNecessary(binder.CallInfo, indexes)));
+                Recording.Add(new Invocation(InvocationKind.GetIndex, Invocation.IndexBinderName, Util.NameArgsIfNecessary(binder.CallInfo, indexes)));
                 return true;
             }
             return false;
@@ -129,7 +129,7 @@ namespace ImpromptuInterface.Dynamic
             if (base.TrySetIndex(binder, indexes, value))
             {
                 var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
-                Recording.Add(new Invocation(InvocationKind.GetIndex, Invocation.IndexBinderName, NameArgsIfNecessary(binder.CallInfo, tCombinedArgs)));
+                Recording.Add(new Invocation(InvocationKind.GetIndex, Invocation.IndexBinderName, Util.NameArgsIfNecessary(binder.CallInfo, tCombinedArgs)));
                 return true;
             }
             return false;

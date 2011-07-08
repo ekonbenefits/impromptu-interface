@@ -104,7 +104,7 @@ namespace ImpromptuInterface.Dynamic
                 return false;
             }
 
-            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, args);
+            object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, args);
 
             try
             {
@@ -127,18 +127,7 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
-        protected object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
-        {
-            object[] tArgs;
-            if (callInfo.ArgumentNames.Count == 0)
-                tArgs =args;
-            else
-            {
-                var tStop = callInfo.ArgumentCount - callInfo.ArgumentNames.Count;
-                tArgs = Enumerable.Repeat(default(string), tStop).Concat(callInfo.ArgumentNames).Zip(args, (n, v) => n == null ? v : new InvokeArg(n, v)).ToArray();
-            }
-            return tArgs;
-        }
+       
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
@@ -176,7 +165,7 @@ namespace ImpromptuInterface.Dynamic
                 return false;
             }
 
-            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, indexes);
+            object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, indexes);
 
             result = Impromptu.InvokeGetIndex(Target, tArgs);
             return true;
@@ -190,7 +179,7 @@ namespace ImpromptuInterface.Dynamic
             }
 
             var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
-            object[] tArgs = NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
+            object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
 
             Impromptu.InvokeSetIndex(tArgs);
             return true;

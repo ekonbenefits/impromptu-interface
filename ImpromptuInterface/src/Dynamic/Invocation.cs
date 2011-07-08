@@ -15,9 +15,7 @@
 
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic
@@ -80,6 +78,19 @@ namespace ImpromptuInterface.Dynamic
         /// Invoke Event Property Test
         /// </summary>
         IsEvent,
+        /// <summary>
+        /// Invoke Directly
+        /// </summary>
+        Invoke,
+        /// <summary>
+        /// Invoke Directly DiscardResult
+        /// </summary>
+        InvokeAction,
+        /// <summary>
+        /// Invoke Directly Return Value
+        /// </summary>
+        InvokeUnknown,
+
     }
 
 
@@ -225,6 +236,24 @@ namespace ImpromptuInterface.Dynamic
                         {
 
                             Impromptu.InvokeMemberAction(target, Name, args);
+                            return null;
+                        }
+                    }
+                case InvocationKind.Invoke:
+                    return Impromptu.Invoke(target, args);
+                case InvocationKind.InvokeAction:
+                    Impromptu.InvokeAction(target, args);
+                    return null;
+                case InvocationKind.InvokeUnknown:
+                    {
+                        try
+                        {
+                            return Impromptu.Invoke(target, args);
+                        }
+                        catch (RuntimeBinderException)
+                        {
+
+                            Impromptu.InvokeAction(target, args);
                             return null;
                         }
                     }

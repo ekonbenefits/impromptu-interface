@@ -17,6 +17,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
@@ -34,7 +35,32 @@ namespace ImpromptuInterface.Optimization
     /// </summary>
     public static class Util
     {
+        public static bool IsAnonymousType(object target)
+        {
+            if(target ==null)
+                return false;
 
+            var type = target as Type ?? target.GetType();
+
+            return type.IsNotPublic
+                   && Attribute.IsDefined(
+                       type,
+                       typeof (System.Runtime.CompilerServices.CompilerGeneratedAttribute),
+                       false);
+        }
+
+        public static object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
+        {
+            object[] tArgs;
+            if (callInfo.ArgumentNames.Count == 0)
+                tArgs = args;
+            else
+            {
+                var tStop = callInfo.ArgumentCount - callInfo.ArgumentNames.Count;
+                tArgs = Enumerable.Repeat(default(string), tStop).Concat(callInfo.ArgumentNames).Zip(args, (n, v) => n == null ? v : new InvokeArg(n, v)).ToArray();
+            }
+            return tArgs;
+        }
 
         public static object GetTargetContext(this object target, out Type context, out bool staticContext)
         {

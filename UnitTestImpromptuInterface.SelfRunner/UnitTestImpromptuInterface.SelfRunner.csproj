@@ -54,6 +54,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\ClayTest.cs">
       <Link>ClayTest.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\Curry.cs">
+      <Link>Curry.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\Serialization.cs">
       <Link>Serialization.cs</Link>
     </Compile>

@@ -60,7 +60,9 @@ namespace ImpromptuInterface.Internal
         
 
         public class Curried:DynamicObject
-        {   
+        {
+            public static IDictionary<Type, Delegate> _compiledExpressions = new Dictionary<Type, Delegate>(); 
+
             public override bool TryConvert(ConvertBinder binder, out object result)
             {
                  result = null;
@@ -77,16 +79,26 @@ namespace ImpromptuInterface.Internal
                     ? InvokeHelper.WrapAction(this, tLength)
                     : InvokeHelper.WrapFunc(tReturnType, this, tLength);
 
-
+                
                 if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))
                 {
-                    
-                    var tP = tParams.Select(it => Expression.Parameter(it.ParameterType)).ToArray();
-                    var tB =Expression.Call(Expression.Constant(tBaseDelegate),tBaseDelegate.GetType().GetMethod("Invoke"), tP.Select(it=>Expression.Convert(it,typeof(object))) );
+                    Delegate tGetResult;
+                    if (!_compiledExpressions.TryGetValue(binder.Type, out tGetResult))
+                    {
+                        var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
+                        var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
+                        var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
 
-                    result= Expression.Lambda(binder.Type, tB, tP).Compile();
+                        var tI = Expression.Invoke(tDelParam,
+                                                   tInnerParams.Select(it => Expression.Convert(it, typeof (object))));
+                        var tL = Expression.Lambda(binder.Type, tI, tInnerParams);
 
-                    
+                        tGetResult =
+                            Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), binder.Type), tL,
+                                              tDelParam).Compile();
+                        _compiledExpressions[binder.Type]= tGetResult;
+                    }
+                    result = tGetResult.DynamicInvoke(tBaseDelegate);
                        
                     return true;
                 }

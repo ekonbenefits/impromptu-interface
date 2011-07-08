@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface;
+using ImpromptuInterface.Dynamic;
 using NUnit.Framework;
 
 namespace UnitTestImpromptuInterface
@@ -22,6 +23,17 @@ namespace UnitTestImpromptuInterface
      
         }
 
+        [Test, TestMethod]
+        public void TestBasicNamedCurry()
+        {
+            Func<int, int, int> tSub = (x, y) => x - y;
+            var tCurriedSub7 = Impromptu.Curry(tSub)(arg2:7);
+            var tResult = tCurriedSub7(arg1:10);
+
+
+            Assert.AreEqual(3, tResult);
+
+        }
     
         [Test, TestMethod]
         public void TestBasicConvertDelegateCurry()
@@ -77,5 +89,68 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(14, tResult2);
         }
 
+        [Test, TestMethod]
+        public void TestPococMethodCurry()
+        {
+            var tNewObj = new PocoAdder();
+
+            var tCurry = Impromptu.Curry(tNewObj).Add(4);
+            var tResult = tCurry(10);
+            Assert.AreEqual(14, tResult);
+        }
+
+        [Test, TestMethod]
+        public void TestDynamicMethodCurry()
+        {
+            var tNewObj =Build.NewObject(Add: Return<int>.Arguments<int, int>((x, y) => x + y));
+
+            var tCurry = Impromptu.Curry(tNewObj).Add(4);
+            var tResult = tCurry(10);
+            Assert.AreEqual(14,tResult);
+        }
+
+        [Test, TestMethod]
+        public void UnboundedCurry()
+        {
+            var tNewObject = Impromptu.Curry(Build.NewObject);
+            var tCurriedNewObject =tNewObject(One: 1);
+            var tResult = tCurriedNewObject(Two: 2);
+            Assert.AreEqual(1,tResult.One);
+            Assert.AreEqual(2,tResult.Two);
+
+        }
+        [Test, TestMethod]
+        public void UnboundedCurryCont()
+        {
+            var tNewObject = Impromptu.Curry(Build.NewObject);
+            tNewObject = tNewObject(One: 1);
+            tNewObject = Impromptu.Curry(tNewObject)(Two: 2);
+            var tResult = tNewObject(Three: 3);
+            Assert.AreEqual(1, tResult.One);
+            Assert.AreEqual(2, tResult.Two);
+            Assert.AreEqual(3, tResult.Three);
+        }
+
+        [Test, TestMethod]
+        public void TestPococMethodPartialApply()
+        {
+            var tNewObj = new PocoAdder();
+            var tCurry = Impromptu.Curry(tNewObj).Add(4,6);
+            var tResult = tCurry();
+            Assert.AreEqual(10, tResult);
+        }
+        
+        [Test, TestMethod]
+        public void UnboundedPartialApply()
+        {
+            var tNewObject = Impromptu.Curry(Build.NewObject);
+            tNewObject = tNewObject(One: 1,Two:2);
+            var tResult = tNewObject(Three: 3, Four:4);
+            Assert.AreEqual(1, tResult.One);
+            Assert.AreEqual(2, tResult.Two);
+            Assert.AreEqual(3, tResult.Three);
+            Assert.AreEqual(4, tResult.Four);
+
+        }
     }
 }

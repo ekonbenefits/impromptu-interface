@@ -361,6 +361,14 @@ namespace UnitTestImpromptuInterface
 		string NameLevel2 {get;}
     }
 
+    public class PocoAdder
+    {
+        public int Add(int x, int y)
+        {
+            return x + y;
+        }
+    }
+
     public class PocoCollection:IList
     {
         public IEnumerator GetEnumerator()

@@ -39,27 +39,27 @@ namespace ImpromptuInterface.Internal
 
            public override bool  TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
            {
-               result = new Curried(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
+               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
                return true;
            }
             public override bool  TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
-                var tCurrying = _target as Curried;
+                var tCurrying = _target as Currying;
 
                 
                 result = tCurrying != null
                              //If already currying append
-                             ? new Curried(tCurrying.Target, tCurrying.MemberName,
+                             ? new Currying(tCurrying.Target, tCurrying.MemberName,
                                             tCurrying.Args.Concat(Util.NameArgsIfNecessary(binder.CallInfo, args)).
                                                 ToArray(), _totalArgCount)
-                             : new Curried(_target, String.Empty, Util.NameArgsIfNecessary(binder.CallInfo, args), _totalArgCount);
+                             : new Currying(_target, String.Empty, Util.NameArgsIfNecessary(binder.CallInfo, args), _totalArgCount);
                 return true;
            }
         }
 
         
 
-        public class Curried:DynamicObject
+        public class Currying:DynamicObject
         {
             public static IDictionary<Type, Delegate> _compiledExpressions = new Dictionary<Type, Delegate>();
 
@@ -109,7 +109,7 @@ namespace ImpromptuInterface.Internal
                 return true;
             }
 
-            internal Curried(object target, string memberName, object[] args, int? totalCount=null)
+            internal Currying(object target, string memberName, object[] args, int? totalCount=null)
             {
                 _target = target;
                 _memberName = memberName;
@@ -149,8 +149,9 @@ namespace ImpromptuInterface.Internal
                 var tNewArgs = _args.Concat(tNamedArgs).ToArray();
 
                 if (_totalArgCount.HasValue && (_totalArgCount - Args.Length - args.Length > 0))
+                    //Not Done currying
                 {
-                    result= new Curried(Target, MemberName, tNewArgs,
+                    result= new Currying(Target, MemberName, tNewArgs,
                                        TotalArgCount);
 
                     return true;
@@ -160,6 +161,7 @@ namespace ImpromptuInterface.Internal
 
                
                 if (tInvokeDirect &&  binder.CallInfo.ArgumentNames.Count ==0 && _target is Delegate)
+                    //Optimization for direct delegate calls
                 {
                    result= tDel.FastDynamicInvoke(tNewArgs);
                     return true;

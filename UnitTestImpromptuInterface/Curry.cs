@@ -4,7 +4,14 @@ using System.Linq;
 using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+
+#if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
+#elif !SELFRUNNER
 using NUnit.Framework;
+#endif
+
 
 namespace UnitTestImpromptuInterface
 {

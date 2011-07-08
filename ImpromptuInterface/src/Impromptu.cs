@@ -343,6 +343,8 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic Curry(object target, int? totalArgCount=null)
         {
+            if (target is Delegate && !totalArgCount.HasValue)
+                return Curry((Delegate) target);
             return new Curry(target, totalArgCount);
         }
 

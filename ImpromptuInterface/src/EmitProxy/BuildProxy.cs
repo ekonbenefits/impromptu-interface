@@ -247,6 +247,47 @@ namespace ImpromptuInterface.Build
             MakePropertyHelper(null, tName, builder, tReturnType, null, typeBuilder, tGetName, contextType, true);
         }
 
+        private class MethodSigHash
+        {
+            public readonly string Name;
+            public readonly Type[] Parameters;
+
+            public MethodSigHash(MethodInfo info)
+            {
+                Name = info.Name;
+                Parameters = info.GetParameters().Select(it => it.ParameterType).ToArray();
+            }
+
+            public MethodSigHash(string name, Type[] parameters)
+            {
+                Name = name;
+                Parameters = parameters;
+            }
+
+            public bool Equals(MethodSigHash other)
+            {
+                if (ReferenceEquals(null, other)) return false;
+                if (ReferenceEquals(this, other)) return true;
+                return Equals(other.Name, Name) && StructuralComparisons.StructuralEqualityComparer.Equals(other.Parameters, Parameters);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                if (ReferenceEquals(this, obj)) return true;
+                if (obj.GetType() != typeof (MethodSigHash)) return false;
+                return Equals((MethodSigHash) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    return (Name.GetHashCode() * 397) ^ StructuralComparisons.StructuralEqualityComparer.GetHashCode(Parameters);
+                }
+            }
+        }
+
         private static Type BuildTypeHelper(ModuleBuilder builder,Type contextType,params Type[] interfaces)
         {
 
@@ -265,13 +306,15 @@ namespace ImpromptuInterface.Build
 
 
             var tPropertyNameHash = new HashSet<string>();
+            var tMethodHashSet = new HashSet<MethodSigHash>();
 
-            foreach (var tInterface in tInterfaces)
+            object tAttr=null;
+            foreach (var tInterface in tInterfaces.Distinct())
             {
 
 #if !SILVERLIGHT
                 
-                    if (tInterface != null)
+                    if (tInterface != null && tAttr ==null)
                     {
                         var tCustomAttributes = tInterface.GetCustomAttributesData();
                         foreach (var tCustomAttribute in tCustomAttributes.Where(it=>typeof(DefaultMemberAttribute).IsAssignableFrom(it.Constructor.DeclaringType)))
@@ -288,11 +331,11 @@ namespace ImpromptuInterface.Build
                     }
 
 #else
-                if (tInterface != null){
+                if (tInterface != null && tAttr ==null){
                         var tAttrs =tInterface.GetCustomAttributes(typeof(DefaultMemberAttribute),true);
 
-                        var tAttr = tAttrs.FirstOrDefault();
-                        if(tAttr !=null){
+                    tAttr = tAttrs.FirstOrDefault();
+                    if(tAttr !=null){
                              tB.SetCustomAttribute(new CustomAttributeBuilder(typeof(DefaultMemberAttribute)
                                  .GetConstructor(new[]{typeof(String)}),new object[]{"Item"}));
                         }
@@ -305,11 +348,11 @@ namespace ImpromptuInterface.Build
                 }
                 foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
                 {
-                    MakeMethod(builder,tInfo, tB, contextType);
+                    MakeMethod(builder, tInfo, tB, contextType, defaultImp: tMethodHashSet.Add(new MethodSigHash(tInfo)));
                 }
                 foreach (var tInfo in tInterface.GetEvents(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
                 {
-                    MakeEvent(builder, tInfo, tB, contextType);
+                    MakeEvent(builder, tInfo, tB, contextType, defaultImp: tPropertyNameHash.Add(tInfo.Name));
                 }
             }
             var tType = tB.CreateType();
@@ -436,7 +479,7 @@ namespace ImpromptuInterface.Build
         }
 #endif
 
-        private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType)
+        private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
         {
 
 
@@ -494,10 +537,20 @@ namespace ImpromptuInterface.Build
 
             var tCallSite = tCStp.CreateType();
 
+            var tPublicPrivate = MethodAttributes.Public;
+            var tPrefixName = tName;
+            if (!defaultImp)
+            {
+                tPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixName);
 
-            var tMethodBuilder = typeBuilder.DefineMethod(tName,
-                                                MethodAttributes.Public | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot);
+                tPublicPrivate = MethodAttributes.Private;
+            }
 
+
+            var tMethodBuilder = typeBuilder.DefineMethod(tPrefixName,
+                                                tPublicPrivate | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot);
+
+         
 
             tReplacedTypes = GetParamTypes(tMethodBuilder, info);
             var tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
@@ -547,7 +600,10 @@ namespace ImpromptuInterface.Build
 
             }
 
-
+            if (!defaultImp)
+            {
+                typeBuilder.DefineMethodOverride(tMethodBuilder, info);
+            }
 
             EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType, tArgNames);
         }
@@ -677,7 +733,7 @@ namespace ImpromptuInterface.Build
             MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType, defaultImp);
         }
 
-        private static void MakeEvent(ModuleBuilder builder, EventInfo info, TypeBuilder typeBuilder, Type contextType)
+        private static void MakeEvent(ModuleBuilder builder, EventInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp)
         {
             var tName = info.Name;
              var tAddMethod = info.GetAddMethod();
@@ -719,11 +775,26 @@ namespace ImpromptuInterface.Build
             var tMp = typeBuilder.DefineEvent(tName, EventAttributes.None, tReturnType);
 
             //AddMethod
+            var tPublicPrivate = MethodAttributes.Public;
+            var tAddPrefixName = tAddMethod.Name;
+            if (!defaultImp)
+            {
+                tAddPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tAddPrefixName);
 
-            var tAddBuilder = typeBuilder.DefineMethod(tAddMethod.Name,
-                                                             MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
+                tPublicPrivate = MethodAttributes.Private;
+            }
+
+            var tAddBuilder = typeBuilder.DefineMethod(tAddPrefixName,
+                                                             tPublicPrivate | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
                                                              typeof(void),
                                                              tAddParamTypes);
+
+            if (!defaultImp)
+            {
+                typeBuilder.DefineMethodOverride(tAddBuilder,info.GetAddMethod());
+            }
+
+
             foreach (var tParam in tAddMethod.GetParameters())
             {
                 tAddBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
@@ -845,11 +916,22 @@ namespace ImpromptuInterface.Build
 
             tMp.SetAddOnMethod(tAddBuilder);
 
+            var tRemovePrefixName = tRemoveMethod.Name;
+            if (!defaultImp)
+            {
+                tRemovePrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tRemovePrefixName);
+
+            }
+
             //Remove Method
-            var tRemoveBuilder = typeBuilder.DefineMethod(tRemoveMethod.Name,
-                                                           MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
-                                                           typeof(void),
+            var tRemoveBuilder = typeBuilder.DefineMethod(tRemovePrefixName,
+                                                           tPublicPrivate | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
+                                                           typeof(void), 
                                                            tAddParamTypes);
+            if (!defaultImp)
+            {
+                typeBuilder.DefineMethodOverride(tRemoveBuilder, info.GetRemoveMethod());
+            }
 
             foreach (var tParam in tRemoveMethod.GetParameters())
             {
@@ -1007,18 +1089,28 @@ namespace ImpromptuInterface.Build
 
          
             var tPublicPrivate = MethodAttributes.Public;
+            var tPrefixedGet = tGetName;
+            var tPrefixedName = tName;
             if (!defaultImp)
             {
                 tPublicPrivate = MethodAttributes.Private;
+                tPrefixedGet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedGet);
+
+                tPrefixedName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedName);
             }
 
-            var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, CallingConventions.HasThis, tReturnType, tIndexParamTypes);
+           
+            var tMp = typeBuilder.DefineProperty(tPrefixedName, PropertyAttributes.None, 
+#if !SILVERLIGHT
+                CallingConventions.HasThis,
+#endif
+ tReturnType, tIndexParamTypes);
 
 
     
 
             //GetMethod
-            var tGetMethodBuilder = typeBuilder.DefineMethod(tGetName,
+            var tGetMethodBuilder = typeBuilder.DefineMethod(tPrefixedGet,
                                                              tPublicPrivate
                                                              | MethodAttributes.SpecialName 
                                                              | MethodAttributes.HideBySig
@@ -1138,13 +1230,15 @@ namespace ImpromptuInterface.Build
 
              
                 MethodAttributes tPublicPrivate = MethodAttributes.Public;
+                var tPrefixedSet = setMethod.Name;
                 if (!defaultImp)
                 {
                     tPublicPrivate = MethodAttributes.Private;
+                    tPrefixedSet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedSet);
                 }
 
 
-                var tSetMethodBuilder = typeBuilder.DefineMethod(setMethod.Name,
+                var tSetMethodBuilder = typeBuilder.DefineMethod(tPrefixedSet,
                                                                  tPublicPrivate | MethodAttributes.SpecialName |
                                                                  MethodAttributes.HideBySig | MethodAttributes.Virtual |
                                                                  MethodAttributes.Final | MethodAttributes.NewSlot,

@@ -61,12 +61,12 @@ namespace ImpromptuInterface.Internal
 
         public class Curried:DynamicObject
         {
-            public static IDictionary<Type, Delegate> _compiledExpressions = new Dictionary<Type, Delegate>(); 
+            public static IDictionary<Type, Delegate> _compiledExpressions = new Dictionary<Type, Delegate>();
 
             public override bool TryConvert(ConvertBinder binder, out object result)
             {
                  result = null;
- 	             if(!binder.Explicit || !typeof (Delegate).IsAssignableFrom(binder.Type.BaseType))
+ 	             if(!typeof (Delegate).IsAssignableFrom(binder.Type.BaseType))
  	             {
  	                 return false;
  	             }
@@ -80,24 +80,26 @@ namespace ImpromptuInterface.Internal
                     : InvokeHelper.WrapFunc(tReturnType, this, tLength);
 
                 
-                if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))
+                if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))//Conditions that aren't contravariant;
                 {
                     Delegate tGetResult;
-                    if (!_compiledExpressions.TryGetValue(binder.Type, out tGetResult))
-                    {
-                        var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
-                        var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
-                        var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
+                    
+                        if (!_compiledExpressions.TryGetValue(binder.Type, out tGetResult))
+                        {
+                            var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
+                            var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
+                            var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
 
-                        var tI = Expression.Invoke(tDelParam,
-                                                   tInnerParams.Select(it => Expression.Convert(it, typeof (object))));
-                        var tL = Expression.Lambda(binder.Type, tI, tInnerParams);
+                            var tI = Expression.Invoke(tDelParam,
+                                                       tInnerParams.Select(it => (Expression) Expression.Convert(it, typeof (object))));
+                            var tL = Expression.Lambda(binder.Type, tI, tInnerParams);
 
-                        tGetResult =
-                            Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), binder.Type), tL,
-                                              tDelParam).Compile();
-                        _compiledExpressions[binder.Type]= tGetResult;
-                    }
+                            tGetResult =
+                                Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), binder.Type), tL,
+                                                  tDelParam).Compile();
+                            _compiledExpressions[binder.Type] = tGetResult;
+                        }
+                    
                     result = tGetResult.DynamicInvoke(tBaseDelegate);
                        
                     return true;

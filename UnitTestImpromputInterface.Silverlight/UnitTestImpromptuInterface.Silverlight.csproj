@@ -88,6 +88,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\Basic.cs">
       <Link>Basic.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\Curry.cs">
+      <Link>Curry.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\Generics.cs">
       <Link>Generics.cs</Link>
     </Compile>

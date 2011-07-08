@@ -131,6 +131,48 @@ namespace UnitTestImpromptuInterface
 
 
         [Test, TestMethod]
+        public void DoubleInterfacetest()
+        {
+
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            tNew.Prop3 = Guid.NewGuid();
+            tNew.ReturnProp = new PropPoco();
+
+            IInheritProp tActsLike = Impromptu.ActLike<IInheritProp>(tNew, typeof(ISimpeleClassProps));
+
+
+
+
+            Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
+            Assert.AreEqual(tNew.Prop2, tActsLike.Prop2);
+            Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
+            Assert.AreEqual(tNew.ReturnProp, tActsLike.ReturnProp);
+        }
+
+        [Test, TestMethod]
+        public void DoubleMethodTest()
+        {
+
+            dynamic tNew = new ExpandoObject();
+            tNew.Prop1 = "Test";
+            tNew.Prop2 = 42L;
+            tNew.Prop3 = Guid.NewGuid();
+            tNew.ReturnProp = new PropPoco();
+
+            IInheritProp tActsLike = Impromptu.ActLike<IInheritProp>(tNew, typeof(IPropPocoProp));
+
+
+
+
+            Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
+            Assert.AreEqual(tNew.Prop2, tActsLike.Prop2);
+            Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
+            Assert.AreEqual(tNew.ReturnProp, tActsLike.ReturnProp);
+        }
+
+        [Test, TestMethod]
         public void DictIndexTest()
         {
 

@@ -15,6 +15,7 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq.Expressions;
 using ImpromptuInterface.Optimization;
 
@@ -225,15 +226,15 @@ namespace ImpromptuInterface.Build
 
             foreach (var tInterface in informalInterface)
             {
-                
-                    MakeProperty(builder, tB, contextType, tInterface.Key, tInterface.Value);
+
+                MakePropertyDescribedProperty(builder, tB, contextType, tInterface.Key, tInterface.Value);
                
             }
             var tType = tB.CreateType();
             return tType;
         }
 
-        private static void MakeProperty(ModuleBuilder builder, TypeBuilder typeBuilder, Type contextType, string tName, Type tReturnType)
+        private static void MakePropertyDescribedProperty(ModuleBuilder builder, TypeBuilder typeBuilder, Type contextType, string tName, Type tReturnType)
         {
         
          
@@ -243,7 +244,7 @@ namespace ImpromptuInterface.Build
 
 
 
-            MakePropertyHelper(null, tName, builder, tReturnType, null, typeBuilder, tGetName, contextType);
+            MakePropertyHelper(null, tName, builder, tReturnType, null, typeBuilder, tGetName, contextType, true);
         }
 
         private static Type BuildTypeHelper(ModuleBuilder builder,Type contextType,params Type[] interfaces)
@@ -261,6 +262,9 @@ namespace ImpromptuInterface.Build
 
          
             var tInterfaces = interfaces.Concat(interfaces.SelectMany(it => it.GetInterfaces()));
+
+
+            var tPropertyNameHash = new HashSet<string>();
 
             foreach (var tInterface in tInterfaces)
             {
@@ -297,7 +301,7 @@ namespace ImpromptuInterface.Build
 
                 foreach (var tInfo in tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    MakeProperty(builder,tInfo, tB, contextType);
+                    MakeProperty(builder, tInfo, tB, contextType, defaultImp: tPropertyNameHash.Add(tInfo.Name));
                 }
                 foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
                 {
@@ -657,7 +661,7 @@ namespace ImpromptuInterface.Build
         }
 
 
-        private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType)
+        private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
         {
             var tName = info.Name;
 
@@ -667,10 +671,10 @@ namespace ImpromptuInterface.Build
             var tGetName = tGetMethod.Name;
 
 
+         
 
 
-
-            MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType);
+            MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType, defaultImp);
         }
 
         private static void MakeEvent(ModuleBuilder builder, EventInfo info, TypeBuilder typeBuilder, Type contextType)
@@ -957,9 +961,21 @@ namespace ImpromptuInterface.Build
 
             tMp.SetRemoveOnMethod(tRemoveBuilder);
         }
-     
 
-        private static void MakePropertyHelper(PropertyInfo info, string tName, ModuleBuilder builder, Type tReturnType, MethodInfo tSetMethod, TypeBuilder typeBuilder, string tGetName, Type contextType)
+
+        /// <summary>
+        /// Makes the property helper.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="tName">Name of the t.</param>
+        /// <param name="builder">The builder.</param>
+        /// <param name="tReturnType">Type of the t return.</param>
+        /// <param name="tSetMethod">The t set method.</param>
+        /// <param name="typeBuilder">The type builder.</param>
+        /// <param name="tGetName">Name of the t get.</param>
+        /// <param name="contextType">Type of the context.</param>
+        /// <param name="defaultImp">if set to <c>true</c> [default imp].</param>
+        private static void MakePropertyHelper(PropertyInfo info, string tName, ModuleBuilder builder, Type tReturnType, MethodInfo tSetMethod, TypeBuilder typeBuilder, string tGetName, Type contextType, bool defaultImp)
         {
             var tIndexParamTypes = new Type[]{};
             if(info!=null)
@@ -987,26 +1003,36 @@ namespace ImpromptuInterface.Build
             }
 
             var tCallSite = tCStp.CreateType();
-           
+
+
+         
+            var tPublicPrivate = MethodAttributes.Public;
+            if (!defaultImp)
+            {
+                tPublicPrivate = MethodAttributes.Private;
+            }
+
+            var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, CallingConventions.HasThis, tReturnType, tIndexParamTypes);
+
+
     
 
-
-
-            var tMp = typeBuilder.DefineProperty(tName, PropertyAttributes.None, tReturnType, tIndexParamTypes);
-
-
-
-
             //GetMethod
-           
             var tGetMethodBuilder = typeBuilder.DefineMethod(tGetName,
-                                                             MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
+                                                             tPublicPrivate
+                                                             | MethodAttributes.SpecialName 
+                                                             | MethodAttributes.HideBySig
+                                                             | MethodAttributes.Virtual
+                                                             | MethodAttributes.Final 
+                                                             | MethodAttributes.NewSlot,
                                                              tReturnType,
                                                              tIndexParamTypes);
 
 
-          
-
+            if (!defaultImp)
+            {
+                typeBuilder.DefineMethodOverride(tGetMethodBuilder, info.GetGetMethod());
+            }
 
 
             if (info != null)
@@ -1036,7 +1062,7 @@ namespace ImpromptuInterface.Build
                 tConvertFuncType, 
                 tInvokeGetFuncType, 
                 tMp, 
-                tInvokeSetFuncType);
+                tInvokeSetFuncType, defaultImp);
         }
 
         private static void EmitProperty(
@@ -1056,7 +1082,7 @@ namespace ImpromptuInterface.Build
             Type tConvertFuncType, 
             Type invokeGetFuncType, 
             PropertyBuilder tMp, 
-            Type invokeSetFuncType)
+            Type invokeSetFuncType, bool defaultImp)
         {
            
             if (indexParamTypes == null) throw new ArgumentNullException("indexParamTypes");
@@ -1109,12 +1135,26 @@ namespace ImpromptuInterface.Build
 
             if (setMethod != null)
             {
+
+             
+                MethodAttributes tPublicPrivate = MethodAttributes.Public;
+                if (!defaultImp)
+                {
+                    tPublicPrivate = MethodAttributes.Private;
+                }
+
+
                 var tSetMethodBuilder = typeBuilder.DefineMethod(setMethod.Name,
-                                                                 MethodAttributes.Public | MethodAttributes.SpecialName |
+                                                                 tPublicPrivate | MethodAttributes.SpecialName |
                                                                  MethodAttributes.HideBySig | MethodAttributes.Virtual |
                                                                  MethodAttributes.Final | MethodAttributes.NewSlot,
                                                                  null,
                                                                  setParamTypes);
+
+                if (!defaultImp)
+                {
+                    typeBuilder.DefineMethodOverride(tSetMethodBuilder, info.GetSetMethod());
+                }
 
                 foreach (var tParam in info.GetSetMethod().GetParameters())
                 {

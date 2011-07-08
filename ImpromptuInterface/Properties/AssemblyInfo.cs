@@ -54,7 +54,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 #if SILVERLIGHT
-[assembly: AssemblyVersion("5.5.0.0")]
+[assembly: AssemblyVersion("5.5.1.0")]
 #else
-[assembly: AssemblyVersion("5.5.0.*")]
+[assembly: AssemblyVersion("5.5.1.*")]
 #endif

@@ -159,7 +159,7 @@ namespace ImpromptuInterface.Internal
                 var tDel = _target as Delegate;
 
                
-                if (tInvokeDirect && _totalArgCount.HasValue && _target is Delegate)
+                if (tInvokeDirect &&  binder.CallInfo.ArgumentNames.Count ==0 && _target is Delegate)
                 {
                    result= tDel.FastDynamicInvoke(tNewArgs);
                     return true;

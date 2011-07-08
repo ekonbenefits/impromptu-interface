@@ -77,7 +77,7 @@ namespace ImpromptuInterface.Internal
 
 
 
-                result = tBaseDelegate;
+                result = Impromptu.InvokeConvert(tBaseDelegate, binder.Type, explict: true);
 
                 return true;
             }

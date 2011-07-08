@@ -23,31 +23,47 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void TestBasicDelegateConversion()
+        public void TestBasicConvert()
         {
-            Action<int> tTest = delegate { };
-            Action<object> tTest2 = delegate { };
-            Action<int> tFunc = (Action<int>)Delegate.Combine(tTest, tTest2);
+            var tONe = new Func<object, string>(it => it.ToString());
+            Func<string, string> tTest= tONe;
+            Func<object, string> tTest2 = tONe;
 
-
+            tTest("test");
+            tTest2(2);
         }
 
-        public void c(object obj)
-        {
-            return;
-        }
-
-       /* [Test, TestMethod]
+        [Test, TestMethod]
         public void TestBasicCastDelegateCurry()
+        {
+            Func<string, string, string> tAdd = (x, y) => x + y;
+            var tCurriedAdd4 = Impromptu.Curry(tAdd)("4");
+            var tCastToFunc = (Func<string, string>)tCurriedAdd4;
+            var tResult2 = tCastToFunc("10");
+
+            Assert.AreEqual("410", tResult2);
+        }
+        [Test, TestMethod]
+        public void TestBasicCastDelegateCurryReturnValueType()
+        {
+            Func<string, string, int> tAdd = (x, y) => Int32.Parse(x) + Int32.Parse(y);
+            var tCurriedAdd4 = Impromptu.Curry(tAdd)("4");
+            var tCastToFunc = (Func<string, int>)tCurriedAdd4;
+            var tResult2 = tCastToFunc("10");
+
+            Assert.AreEqual(14, tResult2);
+        }
+
+        [Test, TestMethod]
+        public void TestBasicCastDelegateCurryParamValueType()
         {
             Func<int, int, int> tAdd = (x, y) => x + y;
             var tCurriedAdd4 = Impromptu.Curry(tAdd)(4);
-            var tCastToFunc = new Func<int, int> ((Func<object,int>)tCurriedAdd4);
+            var tCastToFunc = (Func<int, int>)tCurriedAdd4;
             var tResult2 = tCastToFunc(10);
 
             Assert.AreEqual(14, tResult2);
-        }*/
-
+        }
 
     }
 }

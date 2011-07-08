@@ -104,6 +104,12 @@ namespace UnitTestImpromptuInterface
         PropPoco ReturnProp { get; set; }
     }
 
+    public interface IEventCollisions
+    {
+        int Event { get; set; }
+    }
+
+
     public interface IEvent
     {
         event EventHandler<EventArgs> Event;
@@ -172,6 +178,12 @@ namespace UnitTestImpromptuInterface
     public interface ISimpleStringMethod
     {
         bool StartsWith(string value);
+
+    }
+
+    public interface ISimpleStringMethodCollision
+    {
+        int StartsWith(string value);
 
     }
 

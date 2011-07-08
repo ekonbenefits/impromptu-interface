@@ -291,18 +291,18 @@ namespace ImpromptuInterface.Build
         private static Type BuildTypeHelper(ModuleBuilder builder,Type contextType,params Type[] interfaces)
         {
 
-
+            var tInterfacesMainList = interfaces.Distinct().ToArray();
             var tB = builder.DefineType(
-                string.Format("ActLike_{0}_{1}", interfaces.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
-                typeof(ActLikeProxy), interfaces);
+                string.Format("ActLike_{0}_{1}", tInterfacesMainList.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
+                typeof(ActLikeProxy), tInterfacesMainList);
 
             tB.SetCustomAttribute(
                 new CustomAttributeBuilder(typeof(ActLikeProxyAttribute).GetConstructor(new[]{typeof(Type).MakeArrayType(),typeof(Type)}),
                     new object[]{interfaces,contextType}));
             tB.SetCustomAttribute(new CustomAttributeBuilder(typeof(SerializableAttribute).GetConstructor(Type.EmptyTypes),new object[]{}));
 
-         
-            var tInterfaces = interfaces.Concat(interfaces.SelectMany(it => it.GetInterfaces()));
+
+            var tInterfaces = tInterfacesMainList.Concat(tInterfacesMainList.SelectMany(it => it.GetInterfaces()));
 
 
             var tPropertyNameHash = new HashSet<string>();

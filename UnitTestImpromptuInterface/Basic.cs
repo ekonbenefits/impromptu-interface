@@ -152,7 +152,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
-        public void DoubleMethodTest()
+        public void DoublePropertyTest()
         {
 
             dynamic tNew = new ExpandoObject();
@@ -170,6 +170,49 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
             Assert.AreEqual(tNew.ReturnProp, tActsLike.ReturnProp);
+        }
+
+        [Test, TestMethod]
+        public void EventPropertyCollisionTest()
+        {
+
+            dynamic tNew = new ExpandoObject();
+            tNew.Event = 3;
+
+            IEventCollisions tActsLike = Impromptu.ActLike<IEventCollisions>(tNew, typeof(IEvent));
+
+
+            Assert.AreEqual(tNew.Event, tActsLike.Event);
+        }
+
+        [Test, TestMethod]
+        public void InterfaceDirectDuplicateTest()
+        {
+
+            dynamic tNew = new ExpandoObject();
+            tNew.StartsWith = new Func<string, bool>(x => true);
+
+            ISimpleStringMethod tActsLike = Impromptu.ActLike<ISimpleStringMethod>(tNew, typeof(ISimpleStringMethod));
+
+
+            Assert.AreEqual(tNew.StartsWith("test"), tActsLike.StartsWith("test"));
+        }
+
+        [Test, TestMethod]
+        public void MethodCollisionTest()
+        {
+
+            dynamic tNew = new ExpandoObject();
+            tNew.StartsWith = new Func<string, bool>(x => true);
+
+            ISimpleStringMethod tActsLike = Impromptu.ActLike<ISimpleStringMethod>(tNew, typeof(ISimpleStringMethodCollision));
+            Assert.AreEqual(tNew.StartsWith("test"), tActsLike.StartsWith("test"));
+
+            dynamic tNew2 = new ExpandoObject();
+            tNew2.StartsWith = new Func<string, int>(x => 5);
+            ISimpleStringMethodCollision tActsLike2 = Impromptu.ActLike<ISimpleStringMethod>(tNew2, typeof(ISimpleStringMethodCollision));
+
+            Assert.AreEqual(tNew2.StartsWith("test"), tActsLike2.StartsWith("test"));
         }
 
         [Test, TestMethod]

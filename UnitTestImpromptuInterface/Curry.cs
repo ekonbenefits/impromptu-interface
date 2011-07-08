@@ -22,17 +22,7 @@ namespace UnitTestImpromptuInterface
      
         }
 
-        [Test, TestMethod]
-        public void TestBasicConvert()
-        {
-            var tONe = new Func<object, string>(it => it.ToString());
-            Func<string, string> tTest= tONe;
-            Func<object, string> tTest2 = tONe;
-
-            tTest("test");
-            tTest2(2);
-        }
-
+    
         [Test, TestMethod]
         public void TestBasicCastDelegateCurry()
         {
@@ -52,6 +42,28 @@ namespace UnitTestImpromptuInterface
             var tResult2 = tCastToFunc("10");
 
             Assert.AreEqual(14, tResult2);
+        }
+
+        public delegate bool TestDeclaredDelagate(string value);
+        [Test, TestMethod]
+        public void TestBasicCastNonGenericDelegate()
+        {
+            Func<string, string, bool> tContains = (x, y) => y.Contains(x);
+            var tCurriedContains = Impromptu.Curry(tContains)("it");
+            var tCastToDel = (TestDeclaredDelagate) tCurriedContains;
+            var tResult = tCastToDel("bait");
+            Assert.AreEqual(true, tResult);
+        }
+        public delegate void TestRunDelagate(string value);
+        [Test, TestMethod]
+        public void TestBasicCastNonGenericDelegateAction()
+        {
+            var tBool = false;
+            Action<string, string> tContains = (x, y) => tBool =y.Contains(x);
+            var tCurriedContains = Impromptu.Curry(tContains)("it");
+            var tCastToDel = (TestRunDelagate)tCurriedContains;
+            tCastToDel("bait");
+            Assert.AreEqual(true, tBool);
         }
 
         [Test, TestMethod]

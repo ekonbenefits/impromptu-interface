@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Text;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
@@ -70,14 +71,26 @@ namespace ImpromptuInterface.Internal
                 var tDelMethodInfo = binder.Type.GetMethod("Invoke");
                 var tReturnType = tDelMethodInfo.ReturnType;
                 var tAction = tReturnType == typeof (void);
+                var tParams = tDelMethodInfo.GetParameters();
                 var tLength =tDelMethodInfo.GetParameters().Length;
                 Delegate tBaseDelegate = tAction
                     ? InvokeHelper.WrapAction(this, tLength)
                     : InvokeHelper.WrapFunc(tReturnType, this, tLength);
 
 
+                if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))
+                {
+                    
+                    var tP = tParams.Select(it => Expression.Parameter(it.ParameterType)).ToArray();
+                    var tB =Expression.Call(Expression.Constant(tBaseDelegate),tBaseDelegate.GetType().GetMethod("Invoke"), tP.Select(it=>Expression.Convert(it,typeof(object))) );
 
-                result = Impromptu.InvokeConvert(tBaseDelegate, binder.Type, explict: true);
+                    result= Expression.Lambda(binder.Type, tB, tP).Compile();
+
+                    
+                       
+                    return true;
+                }
+                result = tBaseDelegate;
 
                 return true;
             }

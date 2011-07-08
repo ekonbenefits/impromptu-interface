@@ -86,6 +86,20 @@ namespace ImpromptuInterface.Optimization
 
         }
 
+        public static bool IsActionOrFunc(object target)
+        {
+            if (target == null)
+                return false;
+            var tType = target as Type ?? target.GetType();
+
+            if (tType.IsGenericType)
+            {
+                tType = tType.GetGenericTypeDefinition();
+            }
+
+            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
+        }
+
         #region InvokeMemberAction Optimizations
 
 

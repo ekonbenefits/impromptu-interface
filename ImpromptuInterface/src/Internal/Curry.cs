@@ -27,34 +27,39 @@ namespace ImpromptuInterface.Internal
     public class Curry:DynamicObject
         {
             private readonly object _target;
+            private int? _totalArgCount;
+           
 
-            internal Curry(object target)
+            internal Curry(object target, int? totalArgCount=null)
              {
                  _target = target;
+                _totalArgCount = totalArgCount;
              }
 
            public override bool  TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
            {
-               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
+               result = new Curried(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
                return true;
            }
             public override bool  TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
-                var tCurrying = _target as Currying;
+                var tCurrying = _target as Curried;
+
+                
                 result = tCurrying != null
                              //If already currying append
-                             ? new Currying(tCurrying.Target, tCurrying.MemberName,
+                             ? new Curried(tCurrying.Target, tCurrying.MemberName,
                                             tCurrying.Args.Concat(Util.NameArgsIfNecessary(binder.CallInfo, args)).
-                                                ToArray())
-                             : new Currying(_target, String.Empty, Util.NameArgsIfNecessary(binder.CallInfo, args));
+                                                ToArray(), _totalArgCount)
+                             : new Curried(_target, String.Empty, Util.NameArgsIfNecessary(binder.CallInfo, args), _totalArgCount);
                 return true;
            }
         }
 
         
 
-        public class Currying:DynamicObject
-        {
+        public class Curried:DynamicObject
+        {   
             public override bool TryConvert(ConvertBinder binder, out object result)
             {
                  result = null;
@@ -69,12 +74,23 @@ namespace ImpromptuInterface.Internal
                 Delegate tBaseDelegate = tAction
                     ? InvokeHelper.WrapAction(this, tLength)
                     : InvokeHelper.WrapFunc(tReturnType, this, tLength);
-                
-                result =Delegate.CreateDelegate(binder.Type, tBaseDelegate.Method);
+
+
+
+                result = tBaseDelegate;
+
                 return true;
             }
 
+            internal Curried(object target, string memberName, object[] args, int? totalCount=null)
+            {
+                _target = target;
+                _memberName = memberName;
+                _totalArgCount = totalCount;
+                _args = args;
+            }
 
+            private readonly int? _totalArgCount;
             private readonly object _target;
             private readonly string _memberName;
             private readonly object[] _args;
@@ -94,25 +110,43 @@ namespace ImpromptuInterface.Internal
                 get { return _args; }
             }
 
-            internal Currying(object target,string memberName, params object[] args)
+            public int? TotalArgCount
             {
-                _target = target;
-                _memberName = memberName;
-                _args = args;
+                get { return _totalArgCount; }
             }
+
 
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
-            
+                var tNamedArgs =Util.NameArgsIfNecessary(binder.CallInfo, args);
+                var tNewArgs = _args.Concat(tNamedArgs).ToArray();
+
+                if (_totalArgCount.HasValue && (_totalArgCount - Args.Length - args.Length > 0))
+                {
+                    result= new Curried(Target, MemberName, tNewArgs,
+                                       TotalArgCount);
+
+                    return true;
+                }
+                var tInvokeDirect = String.IsNullOrWhiteSpace(_memberName);
+                var tDel = _target as Delegate;
+
+               
+                if (tInvokeDirect && _totalArgCount.HasValue && _target is Delegate)
+                {
+                   result= tDel.FastDynamicInvoke(tNewArgs);
+                    return true;
+                }
+
                 var tInvocationKind = String.IsNullOrWhiteSpace(_memberName)
                                           ? InvocationKind.InvokeUnknown
                                           : InvocationKind.InvokeMemberUnknown;
 
                 var tInvocation = new Invocation(tInvocationKind, _memberName);
 
-                var tNamedArgs =Util.NameArgsIfNecessary(binder.CallInfo, args);
+                
 
-                result =tInvocation.Invoke(_target, _args.Concat(tNamedArgs).ToArray());
+                result =tInvocation.Invoke(_target, tNewArgs);
 
 
                 return true;

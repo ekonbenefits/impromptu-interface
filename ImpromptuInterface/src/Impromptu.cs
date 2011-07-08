@@ -337,13 +337,23 @@ namespace ImpromptuInterface
         }
       
         /// <summary>
-        /// Wraps an target to curry a method or itself if you can invoke target directly.
+        /// Wraps a target to partial apply a method (or target if you can invoke target directly eg delegate).
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns></returns>
-        public static dynamic Curry(object target)
+        public static dynamic Curry(object target, int? totalArgCount=null)
         {
-            return new Curry(target);
+            return new Curry(target, totalArgCount);
+        }
+
+        /// <summary>
+        /// Wraps a delegate to partially apply it.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public static dynamic Curry(Delegate target)
+        {
+            return new Curry(target, target.Method.GetParameters().Length);
         }
 
         /// <summary>

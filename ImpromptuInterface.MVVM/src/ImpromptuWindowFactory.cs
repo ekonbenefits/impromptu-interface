@@ -25,7 +25,7 @@ namespace ImpromptuInterface.MVVM
     }
 
     /// <summary>
-    /// 
+    /// Dynamic Factory with limited static interface can help decouple talking with new windows. Experimental as of 3.5
     /// </summary>
     /// <typeparam name="TInterface">The type of the interface.</typeparam>
     public class ImpromptuWindowFactory<TInterface> : IWindowFactory<TInterface> where TInterface : class,IDialogFactory

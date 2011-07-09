@@ -270,7 +270,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -440,7 +440,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
         }
@@ -453,7 +453,7 @@ namespace ImpromptuInterface.Optimization
         {
 			 switch(length){
 			   					case 0:
-						return new Func< TReturn>(()=> invokable());
+						//return new Func< TReturn>(()=> invokable());
   					case 1:
 						return new Func< object, TReturn>((a1)=> invokable(a1));
   					case 2:

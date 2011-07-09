@@ -102,7 +102,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -151,7 +151,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    return Impromptu.InvokeCallSites(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
         }

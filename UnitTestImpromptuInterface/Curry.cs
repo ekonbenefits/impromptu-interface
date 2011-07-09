@@ -30,6 +30,8 @@ namespace UnitTestImpromptuInterface
      
         }
 
+      
+
         [Test, TestMethod]
         public void TestBasicNamedCurry()
         {
@@ -94,6 +96,30 @@ namespace UnitTestImpromptuInterface
             var tResult2 = tCastToFunc(10);
 
             Assert.AreEqual(14, tResult2);
+        }
+
+        [Test, TestMethod]
+        public void TestBasicConvertMoreCurryParamValueType()
+        {
+            Func<int, int, int, int> tAdd = (x, y, z) => x + y + z;
+            Func<int, Func<int,int>> Curry1 =Impromptu.Curry(tAdd)(4);
+            Func<int, int> Curry2 = Curry1(6);
+            int tResult = Curry2(10);
+
+            Assert.AreEqual(20, tResult);
+        }
+
+        [Test, TestMethod]
+        public void TestBasicConvertMoreMoreCurryParamValueType()
+        {
+            Func<int, int, int, int, int> tAdd = (x, y, z, bbq) => x + y + z +bbq;
+            Func<int, Func<int, Func<int, Func<int, int>>>> Curry0 = Impromptu.Curry(tAdd);
+            var Curry1 = Curry0(4);
+            var Curry2 = Curry1(5);
+            var Curry3 = Curry2(6);
+            var tResult = Curry3(20);
+
+            Assert.AreEqual(35, tResult);
         }
 
         [Test, TestMethod]

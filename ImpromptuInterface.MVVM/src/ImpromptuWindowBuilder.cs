@@ -80,9 +80,28 @@ namespace ImpromptuInterface.MVVM
             get { return typeof (T); }
         }
 
+
+        public class WinObscure:ImpromptuForwarder
+        {
+           internal WinObscure(object target):base(target)
+           {
+               
+           }
+
+           public override bool TryInvoke(System.Dynamic.InvokeBinder binder, object[] args, out object result)
+           {
+               if (base.TryInvoke(binder, args, out result))
+               {
+                   result = new Win<T>(result);
+                   return true;
+               }
+               return false;
+           }
+        }
+
         public dynamic SetProperties
         {
-            get { return Impromptu.Curry(Impromptu.InvokeSetAll)(_target); }
+            get { return new WinObscure(Impromptu.Curry(Impromptu.InvokeSetAll)(_target)); }
         }
 
         public dynamic Get

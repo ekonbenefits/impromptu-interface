@@ -160,7 +160,9 @@ namespace ImpromptuInterface.Optimization
 
         #endregion
 
-		private static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
+
+		#if !__MonoCS__
+		internal static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
 			 <# for(int i=0; i <= 16; i++){ 
@@ -173,8 +175,29 @@ namespace ImpromptuInterface.Optimization
 					throw new Exception("Two may parameters to converter");
 			}
         }
+		#endif
 
-		
+		internal static class MonoConvertCallSite<T>{
+			internal static CallSite CallSite;
+		}
+	    
+		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)
+        {
+			 switch(length){
+			 <# for(int i=0; i <= 16; i++){ 
+				var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{" TReturn"}));
+  				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
+#>  					case <#=i#>:
+						return new Func<<#=tobjectArgs#>>((<#=tArgList#>)=>{
+								 object tResult= invokable(<#=tArgList#>);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+<# } #>	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
+
 
         internal static Delegate WrapAction(dynamic invokable, int length)
         {

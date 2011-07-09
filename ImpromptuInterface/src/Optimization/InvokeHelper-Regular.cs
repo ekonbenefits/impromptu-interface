@@ -599,10 +599,20 @@ namespace ImpromptuInterface.Optimization
             CallSite<DynamicInvokeWrapFunc> tSite;
             if (!_dynamicInvokeWrapFunc.TryGetValue(returnType, out tSite))
             {
+
+                var tMethod = "WrapFuncHelperMono";
+
+#if !__MonoCS__
+                //Mono Compiler can't compile or run WrapFuncHelper
+                if (!Util.IsMono)
+                {
+                    tMethod = "WrapFuncHelper";
+                }
+#endif
                 tSite = CallSite<DynamicInvokeWrapFunc>.Create(
                     Binder.InvokeMember(
                         CSharpBinderFlags.None,
-                        "WrapFuncHelper",
+                        tMethod,
                         new[] {returnType},
                         typeof (InvokeHelper),
                         new[]

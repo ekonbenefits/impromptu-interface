@@ -122,6 +122,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(35, tResult);
         }
 
+
+
         [Test, TestMethod]
         public void TestPococMethodCurry()
         {
@@ -134,6 +136,21 @@ namespace UnitTestImpromptuInterface
             var tResult2 = tCurry(30);
             Assert.AreEqual(34, tResult2);
         }
+
+        [Test, TestMethod]
+        public void TestStaticMethodCurry()
+        {
+            var staticContext = InvokeContext.CreateStatic;
+
+            var curry = Impromptu.Curry(staticContext(typeof(string)), 5).Format(); // curry method target include argument count
+            curry = curry("Test {0}, {1}, {2}, {3}");
+            curry = curry("A");
+            curry = curry("B");
+            curry = curry("C");
+            string result = curry("D");
+            Assert.AreEqual("Test A, B, C, D", result);
+        }
+
 
         [Test, TestMethod]
         public void TestDynamicMethodCurry()

@@ -44,7 +44,7 @@ namespace ImpromptuInterface.Internal
 
            public override bool  TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
            {
-               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
+               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args), _totalArgCount);
                return true;
            }
             public override bool  TryInvoke(InvokeBinder binder, object[] args, out object result)
@@ -199,7 +199,9 @@ namespace ImpromptuInterface.Internal
                 {
                     if (_cacheableInvocation == null)
                     {
-                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target.GetType());
+                        
+
+                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
                     }
                     tInvocation = _cacheableInvocation;
                 }

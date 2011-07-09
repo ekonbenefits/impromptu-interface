@@ -20,6 +20,22 @@ namespace ImpromptuInterface.Optimization
 
     internal static partial class InvokeHelper
     {
+
+        public static bool IsActionOrFunc(object target)
+        {
+            if (target == null)
+                return false;
+            var tType = target as Type ?? target.GetType();
+
+            if (tType.IsGenericType)
+            {
+                tType = tType.GetGenericTypeDefinition();
+            }
+
+            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
+         }
+ 
+
         internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
         {
             object result;

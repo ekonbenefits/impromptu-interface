@@ -86,20 +86,6 @@ namespace ImpromptuInterface.Optimization
 
         }
 
-        public static bool IsActionOrFunc(object target)
-        {
-            if (target == null)
-                return false;
-            var tType = target as Type ?? target.GetType();
-
-            if (tType.IsGenericType)
-            {
-                tType = tType.GetGenericTypeDefinition();
-            }
-
-            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
-        }
-
         #region InvokeMemberAction Optimizations
 
 
@@ -270,7 +256,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -440,7 +426,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
         }

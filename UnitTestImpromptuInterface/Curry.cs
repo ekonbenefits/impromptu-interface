@@ -140,9 +140,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestStaticMethodCurry()
         {
-            var staticContext = InvokeContext.CreateStatic;
 
-            var curry = Impromptu.Curry(staticContext(typeof(string)), 5).Format(); // curry method target include argument count
+            var curry = Impromptu.Curry((StaticContext)typeof(string), 5).Format(); // curry method target include argument count
             curry = curry("Test {0}, {1}, {2}, {3}");
             curry = curry("A");
             curry = curry("B");

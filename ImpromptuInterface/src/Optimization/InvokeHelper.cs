@@ -86,20 +86,6 @@ namespace ImpromptuInterface.Optimization
 
         }
 
-        public static bool IsActionOrFunc(object target)
-        {
-            if (target == null)
-                return false;
-            var tType = target as Type ?? target.GetType();
-
-            if (tType.IsGenericType)
-            {
-                tType = tType.GetGenericTypeDefinition();
-            }
-
-            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
-        }
-
         #region InvokeMemberAction Optimizations
 
 
@@ -270,7 +256,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -440,7 +426,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.Invoke(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
         }
@@ -449,7 +435,9 @@ namespace ImpromptuInterface.Optimization
 
         #endregion
 
-		private static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
+
+		#if !__MonoCS__
+		internal static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
 			   					case 0:
@@ -491,8 +479,106 @@ namespace ImpromptuInterface.Optimization
 					throw new Exception("Two may parameters to converter");
 			}
         }
+		#endif
 
-		
+		internal static class MonoConvertCallSite<T>{
+			internal static CallSite CallSite;
+		}
+	    
+		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)
+        {
+			 switch(length){
+			   					case 0:
+						return new Func< TReturn>(()=>{
+								 object tResult= invokable();
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 1:
+						return new Func< object, TReturn>((a1)=>{
+								 object tResult= invokable(a1);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 2:
+						return new Func< object, object, TReturn>((a1,a2)=>{
+								 object tResult= invokable(a1,a2);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 3:
+						return new Func< object, object, object, TReturn>((a1,a2,a3)=>{
+								 object tResult= invokable(a1,a2,a3);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 4:
+						return new Func< object, object, object, object, TReturn>((a1,a2,a3,a4)=>{
+								 object tResult= invokable(a1,a2,a3,a4);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 5:
+						return new Func< object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 6:
+						return new Func< object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 7:
+						return new Func< object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 8:
+						return new Func< object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 9:
+						return new Func< object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 10:
+						return new Func< object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 11:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 12:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 13:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 14:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 15:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+  					case 16:
+						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=>{
+								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16);
+						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						 });
+	
+				default:
+					throw new Exception("Two may parameters to converter");
+			}
+        }
+
 
         internal static Delegate WrapAction(dynamic invokable, int length)
         {

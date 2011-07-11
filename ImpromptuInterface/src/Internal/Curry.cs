@@ -37,9 +37,14 @@ namespace ImpromptuInterface.Internal
                 _totalArgCount = totalArgCount;
              }
 
+            public override bool TryConvert(ConvertBinder binder, out object result)
+            {
+                return CurryConverter.TryConvert(this, binder, out result);
+            }
+
            public override bool  TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
            {
-               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args));
+               result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args), _totalArgCount);
                return true;
            }
             public override bool  TryInvoke(InvokeBinder binder, object[] args, out object result)
@@ -57,57 +62,68 @@ namespace ImpromptuInterface.Internal
            }
         }
 
-        
-
-        public class Currying:DynamicObject
+        internal static class CurryConverter
         {
-            public static IDictionary<Type, Delegate> _compiledExpressions = new Dictionary<Type, Delegate>();
+            internal static IDictionary<Type, Delegate> CompiledExpressions = new Dictionary<Type, Delegate>();
 
-            public override bool TryConvert(ConvertBinder binder, out object result)
+            internal static bool TryConvert(object target, ConvertBinder binder, out object result)
             {
-                 result = null;
- 	             if(!typeof (Delegate).IsAssignableFrom(binder.Type.BaseType))
- 	             {
- 	                 return false;
- 	             }
+                result = null;
+                if (!typeof(Delegate).IsAssignableFrom(binder.Type.BaseType))
+                {
+                    return false;
+                }
                 var tDelMethodInfo = binder.Type.GetMethod("Invoke");
                 var tReturnType = tDelMethodInfo.ReturnType;
-                var tAction = tReturnType == typeof (void);
+                var tAction = tReturnType == typeof(void);
                 var tParams = tDelMethodInfo.GetParameters();
-                var tLength =tDelMethodInfo.GetParameters().Length;
+                var tLength = tDelMethodInfo.GetParameters().Length;
                 Delegate tBaseDelegate = tAction
-                    ? InvokeHelper.WrapAction(this, tLength)
-                    : InvokeHelper.WrapFunc(tReturnType, this, tLength);
+                                             ? InvokeHelper.WrapAction(target, tLength)
+                                             : InvokeHelper.WrapFunc(tReturnType, target, tLength);
 
-                
-                if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))//Conditions that aren't contravariant;
+
+                if (!InvokeHelper.IsActionOrFunc(binder.Type) || tParams.Any(it => it.ParameterType.IsValueType))
+                //Conditions that aren't contravariant;
                 {
                     Delegate tGetResult;
-                    
-                        if (!_compiledExpressions.TryGetValue(binder.Type, out tGetResult))
-                        {
-                            var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
-                            var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
-                            var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
 
-                            var tI = Expression.Invoke(tDelParam,
-                                                       tInnerParams.Select(it => (Expression) Expression.Convert(it, typeof (object))));
-                            var tL = Expression.Lambda(binder.Type, tI, tInnerParams);
+                    if (!CompiledExpressions.TryGetValue(binder.Type, out tGetResult))
+                    {
+                        var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
+                        var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
+                        var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
 
-                            tGetResult =
-                                Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), binder.Type), tL,
-                                                  tDelParam).Compile();
-                            _compiledExpressions[binder.Type] = tGetResult;
-                        }
-                    
+                        var tI = Expression.Invoke(tDelParam,
+                                                   tInnerParams.Select(it => (Expression)Expression.Convert(it, typeof(object))));
+                        var tL = Expression.Lambda(binder.Type, tI, tInnerParams);
+
+                        tGetResult =
+                            Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), binder.Type), tL,
+                                              tDelParam).Compile();
+                        CompiledExpressions[binder.Type] = tGetResult;
+                    }
+
                     result = tGetResult.DynamicInvoke(tBaseDelegate);
-                       
+
                     return true;
                 }
                 result = tBaseDelegate;
 
                 return true;
             }
+        }
+
+        public class Currying:DynamicObject
+        {
+           
+
+            public override bool TryConvert(ConvertBinder binder, out object result)
+            {
+                return CurryConverter.TryConvert(this, binder, out result);
+            }
+
+          
 
             internal Currying(object target, string memberName, object[] args, int? totalCount=null, InvocationKind? invocationKind=null)
             {
@@ -183,7 +199,9 @@ namespace ImpromptuInterface.Internal
                 {
                     if (_cacheableInvocation == null)
                     {
-                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target.GetType());
+                        
+
+                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
                     }
                     tInvocation = _cacheableInvocation;
                 }

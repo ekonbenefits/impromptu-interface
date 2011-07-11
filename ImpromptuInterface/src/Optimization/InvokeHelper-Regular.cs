@@ -20,6 +20,22 @@ namespace ImpromptuInterface.Optimization
 
     internal static partial class InvokeHelper
     {
+
+        public static bool IsActionOrFunc(object target)
+        {
+            if (target == null)
+                return false;
+            var tType = target as Type ?? target.GetType();
+
+            if (tType.IsGenericType)
+            {
+                tType = tType.GetGenericTypeDefinition();
+            }
+
+            return FuncArgs.ContainsKey(tType) || ActionArgs.ContainsKey(tType);
+         }
+ 
+
         internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
         {
             object result;
@@ -583,10 +599,20 @@ namespace ImpromptuInterface.Optimization
             CallSite<DynamicInvokeWrapFunc> tSite;
             if (!_dynamicInvokeWrapFunc.TryGetValue(returnType, out tSite))
             {
+
+                var tMethod = "WrapFuncHelperMono";
+
+#if !__MonoCS__
+                //Mono Compiler can't compile or run WrapFuncHelper
+                if (!Util.IsMono)
+                {
+                    tMethod = "WrapFuncHelper";
+                }
+#endif
                 tSite = CallSite<DynamicInvokeWrapFunc>.Create(
                     Binder.InvokeMember(
                         CSharpBinderFlags.None,
-                        "WrapFuncHelper",
+                        tMethod,
                         new[] {returnType},
                         typeof (InvokeHelper),
                         new[]

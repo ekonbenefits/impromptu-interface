@@ -194,6 +194,11 @@ namespace ImpromptuInterface.Dynamic
 
         public override object Invoke(object target, params object[] args)
         {
+            var tIContext = target as InvokeContext;
+            if (tIContext !=null)
+            {
+                target = tIContext.Target;
+            }
 
             if (args == null)
             {

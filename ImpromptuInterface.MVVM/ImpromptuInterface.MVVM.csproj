@@ -57,7 +57,7 @@
     <Compile Include="src\ImpromptuToString.cs" />
     <Compile Include="src\ImpromptuViewModel-Nested.cs" />
     <Compile Include="src\ImpromptuViewModel.cs" />
-    <Compile Include="src\ImpromptuWindowFactory.cs" />
+    <Compile Include="src\ImpromptuWindowBuilder.cs" />
     <Compile Include="src\ImpropmtuCommandBinder.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -93,10 +93,22 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public interface IInheritProp:ISimpeleClassProps
+    {
+        PropPoco ReturnProp { get; set; }
+    }
+
+
     public interface IPropPocoProp
     {
         PropPoco ReturnProp { get; set; }
     }
+
+    public interface IEventCollisions
+    {
+        int Event { get; set; }
+    }
+
 
     public interface IEvent
     {
@@ -166,6 +178,12 @@ namespace UnitTestImpromptuInterface
     public interface ISimpleStringMethod
     {
         bool StartsWith(string value);
+
+    }
+
+    public interface ISimpleStringMethodCollision
+    {
+        int StartsWith(string value);
 
     }
 
@@ -366,6 +384,42 @@ namespace UnitTestImpromptuInterface
         public int Add(int x, int y)
         {
             return x + y;
+        }
+    }
+
+    [Serializable]
+    public class PocoDoubleProp:IInheritProp, IPropPocoProp,IEnumerable
+    {
+        public string Prop1
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public long Prop2
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public Guid Prop3
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        public PropPoco ReturnProp
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        PropPoco IPropPocoProp.ReturnProp
+        {
+            get { throw new NotImplementedException(); }
+            set { throw new NotImplementedException(); }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            throw new NotImplementedException();
         }
     }
 

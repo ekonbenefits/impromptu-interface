@@ -154,6 +154,7 @@
   <ItemGroup>
     <Content Include="..\NuGetBuild\Core\ImpromptuInterface.MetaData.xml">
       <Link>Properties\ImpromptuInterface.MetaData.xml</Link>
+      <SubType>Designer</SubType>
     </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

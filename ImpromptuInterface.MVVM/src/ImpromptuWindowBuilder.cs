@@ -18,17 +18,18 @@ namespace ImpromptuInterface.MVVM
         Win<DialogBox> DialogBox { get; }
     }
 
-    public interface IWindowFactory<out TInterface> where TInterface : class,IDialogFactory
+    public interface IWindowBuilder<out TInterface> where TInterface : class,IDialogFactory
     {
         TInterface New { get; }
         TInterface SingleInstance { get; }
     }
 
     /// <summary>
-    /// Dynamic Factory with limited static interface can help decouple talking with new windows. Experimental as of 3.5
+    /// Dynamic Window Builder with limited static interface can help decouple talking with new windows.
+    /// Experimental as of 3.5, may change a lot in future.
     /// </summary>
     /// <typeparam name="TInterface">The type of the interface.</typeparam>
-    public class ImpromptuWindowFactory<TInterface> : IWindowFactory<TInterface> where TInterface : class,IDialogFactory
+    public class ImpromptuWindowBuilder<TInterface> : IWindowBuilder<TInterface> where TInterface : class,IDialogFactory
     {
         internal class ImpromptuWinFactory : ImpromptuFactory
         {
@@ -79,9 +80,35 @@ namespace ImpromptuInterface.MVVM
             get { return typeof (T); }
         }
 
+
+        public class WinObscure:ImpromptuForwarder
+        {
+           internal WinObscure(object target):base(target)
+           {
+               
+           }
+
+           public override bool TryInvoke(System.Dynamic.InvokeBinder binder, object[] args, out object result)
+           {
+               if (base.TryInvoke(binder, args, out result))
+               {
+                   result = new Win<T>(result);
+                   return true;
+               }
+               return false;
+           }
+        }
+
         public dynamic SetProperties
         {
-            get { return Impromptu.Curry(Impromptu.InvokeSetAll)(_target); }
+            get { return new WinObscure(Impromptu.Curry(Impromptu.InvokeSetAll)(_target)); }
+        }
+
+        public dynamic Get
+        {
+            get{
+                return new ImpromptuGet(_target);
+            }
         }
 
         public void Show()

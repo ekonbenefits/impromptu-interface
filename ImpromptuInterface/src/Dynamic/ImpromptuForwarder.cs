@@ -59,12 +59,11 @@ namespace ImpromptuInterface.Dynamic
         {
             if (!KnownInterfaces.Any())
             {
-                if (Target is DynamicObject)
+                var tDyanmic = Impromptu.GetMemberNames(Target, dynamicOnly:true);
+                if (!tDyanmic.Any())
                 {
-                    return ((DynamicObject) Target).GetDynamicMemberNames();
+                    return Impromptu.GetMemberNames(Target);
                 }
-                if (!(Target is IDynamicMetaObjectProvider))
-                    return Target.GetType().GetMembers(BindingFlags.Public).Select(it => it.Name).ToList();
             }
             return base.GetDynamicMemberNames();
         }
@@ -94,6 +93,37 @@ namespace ImpromptuInterface.Dynamic
 
             return true;
 
+        }
+
+        public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
+        {
+            if (Target == null)
+            {
+                result = null;
+                return false;
+            }
+
+            var tArgs = Util.NameArgsIfNecessary(binder.CallInfo, args);
+
+            try
+            {
+                result = Impromptu.Invoke(Target, tArgs);
+
+            }
+            catch (RuntimeBinderException)
+            {
+                result = null;
+                try
+                {
+                    Impromptu.InvokeAction(Target, tArgs);
+                }
+                catch (RuntimeBinderException)
+                {
+
+                    return false;
+                }
+            }
+            return true;
         }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)

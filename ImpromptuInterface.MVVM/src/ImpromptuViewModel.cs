@@ -39,7 +39,7 @@ namespace ImpromptuInterface.MVVM
         /// </summary>
         public ImpromptuViewModel()
         {
-            _contract = Impromptu.ActLike<TInterfaceContract>(this);
+            _contract = Impromptu.ActLike<TInterfaceContract>(this, typeof(INotifyPropertyChanged));
      
         }
 

@@ -974,6 +974,12 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestStaticGet3()
+        {
+            var tVal = Impromptu.InvokeGet((StaticContext)typeof(StaticType), "Test");
+            Assert.AreEqual(true, tVal);
+        }
+        [Test, TestMethod]
         public void TestStaticSet()
         {
             int tValue = 12;

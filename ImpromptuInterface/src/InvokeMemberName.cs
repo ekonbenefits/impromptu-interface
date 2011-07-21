@@ -66,7 +66,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="name">The name.</param>
         /// <returns>The result of the conversion.</returns>
-        public static implicit operator InvokeMemberName(string name)
+          public static implicit operator InvokeMemberName(string name)
         {
             return new InvokeMemberName(name,null);
         }

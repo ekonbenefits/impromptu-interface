@@ -25,6 +25,22 @@ using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface.Optimization;
 namespace ImpromptuInterface.Dynamic
 {
+
+
+
+    /// <summary>
+    /// Get access to target of original proxy
+    /// </summary>
+    public interface IForwarder
+    {
+        /// <summary>
+        /// Gets the target.
+        /// </summary>
+        /// <value>The target.</value>
+        object Target { get; }
+    }
+
+
     ///<summary>
     /// Proxies Calls allows subclasser to override do extra actions before or after base invocation
     ///</summary>
@@ -32,7 +48,7 @@ namespace ImpromptuInterface.Dynamic
     /// This may not be as efficient as other proxies that can work on just static objects or just dynamic objects...
     /// Consider this when using.
     /// </remarks>
-    public abstract class ImpromptuForwarder:ImpromptuObject
+    public abstract class ImpromptuForwarder : ImpromptuObject, IForwarder
     {
         protected ImpromptuForwarder(object target)
         {
@@ -59,10 +75,10 @@ namespace ImpromptuInterface.Dynamic
         {
             if (!KnownInterfaces.Any())
             {
-                var tDyanmic = Impromptu.GetMemberNames(Target, dynamicOnly:true);
+                var tDyanmic = Impromptu.GetMemberNames(CallTarget, dynamicOnly: true);
                 if (!tDyanmic.Any())
                 {
-                    return Impromptu.GetMemberNames(Target);
+                    return Impromptu.GetMemberNames(CallTarget);
                 }
             }
             return base.GetDynamicMemberNames();
@@ -73,23 +89,34 @@ namespace ImpromptuInterface.Dynamic
         /// Gets or sets the target.
         /// </summary>
         /// <value>The target.</value>
-        public object Target {  get; protected set; }
+        protected object Target {  get;  set; }
+
+        object IForwarder.Target{get { return Target; }}
+
+        /// <summary>
+        /// Gets the call target.
+        /// </summary>
+        /// <value>The call target.</value>
+        protected virtual object CallTarget
+        {
+            get { return Target; }
+        }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 result = null;
                 return false;
             }
 
-            if (Impromptu.InvokeIsEvent(Target, binder.Name))
+            if (Impromptu.InvokeIsEvent(CallTarget, binder.Name))
             {
                 result = new ImpromptuForwarderAddRemove();
                 return true;
             }
 
-            result = Impromptu.InvokeGet(Target, binder.Name);
+            result = Impromptu.InvokeGet(CallTarget, binder.Name);
 
             return true;
 
@@ -97,7 +124,7 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 result = null;
                 return false;
@@ -107,7 +134,7 @@ namespace ImpromptuInterface.Dynamic
 
             try
             {
-                result = Impromptu.Invoke(Target, tArgs);
+                result = Impromptu.Invoke(CallTarget, tArgs);
 
             }
             catch (RuntimeBinderException)
@@ -115,7 +142,7 @@ namespace ImpromptuInterface.Dynamic
                 result = null;
                 try
                 {
-                    Impromptu.InvokeAction(Target, tArgs);
+                    Impromptu.InvokeAction(CallTarget, tArgs);
                 }
                 catch (RuntimeBinderException)
                 {
@@ -128,7 +155,7 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 result = null;
                 return false;
@@ -138,7 +165,7 @@ namespace ImpromptuInterface.Dynamic
 
             try
             {
-                result = Impromptu.InvokeMember(Target, binder.Name, tArgs);
+                result = Impromptu.InvokeMember(CallTarget, binder.Name, tArgs);
                
             }
             catch (RuntimeBinderException)
@@ -146,7 +173,7 @@ namespace ImpromptuInterface.Dynamic
                 result = null;
                 try
                 {
-                    Impromptu.InvokeMemberAction(Target, binder.Name, tArgs);
+                    Impromptu.InvokeMemberAction(CallTarget, binder.Name, tArgs);
                 }
                 catch (RuntimeBinderException)
                 {
@@ -161,35 +188,35 @@ namespace ImpromptuInterface.Dynamic
 
         public override bool TrySetMember(SetMemberBinder binder, object value)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 return false;
             }
 
-            if (Impromptu.InvokeIsEvent(Target, binder.Name) && value is ImpromptuForwarderAddRemove)
+            if (Impromptu.InvokeIsEvent(CallTarget, binder.Name) && value is ImpromptuForwarderAddRemove)
             {
                 var tValue = value as ImpromptuForwarderAddRemove;
 
                 if (tValue.IsAdding)
                 {
-                    Impromptu.InvokeAddAssign(Target,binder.Name, tValue.Delegate);
+                    Impromptu.InvokeAddAssign(CallTarget, binder.Name, tValue.Delegate);
                 }
                 else
                 {
-                    Impromptu.InvokeSubtractAssign(Target, binder.Name, tValue.Delegate);
+                    Impromptu.InvokeSubtractAssign(CallTarget, binder.Name, tValue.Delegate);
                 }
 
                 return true;
             }
 
-            Impromptu.InvokeSet(Target, binder.Name, value);
+            Impromptu.InvokeSet(CallTarget, binder.Name, value);
 
             return true;
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 result = null;
                 return false;
@@ -197,13 +224,13 @@ namespace ImpromptuInterface.Dynamic
 
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, indexes);
 
-            result = Impromptu.InvokeGetIndex(Target, tArgs);
+            result = Impromptu.InvokeGetIndex(CallTarget, tArgs);
             return true;
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
         {
-            if (Target == null)
+            if (CallTarget == null)
             {
                 return false;
             }
@@ -211,7 +238,7 @@ namespace ImpromptuInterface.Dynamic
             var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
 
-            Impromptu.InvokeSetIndex(tArgs);
+            Impromptu.InvokeSetIndex(CallTarget,tArgs);
             return true;
         }
 
@@ -223,14 +250,14 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public bool Equals(ImpromptuForwarder other)
         {
-            if (ReferenceEquals(null, other)) return ReferenceEquals(null, Target);
+            if (ReferenceEquals(null, other)) return ReferenceEquals(null, CallTarget);
             if (ReferenceEquals(this, other)) return true;
-            return Equals(other.Target, Target);
+            return Equals(other.CallTarget, CallTarget);
         }
 
         public override bool Equals(object obj)
         {
-            if (ReferenceEquals(null, obj)) return ReferenceEquals(null, Target); 
+            if (ReferenceEquals(null, obj)) return ReferenceEquals(null, CallTarget); 
             if (ReferenceEquals(this, obj)) return true;
             if (obj.GetType() != typeof (ImpromptuForwarder)) return false;
             return Equals((ImpromptuForwarder) obj);
@@ -238,7 +265,7 @@ namespace ImpromptuInterface.Dynamic
 
         public override int GetHashCode()
         {
-            return (Target != null ? Target.GetHashCode() : 0);
+            return (CallTarget != null ? CallTarget.GetHashCode() : 0);
         }
     }
 }

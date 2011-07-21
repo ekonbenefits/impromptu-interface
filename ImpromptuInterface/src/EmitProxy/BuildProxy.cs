@@ -15,7 +15,6 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq.Expressions;
 using ImpromptuInterface.Optimization;
 
@@ -42,10 +41,10 @@ namespace ImpromptuInterface.Build
         internal static AssemblyBuilder _tempSaveAssembly;
 
         private static AssemblyBuilder _ab;
-        private static readonly Dictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
+        private static readonly IDictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
         private static readonly object TypeCacheLock = new object();
 
-        private static readonly Dictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
+        private static readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
         private static readonly object DelegateCacheLock = new object();
 
 #if !SILVERLIGHT
@@ -111,7 +110,7 @@ namespace ImpromptuInterface.Build
             {
                 contextType = contextType.FixContext();
                 var tNewHash = TypeHash.Create(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
-                Type tType = null;
+                Type tType;
                 if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
                     tType = BuildTypeHelper(Builder,contextType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
@@ -134,7 +133,7 @@ namespace ImpromptuInterface.Build
             lock (TypeCacheLock)
             {
                 var tNewHash = TypeHash.Create(contextType, informalInterface);
-                Type tType = null;
+                Type tType;
                 if (!_typeHash.TryGetValue(tNewHash, out tType))
                 {
                     tType = BuildTypeHelper(Builder, contextType, informalInterface);

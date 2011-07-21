@@ -69,6 +69,11 @@ namespace ImpromptuInterface.Dynamic
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuList"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
         protected ImpromptuList(SerializationInfo info, 
            StreamingContext context):base(info,context)
         {
@@ -102,11 +107,18 @@ namespace ImpromptuInterface.Dynamic
 
 
 
+        /// <summary>
+        /// Adds the specified item.
+        /// </summary>
+        /// <param name="item">The item.</param>
         public void Add(dynamic item)
         {
             InsertHelper(item);
         }
 
+        /// <summary>
+        /// Clears this instance.
+        /// </summary>
         public void Clear()
         {
             lock (ListLock)
@@ -129,13 +141,22 @@ namespace ImpromptuInterface.Dynamic
             return _list.Contains(item);
         }
 
+        /// <summary>
+        /// Copies to.
+        /// </summary>
+        /// <param name="array">The array.</param>
+        /// <param name="arrayIndex">Index of the array.</param>
         public void CopyTo(object[] array, int arrayIndex)
         {
             _list.CopyTo(array, arrayIndex);
         }
 
-     
 
+
+        /// <summary>
+        /// Gets the count.
+        /// </summary>
+        /// <value>The count.</value>
         public int Count
         {
             get { return _list.Count; }
@@ -143,6 +164,11 @@ namespace ImpromptuInterface.Dynamic
 
 
 
+        /// <summary>
+        /// Indexes the of.
+        /// </summary>
+        /// <param name="item">The item.</param>
+        /// <returns></returns>
         public int IndexOf(dynamic item)
         {
             lock (ListLock)

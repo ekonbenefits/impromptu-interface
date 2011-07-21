@@ -388,6 +388,14 @@ namespace ImpromptuInterface.Build
 
         }
 
+        /// <summary>
+        /// Emits the dynamic set binder dynamic params.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="flag">The flag.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="argTypes">The arg types.</param>
         public static void EmitDynamicSetBinderDynamicParams(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, params Type[] argTypes)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
@@ -406,6 +414,14 @@ namespace ImpromptuInterface.Build
 
         }
 
+        /// <summary>
+        /// Emits the dynamic binary op binder.
+        /// </summary>
+        /// <param name="generator">The generator.</param>
+        /// <param name="flag">The flag.</param>
+        /// <param name="exprType">Type of the expr.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="argTypes">The arg types.</param>
         public static void EmitDynamicBinaryOpBinder(this ILGenerator generator, CSharpBinderFlags flag, ExpressionType
  exprType, Type context, params Type[] argTypes)
         {

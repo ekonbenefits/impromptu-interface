@@ -186,6 +186,10 @@ namespace ImpromptuInterface.Dynamic
         {
         }
 
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
         public override dynamic Create()
         {
             var tArgs = Arguments();

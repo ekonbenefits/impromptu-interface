@@ -86,8 +86,18 @@ namespace ImpromptuInterface
         /// <value>The context.</value>
         public Type Context { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [static context].
+        /// </summary>
+        /// <value><c>true</c> if [static context]; otherwise, <c>false</c>.</value>
         public bool StaticContext { get; protected set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvokeContext"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="context">The context.</param>
         public InvokeContext(Type target, bool staticContext, object context)
         {
             if (context != null && !(context is Type))

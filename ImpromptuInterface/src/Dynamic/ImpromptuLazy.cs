@@ -7,11 +7,56 @@ using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.src.Dynamic
 {
+
+    /// <summary>
+    /// Abstract base for the Generic class <see cref="ImpromptuLazy{T}"/> with <see cref="Create{T}(System.Func{T})"/> fatory methods
+    /// </summary>
+    public abstract class ImpromptuLazy:ImpromptuForwarder
+    {
+        /// <summary>
+        /// Creates ImpromptuLazy based on the specified valuefactory.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="valuefactory">The valuefactory.</param>
+        /// <returns></returns>
+        public static dynamic Create<T>(Func<T> valuefactory)
+        {
+            return new ImpromptuLazy<T>(valuefactory);
+        }
+        /// <summary>
+        /// Creates ImpromptuLazy based on the specified target.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="target">The target.</param>
+        /// <returns></returns>
+        public static dynamic Create<T>(Lazy<T> target)
+        {
+            return new ImpromptuLazy<T>(target);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuLazy"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        protected ImpromptuLazy(object target) : base(target)
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuLazy"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        protected ImpromptuLazy(SerializationInfo info, StreamingContext context) : base(info, context)
+        {
+        }
+    }
+
     /// <summary>
     /// Wraps a Lazy Type evalutaes on first method call
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class ImpromptuLazy<T>:ImpromptuForwarder
+    public class ImpromptuLazy<T> : ImpromptuLazy
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuLazy&lt;T&gt;"/> class.
@@ -30,13 +75,27 @@ namespace ImpromptuInterface.src.Dynamic
             
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuLazy&lt;T&gt;"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        public ImpromptuLazy(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+        /// <summary>
+        /// Returns the enumeration of all dynamic member names.
+        /// </summary>
+        /// <returns>
+        /// A sequence that contains dynamic member names.
+        /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
-            if (((Lazy<T>)Target).IsValueCreated)
-            {
-                return base.GetDynamicMemberNames();
-            }
-            return Enumerable.Empty<string>();
+            return ((Lazy<T>)Target).IsValueCreated 
+                ? base.GetDynamicMemberNames() 
+                : Enumerable.Empty<string>();
         }
 
         protected override object CallTarget
@@ -47,13 +106,6 @@ namespace ImpromptuInterface.src.Dynamic
             }
         }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImpromptuLazy&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="context">The context.</param>
-        public ImpromptuLazy(SerializationInfo info, StreamingContext context) : base(info, context)
-        {
-        }
+       
     }
 }

@@ -14,17 +14,22 @@ namespace ImpromptuInterface.Optimization
 {
   
     /// <summary>
-    /// Dummy Framework Element to access Properties
+    /// Dummy <see cref="FrameworkElement"/> to access Properties
     /// </summary>
     public class SilverConverterFE:FrameworkElement
     {
 
 
-        private static IDictionary<Type, DependencyProperty> _dependencyProperties =
+        private static readonly IDictionary<Type, DependencyProperty> _dependencyProperties =
             new Dictionary<Type, DependencyProperty>();
 
-            
 
+
+        /// <summary>
+        /// Gets the property.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
             public static DependencyProperty GetProperty(Type type)
             {
                 DependencyProperty tProp;
@@ -45,16 +50,24 @@ namespace ImpromptuInterface.Optimization
                 return tProp;
             }
     }
-     public class SilverConvertertBV
-     {
-       
-     }
+
+    /// <summary>
+     /// Dummy <see cref="FrameworkElement.DataContext"/> value
+     /// </summary>
     public class SilverConvertertDC
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SilverConvertertDC"/> class.
+        /// </summary>
+        /// <param name="value">The value.</param>
         public SilverConvertertDC(string value)
         {
             StringValue = value;
         }
+        /// <summary>
+        /// Gets or sets the string value.
+        /// </summary>
+        /// <value>The string value.</value>
         public string StringValue { get; set; }
     }
 

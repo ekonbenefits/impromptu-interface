@@ -41,21 +41,30 @@ namespace ImpromptuInterface.Dynamic
     }
 
 
-    ///<summary>
+    /// <summary>
     /// Proxies Calls allows subclasser to override do extra actions before or after base invocation
-    ///</summary>
+    /// </summary>
     /// <remarks>
     /// This may not be as efficient as other proxies that can work on just static objects or just dynamic objects...
     /// Consider this when using.
     /// </remarks>
     public abstract class ImpromptuForwarder : ImpromptuObject, IForwarder
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuForwarder"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
         protected ImpromptuForwarder(object target)
         {
             Target = target;
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuForwarder"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
         protected ImpromptuForwarder(SerializationInfo info, 
            StreamingContext context):base(info,context)
         {
@@ -64,6 +73,12 @@ namespace ImpromptuInterface.Dynamic
             Target = info.GetValue<IDictionary<string, object>>("Target");
         }
 
+        /// <summary>
+        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
+        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
+        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             base.GetObjectData(info,context);
@@ -71,6 +86,12 @@ namespace ImpromptuInterface.Dynamic
         }
 #endif
 
+        /// <summary>
+        /// Returns the enumeration of all dynamic member names.
+        /// </summary>
+        /// <returns>
+        /// A sequence that contains dynamic member names.
+        /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             if (!KnownInterfaces.Any())
@@ -102,6 +123,14 @@ namespace ImpromptuInterface.Dynamic
             get { return Target; }
         }
 
+        /// <summary>
+        /// Provides the implementation for operations that get member values. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as getting a value for a property.
+        /// </summary>
+        /// <param name="binder">Provides information about the object that called the dynamic operation. The binder.Name property provides the name of the member on which the dynamic operation is performed. For example, for the Console.WriteLine(sampleObject.SampleProperty) statement, where sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, binder.Name returns "SampleProperty". The binder.IgnoreCase property specifies whether the member name is case-sensitive.</param>
+        /// <param name="result">The result of the get operation. For example, if the method is called for a property, you can assign the property value to <paramref name="result"/>.</param>
+        /// <returns>
+        /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a run-time exception is thrown.)
+        /// </returns>
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
             if (CallTarget == null)
@@ -122,6 +151,15 @@ namespace ImpromptuInterface.Dynamic
 
         }
 
+        /// <summary>
+        /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
+        /// </summary>
+        /// <param name="binder">Provides information about the invoke operation.</param>
+        /// <param name="args">The arguments that are passed to the object during the invoke operation. For example, for the sampleObject(100) operation, where sampleObject is derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, <paramref name="args[0]"/> is equal to 100.</param>
+        /// <param name="result">The result of the object invocation.</param>
+        /// <returns>
+        /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.
+        /// </returns>
         public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
         {
             if (CallTarget == null)

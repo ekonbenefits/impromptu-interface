@@ -155,9 +155,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestStaticMethodCurry2()
         {
-            var @static = InvokeContext.CreateStatic;
 
-            object curriedJoin = Impromptu.Curry(@static(typeof(string)), 51).Join(",");
+            object curriedJoin = Impromptu.Curry((StaticContext)typeof(string), 51).Join(",");
 
             Func<dynamic, int, dynamic> applyFunc = (result, each) => result(each.ToString());
 
@@ -165,6 +164,22 @@ namespace UnitTestImpromptuInterface
                 .Where(i => i % 2 == 0)
                 .Aggregate(curriedJoin, applyFunc);
 
+            Console.WriteLine(final);
+
+
+        }
+
+        [Test, TestMethod]
+        public void TestStaticMethodCurry3()
+        {
+            var tFormat =Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
+
+
+            dynamic curriedWrite = Impromptu.Curry(Console.Out, 101).WriteLine(tFormat);
+
+            Func<dynamic, int, dynamic> applyArgs = (result, each) => result(each.ToString());
+
+            Enumerable.Range(0, 100).Aggregate((object)curriedWrite, applyArgs);
 
         }
 

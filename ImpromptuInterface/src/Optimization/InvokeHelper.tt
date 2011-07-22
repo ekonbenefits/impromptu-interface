@@ -221,7 +221,14 @@ namespace ImpromptuInterface.Optimization
             dynamic tDel =del;
             switch(args.Length){
                 default:
-                    return del.DynamicInvoke(args);
+                    try
+                    {
+                        return del.DynamicInvoke(args);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
 #region Optimization
 <# for(int i=1; i <= 16; i++){ 
 	var tArgs = String.Join(",",Enumerable.Range(0,i).Select(it=>String.Format("args[{0}]",it)));
@@ -236,8 +243,15 @@ namespace ImpromptuInterface.Optimization
         {
             dynamic tDel =del;
             switch(args.Length){
-                default:
-                    del.DynamicInvoke(args);
+                default: 
+					try
+                    {
+						del.DynamicInvoke(args);
+					}
+					catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
                     return;
 #region Optimization
 <# for(int i=1; i <= 16; i++){ 

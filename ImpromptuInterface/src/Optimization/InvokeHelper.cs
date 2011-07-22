@@ -425,7 +425,7 @@ namespace ImpromptuInterface.Optimization
                     }
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
-                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TReturn));
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
                     return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }
@@ -629,7 +629,14 @@ namespace ImpromptuInterface.Optimization
             dynamic tDel =del;
             switch(args.Length){
                 default:
-                    return del.DynamicInvoke(args);
+                    try
+                    {
+                        return del.DynamicInvoke(args);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
 #region Optimization
 				case 1:
                     return tDel(args[0]);
@@ -671,8 +678,15 @@ namespace ImpromptuInterface.Optimization
         {
             dynamic tDel =del;
             switch(args.Length){
-                default:
-                    del.DynamicInvoke(args);
+                default: 
+					try
+                    {
+						del.DynamicInvoke(args);
+					}
+					catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
                     return;
 #region Optimization
 				case 1:

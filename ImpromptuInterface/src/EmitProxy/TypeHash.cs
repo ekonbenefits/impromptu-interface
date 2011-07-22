@@ -41,6 +41,9 @@ namespace ImpromptuInterface.Build
                 if (InformalInterface == null || other.InformalInterface == null)
                     return false;
 
+                if (Types.Length != other.Types.Length)
+                    return false;
+
                 var tTypes = Types.SequenceEqual(other.Types);
 
                 if (!tTypes )
@@ -78,6 +81,13 @@ namespace ImpromptuInterface.Build
         {
             unchecked
             {
+
+                if (Types.Length > 16)
+                {
+                    return Types.Length.GetHashCode();
+                }
+
+
                 var tReturn = Types.Aggregate(1, (current, type) => (current * 397) ^ type.GetHashCode());
 
                 if (InformalInterface != null)

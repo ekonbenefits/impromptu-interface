@@ -621,6 +621,10 @@ namespace ImpromptuInterface.Build
 
         private static Tuple<Type, Type[]> GetParamTypes(dynamic builder, MethodInfo info)
         {
+            if (info == null)
+                return null;
+
+
             var paramTypes = info.GetParameters().Select(it => it.ParameterType).ToArray();
             var returnType = typeof(void);
             if (info.ReturnParameter != null)
@@ -1356,7 +1360,7 @@ namespace ImpromptuInterface.Build
 
                 TypeHash tHash;
              
-                if (tList.Any(it => it.IsByRef) || tList.Count > 16)
+                if ((tList.Any(it => it.IsByRef) || tList.Count > 16) && methodInfo !=null)
                 {
                     tHash = TypeHash.Create(strictOrder: true, moreTypes: methodInfo);
                 }else
@@ -1374,7 +1378,9 @@ namespace ImpromptuInterface.Build
                     || (tIsFunc && tList.Count >= InvokeHelper.FuncKinds.Length)
                     || (!tIsFunc && tList.Count >= InvokeHelper.ActionKinds.Length))
                 {
-                    tType = GenerateFullDelegate(builder, methodInfo);
+                    tType = GenerateFullDelegate(builder, returnType,tList, methodInfo);
+
+
                     _delegateCache[tHash] = tType;
                     return tType;
                 }
@@ -1401,27 +1407,32 @@ namespace ImpromptuInterface.Build
 
 // ReSharper disable UnusedParameter.Local
 // May switch to nested types if i figure out how to do it, thus would need the typebuilder
-        private static Type GenerateFullDelegate(TypeBuilder builder,MethodInfo info)
+        private static Type GenerateFullDelegate(TypeBuilder builder, Type returnType,  IEnumerable<Type> types, MethodInfo info =null )
 // ReSharper restore UnusedParameter.Local
         {
                 var tBuilder = Builder.DefineType(
                     string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
-                    TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.NotPublic,
+                    TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
                     typeof (MulticastDelegate));
 
                 var tReplacedTypes = GetParamTypes(tBuilder, info);
 
-                var tReturnType = typeof (object);
-                var tParamTypes = info.GetParameters().Select(it => it.ParameterType).ToList();
+                var tParamTypes = info == null 
+                    ? types.ToList() 
+                    : info.GetParameters().Select(it => it.ParameterType).ToList();
+
                 if (tReplacedTypes != null)
                 {
                     tParamTypes = tReplacedTypes.Item2.ToList();
                 }
 
-                tParamTypes.Insert(0, typeof (object));
-                tParamTypes.Insert(0, typeof (CallSite));
+                if (info != null)
+                {
+                    tParamTypes.Insert(0, typeof (object));
+                    tParamTypes.Insert(0, typeof (CallSite));
+                }
 
-                var tCon = tBuilder.DefineConstructor(
+            var tCon = tBuilder.DefineConstructor(
                     MethodAttributes.Public | MethodAttributes.SpecialName | MethodAttributes.HideBySig |
                     MethodAttributes.RTSpecialName, CallingConventions.Standard,
                     new[] {typeof (object), typeof (IntPtr)});
@@ -1433,16 +1444,19 @@ namespace ImpromptuInterface.Build
                                                     MethodAttributes.NewSlot |
                                                     MethodAttributes.Virtual);
 
-                tMethod.SetReturnType(tReturnType);
+                tMethod.SetReturnType(returnType);
                 tMethod.SetParameters(tParamTypes.ToArray());
 
-                foreach (var tParam in info.GetParameters())
+                if (info != null)
                 {
-                    //+3 because of the callsite and target are added
-                    tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
+                    foreach (var tParam in info.GetParameters())
+                    {
+                        //+3 because of the callsite and target are added
+                        tMethod.DefineParameter(tParam.Position + 3, AttributesForParam(tParam), tParam.Name);
+                    }
                 }
 
-                tMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
+            tMethod.SetImplementationFlags(MethodImplAttributes.CodeTypeMask);
 
 
 

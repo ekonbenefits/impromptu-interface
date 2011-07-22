@@ -149,6 +149,24 @@ namespace UnitTestImpromptuInterface
             string result = curry("D");
             Assert.AreEqual("Test A, B, C, D", result);
         }
+              
+      
+
+        [Test, TestMethod]
+        public void TestStaticMethodCurry2()
+        {
+            var @static = InvokeContext.CreateStatic;
+
+            object curriedJoin = Impromptu.Curry(@static(typeof(string)), 51).Join(",");
+
+            Func<dynamic, int, dynamic> applyFunc = (result, each) => result(each.ToString());
+
+            string final = Enumerable.Range(1, 100)
+                .Where(i => i % 2 == 0)
+                .Aggregate(curriedJoin, applyFunc);
+
+
+        }
 
 
         [Test, TestMethod]

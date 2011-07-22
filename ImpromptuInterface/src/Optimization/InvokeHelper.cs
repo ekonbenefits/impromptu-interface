@@ -425,7 +425,7 @@ namespace ImpromptuInterface.Optimization
                     }
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
-                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
+                    var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TReturn));
                     return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
 
             }

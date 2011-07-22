@@ -69,9 +69,14 @@ namespace ImpromptuInterface.Dynamic
         /// Gets the new list builder.
         /// </summary>
         /// <value>The new list.</value>
-        public static dynamic NewList(params object[] args)
+        public static dynamic NewList
         {
-                return new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>().List(args);
+            get
+            {
+                return
+                    Impromptu.Curry(new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>()).
+                        List();
+            }
         }
     }
 
@@ -97,10 +102,12 @@ namespace ImpromptuInterface.Dynamic
         /// Gets the new list builder.
         /// </summary>
         /// <value>The new list.</value>
-        public static dynamic NewList(params object[] args)
+        public static dynamic NewList
         {
-            
-                return new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>().List(args);
+            get
+            {
+                return Impromptu.Curry(new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>()).List();
+            }
         }
     }
 

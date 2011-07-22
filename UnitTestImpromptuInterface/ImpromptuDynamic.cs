@@ -567,6 +567,9 @@ namespace UnitTestImpromptuInterface
             {
                 var tList =Build.NewList("test", "one", "two");
                 Assert.AreEqual("one", tList[1]);
+
+                var tList2 = Build.NewList("test", "one", "two", "three");
+                Assert.AreEqual("three", tList2[3]);
             }
 		
     }

@@ -225,7 +225,7 @@ namespace ImpromptuInterface.Internal
                 get { return _invocationKind; }
             }
 
-            private CacheableInvocation _cacheableInvocation;
+            private IDictionary<int,CacheableInvocation> _cacheableInvocation = new Dictionary<int,CacheableInvocation>();
 
             /// <summary>
             /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
@@ -264,13 +264,14 @@ namespace ImpromptuInterface.Internal
                 Invocation tInvocation;
                 if (binder.CallInfo.ArgumentNames.Count == 0) //If no argument names we can cache the callsite
                 {
-                    if (_cacheableInvocation == null)
+                    CacheableInvocation tCacheableInvocation;
+                    if (!_cacheableInvocation.TryGetValue(tNewArgs.Length, out tCacheableInvocation))
                     {
-                        
+                        tCacheableInvocation =new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
+                        _cacheableInvocation[tNewArgs.Length] = tCacheableInvocation;
 
-                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
                     }
-                    tInvocation = _cacheableInvocation;
+                    tInvocation = tCacheableInvocation;
                 }
                 else
                 {

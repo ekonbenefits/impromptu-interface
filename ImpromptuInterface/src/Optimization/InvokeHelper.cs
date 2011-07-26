@@ -482,7 +482,9 @@ namespace ImpromptuInterface.Optimization
 		#endif
 
 		internal static class MonoConvertCallSite<T>{
+// ReSharper disable StaticFieldInGenericType
 			internal static CallSite CallSite;
+// ReSharper restore StaticFieldInGenericType
 		}
 	    
 		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)

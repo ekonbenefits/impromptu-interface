@@ -527,6 +527,9 @@ namespace ImpromptuInterface.Optimization
             }
         }
 
+        public delegate void DynamicAction(params object[] args);
+        public delegate TReturn DynamicFunc<out TReturn>(params object[] args);
+
         internal static object InvokeConvertCallSite(object target, bool explict, Type type, Type context, ref CallSite callSite)
         {
             if (callSite == null)

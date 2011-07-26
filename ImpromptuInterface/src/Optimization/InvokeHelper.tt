@@ -172,7 +172,7 @@ namespace ImpromptuInterface.Optimization
 						return new Func<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
 <# } #>	
 				default:
-					throw new Exception("Two may parameters to converter");
+					return new DynamicFunc<TReturn>(args=>(TReturn)Impromptu.Invoke((object)invokable,args));
 			}
         }
 		#endif
@@ -194,7 +194,10 @@ namespace ImpromptuInterface.Optimization
 						 });
 <# } #>	
 				default:
-					throw new Exception("Two may parameters to converter");
+						return new DynamicFunc<TReturn>(args=>{
+								object tResult= Impromptu.Invoke((object)invokable,args);
+								return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						});
 			}
         }
 
@@ -211,7 +214,7 @@ namespace ImpromptuInterface.Optimization
 						return new Action<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
 <# } #>	
 				default:
-					throw new Exception("Two may parameters to converter");
+					return new DynamicAction(args=>Impromptu.InvokeAction((object)invokable,args));
 			}
         }
 

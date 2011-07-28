@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
@@ -53,6 +54,12 @@ namespace ImpromptuInterface.Optimization
                        type,
                        typeof (CompilerGeneratedAttribute),
                        false);
+        }
+
+        static Util()
+        {
+            IsMono = Type.GetType("Mono.Runtime") != null;
+
         }
 
         /// <summary>
@@ -253,9 +260,7 @@ namespace ImpromptuInterface.Optimization
         }
 #endif
 		
-		static Util(){
-			IsMono = Type.GetType ("Mono.Runtime") != null;
-		}
+	
 		
 		/// <summary>
 		/// Is Current Runtime Mono?

@@ -39,6 +39,7 @@ namespace ImpromptuInterface.Optimization
         internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
         {
             object result;
+
             try
             {
                 result = tFunc.FastDynamicInvoke(
@@ -373,6 +374,7 @@ namespace ImpromptuInterface.Optimization
         {
             LazyBinder tBinder = null;
             Type tBinderType = null;
+
             if (callSite == null)
             {
 
@@ -462,6 +464,7 @@ namespace ImpromptuInterface.Optimization
         {
             LazyBinder tBinder = null;
             Type tBinderType = null;
+
             if (callSite == null)
             {
 

@@ -66,9 +66,10 @@ namespace ImpromptuInterface
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
         public static readonly Func<Type, InvokeContext> CreateStatic =
-           Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
-       
-        /// <summary>
+            Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
+
+
+    /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
         public static readonly Func<Type, object, InvokeContext> CreateStaticWithContext =

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
@@ -109,18 +110,28 @@ namespace ImpromptuInterface.Dynamic
             {
                 result = null;
                 var tDel = Impromptu.InvokeGet(CallTarget, binder.Name) as Delegate;
-                if (tDel == null)
-                    return false;
+                if (!binder.CallInfo.ArgumentNames.Any() && tDel != null)
+                {
+                    try
+                    {
+                        result = this.InvokeMethodDelegate(tDel, args);
+                    }
+                    catch (RuntimeBinderException)
+                        //If it has out parmaters etc it can't be invoked dynamically like this.
+                        //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    {
+                        return false;
+                    }
+                }
                 try
                 {
-                    result = this.InvokeMethodDelegate(tDel, args);
+                    result = Impromptu.Invoke(result, Util.NameArgsIfNecessary(binder.CallInfo, args));
                 }
                 catch (RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
                 //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
                 {
                     return false;
-                }
-               
+                } 
             }
 
             return this.MassageResultBasedOnInterface(binder.Name, true, ref result);

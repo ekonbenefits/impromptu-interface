@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using ImpromptuInterface.Optimization;
@@ -52,6 +54,23 @@ namespace ImpromptuInterface.Internal
                 if (args[1] is IEnumerable<KeyValuePair<string, object>>)
                 {
                     tDict = (IEnumerable<KeyValuePair<string, object>>)args[1];
+                }
+                else if (args[1] is IEnumerable
+                        && args[1].GetType().IsGenericType
+                    )
+                {
+                    var tEnumerableArg = (IEnumerable)args[1];
+
+                    var tInterface = tEnumerableArg.GetType().GetInterface("IEnumerable`1");
+                    if(tInterface !=null)
+                    {
+                        var tParamTypes = tInterface.GetGenericArguments();
+                        if(tParamTypes.Length ==1 
+                            && tParamTypes[0].GetGenericTypeDefinition() == typeof(Tuple<,>))
+                        {
+                           tDict= tEnumerableArg.Cast<dynamic>().ToDictionary(k => (string) k.Item1, v => (object) v.Item2);
+                        }
+                    }
                 }
                 else if (Util.IsAnonymousType(args[1]))
                 {

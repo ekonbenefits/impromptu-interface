@@ -11,6 +11,7 @@ namespace ImpromptuInterface.src.Dynamic
     /// <summary>
     /// Abstract base for the Generic class <see cref="ImpromptuLazy{T}"/> with <see cref="Create{T}(System.Func{T})"/> fatory methods
     /// </summary>
+    [Serializable]
     public abstract class ImpromptuLazy:ImpromptuForwarder
     {
         /// <summary>
@@ -42,6 +43,7 @@ namespace ImpromptuInterface.src.Dynamic
         {
         }
 
+#if !SILVERLIGHT
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuLazy"/> class.
         /// </summary>
@@ -50,6 +52,8 @@ namespace ImpromptuInterface.src.Dynamic
         protected ImpromptuLazy(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
+#endif
+
     }
 
     /// <summary>
@@ -66,6 +70,19 @@ namespace ImpromptuInterface.src.Dynamic
         {
         }
 
+#if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuForwarder"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        public ImpromptuLazy(SerializationInfo info, StreamingContext context)
+            : base(info, context)
+        {
+        }
+
+#endif
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuLazy&lt;T&gt;"/> class.
         /// </summary>
@@ -74,16 +91,7 @@ namespace ImpromptuInterface.src.Dynamic
         {
             
         }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImpromptuLazy&lt;T&gt;"/> class.
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="context">The context.</param>
-        public ImpromptuLazy(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
+     
 
         /// <summary>
         /// Returns the enumeration of all dynamic member names.

@@ -162,19 +162,34 @@ namespace ImpromptuInterface.Dynamic
             if (_dictionary.TryGetValue(binder.Name, out result))
             {
                 var tFunc = result as Delegate;
-                if (tFunc !=null)
+
+                if (!binder.CallInfo.ArgumentNames.Any() && tFunc != null)
                 {
                     try
                     {
                         result = this.InvokeMethodDelegate(tFunc, args);
-                    }catch(RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
-                                                  //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    }
+                    catch (RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
+                    //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
                     {
                         return false;
                     }
-                    return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
+                   
                 }
-                return false;
+                else
+                {
+                    try
+                    {
+                        result = Impromptu.Invoke(result, Util.NameArgsIfNecessary(binder.CallInfo, args));
+                    }
+                    catch (RuntimeBinderException)
+                        //If it has out parmaters etc it can't be invoked dynamically like this.
+                        //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    {
+                        return false;
+                    }
+                } 
+                return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
             }
             return this.MassageResultBasedOnInterface(binder.Name, false, ref result);
         }

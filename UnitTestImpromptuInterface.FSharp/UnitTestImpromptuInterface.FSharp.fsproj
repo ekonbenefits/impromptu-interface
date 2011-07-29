@@ -70,6 +70,11 @@
       <Project>{dab7c056-660a-4153-8ff2-b80a41310ad7}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj">
+      <Name>UnitTestSupportLibrary</Name>
+      <Project>{0ec76091-958a-4020-ba6b-39b00ee55659}</Project>
+      <Private>True</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="!Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />
   <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildBinPath)\Microsoft.Build.Tasks.v4.0.dll')" />

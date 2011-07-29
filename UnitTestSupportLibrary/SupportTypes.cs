@@ -6,6 +6,14 @@ using System.Text;
 namespace UnitTestSupportLibrary
 {
 
+    public static class TestFuncs
+    {
+        public static Func<int, int> Plus3
+        {
+            get { return x => x + 3; }
+        } 
+    }
+
     public class PublicType
     {
         public static object InternalInstance

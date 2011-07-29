@@ -14,6 +14,7 @@
 //    limitations under the License.
 namespace ImpromptuInterface
 
+///Module to add DLR dynamic invocation to FSharp through the dynamic operator (?)
 module FSharp=
 
     open System
@@ -21,43 +22,64 @@ module FSharp=
     open Microsoft.FSharp.Reflection
     open ImpromptuInterface
     open ImpromptuInterface.Dynamic
-
   
-
+    ///Dynamic get property or method invocation
     let (?)  (target : obj) (name:string)  : 'TResult  = 
         let resultType = typeof<'TResult>
+        let (|NoConversion| Conversion|) t = if t = typeof<obj> then NoConversion else Conversion
+
         if not (FSharpType.IsFunction resultType)
         then 
-            let convert r =Impromptu.InvokeConvert(r,resultType)
-            unbox (convert(Impromptu.InvokeGet(target, name)))
+            let convert r = match resultType with
+                                | NoConversion -> r
+                                | _ -> Impromptu.InvokeConvert(r,resultType)
+
+            Impromptu.InvokeGet(target, name) |> convert |> unbox
         else
             let lambda = fun arg ->
                                let argType,returnType = FSharpType.GetFunctionElements resultType
 
-                               let cSharpArgs = 
+                               let argList = 
                                     match argType with
                                     | a when FSharpType.IsTuple(a) -> FSharpValue.GetTupleFields(arg)
                                     | a when a = typeof<unit> -> [| |]
                                     | _ -> [|arg|]
 
-                               let invoker k = Invocation(k, InvokeMemberName(name,null)).Invoke(target,cSharpArgs)
+                               let invoker k = Invocation(k, InvokeMemberName(name,null)).Invoke(target,argList)
 
                                let (|Action|Func|) t = if t = typeof<unit> then Action else Func
                                let (|Invoke|InvokeMember|) n = if n = "_" then Invoke else InvokeMember
-                               let (|NoConversion| Conversion|) t = if t = typeof<obj> then NoConversion else Conversion
-
+                               
                                let result =
-                                    match (returnType, name) with
-                                    | (Action,Invoke) -> invoker(InvocationKind.InvokeAction)
-                                    | (Action,InvokeMember) -> invoker(InvocationKind.InvokeMemberAction)
-                                    | (Func, Invoke) -> invoker(InvocationKind.Invoke)
-                                    | (Func, InvokeMember) -> invoker(InvocationKind.InvokeMember)
+                                    try
+                                        match (returnType, name) with
+                                        | (Action,Invoke) -> invoker(InvocationKind.InvokeAction)
+                                        | (Action,InvokeMember) -> invoker(InvocationKind.InvokeMemberAction)
+                                        | (Func, Invoke) -> invoker(InvocationKind.Invoke)
+                                        | (Func, InvokeMember) -> invoker(InvocationKind.InvokeMember)
+                                    with  //Last chance incase we are trying to invoke an fsharpfunc 
+                                        |  :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e  -> 
+                                            try
+                                                let invokeName =InvokeMemberName("Invoke", null) //FSharpFunc Invoke
+                                                let invokeContext t = InvokeContext(t,typeof<obj>) //Improve cache hits by using the same context
+                                                let invokeFSharpFoldBack (a:obj) t  = Impromptu.InvokeMember(invokeContext(t),invokeName,a)
+                                                let seed = match name with
+                                                           |InvokeMember -> Impromptu.InvokeGet(target,name)
+                                                           |Invoke->target
+                                                List.foldBack invokeFSharpFoldBack (argList |> List.ofArray |> List.rev) seed
+                                            with
+                                                | :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e2 -> AggregateException(e,e2) |> raise
 
                                match returnType with
                                | Action | NoConversion -> result
                                | _ -> Impromptu.InvokeConvert(result, returnType)
 
-            unbox<'TResult> (FSharpValue.MakeFunction(resultType,lambda))
+            FSharpValue.MakeFunction(resultType,lambda) |> unbox<'TResult>
 
+    ///Dynamic set property
     let (?<-) (target : obj) (name : string) (value : 'TValue) : unit =
         Impromptu.InvokeSet(target, name, value) |> ignore
+
+    ///Prefix operator that allows direct dynamic invocation of the object
+    let (!?) (target:obj) : 'TResult =
+        target?``_``

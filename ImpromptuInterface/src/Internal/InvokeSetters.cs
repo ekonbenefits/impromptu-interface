@@ -61,7 +61,7 @@ namespace ImpromptuInterface.Internal
                 {
                     var tEnumerableArg = (IEnumerable)args[1];
 
-                    var tInterface = tEnumerableArg.GetType().GetInterface("IEnumerable`1");
+                    var tInterface = tEnumerableArg.GetType().GetInterface("IEnumerable`1", false);
                     if(tInterface !=null)
                     {
                         var tParamTypes = tInterface.GetGenericArguments();

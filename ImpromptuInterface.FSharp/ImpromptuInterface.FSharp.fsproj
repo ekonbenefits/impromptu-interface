@@ -42,6 +42,7 @@
   <ItemGroup>
     <Compile Include="FSharp.fs" />
     <None Include="Script.fsx" />
+    <Compile Include="AssemblyInfo.fs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">

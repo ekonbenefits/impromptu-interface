@@ -2,7 +2,7 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface.FSharp</id>
-  <version>1.0.0</version>
+  <version>1.0.2</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A complete dlr based dynamic operator implementatiom for F#</description>

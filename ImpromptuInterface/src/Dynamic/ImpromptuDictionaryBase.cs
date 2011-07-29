@@ -158,11 +158,11 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            result = null;
             if (_dictionary.TryGetValue(binder.Name, out result))
             {
                 var tFunc = result as Delegate;
-
+                if (result == null)
+                    return false;
                 if (!binder.CallInfo.ArgumentNames.Any() && tFunc != null)
                 {
                     try

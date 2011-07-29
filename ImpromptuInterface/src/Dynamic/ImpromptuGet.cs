@@ -108,8 +108,10 @@ namespace ImpromptuInterface.Dynamic
 
             if (!base.TryInvokeMember(binder, args, out result))
             {
-                result = null;
-                var tDel = Impromptu.InvokeGet(CallTarget, binder.Name) as Delegate;
+                result = Impromptu.InvokeGet(CallTarget, binder.Name);
+                if (result == null)
+                    return false;
+                var tDel = result as Delegate;
                 if (!binder.CallInfo.ArgumentNames.Any() && tDel != null)
                 {
                     try

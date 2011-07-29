@@ -168,7 +168,7 @@ namespace UnitTestImpromptuInterface
 
 
         }
-
+#if !SILVERLIGHT
         [Test, TestMethod]
         public void TestStaticMethodCurry3()
         {
@@ -182,7 +182,7 @@ namespace UnitTestImpromptuInterface
             Enumerable.Range(0, 100).Aggregate((object)curriedWrite, applyArgs);
 
         }
-
+#endif
 
         [Test, TestMethod]
         public void TestDynamicMethodCurry()

@@ -79,12 +79,21 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         protected IDictionary<string, Type> PropertySpec;
 
+
+
+
+
+        IEnumerable<Type> IDynamicKnowLike.KnownInterfaces
+        {
+            set { KnownInterfaces = value; }
+        } 
+
         /// <summary>
         /// Gets or sets the known interfaces.
         /// Set should only be called be the factory methood
         /// </summary>
         /// <value>The known interfaces.</value>
-        public virtual IEnumerable<Type> KnownInterfaces
+        protected virtual IEnumerable<Type> KnownInterfaces
         {
             get
             {
@@ -124,11 +133,17 @@ namespace ImpromptuInterface.Dynamic
             }
         }
 
+
+        IDictionary<string, Type> IDynamicKnowLike.KnownPropertySpec
+        {
+            set { KnownPropertySpec = value; }
+        } 
+
         /// <summary>
         /// Gets or sets the known fake interface (string method name to return type mapping).
         /// </summary>
         /// <value>The known fake interface.</value>
-        public virtual IDictionary<string, Type> KnownPropertySpec
+        protected virtual IDictionary<string, Type> KnownPropertySpec
         {
             get { return PropertySpec; }
             set { PropertySpec = value; }

@@ -111,6 +111,8 @@
     <Compile Include="src\Dynamic\ImpromptuForwarder.cs" />
     <Compile Include="src\Dynamic\ImpromptuForwarderAddRemove.cs" />
     <Compile Include="src\Dynamic\ImpromptuGet.cs" />
+    <Compile Include="src\Dynamic\ImpromptuLateLibraryType.cs" />
+    <Compile Include="src\Dynamic\ImpromptuLazy.cs" />
     <Compile Include="src\Dynamic\ImpromptuList.cs" />
     <Compile Include="src\Dynamic\ImpromptuObject.cs" />
     <Compile Include="src\Dynamic\ImpromptuPropertyDescriptor.cs" />

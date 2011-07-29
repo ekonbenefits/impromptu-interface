@@ -19,7 +19,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
-using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Internal;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
@@ -123,7 +122,7 @@ namespace ImpromptuInterface
             Type tContext;
             bool tStaticContext;
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            args = GetArgsAndNames(args, out tArgNames);
+            args = Util.GetArgsAndNames(args, out tArgNames);
             CallSite tCallSite = null;
 
             return InvokeHelper.InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
@@ -141,45 +140,11 @@ namespace ImpromptuInterface
             Type tContext;
             bool tStaticContext;
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            args = GetArgsAndNames(args, out tArgNames);
+            args = Util.GetArgsAndNames(args, out tArgNames);
             CallSite tCallSite = null;
 
             return InvokeHelper.InvokeDirectCallSite(target, args, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
-
-
-        internal static object[] GetArgsAndNames(object[]args,out string[]argNames)
-        {
-            if (args == null)
-                args = new object[] { null };
-
-            //Optimization: linq statement creates a slight overhead in this case
-            // ReSharper disable LoopCanBeConvertedToQuery
-            // ReSharper disable ForCanBeConvertedToForeach
-            argNames = new string[args.Length];
-
-            var tArgSet = false;
-            for (int i = 0; i < args.Length; i++)
-            {
-                var tArg = args[i];
-                string tName = null;
-
-                if (tArg is InvokeArg)
-                {
-                    tName = ((InvokeArg)tArg).Name;
-
-                    args[i] = ((InvokeArg)tArg).Value;
-                    tArgSet = true;
-                }
-                argNames[i] = tName;
-            }
-            // ReSharper restore ForCanBeConvertedToForeach
-            // ReSharper restore LoopCanBeConvertedToQuery
-            if (!tArgSet)
-                argNames = null;
-            return args;
-        }
-
 
 
         /// <summary>
@@ -194,7 +159,7 @@ namespace ImpromptuInterface
             Type tContext;
             bool tStaticContext;
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            indexes = GetArgsAndNames( indexes, out tArgNames);
+            indexes = Util.GetArgsAndNames( indexes, out tArgNames);
             CallSite tCallSite = null;
 
             return InvokeHelper.InvokeGetIndexCallSite(target, indexes, tArgNames, tContext, tStaticContext,ref tCallSite);
@@ -212,10 +177,10 @@ namespace ImpromptuInterface
             Type tContext;
             bool tStaticContext;
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            indexesThenValue = GetArgsAndNames(indexesThenValue, out tArgNames);
+            indexesThenValue = Util.GetArgsAndNames(indexesThenValue, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext, tCallSite);
+            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext, ref tCallSite);
         }
 
         /// <summary>
@@ -247,7 +212,7 @@ namespace ImpromptuInterface
             bool tStaticContext;
 
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            args = GetArgsAndNames(args, out tArgNames);
+            args = Util.GetArgsAndNames(args, out tArgNames);
 
             CallSite tCallSite = null;
             InvokeHelper.InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
@@ -257,7 +222,6 @@ namespace ImpromptuInterface
         /// Invokes the action using the DLR
         /// </summary>
         /// <param name="target">The target.</param>
-        /// <param name="name">The name.</param>
         /// <param name="args">The args.</param>
         public static void InvokeAction(object target, params object[] args)
         {
@@ -266,7 +230,7 @@ namespace ImpromptuInterface
             bool tStaticContext;
 
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            args = GetArgsAndNames(args, out tArgNames);
+            args = Util.GetArgsAndNames(args, out tArgNames);
 
             CallSite tCallSite = null;
             InvokeHelper.InvokeDirectActionCallSite(target, args, tArgNames, tContext, tStaticContext, ref tCallSite);
@@ -335,11 +299,12 @@ namespace ImpromptuInterface
         {
             get { return _invokeSetAll; }
         }
-      
+
         /// <summary>
         /// Wraps a target to partial apply a method (or target if you can invoke target directly eg delegate).
         /// </summary>
         /// <param name="target">The target.</param>
+        /// <param name="totalArgCount">The total arg count.</param>
         /// <returns></returns>
         public static dynamic Curry(object target, int? totalArgCount=null)
         {
@@ -438,7 +403,7 @@ namespace ImpromptuInterface
 
             var args = new[] { value };
             string[] argNames;
-            args = GetArgsAndNames(args, out argNames);
+            args = Util.GetArgsAndNames(args, out argNames);
 
             InvokeHelper.InvokeAddAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteAdd, ref callSiteGet, ref callSiteSet);
         }
@@ -459,7 +424,7 @@ namespace ImpromptuInterface
             var args = new[] { value };
             string[] argNames;
 
-            args = GetArgsAndNames(args, out argNames);
+            args = Util.GetArgsAndNames(args, out argNames);
 
 
             CallSite callSiteIsEvent = null;
@@ -517,7 +482,7 @@ namespace ImpromptuInterface
                 return Activator.CreateInstance(type);
             }
 
-           args = GetArgsAndNames( args, out tArgNames);
+           args = Util.GetArgsAndNames( args, out tArgNames);
            CallSite tCallSite = null;
 
            var tContext = type.FixContext();

@@ -13,19 +13,35 @@ using System.Windows.Shapes;
 namespace ImpromptuInterface
 {
 #if SILVERLIGHT
+    /// <summary>
+    /// Added for silverlight compile time compatability
+    /// </summary>
     public class SerializableAttribute:Attribute{
     }
+    /// <summary>
+    /// Added for silverlight compile time compatability
+    /// </summary>
     public interface IObjectReference {}
+    /// <summary>
+    /// Added for silverlight compile time compatability
+    /// </summary>
     public interface ISerializable {}
+    /// <summary>
+    /// Added for silverlight compile time compatability
+    /// </summary>
     public interface ITypedList { }
 #endif
 
-
+    /// <summary>
+    /// Added for silverlight compile time compatability
+    /// </summary>
     public static class StructuralComparisons
     {
 
         private static IEqualityComparer _structuralEqualityComparer;
-
+        /// <summary>
+        /// Added for silverlight compile time compatability
+        /// </summary>
         public static IEqualityComparer StructuralEqualityComparer
         {
             get { return _structuralEqualityComparer ?? (_structuralEqualityComparer = new StructuralEqualityComparer()); }

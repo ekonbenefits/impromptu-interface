@@ -23,7 +23,31 @@ using ImpromptuInterface.Dynamic;
 namespace ImpromptuInterface
 {
 
- 
+
+
+    /// <summary>
+    /// Specific version of InvokeContext which declares a type to be used to invoke static methods.
+    /// </summary>
+    public class StaticContext:InvokeContext
+    {
+        /// <summary>
+        /// Performs an explicit conversion from <see cref="System.Type"/> to <see cref="ImpromptuInterface.StaticContext"/>.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>The result of the conversion.</returns>
+        public static explicit operator StaticContext(Type type)
+        {
+            return new StaticContext(type);
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StaticContext"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        public StaticContext(Type target) : base(target, true, null)
+        {
+        }
+    }
 
     /// <summary>
     /// Object that stores a context with a target for dynamic invocation
@@ -42,9 +66,10 @@ namespace ImpromptuInterface
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
         public static readonly Func<Type, InvokeContext> CreateStatic =
-           Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
-       
-        /// <summary>
+            Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
+
+
+    /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
         public static readonly Func<Type, object, InvokeContext> CreateStaticWithContext =
@@ -62,8 +87,18 @@ namespace ImpromptuInterface
         /// <value>The context.</value>
         public Type Context { get; protected set; }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether [static context].
+        /// </summary>
+        /// <value><c>true</c> if [static context]; otherwise, <c>false</c>.</value>
         public bool StaticContext { get; protected set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="InvokeContext"/> class.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <param name="context">The context.</param>
         public InvokeContext(Type target, bool staticContext, object context)
         {
             if (context != null && !(context is Type))

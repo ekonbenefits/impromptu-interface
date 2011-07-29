@@ -1,19 +1,31 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
-using System.Text;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Internal
 {
+    /// <summary>
+    /// Internal class implmenation for <see cref="Impromptu.InvokeSetAll"/>
+    /// </summary>
     public class InvokeSetters : DynamicObject
     {
         internal InvokeSetters()
         {
 
         }
+        /// <summary>
+        /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
+        /// </summary>
+        /// <param name="binder">Provides information about the invoke operation.</param>
+        /// <param name="args">The arguments that are passed to the object during the invoke operation. For example, for the sampleObject(100) operation, where sampleObject is derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, <paramref name="args"/>[0] is equal to 100.</param>
+        /// <param name="result">The result of the object invocation.</param>
+        /// <returns>
+        /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.
+        /// </returns>
         public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
         {
             IEnumerable<KeyValuePair<string, object>> tDict = null;
@@ -42,6 +54,23 @@ namespace ImpromptuInterface.Internal
                 if (args[1] is IEnumerable<KeyValuePair<string, object>>)
                 {
                     tDict = (IEnumerable<KeyValuePair<string, object>>)args[1];
+                }
+                else if (args[1] is IEnumerable
+                        && args[1].GetType().IsGenericType
+                    )
+                {
+                    var tEnumerableArg = (IEnumerable)args[1];
+
+                    var tInterface = tEnumerableArg.GetType().GetInterface("IEnumerable`1", false);
+                    if(tInterface !=null)
+                    {
+                        var tParamTypes = tInterface.GetGenericArguments();
+                        if(tParamTypes.Length ==1 
+                            && tParamTypes[0].GetGenericTypeDefinition() == typeof(Tuple<,>))
+                        {
+                           tDict= tEnumerableArg.Cast<dynamic>().ToDictionary(k => (string) k.Item1, v => (object) v.Item2);
+                        }
+                    }
                 }
                 else if (Util.IsAnonymousType(args[1]))
                 {

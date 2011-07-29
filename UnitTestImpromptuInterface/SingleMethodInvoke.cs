@@ -974,6 +974,12 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test, TestMethod]
+        public void TestStaticGet3()
+        {
+            var tVal = Impromptu.InvokeGet((StaticContext)typeof(StaticType), "Test");
+            Assert.AreEqual(true, tVal);
+        }
+        [Test, TestMethod]
         public void TestStaticSet()
         {
             int tValue = 12;
@@ -1010,14 +1016,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(new DateTime(2009, 1, 20), tDate);
         }
         
-        [Test, TestMethod]
-        public void TestActionDynamicEvent()
-        {
-            dynamic tPoco = new PocoEvent();
-
-            tPoco.Event += new EventHandler<EventArgs>((@object,args) => { });
-
-        }
+       
 
         [Test, TestMethod]
         public void TestIsEvent()

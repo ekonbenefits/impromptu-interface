@@ -18,17 +18,18 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
-using System.Text;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
-using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Internal
 {
+    /// <summary>
+    /// Internal Implementation of <see cref="Impromptu.Curry(object,System.Nullable{int})"/>
+    /// </summary>
     public class Curry:DynamicObject
         {
             private readonly object _target;
-            private int? _totalArgCount;
+            private readonly int? _totalArgCount;
            
 
             internal Curry(object target, int? totalArgCount=null)
@@ -37,16 +38,42 @@ namespace ImpromptuInterface.Internal
                 _totalArgCount = totalArgCount;
              }
 
+            /// <summary>
+            /// Provides implementation for type conversion operations. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations that convert an object from one type to another.
+            /// </summary>
+            /// <param name="binder">Provides information about the conversion operation. The binder.Type property provides the type to which the object must be converted. For example, for the statement (String)sampleObject in C# (CType(sampleObject, Type) in Visual Basic), where sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, binder.Type returns the <see cref="T:System.String"/> type. The binder.Explicit property provides information about the kind of conversion that occurs. It returns true for explicit conversion and false for implicit conversion.</param>
+            /// <param name="result">The result of the type conversion operation.</param>
+            /// <returns>
+            /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.)
+            /// </returns>
             public override bool TryConvert(ConvertBinder binder, out object result)
             {
                 return CurryConverter.TryConvert(this, binder, out result);
             }
 
+            /// <summary>
+            /// Provides the implementation for operations that invoke a member. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as calling a method.
+            /// </summary>
+            /// <param name="binder">Provides information about the dynamic operation. The binder.Name property provides the name of the member on which the dynamic operation is performed. For example, for the statement sampleObject.SampleMethod(100), where sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, binder.Name returns "SampleMethod". The binder.IgnoreCase property specifies whether the member name is case-sensitive.</param>
+            /// <param name="args">The arguments that are passed to the object member during the invoke operation. For example, for the statement sampleObject.SampleMethod(100), where sampleObject is derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, <paramref name="args"/>[0] is equal to 100.</param>
+            /// <param name="result">The result of the member invocation.</param>
+            /// <returns>
+            /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.)
+            /// </returns>
            public override bool  TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
            {
                result = new Currying(_target, binder.Name, Util.NameArgsIfNecessary(binder.CallInfo,args), _totalArgCount);
                return true;
            }
+           /// <summary>
+           /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
+           /// </summary>
+           /// <param name="binder">Provides information about the invoke operation.</param>
+           /// <param name="args">The arguments that are passed to the object during the invoke operation. For example, for the sampleObject(100) operation, where sampleObject is derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, <paramref name="args"/>[0] is equal to 100.</param>
+           /// <param name="result">The result of the object invocation.</param>
+           /// <returns>
+           /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.
+           /// </returns>
             public override bool  TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
                 var tCurrying = _target as Currying;
@@ -64,7 +91,7 @@ namespace ImpromptuInterface.Internal
 
         internal static class CurryConverter
         {
-            internal static IDictionary<Type, Delegate> CompiledExpressions = new Dictionary<Type, Delegate>();
+            internal static readonly IDictionary<Type, Delegate> CompiledExpressions = new Dictionary<Type, Delegate>();
 
             internal static bool TryConvert(object target, ConvertBinder binder, out object result)
             {
@@ -114,10 +141,21 @@ namespace ImpromptuInterface.Internal
             }
         }
 
+        /// <summary>
+        /// Internal method for subsequent invocations of <see cref="Impromptu.Curry(object,System.Nullable{int})"/>
+        /// </summary>
         public class Currying:DynamicObject
         {
-           
 
+
+            /// <summary>
+            /// Provides implementation for type conversion operations. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations that convert an object from one type to another.
+            /// </summary>
+            /// <param name="binder">Provides information about the conversion operation. The binder.Type property provides the type to which the object must be converted. For example, for the statement (String)sampleObject in C# (CType(sampleObject, Type) in Visual Basic), where sampleObject is an instance of the class derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, binder.Type returns the <see cref="T:System.String"/> type. The binder.Explicit property provides information about the kind of conversion that occurs. It returns true for explicit conversion and false for implicit conversion.</param>
+            /// <param name="result">The result of the type conversion operation.</param>
+            /// <returns>
+            /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.)
+            /// </returns>
             public override bool TryConvert(ConvertBinder binder, out object result)
             {
                 return CurryConverter.TryConvert(this, binder, out result);
@@ -142,33 +180,62 @@ namespace ImpromptuInterface.Internal
             private readonly object[] _args;
             private readonly InvocationKind _invocationKind;
 
+            /// <summary>
+            /// Gets the target.
+            /// </summary>
+            /// <value>The target.</value>
             public object Target
             {
                 get { return _target; }
             }
 
+            /// <summary>
+            /// Gets the name of the member.
+            /// </summary>
+            /// <value>The name of the member.</value>
             public string MemberName
             {
                 get { return _memberName; }
             }
 
+            /// <summary>
+            /// Gets the args.
+            /// </summary>
+            /// <value>The args.</value>
             public object[] Args
             {
                 get { return _args; }
             }
 
+            /// <summary>
+            /// Gets the total arg count.
+            /// </summary>
+            /// <value>The total arg count.</value>
             public int? TotalArgCount
             {
                 get { return _totalArgCount; }
             }
 
+            /// <summary>
+            /// Gets the kind of the invocation.
+            /// </summary>
+            /// <value>The kind of the invocation.</value>
             public InvocationKind InvocationKind
             {
                 get { return _invocationKind; }
             }
 
-            private CacheableInvocation _cacheableInvocation;
+            private IDictionary<int,CacheableInvocation> _cacheableInvocation = new Dictionary<int,CacheableInvocation>();
 
+            /// <summary>
+            /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
+            /// </summary>
+            /// <param name="binder">Provides information about the invoke operation.</param>
+            /// <param name="args">The arguments that are passed to the object during the invoke operation. For example, for the sampleObject(100) operation, where sampleObject is derived from the <see cref="T:System.Dynamic.DynamicObject"/> class, <paramref name="args[0]"/> is equal to 100.</param>
+            /// <param name="result">The result of the object invocation.</param>
+            /// <returns>
+            /// true if the operation is successful; otherwise, false. If this method returns false, the run-time binder of the language determines the behavior. (In most cases, a language-specific run-time exception is thrown.
+            /// </returns>
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
                 var tNamedArgs =Util.NameArgsIfNecessary(binder.CallInfo, args);
@@ -197,13 +264,14 @@ namespace ImpromptuInterface.Internal
                 Invocation tInvocation;
                 if (binder.CallInfo.ArgumentNames.Count == 0) //If no argument names we can cache the callsite
                 {
-                    if (_cacheableInvocation == null)
+                    CacheableInvocation tCacheableInvocation;
+                    if (!_cacheableInvocation.TryGetValue(tNewArgs.Length, out tCacheableInvocation))
                     {
-                        
+                        tCacheableInvocation =new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
+                        _cacheableInvocation[tNewArgs.Length] = tCacheableInvocation;
 
-                        _cacheableInvocation = new CacheableInvocation(InvocationKind,_memberName,argCount:tNewArgs.Length,context:_target);
                     }
-                    tInvocation = _cacheableInvocation;
+                    tInvocation = tCacheableInvocation;
                 }
                 else
                 {

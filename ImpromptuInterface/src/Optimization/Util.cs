@@ -20,8 +20,8 @@ using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
-using System.Text;
 using System.Threading;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
@@ -35,6 +35,13 @@ namespace ImpromptuInterface.Optimization
     /// </summary>
     public static class Util
     {
+        /// <summary>
+        /// Determines whether [is anonymous type] [the specified target].
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <returns>
+        /// 	<c>true</c> if [is anonymous type] [the specified target]; otherwise, <c>false</c>.
+        /// </returns>
         public static bool IsAnonymousType(object target)
         {
             if(target ==null)
@@ -45,10 +52,22 @@ namespace ImpromptuInterface.Optimization
             return type.IsNotPublic
                    && Attribute.IsDefined(
                        type,
-                       typeof (System.Runtime.CompilerServices.CompilerGeneratedAttribute),
+                       typeof (CompilerGeneratedAttribute),
                        false);
         }
 
+        static Util()
+        {
+            IsMono = Type.GetType("Mono.Runtime") != null;
+
+        }
+
+        /// <summary>
+        /// Names the args if necessary.
+        /// </summary>
+        /// <param name="callInfo">The call info.</param>
+        /// <param name="args">The args.</param>
+        /// <returns></returns>
         public static object[] NameArgsIfNecessary(CallInfo callInfo, object[] args)
         {
             object[] tArgs;
@@ -62,6 +81,13 @@ namespace ImpromptuInterface.Optimization
             return tArgs;
         }
 
+        /// <summary>
+        /// Gets the target context.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="context">The context.</param>
+        /// <param name="staticContext">if set to <c>true</c> [static context].</param>
+        /// <returns></returns>
         public static object GetTargetContext(this object target, out Type context, out bool staticContext)
         {
             var tInvokeContext = target as InvokeContext;
@@ -80,6 +106,11 @@ namespace ImpromptuInterface.Optimization
         }
 
 
+        /// <summary>
+        /// Fixes the context.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
         public static Type FixContext(this Type context)
         {
             if (context.IsArray)
@@ -88,8 +119,6 @@ namespace ImpromptuInterface.Optimization
             }
             return context;
         }
-
-        internal static CacheableInvocation CacheDynamicConverter = null;
 
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {
@@ -104,8 +133,7 @@ namespace ImpromptuInterface.Optimization
             }
 
             if(resultFound){
-              if (result is IDictionary<string, object>
-                    && !(result is ImpromptuDictionaryBase)
+              if (result is IDictionary<string, object> && !(result is ImpromptuDictionaryBase)
                     && (!tTryType || tType == typeof(object)))
                 {
                     result = new ImpromptuDictionary((IDictionary<string, object>)result);
@@ -232,10 +260,43 @@ namespace ImpromptuInterface.Optimization
         }
 #endif
 		
-		static Util(){
-			IsMono = Type.GetType ("Mono.Runtime") != null;
-		}
+	
 		
+		/// <summary>
+		/// Is Current Runtime Mono?
+		/// </summary>
 		public static readonly bool IsMono;
+
+        internal static object[] GetArgsAndNames(object[]args,out string[]argNames)
+        {
+            if (args == null)
+                args = new object[] { null };
+
+            //Optimization: linq statement creates a slight overhead in this case
+            // ReSharper disable LoopCanBeConvertedToQuery
+            // ReSharper disable ForCanBeConvertedToForeach
+            argNames = new string[args.Length];
+
+            var tArgSet = false;
+            for (int i = 0; i < args.Length; i++)
+            {
+                var tArg = args[i];
+                string tName = null;
+
+                if (tArg is InvokeArg)
+                {
+                    tName = ((InvokeArg)tArg).Name;
+
+                    args[i] = ((InvokeArg)tArg).Value;
+                    tArgSet = true;
+                }
+                argNames[i] = tName;
+            }
+            // ReSharper restore ForCanBeConvertedToForeach
+            // ReSharper restore LoopCanBeConvertedToQuery
+            if (!tArgSet)
+                argNames = null;
+            return args;
+        }
     }
 }

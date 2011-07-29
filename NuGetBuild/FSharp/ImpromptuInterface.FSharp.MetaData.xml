@@ -1,13 +1,13 @@
 ﻿<metadata>
-  <id>ImpromptuInterface.MVVM</id>
-  <version>3.6.2</version>
+  <id>ImpromptuInterface.FSharp</id>
+  <version>1.0.0</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
-  <description>A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.</description>
+  <description>A complete dlr based dynamic operator implementatiom for F#</description>
   <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
   <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
-  <iconUrl>http://impromptu-interface.googlecode.com/files/ImpromptuInterface.MVVM-Icon.png</iconUrl>
-  <tags>MVVM dynamic .net40 Silverlight wpf impromptu interface</tags>
+  <iconUrl>http://impromptu-interface.googlecode.com/files/ImpromptuInterface.FSharp-Icon.png</iconUrl>
+  <tags>dynamic .net40 FSharp impromptu interface</tags>
   <language>en-US</language>
   <frameworkAssemblies>
     <frameworkAssembly assemblyName="Microsoft.CSharp" />

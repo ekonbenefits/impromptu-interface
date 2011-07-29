@@ -119,6 +119,12 @@
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuGet.cs">
       <Link>src\Dynamic\ImpromptuGet.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuLateLibraryType.cs">
+      <Link>src\Dynamic\ImpromptuLateLibraryType.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuLazy.cs">
+      <Link>src\Dynamic\ImpromptuLazy.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuList.cs">
       <Link>src\Dynamic\ImpromptuList.cs</Link>
     </Compile>

@@ -43,6 +43,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Core\ImpromptuInterface.MetaData.xml" />
+    <Content Include="FSharp\ImpromptuInterface.FSharp.MetaData.xml" />
     <Content Include="MVVM\ImpromptuInterface.MVVM.MetaData.xml" />
   </ItemGroup>
   <ItemGroup>
@@ -74,6 +75,26 @@
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ImpromptuInterface.nuspec</LastGenOutput>
     </None>
+    <None Include="FSharp\ImpromptuInterface.FSharp.nuspec">
+      <DependentUpon>ImpromptuInterface.FSharp.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </None>
+    <None Include="FSharp\ImpromptuInterface.FSharp.Symbol.nuspec">
+      <DependentUpon>ImpromptuInterface.FSharp.Symbol.tt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <DesignTime>True</DesignTime>
+    </None>
+    <None Include="FSharp\ImpromptuInterface.FSharp.Symbol.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.FSharp.Symbol.nuspec</LastGenOutput>
+    </None>
+    <None Include="FSharp\ImpromptuInterface.FSharp.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>ImpromptuInterface.FSharp.nuspec</LastGenOutput>
+    </None>
     <None Include="MVVM\ImpromptuInterface.MVVM.nuspec">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -95,19 +116,24 @@
       <LastGenOutput>ImpromptuInterface.MVVM.nuspec</LastGenOutput>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent>call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.tt" "$(ProjectDir)Core\ImpromptuInterface.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)Core\ImpromptuInterface.Symbol.tt" "$(ProjectDir)Core\ImpromptuInterface.Symbol.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.nuspec"
 call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.tt" "$(ProjectDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec"
+call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)FSharp\ImpromptuInterface.FSharp.tt" "$(ProjectDir)MVVM\ImpromptuInterface.FSharp.nuspec"
+call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)FSharp\ImpromptuInterface.FSharp.Symbol.tt" "$(ProjectDir)MVVM\ImpromptuInterface.FSharp.Symbol.nuspec"
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
 call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols" 
 call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"</PostBuildEvent>
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

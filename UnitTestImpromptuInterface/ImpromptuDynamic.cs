@@ -567,7 +567,44 @@ namespace UnitTestImpromptuInterface
             {
                 var tList =Build.NewList("test", "one", "two");
                 Assert.AreEqual("one", tList[1]);
+
+                var tList2 = Build.NewList("test", "one", "two", "three");
+                Assert.AreEqual("three", tList2[3]);
             }
+
+        
+        [Test, TestMethod]
+        public void TestLateLibrarybind()
+        {
+
+            dynamic tBigIntType = new ImpromptuLateLibraryType("System.Numerics.BigInteger, System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+
+            if (tBigIntType.IsAvailable)
+            {
+#if SILVERLIGHT
+                Assert.Fail();
+#endif
+                var one = tBigIntType.@new(1);
+                var two = tBigIntType.@new(2);
+
+                Assert.IsFalse(one.IsEven);
+                Assert.AreEqual(true, two.IsEven);
+
+                var tParsed =tBigIntType.Parse("4");
+
+                Assert.AreEqual(true, tParsed.IsEven);
+
+
+
+            }
+            else
+            {
+#if !SILVERLIGHT 
+                Assert.Fail("Big Int Didn't Load");
+#endif
+
+            }
+        }
 		
     }
 }

@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Optimization;
@@ -40,6 +41,11 @@ namespace ImpromptuInterface.Dynamic
         }
 
 #if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuGet"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
         protected ImpromptuGet(SerializationInfo info, 
            StreamingContext context):base(info,context)
         {
@@ -102,20 +108,32 @@ namespace ImpromptuInterface.Dynamic
 
             if (!base.TryInvokeMember(binder, args, out result))
             {
-                result = null;
-                var tDel = Impromptu.InvokeGet(Target, binder.Name) as Delegate;
-                if (tDel == null)
+                result = Impromptu.InvokeGet(CallTarget, binder.Name);
+                if (result == null)
                     return false;
+                var tDel = result as Delegate;
+                if (!binder.CallInfo.ArgumentNames.Any() && tDel != null)
+                {
+                    try
+                    {
+                        result = this.InvokeMethodDelegate(tDel, args);
+                    }
+                    catch (RuntimeBinderException)
+                        //If it has out parmaters etc it can't be invoked dynamically like this.
+                        //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    {
+                        return false;
+                    }
+                }
                 try
                 {
-                    result = this.InvokeMethodDelegate(tDel, args);
+                    result = Impromptu.Invoke(result, Util.NameArgsIfNecessary(binder.CallInfo, args));
                 }
                 catch (RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
                 //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
                 {
                     return false;
-                }
-               
+                } 
             }
 
             return this.MassageResultBasedOnInterface(binder.Name, true, ref result);

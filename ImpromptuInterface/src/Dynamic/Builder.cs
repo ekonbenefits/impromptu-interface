@@ -53,6 +53,12 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
     public static class Build
     {
+        private static readonly dynamic _objectBuilder = new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
+
+        private static readonly dynamic _listBuilder =
+            Impromptu.Curry(new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>()).
+                List();
+
         /// <summary>
         /// Gets the new object builder.
         /// </summary>
@@ -61,7 +67,7 @@ namespace ImpromptuInterface.Dynamic
         {
             get
             {
-                return new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
+                return _objectBuilder;
             }
         }
 
@@ -69,9 +75,12 @@ namespace ImpromptuInterface.Dynamic
         /// Gets the new list builder.
         /// </summary>
         /// <value>The new list.</value>
-        public static dynamic NewList(params object[] args)
+        public static dynamic NewList
         {
-                return new ImpromptuBuilder<ImpromptuChainableDictionary>().ListSetup<ImpromptuList>().List(args);
+            get
+            {
+                return _listBuilder;
+            }
         }
     }
 
@@ -81,6 +90,14 @@ namespace ImpromptuInterface.Dynamic
     /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
     public static class Build<TObjectPrototype> where TObjectPrototype : new()
     {
+// ReSharper disable StaticFieldInGenericType
+        private static readonly dynamic _typedBuilder = new ImpromptuBuilder<TObjectPrototype>().Object;
+// ReSharper restore StaticFieldInGenericType
+
+// ReSharper disable StaticFieldInGenericType
+        private static readonly dynamic _typedListBuilder = Impromptu.Curry(new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>()).List();
+// ReSharper restore StaticFieldInGenericType
+
         /// <summary>
         /// Gets the new object builder.
         /// </summary>
@@ -89,7 +106,7 @@ namespace ImpromptuInterface.Dynamic
         {
             get
             {
-                return new ImpromptuBuilder<TObjectPrototype>().Object;
+                return _typedBuilder;
             }
         }
 
@@ -97,10 +114,9 @@ namespace ImpromptuInterface.Dynamic
         /// Gets the new list builder.
         /// </summary>
         /// <value>The new list.</value>
-        public static dynamic NewList(params object[] args)
+        public static dynamic NewList
         {
-            
-                return new ImpromptuBuilder<TObjectPrototype>().ListSetup<TObjectPrototype>().List(args);
+            get { return _typedListBuilder; }
         }
     }
 
@@ -186,6 +202,10 @@ namespace ImpromptuInterface.Dynamic
         {
         }
 
+        /// <summary>
+        /// Creates this instance.
+        /// </summary>
+        /// <returns></returns>
         public override dynamic Create()
         {
             var tArgs = Arguments();

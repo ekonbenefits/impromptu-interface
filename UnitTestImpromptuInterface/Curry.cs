@@ -140,9 +140,8 @@ namespace UnitTestImpromptuInterface
         [Test, TestMethod]
         public void TestStaticMethodCurry()
         {
-            var staticContext = InvokeContext.CreateStatic;
 
-            var curry = Impromptu.Curry(staticContext(typeof(string)), 5).Format(); // curry method target include argument count
+            var curry = Impromptu.Curry((StaticContext)typeof(string), 5).Format(); // curry method target include argument count
             curry = curry("Test {0}, {1}, {2}, {3}");
             curry = curry("A");
             curry = curry("B");
@@ -150,7 +149,40 @@ namespace UnitTestImpromptuInterface
             string result = curry("D");
             Assert.AreEqual("Test A, B, C, D", result);
         }
+              
+      
 
+        [Test, TestMethod]
+        public void TestStaticMethodCurry2()
+        {
+
+            object curriedJoin = Impromptu.Curry((StaticContext)typeof(string), 51).Join(",");
+
+            Func<dynamic, int, dynamic> applyFunc = (result, each) => result(each.ToString());
+
+            string final = Enumerable.Range(1, 100)
+                .Where(i => i % 2 == 0)
+                .Aggregate(curriedJoin, applyFunc);
+
+            Console.WriteLine(final);
+
+
+        }
+#if !SILVERLIGHT
+        [Test, TestMethod]
+        public void TestStaticMethodCurry3()
+        {
+            var tFormat =Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
+
+
+            dynamic curriedWrite = Impromptu.Curry(Console.Out, 101).WriteLine(tFormat);
+
+            Func<dynamic, int, dynamic> applyArgs = (result, each) => result(each.ToString());
+
+            Enumerable.Range(0, 100).Aggregate((object)curriedWrite, applyArgs);
+
+        }
+#endif
 
         [Test, TestMethod]
         public void TestDynamicMethodCurry()

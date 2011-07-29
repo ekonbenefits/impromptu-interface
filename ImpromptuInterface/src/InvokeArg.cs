@@ -28,7 +28,7 @@ namespace ImpromptuInterface
     public class InvokeArg
     {
         /// <summary>
-        /// Performs an explicit conversion from <see cref="System.Collections.Generic.KeyValuePair{System.String,System.Object}"/> to <see cref="ImpromptuInterface.InvokeArg"/>.
+        /// Performs an explicit conversion from <see cref="KeyValuePair{String,Object}"/> to <see cref="ImpromptuInterface.InvokeArg"/>.
         /// </summary>
         /// <param name="pair">The pair.</param>
         /// <returns>The result of the conversion.</returns>
@@ -83,7 +83,7 @@ namespace ImpromptuInterface
         public InvokeArg(string name, object value):base(name,value){}
 
         /// <summary>
-        /// Performs an explicit conversion from <see cref="System.Collections.Generic.KeyValuePair&lt;System.String,T&gt;"/> to <see cref="ImpromptuInterface.InvokeArg&lt;T&gt;"/>.
+        /// Performs an explicit conversion from <see cref="KeyValuePair{String,Object}"/> to <see cref="InvokeArg{T}"/>.
         /// </summary>
         /// <param name="pair">The pair.</param>
         /// <returns>The result of the conversion.</returns>

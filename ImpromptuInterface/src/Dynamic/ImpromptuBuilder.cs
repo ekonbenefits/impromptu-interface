@@ -66,7 +66,7 @@ namespace ImpromptuInterface.Dynamic
         dynamic ArraySetup<TList>();
 
         /// <summary>
-        /// Alternative name for <see cref="ListSetup"/>
+        /// Alternative name for <see cref="ListSetup(object[])"/>
         /// </summary>
         /// <param name="constructorArgs">The constructor args.</param>
         /// <returns></returns>
@@ -74,7 +74,7 @@ namespace ImpromptuInterface.Dynamic
 
 
         /// <summary>
-        /// Alternative name for <see cref="ListSetup"/>
+        /// Alternative name for <see cref="ListSetup{TList}"/>
         /// </summary>
         /// <param name="constructorArgsFactory">The constructor args factory.</param>
         /// <returns></returns>
@@ -121,6 +121,9 @@ namespace ImpromptuInterface.Dynamic
     /// <typeparam name="TObjectProtoType">The type of the object proto type.</typeparam>
     public class ImpromptuBuilder<TObjectProtoType>: ImpromptuObject, IImpromptuBuilder
     {
+        /// <summary>
+        /// Build factory storage
+        /// </summary>
 		protected IDictionary<string,Activate> _buildType;
 
         /// <summary>

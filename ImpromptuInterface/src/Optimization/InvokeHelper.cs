@@ -476,13 +476,15 @@ namespace ImpromptuInterface.Optimization
 						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
 	
 				default:
-					throw new Exception("Two may parameters to converter");
+					return new DynamicFunc<TReturn>(args=>(TReturn)Impromptu.Invoke((object)invokable,args));
 			}
         }
 		#endif
 
 		internal static class MonoConvertCallSite<T>{
+// ReSharper disable StaticFieldInGenericType
 			internal static CallSite CallSite;
+// ReSharper restore StaticFieldInGenericType
 		}
 	    
 		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)
@@ -575,7 +577,10 @@ namespace ImpromptuInterface.Optimization
 						 });
 	
 				default:
-					throw new Exception("Two may parameters to converter");
+						return new DynamicFunc<TReturn>(args=>{
+								object tResult= Impromptu.Invoke((object)invokable,args);
+								return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
+						});
 			}
         }
 
@@ -619,7 +624,7 @@ namespace ImpromptuInterface.Optimization
 						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
 	
 				default:
-					throw new Exception("Two may parameters to converter");
+					return new DynamicAction(args=>Impromptu.InvokeAction((object)invokable,args));
 			}
         }
 
@@ -629,7 +634,14 @@ namespace ImpromptuInterface.Optimization
             dynamic tDel =del;
             switch(args.Length){
                 default:
-                    return del.DynamicInvoke(args);
+                    try
+                    {
+                        return del.DynamicInvoke(args);
+                    }
+                    catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
 #region Optimization
 				case 1:
                     return tDel(args[0]);
@@ -671,8 +683,15 @@ namespace ImpromptuInterface.Optimization
         {
             dynamic tDel =del;
             switch(args.Length){
-                default:
-                    del.DynamicInvoke(args);
+                default: 
+					try
+                    {
+						del.DynamicInvoke(args);
+					}
+					catch (TargetInvocationException ex)
+                    {
+                        throw ex.InnerException;
+                    }
                     return;
 #region Optimization
 				case 1:

@@ -84,7 +84,7 @@ namespace ImpromptuInterface.Dynamic
             {
                 _argCount = storedArgs.Length;
                 string[] tArgNames;
-                Args = Impromptu.GetArgsAndNames(storedArgs, out tArgNames);
+                Args = Util.GetArgsAndNames(storedArgs, out tArgNames);
                 if (_argNames.Length < tArgNames.Length)
                 {
                     _argNames = tArgNames;
@@ -268,6 +268,7 @@ namespace ImpromptuInterface.Dynamic
                             return null;
 
                             }
+                          
                     }
                 case InvocationKind.Invoke:
                     return InvokeHelper.InvokeDirectCallSite(target, args, _argNames, _context, _staticContext, ref _callSite);

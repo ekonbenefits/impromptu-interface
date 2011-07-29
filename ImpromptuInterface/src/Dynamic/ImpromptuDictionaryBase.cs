@@ -39,6 +39,11 @@ namespace ImpromptuInterface.Dynamic
 
       
 #if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuDictionaryBase"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
         protected ImpromptuDictionaryBase(SerializationInfo info, 
            StreamingContext context):base(info,context)
         {
@@ -47,6 +52,12 @@ namespace ImpromptuInterface.Dynamic
             _dictionary = info.GetValue<IDictionary<string, object>>("_dictionary");
         }
 
+        /// <summary>
+        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the target object.
+        /// </summary>
+        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
+        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
+        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
         public override void GetObjectData(SerializationInfo info, StreamingContext context)
         {
             if (_dictionary.Values.OfType<Delegate>().Any())
@@ -104,6 +115,12 @@ namespace ImpromptuInterface.Dynamic
             get { return _dictionary.Values; }
         }
 
+        /// <summary>
+        /// Returns the enumeration of all dynamic member names.
+        /// </summary>
+        /// <returns>
+        /// A sequence that contains dynamic member names.
+        /// </returns>
         public override IEnumerable<string> GetDynamicMemberNames()
         {
             return base.GetDynamicMemberNames().Concat(_dictionary.Keys).Distinct();
@@ -141,23 +158,38 @@ namespace ImpromptuInterface.Dynamic
         /// </returns>
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
-            result = null;
             if (_dictionary.TryGetValue(binder.Name, out result))
             {
                 var tFunc = result as Delegate;
-                if (tFunc !=null)
+                if (result == null)
+                    return false;
+                if (!binder.CallInfo.ArgumentNames.Any() && tFunc != null)
                 {
                     try
                     {
                         result = this.InvokeMethodDelegate(tFunc, args);
-                    }catch(RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
-                                                  //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    }
+                    catch (RuntimeBinderException)//If it has out parmaters etc it can't be invoked dynamically like this.
+                    //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
                     {
                         return false;
                     }
-                    return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
+                   
                 }
-                return false;
+                else
+                {
+                    try
+                    {
+                        result = Impromptu.Invoke(result, Util.NameArgsIfNecessary(binder.CallInfo, args));
+                    }
+                    catch (RuntimeBinderException)
+                        //If it has out parmaters etc it can't be invoked dynamically like this.
+                        //if we return false it will be handle by the GetProperty and then handled by the original dynamic invocation 
+                    {
+                        return false;
+                    }
+                } 
+                return this.MassageResultBasedOnInterface(binder.Name, true, ref result);
             }
             return this.MassageResultBasedOnInterface(binder.Name, false, ref result);
         }

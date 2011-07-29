@@ -39,6 +39,7 @@ namespace ImpromptuInterface.Optimization
         internal static object InvokeMethodDelegate(this object target, Delegate tFunc, object[] args)
         {
             object result;
+
             try
             {
                 result = tFunc.FastDynamicInvoke(
@@ -373,6 +374,7 @@ namespace ImpromptuInterface.Optimization
         {
             LazyBinder tBinder = null;
             Type tBinderType = null;
+
             if (callSite == null)
             {
 
@@ -409,7 +411,7 @@ namespace ImpromptuInterface.Optimization
             return InvokeMember<object>(ref callSite,tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, context, argNames, target, indexes);
         }
 
-        internal static void InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, CallSite tCallSite)
+        internal static void InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite tCallSite)
         {
             LazyBinder tBinder =null;
             Type tBinderType = null;
@@ -462,6 +464,7 @@ namespace ImpromptuInterface.Optimization
         {
             LazyBinder tBinder = null;
             Type tBinderType = null;
+
             if (callSite == null)
             {
 
@@ -526,6 +529,9 @@ namespace ImpromptuInterface.Optimization
                 InvokeHelper.InvokeSetCallSite(target, name, tGet, context, staticContext, ref callSiteSet);
             }
         }
+
+        public delegate void DynamicAction(params object[] args);
+        public delegate TReturn DynamicFunc<out TReturn>(params object[] args);
 
         internal static object InvokeConvertCallSite(object target, bool explict, Type type, Type context, ref CallSite callSite)
         {

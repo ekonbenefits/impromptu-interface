@@ -581,14 +581,26 @@ namespace UnitTestImpromptuInterface
 
             if (tBigIntType.IsAvailable)
             {
-#if SILVERLIGHT || SELFRUNNER
+#if SILVERLIGHT
                 Assert.Fail();
 #endif
+                var one = tBigIntType.@new(1);
+                var two = tBigIntType.@new(2);
+
+                Assert.IsFalse(one.IsEven);
+                Assert.AreEqual(true, two.IsEven);
+
+                var tParsed =tBigIntType.Parse("4");
+
+                Assert.AreEqual(true, tParsed.IsEven);
+
+
+
             }
             else
             {
-#if !SILVERLIGHT && !SELFRUNNER
-                    Assert.Fail("Big Int Diden't Load");
+#if !SILVERLIGHT 
+                Assert.Fail("Big Int Didn't Load");
 #endif
 
             }

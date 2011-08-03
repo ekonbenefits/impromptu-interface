@@ -6,6 +6,17 @@ using System.Text;
 namespace UnitTestSupportLibrary
 {
 
+    public class TestEvent
+    {
+        public event EventHandler<EventArgs> Event;
+
+        public void OnEvent(object obj, EventArgs args)
+        {
+            if (Event != null)
+                Event(obj, args);
+        }
+    }
+
     public static class TestFuncs
     {
         public static Func<int, int> Plus3

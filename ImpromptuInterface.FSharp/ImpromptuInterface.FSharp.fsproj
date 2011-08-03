@@ -39,6 +39,7 @@
     <None Include="..\NuGetBuild\FSharp\ImpromptuInterface.FSharp.MetaData.xml">
       <Link>ImpromptuInterface.FSharp.MetaData.xml</Link>
     </None>
+    <Compile Include="Util.fs" />
     <Compile Include="FSharp.fs" />
   </ItemGroup>
   <ItemGroup>

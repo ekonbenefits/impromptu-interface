@@ -22,7 +22,24 @@ module FSharp=
     open Microsoft.FSharp.Reflection
     open ImpromptuInterface
     open ImpromptuInterface.Dynamic
-  
+    open FSharpUtil
+
+
+    type dynAddAssign = PropertySetCallsAddAssign
+    type dynSubtractAssign = PropertySetCallsSubtractAssign
+    type dynArg = PropertyGetCallsNamedArgument
+
+    let inline dynStaticContext (target:Type) = InvokeContext.CreateStatic.Invoke(target)
+
+
+    //dynamic implict convert to type
+    let (>?>) (target:obj) (convertType: Type) : 'TResult =
+        Impromptu.InvokeConvert(target, convertType, explict = false) :?> 'TResult
+     
+    //dynamic explicit convert to type dynamically
+    let (>>?>>) (target:obj) (convertType: Type) : 'TResult =
+        Impromptu.InvokeConvert(target, convertType, explict = true) :?> 'TResult
+
     ///Dynamic get property or method invocation
     let (?)  (target : obj) (name:string)  : 'TResult  = 
         let resultType = typeof<'TResult>
@@ -32,7 +49,7 @@ module FSharp=
         then 
             let convert r = match resultType with
                                 | NoConversion -> r
-                                | _ -> Impromptu.InvokeConvert(r,resultType)
+                                | ____________ -> r >?> resultType
 
             Impromptu.InvokeGet(target, name) |> convert |> unbox
         else
@@ -42,8 +59,8 @@ module FSharp=
                                let argList = 
                                     match argType with
                                     | a when FSharpType.IsTuple(a) -> FSharpValue.GetTupleFields(arg)
-                                    | a when a = typeof<unit> -> [| |]
-                                    | _ -> [|arg|]
+                                    | a when a = typeof<unit>      -> [| |]
+                                    | ____________________________ -> [|arg|]
 
                                let invoker k = Invocation(k, InvokeMemberName(name,null)).Invoke(target,argList)
 
@@ -62,17 +79,19 @@ module FSharp=
                                             try
                                                 let invokeName =InvokeMemberName("Invoke", null) //FSharpFunc Invoke
                                                 let invokeContext t = InvokeContext(t,typeof<obj>) //Improve cache hits by using the same context
-                                                let invokeFSharpFoldBack (a:obj) t  = Impromptu.InvokeMember(invokeContext(t),invokeName,a)
+                                                let invokeFSharpFoldBack (a:obj) t =
+                                                    Impromptu.InvokeMember(invokeContext(t),invokeName,a)
                                                 let seed = match name with
                                                            |InvokeMember -> Impromptu.InvokeGet(target,name)
-                                                           |Invoke->target
+                                                           |Invoke       -> target
                                                 List.foldBack invokeFSharpFoldBack (argList |> List.ofArray |> List.rev) seed
                                             with
-                                                | :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e2 -> AggregateException(e,e2) |> raise
+                                                | :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e2
+                                                     -> AggregateException(e,e2) |> raise
 
                                match returnType with
                                | Action | NoConversion -> result
-                               | _ -> Impromptu.InvokeConvert(result, returnType)
+                               | _____________________ -> result >?> returnType
 
             FSharpValue.MakeFunction(resultType,lambda) |> unbox<'TResult>
 

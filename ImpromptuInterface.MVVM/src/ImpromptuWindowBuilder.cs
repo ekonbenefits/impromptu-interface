@@ -16,6 +16,9 @@ namespace ImpromptuInterface.MVVM
         Win<SaveFileDialog> SaveDialog { get; }
 #endif
         Win<DialogBox> DialogBox { get; }
+
+
+        Win<T> Window<T>(params object[] args);
     }
 
     public interface IWindowBuilder<out TInterface> where TInterface : class,IDialogFactory
@@ -24,6 +27,7 @@ namespace ImpromptuInterface.MVVM
         TInterface SingleInstance { get; }
     }
 
+  
     /// <summary>
     /// Dynamic Window Builder with limited static interface can help decouple talking with new windows.
     /// Experimental as of 3.5, may change a lot in future.
@@ -31,8 +35,10 @@ namespace ImpromptuInterface.MVVM
     /// <typeparam name="TInterface">The type of the interface.</typeparam>
     public class ImpromptuWindowBuilder<TInterface> : IWindowBuilder<TInterface> where TInterface : class,IDialogFactory
     {
+
         internal class ImpromptuWinFactory : ImpromptuFactory
         {
+
             protected override object CreateType(Type type, params object[] args)
             {
                 var tObj= base.CreateType(type.GetGenericArguments()[0], args);
@@ -64,6 +70,8 @@ namespace ImpromptuInterface.MVVM
         {
             get { return _singletonFactory; }
         }
+
+      
     }
 
     public class Win<T>

@@ -485,10 +485,8 @@ namespace ImpromptuInterface
            args = Util.GetArgsAndNames( args, out tArgNames);
            CallSite tCallSite = null;
 
-           var tContext = type.FixContext();
 
-
-            return InvokeHelper.InvokeConstructorCallSite(type, tValue, args, tArgNames,tContext, ref tCallSite);
+            return InvokeHelper.InvokeConstructorCallSite(type, tValue, args, tArgNames, ref tCallSite);
         }
 
 

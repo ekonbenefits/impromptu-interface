@@ -240,7 +240,7 @@ namespace ImpromptuInterface.Dynamic
             {
                 case InvocationKind.Constructor:
                     var tTarget = (Type) target;
-                    return InvokeHelper.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
+                    return InvokeHelper.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames,
                                                                   ref _callSite);
                 case InvocationKind.Convert:
                     return InvokeHelper.InvokeConvertCallSite(target, _convertExplicit, _convertType, _context,

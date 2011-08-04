@@ -560,7 +560,7 @@ namespace ImpromptuInterface.Optimization
 
         internal class InvokeConstructorDummy{};
 
-        internal static object InvokeConstructorCallSite(Type type, bool isValueType, object[] args, string[] argNames,Type context, ref CallSite callSite)
+        internal static object InvokeConstructorCallSite(Type type, bool isValueType, object[] args, string[] argNames, ref CallSite callSite)
         {
             LazyBinder tBinder = null;
             Type tBinderType  = typeof (InvokeConstructorDummy);

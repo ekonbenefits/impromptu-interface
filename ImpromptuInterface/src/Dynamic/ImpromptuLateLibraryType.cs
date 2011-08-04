@@ -40,16 +40,16 @@ namespace ImpromptuInterface.Dynamic
         /// <value>The late bound constructor</value>
         public dynamic @new
         {
-            get { return new ConstuctorFoward((Type)Target); }
+            get { return new ConstructorForward((Type)Target); }
         }
 
         /// <summary>
         /// Forward argument to constructor including named arguments
         /// </summary>
-        public class ConstuctorFoward:DynamicObject
+        public class ConstructorForward:DynamicObject
         {
             private readonly Type _type;
-            internal ConstuctorFoward(Type type)
+            internal ConstructorForward(Type type)
             {
                 _type = type;
             }
@@ -87,7 +87,7 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         /// <param name="info">The info.</param>
         /// <param name="context">The context.</param>
-        public ImpromptuLateLibraryType(SerializationInfo info, StreamingContext context) : base(info, context)
+        protected ImpromptuLateLibraryType(SerializationInfo info, StreamingContext context) : base(info, context)
         {
         }
 

@@ -1,5 +1,5 @@
 ﻿namespace ImpromptuInterface
-
+open System
 open System.Reflection;
 open System.Runtime.CompilerServices;
 open System.Runtime.InteropServices;
@@ -21,6 +21,8 @@ open System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [<assembly: ComVisible(false)>]
  
+[<assembly: CLSCompliant(false)>]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [<assembly: Guid("d053ec41-bf49-4470-9dc7-d1257accc0e0")>]
  
@@ -34,5 +36,5 @@ open System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the ‘*’ as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[<assembly: AssemblyVersion("1.1.0.*")>]
+[<assembly: AssemblyVersion("1.1.4.0")>]
 ()

@@ -12,6 +12,8 @@
 //    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
+
+using System;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -39,6 +41,8 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+[assembly: CLSCompliant(true)]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("fe08c33f-ea0d-429f-82c2-846f6e4c4f13")]
 
@@ -54,7 +58,7 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 #if SILVERLIGHT
-[assembly: AssemblyVersion("5.6.2.0")]
+[assembly: AssemblyVersion("5.6.4.0")]
 #else
-[assembly: AssemblyVersion("5.6.2.*")]
+[assembly: AssemblyVersion("5.6.4.*")]
 #endif

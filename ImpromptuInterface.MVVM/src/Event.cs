@@ -180,11 +180,11 @@ namespace ImpromptuInterface.MVVM
         /// Generates the event handler.
         /// </summary>
         /// <param name="delType">Type of the del.</param>
-        /// <param name="membername">The membername.</param>
+        /// <param name="memberName">The memberName.</param>
         /// <returns></returns>
-        public static object GenerateEventHandler(Type delType, string membername)
+        public static object GenerateEventHandler(Type delType, string memberName)
         {
-            var tHash = new EventHandlerHash(membername, delType);
+            var tHash = new EventHandlerHash(memberName, delType);
             
 
             lock (_eventHandlerStoreLock)
@@ -192,7 +192,7 @@ namespace ImpromptuInterface.MVVM
                 object tReturn;
                 if (!_eventHandlerStore.TryGetValue(tHash, out tReturn))
                 {
-                    tReturn = Delegate.CreateDelegate(delType, new BinderEventHandlerMemberName(membername), 
+                    tReturn = Delegate.CreateDelegate(delType, new BinderEventHandlerMemberName(memberName), 
                                                       BinderEventHandlerMemberName.InvokeMethodInfo);
                 }
                 return tReturn;

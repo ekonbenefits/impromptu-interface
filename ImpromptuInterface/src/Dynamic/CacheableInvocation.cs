@@ -17,11 +17,11 @@ namespace ImpromptuInterface.Dynamic
         /// Creates the cacheable convert call.
         /// </summary>
         /// <param name="convertType">Type of the convert.</param>
-        /// <param name="convertExplict">if set to <c>true</c> [convert explict].</param>
+        /// <param name="convertExplicit">if set to <c>true</c> [convert explict].</param>
         /// <returns></returns>
-        public static CacheableInvocation CreateConvert(Type convertType, bool convertExplict=false)
+        public static CacheableInvocation CreateConvert(Type convertType, bool convertExplicit=false)
         {
-            return new CacheableInvocation(InvocationKind.Convert, convertType: convertType, convertExplict: convertExplict);
+            return new CacheableInvocation(InvocationKind.Convert, convertType: convertType, convertExplicit: convertExplicit);
         }
 
         /// <summary>
@@ -29,13 +29,13 @@ namespace ImpromptuInterface.Dynamic
         /// </summary>
         /// <param name="kind">The kind.</param>
         /// <param name="name">The name.</param>
-        /// <param name="callinfo">The callinfo.</param>
+        /// <param name="callInfo">The callInfo.</param>
         /// <param name="context">The context.</param>
         /// <returns></returns>
-        public static CacheableInvocation CreateCall(InvocationKind kind, String_OR_InvokeMemberName name = null, CallInfo callinfo = null,object context = null)
+        public static CacheableInvocation CreateCall(InvocationKind kind, String_OR_InvokeMemberName name = null, CallInfo callInfo = null,object context = null)
         {
-            var tArgCount = callinfo != null ? callinfo.ArgumentCount : 0;
-            var tArgNames = callinfo != null ? callinfo.ArgumentNames.ToArray() : null;
+            var tArgCount = callInfo != null ? callInfo.ArgumentCount : 0;
+            var tArgNames = callInfo != null ? callInfo.ArgumentNames.ToArray() : null;
 
             return new CacheableInvocation(kind, name, tArgCount, tArgNames, context);
         }
@@ -44,11 +44,17 @@ namespace ImpromptuInterface.Dynamic
         private readonly string[] _argNames;
         private readonly bool _staticContext;
         private Type _context;
+
+        [NonSerialized]
         private CallSite _callSite;
+        [NonSerialized]
         private CallSite _callSite2;
+        [NonSerialized]
         private CallSite _callSite3;
+        [NonSerialized]
         private CallSite _callSite4;
-        private bool _convertExplict;
+
+        private bool _convertExplicit;
         private Type _convertType;
 
      
@@ -62,7 +68,7 @@ namespace ImpromptuInterface.Dynamic
         /// <param name="argNames">The arg names.</param>
         /// <param name="context">The context.</param>
         /// <param name="convertType">Type of the convert.</param>
-        /// <param name="convertExplict">if set to <c>true</c> [convert explict].</param>
+        /// <param name="convertExplicit">if set to <c>true</c> [convert explict].</param>
         /// <param name="storedArgs">The stored args.</param>
         public CacheableInvocation(InvocationKind kind,
                                    String_OR_InvokeMemberName name=null,
@@ -70,13 +76,13 @@ namespace ImpromptuInterface.Dynamic
                                    string[] argNames =null,
                                    object context = null,
                                    Type convertType = null,
-                                   bool convertExplict = false, 
+                                   bool convertExplicit = false, 
                                    object[] storedArgs = null)
             : base(kind, name, storedArgs)
         {
 
             _convertType = convertType;
-            _convertExplict = convertExplict;
+            _convertExplicit = convertExplicit;
 
             _argNames = argNames ?? new string[] {};
 
@@ -165,7 +171,7 @@ namespace ImpromptuInterface.Dynamic
                 && Equals(other._argNames, _argNames) 
                 && other._staticContext.Equals(_staticContext)
                 && Equals(other._context, _context) 
-                && other._convertExplict.Equals(_convertExplict)
+                && other._convertExplicit.Equals(_convertExplicit)
                 && Equals(other._convertType, _convertType);
         }
 
@@ -185,7 +191,7 @@ namespace ImpromptuInterface.Dynamic
                 result = (result*397) ^ (_argNames != null ? _argNames.GetHashCode() : 0);
                 result = (result*397) ^ _staticContext.GetHashCode();
                 result = (result*397) ^ (_context != null ? _context.GetHashCode() : 0);
-                result = (result*397) ^ _convertExplict.GetHashCode();
+                result = (result*397) ^ _convertExplicit.GetHashCode();
                 result = (result*397) ^ (_convertType != null ? _convertType.GetHashCode() : 0);
                 return result;
             }
@@ -218,7 +224,7 @@ namespace ImpromptuInterface.Dynamic
                         }
                         if (args.Length > 1)
                         {
-                            if(!Equals(args[1], _convertExplict))
+                            if(!Equals(args[1], _convertExplicit))
                                 throw new ArgumentException("CacheableInvocation can't change explict/implict conversion on invoke.", "args");
                         }
 
@@ -237,7 +243,7 @@ namespace ImpromptuInterface.Dynamic
                     return InvokeHelper.InvokeConstructorCallSite(tTarget, tTarget.IsValueType, args, _argNames, _context,
                                                                   ref _callSite);
                 case InvocationKind.Convert:
-                    return InvokeHelper.InvokeConvertCallSite(target, _convertExplict, _convertType, _context,
+                    return InvokeHelper.InvokeConvertCallSite(target, _convertExplicit, _convertType, _context,
                                                               ref _callSite);
                 case InvocationKind.Get:
                     return InvokeHelper.InvokeGetCallSite(target, Name.Name, _context, _staticContext, ref _callSite);

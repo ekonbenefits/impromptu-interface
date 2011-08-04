@@ -710,7 +710,7 @@ namespace ImpromptuInterface.Build
 
                 tIlGen.EmitLoadArgument(i);
             }
-            tIlGen.EmitCallInvokeFunc(invokeFuncType, returnType == typeof(void));
+            tIlGen.EmitCallInvokeFunc(invokeFuncType);
             if (returnType != typeof(void))
             {
                 tIlGen.EmitCallInvokeFunc(convertFuncType);

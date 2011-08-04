@@ -33,7 +33,7 @@ namespace ImpromptuInterface.Dynamic
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuObject"/> class.
         /// </summary>
-        public ImpromptuObject()
+        protected ImpromptuObject()
         {
             
         }

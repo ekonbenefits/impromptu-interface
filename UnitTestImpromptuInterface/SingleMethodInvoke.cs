@@ -118,7 +118,7 @@ namespace UnitTestImpromptuInterface
         {
             var tEl = new XElement("Test","45");
 
-            var tCast = Impromptu.InvokeConvert(tEl, typeof (int), explict:true);
+            var tCast = Impromptu.InvokeConvert(tEl, typeof (int), @explicit:true);
            
             Assert.AreEqual(typeof(int), tCast.GetType());
             Assert.AreEqual(45,tCast);
@@ -130,7 +130,7 @@ namespace UnitTestImpromptuInterface
             var tEl = new XElement("Test", "45");
 
             var tCacheInvoke = new CacheableInvocation(InvocationKind.Convert, convertType: typeof (int),
-                                                       convertExplict: true);
+                                                       convertExplicit: true);
             var tCast = tCacheInvoke.Invoke(tEl);
 
             Assert.AreEqual(typeof(int), tCast.GetType());

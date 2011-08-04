@@ -113,11 +113,11 @@ namespace ImpromptuInterface
         /// <summary>
         /// Initializes a new instance of the <see cref="InvokeContext"/> class.
         /// </summary>
-        /// <param name="Target">The target.</param>
+        /// <param name="target">The target.</param>
         /// <param name="context">The context.</param>
-        public InvokeContext(object Target, object context)
+        public InvokeContext(object target, object context)
         {
-            this.Target = Target;
+            this.Target = target;
 
             if (context != null && !(context is Type))
             {

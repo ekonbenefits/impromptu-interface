@@ -8,7 +8,7 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// Trampoline object to give access to methods as Commands of original viewmodal
     /// </summary>
-    public class ImpropmtuCommandBinder : DynamicObject
+    public class ImpromptuCommandBinder : DynamicObject
     {
         private readonly object _parent;
 
@@ -16,7 +16,7 @@ namespace ImpromptuInterface.MVVM
             new Dictionary<string, ImpromptuRelayCommand>();
 
 
-        internal ImpropmtuCommandBinder(object viewModel)
+        internal ImpromptuCommandBinder(object viewModel)
         {
             _parent = viewModel;
         }

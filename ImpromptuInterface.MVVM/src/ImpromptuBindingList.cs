@@ -28,6 +28,7 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// Supports Providing Property info to Binding things like DataGrids that refresh with bindings
     /// </summary>
+    [Serializable]
     public class ImpromptuBindingList: ImpromptuList, IBindingList
     {
         /// <summary>

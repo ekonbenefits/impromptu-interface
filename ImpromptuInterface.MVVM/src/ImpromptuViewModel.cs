@@ -79,6 +79,7 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// View Model that uses a Dynamic Implementation to remove boilerplate for Two-Way bound properties and commands to methods
     /// </summary>
+    [Serializable]
     public partial class ImpromptuViewModel:ImpromptuDictionary
     {
         /// <summary>
@@ -105,7 +106,7 @@ namespace ImpromptuInterface.MVVM
 #endif
 
 
-        private ImpropmtuCommandBinder _commandTrampoline;
+        private ImpromptuCommandBinder _commandTrampoline;
         private PropertyDepends _dependencyTrampoline;
         private FireOnPropertyChanged _onChangedTrampoline;
 
@@ -126,7 +127,7 @@ namespace ImpromptuInterface.MVVM
         /// <value>The command.</value>
         public virtual dynamic Command
         {
-            get { return _commandTrampoline ?? (_commandTrampoline = new ImpropmtuCommandBinder(this)); }
+            get { return _commandTrampoline ?? (_commandTrampoline = new ImpromptuCommandBinder(this)); }
         }
 
         /// <summary>

@@ -441,16 +441,16 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="type">The type.</param>
-        /// <param name="explict">if set to <c>true</c> [explict].</param>
+        /// <param name="explicit">if set to <c>true</c> [explicit].</param>
         /// <returns></returns>
-        public static dynamic InvokeConvert(object target, Type type, bool explict =false)
+        public static dynamic InvokeConvert(object target, Type type, bool @explicit =false)
         {
             Type tContext;
             bool tDummy;
             target = target.GetTargetContext(out tContext, out tDummy);
 
             CallSite tCallSite =null;
-            return InvokeHelper.InvokeConvertCallSite(target, explict, type, tContext, ref tCallSite);
+            return InvokeHelper.InvokeConvertCallSite(target, @explicit, type, tContext, ref tCallSite);
 
         }
 

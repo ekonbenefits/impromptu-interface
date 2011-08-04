@@ -95,7 +95,7 @@ Public Class SingleMethodInvoke
     Public Sub TestConvert()
         Dim tEl = New XElement("Test", "45")
 
-        Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Integer), explict:=True)
+        Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Integer), explicit:=True)
 
         Assert.AreEqual(GetType(Integer), tCast.[GetType]())
         Assert.AreEqual(45, tCast)
@@ -105,7 +105,7 @@ Public Class SingleMethodInvoke
     Public Sub TestConvertCacheable()
         Dim tEl = New XElement("Test", "45")
 
-        Dim tCacheInvoke = New CacheableInvocation(InvocationKind.Convert, convertType:=GetType(Integer), convertExplict:=True)
+        Dim tCacheInvoke = New CacheableInvocation(InvocationKind.Convert, convertType:=GetType(Integer), convertExplicit:=True)
         Dim tCast = tCacheInvoke.Invoke(tEl)
 
         Assert.AreEqual(GetType(Integer), tCast.[GetType]())

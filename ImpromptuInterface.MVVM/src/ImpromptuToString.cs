@@ -44,6 +44,8 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// Proxies Result to String
     /// </summary>
+    
+   
     public class ImpromptuResultToString: ImpromptuForwarder, IEnumerable
     {
      

@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -25,6 +26,8 @@ using System.Runtime.InteropServices;
 // COM, set the ComVisible attribute to true on that type.
 [assembly: ComVisible(false)]
 
+[assembly: CLSCompliant(true)]
+
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("770f9380-29e4-45f2-b042-e11e704fb38e")]
 
@@ -39,7 +42,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 #if SILVERLIGHT
-[assembly: AssemblyVersion("3.6.2.0")]
+[assembly: AssemblyVersion("3.6.4.0")]
 #else
-[assembly: AssemblyVersion("3.6.2.*")]
+[assembly: AssemblyVersion("3.6.4.*")]
 #endif

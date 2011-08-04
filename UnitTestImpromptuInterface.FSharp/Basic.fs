@@ -14,9 +14,11 @@ module Module1=
     open UnitTestSupportLibrary
     open System.Xml.Linq
     open System.Numerics
-
+    open Microsoft.CSharp.RuntimeBinder
+    
     [<TestFixture>] 
     type ``Basic Dynamic Operator Tests`` ()=
+                       
 
         [<Test>] member basic.``Call method off of an object dynamically`` ()=
                         test <@ "HelloWorld"?Substring(0,5) = "Hello" @>
@@ -68,8 +70,8 @@ module Module1=
                     
 
         [<Test>] member basic.``Test FSharp Lambda 4 arg`` ()=
-                       let dyn = (fun x y z bbq -> x + y - z - bbq) :> obj  in
-                       test <@ !?dyn (3, 2, 1, 5) = -1 @>;
+                        let dyn = (fun x y z bbq -> x + y - z - bbq) :> obj  in
+                        test <@ !?dyn (3, 2, 1, 5) = -1 @>;
 
 
         [<Test>] member basic.``Test FSharp Lambda 5 arg`` ()=
@@ -101,10 +103,27 @@ module Module1=
                         test <@ buildObj?One = 1 @>
                         test <@ buildObj?Two = 2 @>
 
-        [<Test>] member basic.``Test Explicit Conversion`` ()=
+
+        [<Test>] member basic.``Test dynamic Explicit Conversion`` ()=
                         let ele = XElement(XName.Get("Test"),"50")
                         test <@ ele >>?>> typeof<Int32> = 50 @>
 
-        [<Test>] member basic.``Test Implicit Conversion`` ()=
+
+        [<Test>] member basic.``Test dynamic Implicit Conversion`` ()=
                         let ele = 50
                         test <@ ele >?> typeof<BigInteger> = BigInteger(50) @>
+
+
+        [<Test>] member basic.``Test Explicit Conversion`` ()=
+                        let ele = XElement(XName.Get("Test"),"50")
+                        test <@ ele |> dynExplicit  = 50 @>
+
+
+        [<Test>] member basic.``Test Implicit Conversion`` ()=
+                        let ele = 50
+                        test <@ ele |> dynImplicit = BigInteger(50) @>
+
+
+        [<Test>] member basic.``Test Implicit Conversion Fail`` ()=
+                        let ele = XElement(XName.Get("Test"),"50")
+                        raises<RuntimeBinderException> <@ dynImplicit(ele)  = 50 @>

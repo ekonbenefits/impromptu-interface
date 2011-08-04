@@ -48,6 +48,7 @@ namespace ImpromptuInterface.Dynamic
     /// This may not be as efficient as other proxies that can work on just static objects or just dynamic objects...
     /// Consider this when using.
     /// </remarks>
+    [Serializable]
     public abstract class ImpromptuForwarder : ImpromptuObject, IForwarder
     {
         /// <summary>

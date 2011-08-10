@@ -129,6 +129,18 @@ namespace ImpromptuInterface
         }
 
         /// <summary>
+        /// Invokes the binary operator.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="arg1">The arg1.</param>
+        /// <param name="arg2">The arg2.</param>
+        /// <returns></returns>
+        public static dynamic InvokeBinaryOperator(object target, ExpressionType type,  object arg1, object arg2)
+        {
+            return 
+        }
+
+        /// <summary>
         /// Invokes the specified target using the DLR;
         /// </summary>
         /// <param name="target">The target.</param>

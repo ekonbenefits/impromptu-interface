@@ -7,7 +7,11 @@ open System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+#if SILVERLIGHT
+[<assembly: AssemblyTitle("ImpromptuInterface.FSharp (Silverlight)")>]
+#else
 [<assembly: AssemblyTitle("ImpromptuInterface.FSharp")>]
+#endif
 [<assembly: AssemblyDescription("")>]
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("Ekon Benefits")>]

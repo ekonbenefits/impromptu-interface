@@ -43,6 +43,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ImpromptuInterface.FSharp",
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnitTestImpromptuInterface.FSharp", "UnitTestImpromptuInterface.FSharp\UnitTestImpromptuInterface.FSharp.fsproj", "{41DAF279-DFA1-4256-82CF-47F7BE0BEA10}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ImpromptuInterface.FSharp (Silverlight)", "ImpromptuInterface.FSharp.Silverlight\ImpromptuInterface.FSharp (Silverlight).fsproj", "{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,16 @@ Global
 		{41DAF279-DFA1-4256-82CF-47F7BE0BEA10}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{41DAF279-DFA1-4256-82CF-47F7BE0BEA10}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{41DAF279-DFA1-4256-82CF-47F7BE0BEA10}.Release|x86.ActiveCfg = Release|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

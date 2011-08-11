@@ -8,7 +8,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-using Test =Microsoft.VisualStudio.TestTools.UnitTesting;
+using NUnit.Framework;
 
 namespace UnitTestImpromptuInterface
 {
@@ -16,51 +16,7 @@ namespace UnitTestImpromptuInterface
     {
     }
 
-    public class TestFixtureAttribute : Attribute
-    {
-        
-    }
-
-    public class TestFixtureSetUpAttribute : Attribute
-    {
-
-    }
-
-    public class TestAttribute : Attribute
-    {
     
-    }
-
-    public class AssertHelp
-    {
-        public void AreEqual(dynamic expected, dynamic actual)
-        {
-            Test.Assert.AreEqual(expected, actual);
-        }
-
-        public void Less(dynamic smaller, dynamic larger)
-        {
-
-            if (smaller > larger)
-                Test.Assert.Fail("{0} is expected to be less than {1}", smaller, larger);
-        }
-        
-        public void Ignore(string message)
-        {
-            Test.Assert.Inconclusive(message);
-        }
-
-        public void IsFalse(bool actual)
-        {
-            Test.Assert.IsFalse(actual);
-        }
-
-        public void Fail()
-        {
-            Test.Assert.Fail();
-        }
-    }
-
     public class Stopwatch
     {
         private DateTime StartDate;
@@ -81,48 +37,31 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+
+    public class WriteLineContext
+    {
+        public void WriteLine(string format, params object[] args)
+        {
+            Console.WriteLine(format, args);
+        }
+    }
+
+
     public class Helper
     {
-        public AssertHelp Assert{get{return new AssertHelp();}}
-
-        private Test.TestContext testContextInstance;
+       
         /// <summary>
         ///Gets or sets the test context which provides
         ///information about and functionality for the current test run.
         ///</summary>
-        public Test.TestContext TestContext
+        public WriteLineContext TestContext
         {
-            get
-            {
-                return testContextInstance;
-            }
-            set
-            {
-                testContextInstance = value;
-            }
+            get { return new WriteLineContext(); }
         }
 
-        public void AssertException<T>(Action action) where T:Exception
+        public void AssertException<T>(TestDelegate action) where T:Exception
         {
-            var tSuccess = false;
-            Exception tEc = null;
-            try
-            {
-                action();
-            }
-            catch (T ex)
-            {
-                tSuccess = true;
-                tEc = ex;
-            }
-            catch(Exception ex)
-            {
-                tEc = ex;
-            }
-
-            Test.Assert.IsTrue(tSuccess,"Expected Exception {0} instead of {1}",
-                typeof(T).ToString(),
-                tEc ==null ? "No Exception" : tEc.GetType().ToString() );
+            Assert.Throws<T>(action);
         }
     }
 }

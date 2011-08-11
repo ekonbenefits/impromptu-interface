@@ -137,7 +137,7 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic InvokeBinaryOperator(object target, ExpressionType type,  object arg1, object arg2)
         {
-            return 
+            return null;
         }
 
         /// <summary>

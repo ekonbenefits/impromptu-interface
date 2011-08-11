@@ -8,20 +8,19 @@ using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
+
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture,TestClass]
+    [TestFixture]
     public class ImpromptuDynamic : Helper
     {
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryPropertyTest()
         {
 
@@ -37,7 +36,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryNullPropertyTest()
         {
 
@@ -51,7 +50,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(default(Guid), tActsLike.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void GetterAnonTest()
         {
             var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -63,7 +62,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void GetterVoidTest()
         {
             var tPoco = new VoidMethodPoco();
@@ -73,7 +72,7 @@ namespace UnitTestImpromptuInterface
             tTest.Action();
         }
 
-        [Test, TestMethod]
+        [Test]
         public void GetterArrayTest()
         {
 		
@@ -85,7 +84,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tArray[2].ToString(), tTest[2]);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void GetterEventTest()
         {
             var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
@@ -98,7 +97,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void GetterEventTest2()
         {
             var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
@@ -112,7 +111,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void GetterDynamicTest()
         {
             dynamic tNew = new ExpandoObject();
@@ -128,7 +127,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tTest.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void ForwardAnonTest()
         {
             var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -140,7 +139,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Prop3, tTest.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void ForwardVoidTest()
         {
             var tPoco = new VoidMethodPoco();
@@ -152,7 +151,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void ForwardDynamicTest()
         {
             dynamic tNew = new ExpandoObject();
@@ -168,7 +167,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tTest.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryMethodsTest()
         {
 
@@ -191,7 +190,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("test4", tActsLike.Action4(4));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void ForwardMethodsTest()
         {
 
@@ -214,7 +213,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("test4", tFwd.Action4(4));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryMethodsOutTest()
         {
 
@@ -239,7 +238,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryMethodsTestWithPropertyAccess()
         {
 
@@ -261,7 +260,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DictionaryNullMethodsTest()
         {
 
@@ -276,7 +275,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void DynamicDictionaryWrappedTest()
         {
 
@@ -300,7 +299,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("B", tNew.TestD.TestB);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void InterfaceDictionaryWrappedTest()
         {
 
@@ -334,7 +333,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DynamicObjectEqualsTest()
         {
             var tDictionary = new Dictionary<string, object>
@@ -359,7 +358,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNotDynamic, tDictionary);
         }
 
-        [TestMethod,Test]
+        [Test]
         public void DynamicAnnonymousWrapper()
         {
             var tData = new Dictionary<int, string> {{1, "test"}};
@@ -382,7 +381,7 @@ namespace UnitTestImpromptuInterface
 
         }   
 
-        [Test, TestMethod]
+        [Test]
         public void TestAnonInterface()
         {
             var tInterface = ImpromptuGet.Create<ICollection>(new
@@ -400,7 +399,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true,tInterface.GetEnumerator().MoveNext());
         }
 		  
-		[Test, TestMethod]
+		[Test]
 		public void TestBuilder(){
 			var New = Builder.New<ExpandoObject>();
 			
@@ -423,7 +422,7 @@ namespace UnitTestImpromptuInterface
 		  	 Assert.AreEqual("Clamp",tExpandoNamedTest.RightArm);
 		}
 				
-		[Test, TestMethod]
+		[Test]
 		public void TestSetupOtherTypes(){
 			var New = Builder.New().Setup(
 					Expando: typeof(ExpandoObject),
@@ -450,7 +449,7 @@ namespace UnitTestImpromptuInterface
 
 		}
 		
-		[Test, TestMethod]
+		[Test]
 
         //This test data is modified from MS-PL Clay project http://clay.codeplex.com
         public void TestClayFactorySyntax()
@@ -504,7 +503,7 @@ namespace UnitTestImpromptuInterface
 
         }
 		
-		[Test, TestMethod]
+		[Test]
 		public void TestBuilderActLikeAnon()
 		{
 		    var New = Builder.New().ActLike<IBuilder>();
@@ -520,7 +519,7 @@ namespace UnitTestImpromptuInterface
 			Assert.AreEqual("Lvl2",tNest.Nested.NameLevel2);
 	    }
 
-        [Test, TestMethod]
+        [Test]
         public void TestBuilderActLikeNamed()
         {
             var New = Builder.New().ActLike<IBuilder>();
@@ -537,7 +536,7 @@ namespace UnitTestImpromptuInterface
         }
 		
 		
-			[Test, TestMethod]
+			[Test]
         //This test data is modified from MS-PL Clay project http://clay.codeplex.com
 		public void TestFactoryListSyntax(){
 			dynamic New = Builder.New();
@@ -562,7 +561,7 @@ namespace UnitTestImpromptuInterface
 
 		}
               
-        [Test, TestMethod]
+        [Test]
             public void TestQuicListSyntax()
             {
                 var tList =Build.NewList("test", "one", "two");
@@ -573,7 +572,7 @@ namespace UnitTestImpromptuInterface
             }
 
         
-        [Test, TestMethod]
+        [Test]
         public void TestLateLibrarybind()
         {
 

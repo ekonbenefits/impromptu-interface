@@ -7,19 +7,17 @@ using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
+
 namespace UnitTestImpromptuInterface
 {
-  [TestClass, TestFixture]
+  [TestFixture]
     public class Generics : Helper
     {
-        [Test,TestMethod]
+        [Test]
         public void TestGenericMeth()
         {
        
@@ -52,7 +50,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestGenericType()
         {
 
@@ -70,7 +68,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(expected, tActsLike.Funct(param));
         }
 
-       [Test, TestMethod]
+       [Test]
         public void TestGenericTypeConstraints()
         {
 
@@ -89,7 +87,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestConstraintsMethGeneric()
         {
             var tObj = new Object();

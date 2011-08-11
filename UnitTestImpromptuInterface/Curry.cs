@@ -5,20 +5,18 @@ using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
 
 namespace UnitTestImpromptuInterface
 {
-    [TestClass, TestFixture]
+    [TestFixture]
     public class Curry : Helper
     {
-        [Test, TestMethod]
+        [Test]
         public void TestBasicDelegateCurry()
         {
             Func<int, int, int> tAdd = (x, y) => x + y;
@@ -32,7 +30,7 @@ namespace UnitTestImpromptuInterface
 
       
 
-        [Test, TestMethod]
+        [Test]
         public void TestBasicNamedCurry()
         {
             Func<int, int, int> tSub = (x, y) => x - y;
@@ -44,7 +42,7 @@ namespace UnitTestImpromptuInterface
 
         }
     
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertDelegateCurry()
         {
             Func<string, string, string> tAdd = (x, y) => x + y;
@@ -54,7 +52,7 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual("410", tResult2);
         }
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertDelegateCurryReturnValueType()
         {
             Func<string, string, int> tAdd = (x, y) => Int32.Parse(x) + Int32.Parse(y);
@@ -66,7 +64,7 @@ namespace UnitTestImpromptuInterface
         }
 
         public delegate bool TestDeclaredDelagate(string value);
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertNonGenericDelegate()
         {
             Func<string, string, bool> tContains = (x, y) => y.Contains(x);
@@ -76,7 +74,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tResult);
         }
         public delegate void TestRunDelagate(string value);
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertNonGenericDelegateAction()
         {
             var tBool = false;
@@ -87,7 +85,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tBool);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertDelegateCurryParamValueType()
         {
             Func<int, int, int> tAdd = (x, y) => x + y;
@@ -98,7 +96,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(14, tResult2);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertMoreCurryParamValueType()
         {
             Func<int, int, int, int> tAdd = (x, y, z) => x + y + z;
@@ -109,7 +107,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(20, tResult);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestBasicConvertMoreMoreCurryParamValueType()
         {
             Func<int, int, int, int, int> tAdd = (x, y, z, bbq) => x + y + z +bbq;
@@ -124,7 +122,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestPococMethodCurry()
         {
             var tNewObj = new PocoAdder();
@@ -137,7 +135,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(34, tResult2);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestStaticMethodCurry()
         {
 
@@ -152,7 +150,7 @@ namespace UnitTestImpromptuInterface
               
       
 
-        [Test, TestMethod]
+        [Test]
         public void TestStaticMethodCurry2()
         {
 
@@ -169,7 +167,7 @@ namespace UnitTestImpromptuInterface
 
         }
 #if !SILVERLIGHT
-        [Test, TestMethod]
+        [Test]
         public void TestStaticMethodCurry3()
         {
             var tFormat =Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
@@ -184,7 +182,7 @@ namespace UnitTestImpromptuInterface
         }
 #endif
 
-        [Test, TestMethod]
+        [Test]
         public void TestDynamicMethodCurry()
         {
             var tNewObj =Build.NewObject(Add: Return<int>.Arguments<int, int>((x, y) => x + y));
@@ -197,7 +195,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(34, tResult2);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void UnboundedCurry()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject);
@@ -207,7 +205,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(2,tResult.Two);
 
         }
-        [Test, TestMethod]
+        [Test]
         public void UnboundedCurryCont()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject);
@@ -219,7 +217,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(3, tResult.Three);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void BoundedCurryCont()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject,3);
@@ -231,7 +229,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(3, tResult.Three);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestPococMethodPartialApply()
         {
             var tNewObj = new PocoAdder();
@@ -240,7 +238,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(10, tResult);
         }
         
-        [Test, TestMethod]
+        [Test]
         public void UnboundedPartialApply()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject);

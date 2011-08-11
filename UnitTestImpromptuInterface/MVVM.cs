@@ -9,10 +9,8 @@ using ImpromptuInterface.Dynamic;
 using System.Windows;
 using System.Windows.Controls;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
@@ -22,11 +20,11 @@ namespace UnitTestImpromptuInterface
 {
 
        
-    [TestClass,TestFixture]
+    [TestFixture]
 	public class MVVM:Helper
 	{
 
-         [Test,TestMethod]
+         [Test]
         public void TestToStringProxy()
          {
              dynamic tProxy =
@@ -36,7 +34,7 @@ namespace UnitTestImpromptuInterface
              Assert.AreEqual("One:Again",tProxy.ToString());
          }
 
-         [Test, TestMethod]
+         [Test]
          public void TestResultToStringProxyDictionary()
          {
 
@@ -58,7 +56,7 @@ namespace UnitTestImpromptuInterface
          }
 
 
-         [Test, TestMethod]
+         [Test]
          public void TestToStringProxyCall()
          {
              var tAnon = new PropPoco() { Prop1 = "A", Prop2 = 1 };
@@ -71,7 +69,7 @@ namespace UnitTestImpromptuInterface
          }
 
 
-         [Test,TestMethod]
+         [Test]
         public void TestToStringProxyConvertExplicit()
          {
              var tAnon = new {Test1 = "One", Test2 = "Two", TestAgain = "Again"};
@@ -85,7 +83,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-         [Test, TestMethod]
+         [Test]
          public void TestToStringProxyConvertImplicit()
          {
              var tAnon = new PropPoco(){Prop1 = "A", Prop2 = 1};
@@ -97,7 +95,7 @@ namespace UnitTestImpromptuInterface
              Assert.AreEqual(tAnon.GetType(), tAnon2.GetType());
          }
 
-         [Test, TestMethod]
+         [Test]
          public void TestToStringProxyConvertImplicit2()
          {
              var tAnon = new PropPoco() { Prop1 = "A", Prop2 = 1 };
@@ -113,7 +111,7 @@ namespace UnitTestImpromptuInterface
        
 
 
-         [Test, TestMethod]
+         [Test]
          public void TestToStringProxyDictionaryMassage()
          {
              var tPropPoco = new PropPoco() {Prop1 = "A"};
@@ -174,7 +172,7 @@ namespace UnitTestImpromptuInterface
 
    
 
-        [Test, TestMethod]
+        [Test]
         public void TestEventBindingNonGenericType()
         {
             var tRun = false;
@@ -189,7 +187,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tRun);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestEventBindingGenericType()
         {
             var tRun = false;
@@ -204,7 +202,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tRun);
         }
 
-             [Test, TestMethod]
+             [Test]
          public void TestTypeConverter()
              {
                  object tNew = Build.NewObject(ColorViaString: "Blue");
@@ -215,7 +213,7 @@ namespace UnitTestImpromptuInterface
 
              }
 
-        [Test, TestMethod]
+        [Test]
         public void TestOnChangeDependencyCalls()
         {
             dynamic tNewViewModel = new ImpromptuViewModel();

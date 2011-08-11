@@ -8,21 +8,18 @@ using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.InvokeExt;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
-using ImpromptuInterface.InvokeExt;
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
 
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture, TestClass]
+    [TestFixture]
     public class SpeedTest : Helper
     {
-        [TestFixtureSetUp,TestInitialize]
+        [TestFixtureSetUp]
         public void WarmUpDlr()
         {
             dynamic i = 1;
@@ -30,7 +27,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestSetTimed()
         {
             var tPoco = new PropPoco();
@@ -50,7 +47,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableSetTimed()
         {
             var tPoco = new PropPoco();
@@ -70,7 +67,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestSetNullTimed()
         {
             var tPoco = new PropPoco();
@@ -87,7 +84,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableSetNullTimed()
         {
             var tPoco = new PropPoco();
@@ -106,7 +103,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestPropPocoGetValueTimed()
         {
 
@@ -133,7 +130,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableGetValueTimed()
         {
 
@@ -158,7 +155,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestConstructorTimed()
         {
 
@@ -178,7 +175,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableConstructorTimed()
         {
 
@@ -198,7 +195,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestConstructorNoARgTimed()
         {
             var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(List<string>)); });
@@ -219,7 +216,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCachableConstructorNoARgTimed()
         {
             var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
@@ -243,7 +240,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestConstructorValueTypeTimed()
         {
 
@@ -262,7 +259,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCachedConstructorValueTypeTimed()
         {
 
@@ -282,7 +279,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodPocoGetValueTimed()
         {
 
@@ -304,7 +301,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodPocoGetValueTimed()
         {
 
@@ -326,7 +323,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestGetStaticTimed()
         {
 
@@ -348,7 +345,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableGetStaticTimed()
         {
 
@@ -373,7 +370,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodStaticMethodValueTimed()
         {
 
@@ -393,7 +390,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodStaticMethodValueTimed()
         {
 
@@ -416,7 +413,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodPocoGetValuePassNullTimed()
         {
 #if DEBUG
@@ -440,7 +437,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodPocoGetValuePassNullTimed()
         {
 #if DEBUG
@@ -468,7 +465,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodPocoGetValuePassNullDoubleCallTimed()
         {
 #if DEBUG
@@ -496,7 +493,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodPocoGetValuePassNullDoubleCallTimed()
         {
             var tValue = new OverloadingMethPoco();
@@ -523,7 +520,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodPocoGetValue4argsTimed()
         {
 
@@ -545,7 +542,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodPocoGetValue4argsTimed()
         {
 
@@ -571,7 +568,7 @@ namespace UnitTestImpromptuInterface
         }
  
 
-        [Test, TestMethod]
+        [Test]
         public void TestMethodPocoVoidTimed()
         {
 
@@ -590,7 +587,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableMethodPocoVoidTimed()
         {
 
@@ -609,7 +606,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestFastDynamicInvoke()
         {
             Func<int, bool> tFunc = it => it > 10;
@@ -623,7 +620,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tStopWatch1.Elapsed, tStopWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestFastDynamicInvokeAction()
         {
             Action<int> tFunc = it => it.ToString();

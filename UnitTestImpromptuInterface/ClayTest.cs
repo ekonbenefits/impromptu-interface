@@ -19,11 +19,11 @@ namespace UnitTestImpromptuInterface
     /// <summary>
     /// Testing Integration of Clay with Impromptu-Interface
     /// </summary>
-    [TestClass,TestFixture]
+    [TestFixture]
     public class ClayTest : Helper
     {
 
-        [Test, TestMethod]
+        [Test]
         public void InvokeMemberContainsNameWithImpromptuInterface()
         {
             var clay = new Clay(new TestBehavior()).ActLike<ISimpeleClassMeth>();
@@ -33,7 +33,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void InvokeMemberContainsNameWithImpromptuInvoke()
         {
             var clay = new Clay(new TestBehavior());
@@ -43,7 +43,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestRecorder()
         {
             dynamic New = Builder.New<ImpromptuRecorder>();
@@ -58,7 +58,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("Watson", tVar.NameLast);
         }
 
-        [Test,TestMethod]
+        [Test]
         public void TestClay()
         {
             dynamic New = new ClayFactory();
@@ -80,7 +80,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test,TestMethod]
+        [Test]
         public void TestBuilderWithClay()
           {
 		
@@ -124,7 +124,7 @@ namespace UnitTestImpromptuInterface
          /// <summary>
          /// Impromptu's Interface Proxy is about the same Speed as Clay's
          /// </summary>
-        [Test, TestMethod]
+        [Test]
         public void SpeedTestInterface()
         {   
             dynamic New = new ClayFactory();
@@ -159,7 +159,7 @@ namespace UnitTestImpromptuInterface
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void SpeedTestPrototype()
         {
             dynamic NewI = Builder.New();

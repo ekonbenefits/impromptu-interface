@@ -45,6 +45,8 @@ Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnitTestImpromptuInterface.
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ImpromptuInterface.FSharp (Silverlight)", "ImpromptuInterface.FSharp.Silverlight\ImpromptuInterface.FSharp (Silverlight).fsproj", "{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}"
 EndProject
+Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "UnitTestImpromptu.FSharp.Silverlight", "UnitTestImpromptu.FSharp.Silverlight\UnitTestImpromptu.FSharp.Silverlight.fsproj", "{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -195,6 +197,16 @@ Global
 		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}.Release|x86.ActiveCfg = Release|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -207,6 +219,7 @@ Global
 		{EE860CF5-6707-42F2-8091-3D4DC3ED1D30} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{41DAF279-DFA1-4256-82CF-47F7BE0BEA10} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
+		{98BFE093-9CAD-4E97-A0D4-7AAEC320BEF6} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Test\Test.csproj

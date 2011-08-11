@@ -8,19 +8,17 @@ using ImpromptuInterface.InvokeExt;
 using Microsoft.CSharp.RuntimeBinder;
 using UnitTestSupportLibrary;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
 namespace UnitTestImpromptuInterface
 {
-    [TestFixture,TestClass]
+    [TestFixture]
     public class PrivateTest : Helper
     {
-        [Test, TestMethod]
+        [Test]
         public void TestExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
@@ -28,7 +26,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(3, tExposed.Test()); 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
@@ -36,35 +34,35 @@ namespace UnitTestImpromptuInterface
             AssertException<RuntimeBinderException>(() => tNonExposed.Test());
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestInvokePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
             Assert.AreEqual(3, Impromptu.InvokeMember(tTest,"Test"));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestInvokePrivateMethodAcrossAssemblyBoundries()
         {
             var tTest = new PublicType();
             Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "PrivateMethod", 3));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestInvokeInternalTypeMethodAcrossAssemblyBoundries()
         {
             var tTest = PublicType.InternalInstance;
             Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "InternalMethod", 3));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestInvokeDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
             AssertException<RuntimeBinderException>(() => Impromptu.InvokeMember(tTest.WithContext(this), "Test"));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
@@ -72,7 +70,7 @@ namespace UnitTestImpromptuInterface
             AssertException<RuntimeBinderException>(() => tCachedInvoke.Invoke(tTest));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableExposePrivateMethodViaInstance()
         {
             var tTest = new TestWithPrivateMethod();
@@ -80,7 +78,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(3, tCachedInvoke.Invoke(tTest));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestCacheableExposePrivateMethodViaType()
         {
             var tTest = new TestWithPrivateMethod();

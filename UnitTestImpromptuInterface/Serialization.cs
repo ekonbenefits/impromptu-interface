@@ -7,20 +7,18 @@ using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
 namespace UnitTestImpromptuInterface
 {
 
-    [TestClass, TestFixture]
+    [TestFixture]
     public class Serialization : Helper
     {
-        [Test, TestMethod]
+        [Test]
         public void TestRoundTripSerial()
         {
 
@@ -32,7 +30,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(value.Prop3, tDeValue.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestSerializeDictionary()
         {
             var New = Builder.New<ImpromptuDictionary>();
@@ -44,7 +42,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tObj.Second, tDeObj.Second);
         }
            
-        [Test, TestMethod]
+        [Test]
         public void TestSerializeDictionaryWithInterface()
         {
             var New = Builder.New<ImpromptuDictionary>();
@@ -57,7 +55,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(value.Prop3, tDeValue.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestSerializeChainableDictionaryWithInterface()
         {
             var New = Builder.New();
@@ -70,7 +68,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(value.Prop3, tDeValue.Prop3);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void TestSerializeChainableDictionaryWithList()
         {
             var New = Builder.New();

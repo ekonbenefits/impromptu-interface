@@ -21,25 +21,23 @@ using ImpromptuInterface;
 using System.Dynamic;
 using ImpromptuInterface.Optimization;
 
-
-#if SILVERLIGHT
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using AssertionException = Microsoft.VisualStudio.TestTools.UnitTesting.AssertFailedException;
-#elif !SELFRUNNER
+#if !SELFRUNNER
 using NUnit.Framework;
 #endif
+
+
 
 namespace UnitTestImpromptuInterface
 {
 
        
-    [TestClass,TestFixture]
+    [TestFixture]
 	public class Basic:Helper
 	{
 
 
 
-         [Test,TestMethod]
+         [Test]
         public void AnonPropertyTest()
         {
             var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
@@ -56,7 +54,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void CacheTest()
         {
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -77,7 +75,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void AnonEqualsTest()
         {
             var tAnon = new { Prop1 = "Test 1", Prop2 = 42L, Prop3 = Guid.NewGuid() };
@@ -90,7 +88,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void ExpandoPropertyTest()
         {
           
@@ -110,7 +108,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void ImpromptuConversionPropertyTest()
         {
 
@@ -130,7 +128,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void DoubleInterfacetest()
         {
 
@@ -151,7 +149,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.ReturnProp, tActsLike.ReturnProp);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DoublePropertyTest()
         {
 
@@ -172,7 +170,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.ReturnProp, tActsLike.ReturnProp);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void EventPropertyCollisionTest()
         {
 
@@ -185,7 +183,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Event, tActsLike.Event);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void InterfaceDirectDuplicateTest()
         {
 
@@ -198,7 +196,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.StartsWith("test"), tActsLike.StartsWith("test"));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void MethodCollisionTest()
         {
 
@@ -215,7 +213,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew2.StartsWith("test"), tActsLike2.StartsWith("test"));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DictIndexTest()
         {
 
@@ -233,7 +231,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew["Prop1"], tActsLike["Prop1"]);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void ArrayIndexTest()
         {
 			
@@ -248,7 +246,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew[1], tActsLike[1]);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void AnnonMethodsTest()
         {
 
@@ -272,7 +270,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void ExpandoMethodsTest()
         {
 
@@ -292,7 +290,7 @@ namespace UnitTestImpromptuInterface
 		
           
         }
-        [Test, TestMethod]
+        [Test]
         public void EventPocoPropertyTest()
         {
             var tPoco = new PocoEvent();
@@ -306,7 +304,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void EventPocoPropertyTest2()
         {
             var tPoco = new PocoEvent();
@@ -320,7 +318,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void EventDynamicPropertyTest()
         {
             object tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
@@ -334,7 +332,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-        [Test, TestMethod]
+        [Test]
         public void EventDynamicPropertyTest2()
         {
             object tPoco = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
@@ -348,7 +346,7 @@ namespace UnitTestImpromptuInterface
 
         }
 
-        [Test, TestMethod]
+        [Test]
         public void StringPropertyTest()
         {
             var tAnon = "Test 123";
@@ -358,7 +356,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.Length, tActsLike.Length);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void StringMethodTest()
         {
             var tAnon = "Test 123";
@@ -368,7 +366,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void DynamicArgMethodTest()
         {
             var tPoco = new PocoNonDynamicArg();
@@ -382,7 +380,7 @@ namespace UnitTestImpromptuInterface
 
 
    
-        [Test, TestMethod]
+        [Test]
         public void DynamicArgMethodTest2()
         {
             dynamic tPoco = new PocoNonDynamicArg();
@@ -401,7 +399,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-        [Test, TestMethod]
+        [Test]
         public void InformalPropTest()
         {
             dynamic tNew = new ExpandoObject();
@@ -417,7 +415,7 @@ namespace UnitTestImpromptuInterface
   
 
 
-        [Test, TestMethod]
+        [Test]
         public void OverloadMethodTest()
         {
             var tPoco = new OverloadingMethPoco();
@@ -428,7 +426,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("object", tActsLike.Func((object)tValue));
         }
 
-        [Test, TestMethod]
+        [Test]
         public void OutMethodTest()
         {
             var tPoco = new MethOutPoco();
@@ -442,7 +440,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("success", tResult);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void OutMethodTest2()
         {
             var tPoco = new GenericMethOutPoco();
@@ -456,7 +454,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(null, tResult);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void OutMethodTest3()
         {
             var tPoco = new GenericMethOutPoco();
@@ -470,7 +468,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(0, tResult);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void GenericOutMethodTest()
         {
             var tPoco = new GenericMethOutPoco();
@@ -491,7 +489,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(null, tResult2);
         }
 
-        [Test, TestMethod]
+        [Test]
         public void RefMethodTest()
         {
             var tPoco = new MethRefPoco();

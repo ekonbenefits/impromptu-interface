@@ -96,11 +96,11 @@
     <Compile Include="Support\FixtureSetup.vb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
+    <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
       <Project>{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}</Project>
       <Name>ImpromptuInterface.MVVM</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
+    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromptuInterface</Name>
     </ProjectReference>

@@ -90,7 +90,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
+    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromptuInterface</Name>
     </ProjectReference>

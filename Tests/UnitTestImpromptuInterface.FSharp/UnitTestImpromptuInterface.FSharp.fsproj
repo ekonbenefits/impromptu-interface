@@ -66,12 +66,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface.FSharp\ImpromptuInterface.FSharp.fsproj">
+    <ProjectReference Include="..\..\ImpromptuInterface.FSharp\ImpromptuInterface.FSharp.fsproj">
       <Name>ImpromptuInterface.FSharp</Name>
       <Project>{d4d82191-1f83-43fb-8309-83637d8d11e8}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
+    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Name>ImpromptuInterface</Name>
       <Project>{dab7c056-660a-4153-8ff2-b80a41310ad7}</Project>
       <Private>True</Private>

@@ -47,16 +47,25 @@
     <Compile Include="..\UnitTestImpromptuInterface.FSharp\Basic.fs">
       <Link>Basic.fs</Link>
     </Compile>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="Castle.Core">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Castle.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\Microsoft.CSharp.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\Microsoft.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Silverlight.Testing">
       <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight">
       <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+    </Reference>
+    <Reference Include="Moq.Silverlight">
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Moq.Silverlight.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
@@ -75,20 +84,17 @@
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Numerics">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Numerics.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Browser" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq">
-      <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.Linq.dll</HintPath>
-    </Reference>
-    <ProjectReference Include="..\ImpromptuInterface.FSharp.Silverlight\ImpromptuInterface.FSharp %28Silverlight%29.fsproj">
+    <ProjectReference Include="..\..\ImpromptuInterface.FSharp.Silverlight\ImpromptuInterface.FSharp %28Silverlight%29.fsproj">
       <Name>ImpromptuInterface.FSharp (Silverlight)</Name>
       <Project>{c6f699c3-c2c7-4393-b8c2-b5c234ed23d7}</Project>
       <Private>True</Private>
     </ProjectReference>
-    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
+    <ProjectReference Include="..\..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
       <Name>ImpromptuInterface (Silverlight)</Name>
       <Project>{9181a92f-9a17-45a3-bbdb-eac085a901a0}</Project>
       <Private>True</Private>
@@ -98,6 +104,9 @@
       <Project>{ee860cf5-6707-42f2-8091-3d4dc3ed1d30}</Project>
       <Private>True</Private>
     </ProjectReference>
+    <Reference Include="System.Xml.Linq">
+      <HintPath>..\..\..\..\..\..\..\..\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\System.Xml.Linq.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.

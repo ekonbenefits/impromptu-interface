@@ -1083,7 +1083,7 @@ namespace UnitTestImpromptuInterface
              var tPoco = new PocoEvent();
              bool tTest = false;
 
-             Impromptu.InvokeAddAssign(tPoco, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             Impromptu.InvokeAddAssignMember(tPoco, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
              tPoco.OnEvent(null, null);
 
@@ -1091,7 +1091,7 @@ namespace UnitTestImpromptuInterface
 
              var tPoco2 = new PropPoco() { Prop2 = 3 };
 
-             Impromptu.InvokeAddAssign(tPoco2, "Prop2", 4);
+             Impromptu.InvokeAddAssignMember(tPoco2, "Prop2", 4);
 
              Assert.AreEqual(7L, tPoco2.Prop2);
          }
@@ -1126,17 +1126,17 @@ namespace UnitTestImpromptuInterface
 
              tPoco.Event += tEvent;
 
-             Impromptu.InvokeSubtractAssign(tPoco, "Event", tEvent);
+             Impromptu.InvokeSubtractAssignMember(tPoco, "Event", tEvent);
 
              tPoco.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 
-             Impromptu.InvokeSubtractAssign(tPoco, "Event", tEvent);//Test Second Time
+             Impromptu.InvokeSubtractAssignMember(tPoco, "Event", tEvent);//Test Second Time
 
              var tPoco2 = new PropPoco() {Prop2 = 3};
 
-             Impromptu.InvokeSubtractAssign(tPoco2, "Prop2", 4);
+             Impromptu.InvokeSubtractAssignMember(tPoco2, "Prop2", 4);
 
              Assert.AreEqual( -1L,tPoco2.Prop2);
          }
@@ -1173,13 +1173,13 @@ namespace UnitTestImpromptuInterface
              var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              bool tTest = false;
 
-             Impromptu.InvokeAddAssign(tDyanmic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             Impromptu.InvokeAddAssignMember(tDyanmic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
              tDyanmic.OnEvent(null, null);
 
              Assert.AreEqual(true, tTest);
 
-             Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4);
+             Impromptu.InvokeAddAssignMember(tDyanmic, "Prop2", 4);
 
              Assert.AreEqual(7L, tDyanmic.Prop2);
          }
@@ -1213,14 +1213,14 @@ namespace UnitTestImpromptuInterface
 
              tDyanmic.Event += tEvent;
 
-             Impromptu.InvokeSubtractAssign(tDyanmic, "Event", tEvent);
+             Impromptu.InvokeSubtractAssignMember(tDyanmic, "Event", tEvent);
 
              tDyanmic.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 
 
-             Impromptu.InvokeSubtractAssign(tDyanmic, "Prop2", 4);
+             Impromptu.InvokeSubtractAssignMember(tDyanmic, "Prop2", 4);
 
              Assert.AreEqual(-1L, tDyanmic.Prop2);
          }

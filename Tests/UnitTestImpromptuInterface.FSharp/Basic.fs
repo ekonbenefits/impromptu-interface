@@ -1,5 +1,9 @@
 ﻿// Learn more about F# at http://fsharp.net
-namespace UnitTestImpromptuInterface.FSharp.Tests
+#if SILVERLIGHT
+namespace UnitTestImpromptuInterface.FSharp.Silverlight
+#else
+namespace UnitTestImpromptuInterface.FSharp
+#endif
 
 module Module1=
 

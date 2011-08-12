@@ -14,6 +14,7 @@
 //    limitations under the License.
 
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -49,11 +50,14 @@ namespace ImpromptuInterface
         /// Advanced usage only for serious custom dynamic invocation.
         /// </remarks>
         /// <seealso cref="CreateCallSite{T}"/>
-        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false, bool isEvent =false)
+        public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name,
+                                              Type context, string[] argNames = null, bool staticContext = false,
+                                              bool isEvent = false)
         {
 
-            return InvokeHelper.CreateCallSite(delegateType, binder.GetType(), () => binder, name, context, argNames, staticContext,
-                                                  isEvent);
+            return InvokeHelper.CreateCallSite(delegateType, binder.GetType(), () => binder, name, context, argNames,
+                                               staticContext,
+                                               isEvent);
         }
 
         /// <summary>
@@ -89,10 +93,12 @@ namespace ImpromptuInterface
         /// ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
-        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context, string[] argNames = null, bool staticContext = false, bool isEvent =false) where T : class
+        public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context,
+                                                    string[] argNames = null, bool staticContext = false,
+                                                    bool isEvent = false) where T : class
         {
             return InvokeHelper.CreateCallSite<T>(binder.GetType(), () => binder, name, context, argNames, staticContext,
-                                                 isEvent);
+                                                  isEvent);
         }
 
         /// <summary>
@@ -125,18 +131,115 @@ namespace ImpromptuInterface
             args = Util.GetArgsAndNames(args, out tArgNames);
             CallSite tCallSite = null;
 
-            return InvokeHelper.InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+            return InvokeHelper.InvokeMemberCallSite(target, name, args, tArgNames, tContext, tStaticContext,
+                                                     ref tCallSite);
         }
+
 
         /// <summary>
         /// Invokes the binary operator.
         /// </summary>
-        /// <param name="target">The target.</param>
-        /// <param name="arg1">The arg1.</param>
-        /// <param name="arg2">The arg2.</param>
+        /// <param name="leftArg">The left arg.</param>
+        /// <param name="op">The op.</param>
+        /// <param name="rightArg">The right Arg.</param>
         /// <returns></returns>
-        public static dynamic InvokeBinaryOperator(object target, ExpressionType type,  object arg1, object arg2)
+        public static dynamic InvokeBinaryOperator(dynamic leftArg, ExpressionType op, dynamic rightArg)
         {
+            switch (op)
+            {
+                case ExpressionType.Add:
+                    return leftArg + rightArg;
+                case ExpressionType.AddAssign:
+                    leftArg += rightArg;
+                    return leftArg;
+                case ExpressionType.AndAssign:
+                    leftArg &= rightArg;
+                    return leftArg;
+                case ExpressionType.Divide:
+                    return leftArg/rightArg;
+                case ExpressionType.DivideAssign:
+                    leftArg /= rightArg;
+                    return leftArg;
+                case ExpressionType.Equal:
+                    return leftArg == rightArg;
+                case ExpressionType.ExclusiveOr:
+                    return leftArg ^ rightArg;
+                case ExpressionType.ExclusiveOrAssign:
+                    leftArg ^= rightArg;
+                    return leftArg;
+                case ExpressionType.GreaterThan:
+                    return leftArg > rightArg;
+                case ExpressionType.GreaterThanOrEqual:
+                    return leftArg >= rightArg;
+                case ExpressionType.LeftShift:
+                    return leftArg << rightArg;
+                case ExpressionType.LeftShiftAssign:
+                    leftArg <<= rightArg;
+                    return leftArg;
+                case ExpressionType.LessThan:
+                    return leftArg < rightArg;
+                case ExpressionType.LessThanOrEqual:
+                    return leftArg <= rightArg;
+                case ExpressionType.Modulo:
+                    return leftArg%rightArg;
+                case ExpressionType.ModuloAssign:
+                    leftArg %= rightArg;
+                    return leftArg;
+                case ExpressionType.Multiply:
+                    return leftArg*rightArg;
+                case ExpressionType.MultiplyAssign:
+                    leftArg *= rightArg;
+                    return leftArg;
+                case ExpressionType.NotEqual:
+                    return leftArg != rightArg;
+                case ExpressionType.OrAssign:
+                    leftArg |= rightArg;
+                    return leftArg;
+                case ExpressionType.RightShift:
+                    return leftArg >> rightArg;
+                case ExpressionType.RightShiftAssign:
+                    leftArg >>= rightArg;
+                    return leftArg;
+                case ExpressionType.Subtract:
+                    return leftArg - rightArg;
+                case ExpressionType.SubtractAssign:
+                    leftArg -= rightArg;
+                    return leftArg;
+                case ExpressionType.Or:
+                    return leftArg | rightArg;
+                case ExpressionType.And:
+                    return leftArg & rightArg;
+                case ExpressionType.AndAlso:
+                    return leftArg && rightArg;
+                case ExpressionType.OrElse:
+                    return leftArg || rightArg;
+                default:
+                    throw new ArgumentException("Unsupported Operator", "op");
+            }
+        }
+
+        /// <summary>
+        /// Invokes the unary opartor.
+        /// </summary>
+        /// <param name="arg">The arg.</param>
+        /// <param name="op">The op.</param>
+        /// <returns></returns>
+        public static dynamic InvokeUnaryOpartor(ExpressionType op, dynamic arg)
+        {
+            switch (op)
+            {
+                case ExpressionType.Not:
+                    return !arg;
+                case ExpressionType.Negate:
+                    return -arg;
+                case ExpressionType.Decrement:
+                    return --arg;
+                case ExpressionType.Increment:
+                    return ++arg;
+                default:
+                    throw new ArgumentException("Unsupported Operator", "op");
+            }
+
             return null;
         }
 
@@ -166,15 +269,16 @@ namespace ImpromptuInterface
         /// <param name="indexes">The indexes.</param>
         /// <returns></returns>
         public static dynamic InvokeGetIndex(object target, params object[] indexes)
-        {     
-                        string[] tArgNames;
+        {
+            string[] tArgNames;
             Type tContext;
             bool tStaticContext;
             target = target.GetTargetContext(out tContext, out tStaticContext);
-            indexes = Util.GetArgsAndNames( indexes, out tArgNames);
+            indexes = Util.GetArgsAndNames(indexes, out tArgNames);
             CallSite tCallSite = null;
 
-            return InvokeHelper.InvokeGetIndexCallSite(target, indexes, tArgNames, tContext, tStaticContext,ref tCallSite);
+            return InvokeHelper.InvokeGetIndexCallSite(target, indexes, tArgNames, tContext, tStaticContext,
+                                                       ref tCallSite);
         }
 
 
@@ -192,7 +296,8 @@ namespace ImpromptuInterface
             indexesThenValue = Util.GetArgsAndNames(indexesThenValue, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext, ref tCallSite);
+            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext,
+                                                ref tCallSite);
         }
 
         /// <summary>
@@ -227,7 +332,8 @@ namespace ImpromptuInterface
             args = Util.GetArgsAndNames(args, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeHelper.InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext, ref tCallSite);
+            InvokeHelper.InvokeMemberActionCallSite(target, name, args, tArgNames, tContext, tStaticContext,
+                                                    ref tCallSite);
         }
 
         /// <summary>
@@ -276,11 +382,11 @@ namespace ImpromptuInterface
         {
             Type tContext;
             bool tStaticContext;
-            target =target.GetTargetContext(out tContext, out tStaticContext);
+            target = target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
 
 
-            CallSite tCallSite =null;
+            CallSite tCallSite = null;
             return InvokeHelper.InvokeSetCallSite(target, name, value, tContext, tStaticContext, ref tCallSite);
         }
 
@@ -300,9 +406,10 @@ namespace ImpromptuInterface
         }
 
 
-      
+
 
         private static readonly dynamic _invokeSetAll = new InvokeSetters();
+
         /// <summary>
         /// Call Like method invokes set on target and a list of property/value. Invoke with dictionary, anonymous type or named arguments.
         /// </summary>
@@ -318,7 +425,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="totalArgCount">The total arg count.</param>
         /// <returns></returns>
-        public static dynamic Curry(object target, int? totalArgCount=null)
+        public static dynamic Curry(object target, int? totalArgCount = null)
         {
             if (target is Delegate && !totalArgCount.HasValue)
                 return Curry((Delegate) target);
@@ -358,7 +465,7 @@ namespace ImpromptuInterface
         {
             Type tContext;
             bool tStaticContext;
-            target =target.GetTargetContext(out tContext, out tStaticContext);
+            target = target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
             CallSite tSite = null;
             return InvokeHelper.InvokeGetCallSite(target, name, tContext, tStaticContext, ref tSite);
@@ -372,7 +479,7 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic InvokeGetChain(object target, string propertyChain)
         {
-            var tProperties =propertyChain.Split('.');
+            var tProperties = propertyChain.Split('.');
             return tProperties.Aggregate(target, InvokeGet);
         }
 
@@ -395,15 +502,25 @@ namespace ImpromptuInterface
             CallSite tCallSite = null;
             return InvokeHelper.InvokeIsEventCallSite(target, name, tContext, ref tCallSite);
         }
-
-
         /// <summary>
         /// Invokes add assign with correct behavior for events.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
+        [Obsolete("Use InvokeAddAssignMember")]
         public static void InvokeAddAssign(object target, string name, object value)
+        {
+            InvokeAddAssignMember(target, name, value);
+        }
+
+    /// <summary>
+        /// Invokes add assign with correct behavior for events.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public static void InvokeAddAssignMember(object target, string name, object value)
         {
             CallSite callSiteAdd =null;
             CallSite callSiteGet =null;
@@ -420,14 +537,24 @@ namespace ImpromptuInterface
             InvokeHelper.InvokeAddAssignCallSite(target, name, args, argNames, context, staticContext, ref callSiteIsEvent, ref callSiteAdd, ref callSiteGet, ref callSiteSet);
         }
 
-
         /// <summary>
         /// Invokes subtract assign with correct behavior for events.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public static void InvokeSubtractAssign(object target, string name, object value)
+               [Obsolete("use InvokeSubtractAssignMember instead")]
+                public static void InvokeSubtractAssign(object target, string name, object value)
+                {
+                    InvokeSubtractAssignMember(target,name,value);
+                }
+        /// <summary>
+        /// Invokes subtract assign with correct behavior for events.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="name">The name.</param>
+        /// <param name="value">The value.</param>
+        public static void InvokeSubtractAssignMember(object target, string name, object value)
         {
             Type context;
             bool staticContext;

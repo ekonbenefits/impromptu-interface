@@ -69,7 +69,6 @@
     <Reference Include="System.Net" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Browser" />
-    <Reference Include="System.Xml" />
     <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
       <Name>ImpromptuInterface (Silverlight)</Name>
       <Project>{9181a92f-9a17-45a3-bbdb-eac085a901a0}</Project>

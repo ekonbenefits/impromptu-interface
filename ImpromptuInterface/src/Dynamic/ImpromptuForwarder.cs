@@ -238,11 +238,11 @@ namespace ImpromptuInterface.Dynamic
 
                 if (tValue.IsAdding)
                 {
-                    Impromptu.InvokeAddAssign(CallTarget, binder.Name, tValue.Delegate);
+                    Impromptu.InvokeAddAssignMember(CallTarget, binder.Name, tValue.Delegate);
                 }
                 else
                 {
-                    Impromptu.InvokeSubtractAssign(CallTarget, binder.Name, tValue.Delegate);
+                    Impromptu.InvokeSubtractAssignMember(CallTarget, binder.Name, tValue.Delegate);
                 }
 
                 return true;

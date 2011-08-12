@@ -270,9 +270,9 @@ namespace ImpromptuInterface.MVVM
                 var tEventHandler = Event.GenerateEventHandler(tEvent.EventHandlerType, targetName);
 
                   if (un)
-                    Impromptu.InvokeSubtractAssign(source, eventName, tEventHandler);
+                    Impromptu.InvokeSubtractAssignMember(source, eventName, tEventHandler);
                   else
-                    Impromptu.InvokeAddAssign(source,eventName, tEventHandler);
+                    Impromptu.InvokeAddAssignMember(source,eventName, tEventHandler);
             }
         }
 

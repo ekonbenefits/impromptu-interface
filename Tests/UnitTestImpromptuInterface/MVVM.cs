@@ -16,7 +16,11 @@ using NUnit.Framework;
 
 using ImpromptuInterface.MVVM;
 
+#if SILVERLIGHT
+namespace UnitTestImpromptuInterface.Silverlight
+#else
 namespace UnitTestImpromptuInterface
+#endif
 {
 
        

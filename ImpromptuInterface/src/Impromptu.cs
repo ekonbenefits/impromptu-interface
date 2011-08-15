@@ -209,10 +209,6 @@ namespace ImpromptuInterface
                     return leftArg | rightArg;
                 case ExpressionType.And:
                     return leftArg & rightArg;
-                case ExpressionType.AndAlso:
-                    return leftArg && rightArg;
-                case ExpressionType.OrElse:
-                    return leftArg || rightArg;
                 default:
                     throw new ArgumentException("Unsupported Operator", "op");
             }

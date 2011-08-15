@@ -14,7 +14,11 @@ using NUnit.Framework;
 #endif
 
 
+#if SILVERLIGHT
+namespace UnitTestImpromptuInterface.Silverlight
+#else
 namespace UnitTestImpromptuInterface
+#endif
 {
     [TestFixture]
     public class ImpromptuDynamic : Helper

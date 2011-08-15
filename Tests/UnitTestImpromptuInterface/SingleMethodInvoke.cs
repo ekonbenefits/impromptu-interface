@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
@@ -28,13 +29,18 @@ using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
-
+using Moq;
 
 #if !SELFRUNNER
 using NUnit.Framework;
 #endif
 
+
+#if SILVERLIGHT
+namespace UnitTestImpromptuInterface.Silverlight
+#else
 namespace UnitTestImpromptuInterface
+#endif
 {
     [TestFixture]
     public class SingleMethodInvoke : Helper
@@ -1266,6 +1272,50 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly: true).Single());
         }
+
+
+       
+
+        private DynamicObject CreateMock(ExpressionType op)
+        {
+            var tMock = new Mock<DynamicObject>() { CallBase = true };
+            object result = It.IsAny<object>();
+            tMock.Setup(
+                s => s.TryBinaryOperation(It.Is<BinaryOperationBinder>(b => b.Operation == op), It.IsAny<object>(), out result)
+                ).Returns(true);
+            return tMock.Object;
+        }
+
+        [Test]
+        public void TestInvokeAdd()
+        {
+            Assert.AreEqual(Impromptu.InvokeBinaryOperator(1, ExpressionType.Add, 2), 3);
+        }
+
+        [Test]
+        public void TestInvokeAddDynamic()
+        {
+            var tMock = CreateMock(ExpressionType.Add);
+            Impromptu.InvokeBinaryOperator(tMock, ExpressionType.Add, 4);
+        }
+             
+        
+        [Test]
+        public  void TestInvokeSubtract()
+        {
+            Assert.AreEqual(Impromptu.InvokeBinaryOperator(1, ExpressionType.Subtract, 2), -1);
+        }
+
+
+        [Test]
+        public void TestInvokeSubtractDynamic()
+        {
+            var tType = ExpressionType.Subtract;
+            var tMock = CreateMock(tType);
+            Impromptu.InvokeBinaryOperator(tMock, tType, 4);
+        }
+
+    
     }
     
 }

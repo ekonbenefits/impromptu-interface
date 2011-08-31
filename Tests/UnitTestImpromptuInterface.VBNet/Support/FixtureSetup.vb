@@ -1,21 +1,24 @@
 ﻿Imports ImpromptuInterface.Build
 Imports NUnit.Framework
 
-<SetUpFixture()>
-Public Class FixtureSetup
+Namespace VBNET
 
-    Private Builder As IDisposable
+    <SetUpFixture()>
+    Public Class FixtureSetup
 
-    <SetUp()>
-    Public Sub Setup()
+        Private Builder As IDisposable
 
-        Builder = BuildProxy.WriteOutDll("ImpromptuEmit.VB")
+        <SetUp()>
+        Public Sub Setup()
 
-    End Sub
+            Builder = BuildProxy.WriteOutDll("ImpromptuEmit.VB")
 
-    <TearDown()>
-    Public Sub TearDown()
+        End Sub
 
-        Builder.Dispose()
-    End Sub
-End Class
+        <TearDown()>
+        Public Sub TearDown()
+
+            Builder.Dispose()
+        End Sub
+    End Class
+End Namespace

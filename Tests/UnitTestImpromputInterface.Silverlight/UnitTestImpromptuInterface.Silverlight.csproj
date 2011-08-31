@@ -74,23 +74,23 @@
     </Reference>
     <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Silverlight.Testing">
-      <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.Silverlight.Testing.dll</HintPath>
+      <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.Silverlight.Testing.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
+      <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\Microsoft.VisualStudio.QualityTools.UnitTesting.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="Moq.Silverlight">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Moq.Silverlight.dll</HintPath>
     </Reference>
     <Reference Include="mscorlib" />
     <Reference Include="NUnit.Silverlight.Compatibility">
-      <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Compatibility.dll</HintPath>
+      <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Compatibility.dll</HintPath>
     </Reference>
     <Reference Include="NUnit.Silverlight.Framework">
-      <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Framework.dll</HintPath>
+      <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Framework.dll</HintPath>
     </Reference>
     <Reference Include="NUnit.Silverlight.Metadata">
-      <HintPath>..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Metadata.dll</HintPath>
+      <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Metadata.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows" />
     <Reference Include="System.Core">

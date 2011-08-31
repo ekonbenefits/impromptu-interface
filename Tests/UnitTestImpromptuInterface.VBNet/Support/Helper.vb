@@ -3,35 +3,24 @@ Imports System.Linq
 Imports System.Text
 Imports NUnit.Framework
 
-Public Class TestMethodAttribute
-	Inherits Attribute
+Namespace VBNET
 
-End Class
+    Public Class WriteLineContext
+        Public Sub WriteLine(format As String, ParamArray args As Object())
+            Console.WriteLine(format, args)
+        End Sub
+    End Class
 
-Public Class TestClassAttribute
-	Inherits Attribute
+    Public Class Helper
+        Inherits AssertionHelper
+        Public ReadOnly Property TestContext() As WriteLineContext
+            Get
+                Return New WriteLineContext()
+            End Get
+        End Property
 
-End Class
-
-Public Class TestInitializeAttribute
-	Inherits Attribute
-
-End Class
-Public Class WriteLineContext
-	Public Sub WriteLine(format As String, ParamArray args As Object())
-		Console.WriteLine(format, args)
-	End Sub
-End Class
-
-Public Class Helper
-	Inherits AssertionHelper
-	Public ReadOnly Property TestContext() As WriteLineContext
-		Get
-			Return New WriteLineContext()
-		End Get
-	End Property
-
-	Public Sub AssertException(Of T As Exception)(action As TestDelegate)
-		Assert.Throws(Of T)(action)
-	End Sub
-End Class
+        Public Sub AssertException(Of T As Exception)(action As TestDelegate)
+            Assert.Throws(Of T)(action)
+        End Sub
+    End Class
+End Namespace

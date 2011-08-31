@@ -32,860 +32,862 @@ Imports InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags
 Imports ImpromptuInterface.InvokeExt
 Imports ImpromptuInterface.Optimization
 
+Namespace VBNET
 
-<TestFixture(), TestClass()> _
-Public Class SingleMethodInvoke
-    Inherits Helper
-    <Test(), TestMethod()> _
-    Public Sub TestDynamicSet()
-        Dim tExpando As Object = New ExpandoObject()
+    <TestFixture()> _
+    Public Class SingleMethodInvoke
+        Inherits Helper
+        <Test()> _
+        Public Sub TestDynamicSet()
+            Dim tExpando As Object = New ExpandoObject()
 
-        Dim tSetValue = "1"
+            Dim tSetValue = "1"
 
-        Impromptu.InvokeSet(tExpando, "Test", tSetValue)
+            Impromptu.InvokeSet(tExpando, "Test", tSetValue)
 
-        Assert.AreEqual(tSetValue, tExpando.Test)
+            Assert.AreEqual(tSetValue, tExpando.Test)
 
-    End Sub
+        End Sub
 
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestPocoSet()
-        Dim tPoco = New PropPoco()
+        <Test()> _
+        Public Sub TestPocoSet()
+            Dim tPoco = New PropPoco()
 
-        Dim tSetValue = "1"
+            Dim tSetValue = "1"
 
-        Impromptu.InvokeSet(tPoco, "Prop1", tSetValue)
+            Impromptu.InvokeSet(tPoco, "Prop1", tSetValue)
 
-        Assert.AreEqual(tSetValue, tPoco.Prop1)
+            Assert.AreEqual(tSetValue, tPoco.Prop1)
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableDyanmicSetAndPocoSetAndSetNull()
-        Dim tExpando As Object = New ExpandoObject()
-        Dim tSetValueD = "4"
+        <Test()> _
+        Public Sub TestCacheableDyanmicSetAndPocoSetAndSetNull()
+            Dim tExpando As Object = New ExpandoObject()
+            Dim tSetValueD = "4"
 
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "Prop1")
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "Prop1")
 
-        tCachedInvoke.Invoke(DirectCast(tExpando, Object), tSetValueD)
+            tCachedInvoke.Invoke(DirectCast(tExpando, Object), tSetValueD)
 
 
-        Assert.AreEqual(tSetValueD, tExpando.Prop1)
+            Assert.AreEqual(tSetValueD, tExpando.Prop1)
 
-        Dim tPoco = New PropPoco()
-        Dim tSetValue = "1"
+            Dim tPoco = New PropPoco()
+            Dim tSetValue = "1"
 
-        tCachedInvoke.Invoke(tPoco, tSetValue)
+            tCachedInvoke.Invoke(tPoco, tSetValue)
 
-        Assert.AreEqual(tSetValue, tPoco.Prop1)
+            Assert.AreEqual(tSetValue, tPoco.Prop1)
 
-        Dim tSetValue2 As [String] = Nothing
+            Dim tSetValue2 As [String] = Nothing
 
-        tCachedInvoke.Invoke(tPoco, tSetValue2)
+            tCachedInvoke.Invoke(tPoco, tSetValue2)
 
-        Assert.AreEqual(tSetValue2, tPoco.Prop1)
-    End Sub
+            Assert.AreEqual(tSetValue2, tPoco.Prop1)
+        End Sub
 
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestConvert()
-        Dim tEl = New XElement("Test", "45")
+        <Test()> _
+        Public Sub TestConvert()
+            Dim tEl = New XElement("Test", "45")
 
-        Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Integer), explicit:=True)
+            Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Integer), explicit:=True)
 
-        Assert.AreEqual(GetType(Integer), tCast.[GetType]())
-        Assert.AreEqual(45, tCast)
-    End Sub
+            Assert.AreEqual(GetType(Integer), tCast.[GetType]())
+            Assert.AreEqual(45, tCast)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConvertCacheable()
-        Dim tEl = New XElement("Test", "45")
+        <Test()> _
+        Public Sub TestConvertCacheable()
+            Dim tEl = New XElement("Test", "45")
 
-        Dim tCacheInvoke = New CacheableInvocation(InvocationKind.Convert, convertType:=GetType(Integer), convertExplicit:=True)
-        Dim tCast = tCacheInvoke.Invoke(tEl)
+            Dim tCacheInvoke = New CacheableInvocation(InvocationKind.Convert, convertType:=GetType(Integer), convertExplicit:=True)
+            Dim tCast = tCacheInvoke.Invoke(tEl)
 
-        Assert.AreEqual(GetType(Integer), tCast.[GetType]())
-        Assert.AreEqual(45, tCast)
-    End Sub
+            Assert.AreEqual(GetType(Integer), tCast.[GetType]())
+            Assert.AreEqual(45, tCast)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstruct()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
+        <Test()> _
+        Public Sub TestConstruct()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
 
-        Assert.AreEqual("two", tCast(1))
-    End Sub
+            Assert.AreEqual("two", tCast(1))
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableConstruct()
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=1)
+        <Test()> _
+        Public Sub TestCacheableConstruct()
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=1)
 
-        Dim tCast As Object = tCachedInvoke.Invoke(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
+            Dim tCast As Object = tCachedInvoke.Invoke(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
 
-        Assert.AreEqual("two", tCast(1))
-    End Sub
+            Assert.AreEqual("two", tCast(1))
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructOptional()
-        Dim tCast As PocoOptConstructor = Impromptu.InvokeConstructor(GetType(PocoOptConstructor), "3".WithArgumentName("three__3"))
+        <Test()> _
+        Public Sub TestConstructOptional()
+            Dim tCast As PocoOptConstructor = Impromptu.InvokeConstructor(GetType(PocoOptConstructor), "3".WithArgumentName("three__3"))
 
-        Assert.AreEqual("-1", tCast.One)
-        Assert.AreEqual("-2", tCast.Two)
-        Assert.AreEqual("3", tCast.Three)
-    End Sub
+            Assert.AreEqual("-1", tCast.One)
+            Assert.AreEqual("-2", tCast.Two)
+            Assert.AreEqual("3", tCast.Three)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableConstructOptional()
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=1, argNames:=New String() {"three__3"})
+        <Test()> _
+        Public Sub TestCacheableConstructOptional()
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=1, argNames:=New String() {"three__3"})
 
-        Dim tCast = DirectCast(tCachedInvoke.Invoke(GetType(PocoOptConstructor), "3"), PocoOptConstructor)
+            Dim tCast = DirectCast(tCachedInvoke.Invoke(GetType(PocoOptConstructor), "3"), PocoOptConstructor)
 
-        Assert.AreEqual("-1", tCast.One)
-        Assert.AreEqual("-2", tCast.Two)
-        Assert.AreEqual("3", tCast.Three)
-    End Sub
+            Assert.AreEqual("-1", tCast.One)
+            Assert.AreEqual("-2", tCast.Two)
+            Assert.AreEqual("3", tCast.Three)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestOptionalArgumentActivationNoneAndCacheable()
-        AssertException(Of MissingMethodException)(Function() Activator.CreateInstance(Of ImpromptuList)())
+        <Test()> _
+        Public Sub TestOptionalArgumentActivationNoneAndCacheable()
+            AssertException(Of MissingMethodException)(Function() Activator.CreateInstance(Of ImpromptuList)())
 
-        Dim tList = Impromptu.InvokeConstructor(GetType(ImpromptuList))
+            Dim tList = Impromptu.InvokeConstructor(GetType(ImpromptuList))
 
 
-        Assert.AreEqual(GetType(ImpromptuList), tList.[GetType]())
+            Assert.AreEqual(GetType(ImpromptuList), tList.[GetType]())
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor)
 
-        Dim tList1 = tCachedInvoke.Invoke(GetType(ImpromptuList))
+            Dim tList1 = tCachedInvoke.Invoke(GetType(ImpromptuList))
 
 
-        Assert.AreEqual(GetType(ImpromptuList), tList1.[GetType]())
-    End Sub
+            Assert.AreEqual(GetType(ImpromptuList), tList1.[GetType]())
+        End Sub
 
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructValueType()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime), 2009, 1, 20)
+        <Test()> _
+        Public Sub TestConstructValueType()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime), 2009, 1, 20)
 
-        Assert.AreEqual(20, tCast.Day)
+            Assert.AreEqual(20, tCast.Day)
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableConstructValueType()
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=3)
-        Dim tCast As Object = tCachedInvoke.Invoke(GetType(DateTime), 2009, 1, 20)
+        <Test()> _
+        Public Sub TestCacheableConstructValueType()
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor, argCount:=3)
+            Dim tCast As Object = tCachedInvoke.Invoke(GetType(DateTime), 2009, 1, 20)
 
-        Assert.AreEqual(20, tCast.Day)
+            Assert.AreEqual(20, tCast.Day)
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructValueTypeJustDynamic()
-        Dim day As Object = 20
-        Dim year As Object = 2009
-        Dim month As Object = 1
-        Dim tCast = New DateTime(year, month, day)
-        Dim tDate As DateTime = tCast
-        Assert.AreEqual(20, tDate.Day)
-    End Sub
+        <Test()> _
+        Public Sub TestConstructValueTypeJustDynamic()
+            Dim day As Object = 20
+            Dim year As Object = 2009
+            Dim month As Object = 1
+            Dim tCast = New DateTime(year, month, day)
+            Dim tDate As DateTime = tCast
+            Assert.AreEqual(20, tDate.Day)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructprimativetype()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(Int32))
+        <Test()> _
+        Public Sub TestConstructprimativetype()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(Int32))
 
-        Assert.AreEqual(New Int32(), tCast)
-    End Sub
+            Assert.AreEqual(New Int32(), tCast)
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructDateTimeNoParams()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime))
+        <Test()> _
+        Public Sub TestConstructDateTimeNoParams()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime))
 
-        Assert.AreEqual(New DateTime(), tCast)
-    End Sub
+            Assert.AreEqual(New DateTime(), tCast)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructOBjectNoParams()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(Object))
+        <Test()> _
+        Public Sub TestConstructOBjectNoParams()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(Object))
 
-        Assert.AreEqual(GetType(Object), tCast.[GetType]())
-    End Sub
+            Assert.AreEqual(GetType(Object), tCast.[GetType]())
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructNullableprimativetype()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(Nullable(Of Int32)))
+        <Test()> _
+        Public Sub TestConstructNullableprimativetype()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(Nullable(Of Int32)))
 
-        Assert.AreEqual(Nothing, tCast)
-    End Sub
+            Assert.AreEqual(Nothing, tCast)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestConstructGuid()
-        Dim tCast = Impromptu.InvokeConstructor(GetType(Guid))
+        <Test()> _
+        Public Sub TestConstructGuid()
+            Dim tCast = Impromptu.InvokeConstructor(GetType(Guid))
 
-        Assert.AreEqual(New Guid(), tCast)
-    End Sub
+            Assert.AreEqual(New Guid(), tCast)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheablePrimativeDateTimeObjectNullableAndGuidNoParams()
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor)
+        <Test()> _
+        Public Sub TestCacheablePrimativeDateTimeObjectNullableAndGuidNoParams()
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor)
 
-        Dim tCast As Object = tCachedInvoke.Invoke(GetType(Int32))
+            Dim tCast As Object = tCachedInvoke.Invoke(GetType(Int32))
 
-        Assert.AreEqual(New Int32(), tCast)
+            Assert.AreEqual(New Int32(), tCast)
 
-        tCast = tCachedInvoke.Invoke(GetType(DateTime))
+            tCast = tCachedInvoke.Invoke(GetType(DateTime))
 
-        Assert.AreEqual(New DateTime(), tCast)
+            Assert.AreEqual(New DateTime(), tCast)
 
-        tCast = tCachedInvoke.Invoke(GetType(List(Of String)))
+            tCast = tCachedInvoke.Invoke(GetType(List(Of String)))
 
-        Assert.AreEqual(GetType(List(Of String)), tCast.[GetType]())
+            Assert.AreEqual(GetType(List(Of String)), tCast.[GetType]())
 
-        tCast = tCachedInvoke.Invoke(GetType(Object))
+            tCast = tCachedInvoke.Invoke(GetType(Object))
 
-        Assert.AreEqual(GetType(Object), tCast.[GetType]())
+            Assert.AreEqual(GetType(Object), tCast.[GetType]())
 
-        tCast = tCachedInvoke.Invoke(GetType(Nullable(Of Int32)))
+            tCast = tCachedInvoke.Invoke(GetType(Nullable(Of Int32)))
 
-        Assert.AreEqual(Nothing, tCast)
+            Assert.AreEqual(Nothing, tCast)
 
-        tCast = tCachedInvoke.Invoke(GetType(Guid))
+            tCast = tCachedInvoke.Invoke(GetType(Guid))
 
-        Assert.AreEqual(New Guid, tCast)
-    End Sub
+            Assert.AreEqual(New Guid, tCast)
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestStaticCall()
+        <Test()> _
+        Public Sub TestStaticCall()
 
-        Dim tOut = Impromptu.InvokeMember(GetType(StaticType).WithStaticContext(), "Create".WithGenericArgs(GetType(Boolean)), 1)
-        Assert.AreEqual(False, tOut)
-    End Sub
+            Dim tOut = Impromptu.InvokeMember(GetType(StaticType).WithStaticContext(), "Create".WithGenericArgs(GetType(Boolean)), 1)
+            Assert.AreEqual(False, tOut)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableStaticCall()
+        <Test()> _
+        Public Sub TestCacheableStaticCall()
 
-        Dim tCached = New CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(GetType(Boolean)), argCount:=1, context:=GetType(StaticType).WithStaticContext())
+            Dim tCached = New CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(GetType(Boolean)), argCount:=1, context:=GetType(StaticType).WithStaticContext())
 
-        Dim tOut = tCached.Invoke(GetType(StaticType), 1)
-        Assert.AreEqual(False, tOut)
-    End Sub
+            Dim tOut = tCached.Invoke(GetType(StaticType), 1)
+            Assert.AreEqual(False, tOut)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestImplicitConvert()
-        Dim tEl = 45
+        <Test()> _
+        Public Sub TestImplicitConvert()
+            Dim tEl = 45
 
-        Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Long))
+            Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Long))
 
-        Assert.AreEqual(GetType(Long), tCast.[GetType]())
-    End Sub
+            Assert.AreEqual(GetType(Long), tCast.[GetType]())
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableImplicitConvert()
-        Dim tEl = 45
+        <Test()> _
+        Public Sub TestCacheableImplicitConvert()
+            Dim tEl = 45
 
-        Dim tCachedInvoke = CacheableInvocation.CreateConvert(GetType(Long))
+            Dim tCachedInvoke = CacheableInvocation.CreateConvert(GetType(Long))
 
-        Dim tCast = tCachedInvoke.Invoke(tEl)
+            Dim tCast = tCachedInvoke.Invoke(tEl)
 
-        Assert.AreEqual(GetType(Long), tCast.[GetType]())
-    End Sub
+            Assert.AreEqual(GetType(Long), tCast.[GetType]())
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableGet()
-        Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Prop1")
+        <Test()> _
+        Public Sub TestCacheableGet()
+            Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Prop1")
 
-        Dim tSetValue = "1"
-        Dim tAnon = New PropPoco() With { _
-         .Prop1 = tSetValue _
-        }
+            Dim tSetValue = "1"
+            Dim tAnon = New PropPoco() With { _
+             .Prop1 = tSetValue _
+            }
 
-        Dim tOut = tCached.Invoke(tAnon)
-        Assert.AreEqual(tSetValue, tOut)
+            Dim tOut = tCached.Invoke(tAnon)
+            Assert.AreEqual(tSetValue, tOut)
 
-        Dim tSetValue2 = "2"
-        tAnon = New PropPoco() With { _
-         .Prop1 = tSetValue2 _
-        }
+            Dim tSetValue2 = "2"
+            tAnon = New PropPoco() With { _
+             .Prop1 = tSetValue2 _
+            }
 
 
-        Dim tOut2 = tCached.Invoke(tAnon)
+            Dim tOut2 = tCached.Invoke(tAnon)
 
 
-        Assert.AreEqual(tSetValue2, tOut2)
+            Assert.AreEqual(tSetValue2, tOut2)
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetIndexer()
+        <Test()> _
+        Public Sub TestGetIndexer()
 
-        Dim tSetValue As Object = "1"
-        Dim tAnon = New String() {tSetValue, "2"}
+            Dim tSetValue As Object = "1"
+            Dim tAnon = New String() {tSetValue, "2"}
 
 
-        Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
+            Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
 
-        Assert.AreEqual(tSetValue, tOut)
+            Assert.AreEqual(tSetValue, tOut)
 
-    End Sub
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetIndexerValue()
+        <Test()> _
+        Public Sub TestGetIndexerValue()
 
 
-        Dim tAnon = New Integer() {1, 2}
+            Dim tAnon = New Integer() {1, 2}
 
 
-        Dim tOut As Integer = Impromptu.InvokeGetIndex(tAnon, 1)
+            Dim tOut As Integer = Impromptu.InvokeGetIndex(tAnon, 1)
 
-        Assert.AreEqual(tAnon(1), tOut)
+            Assert.AreEqual(tAnon(1), tOut)
 
-    End Sub
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetLengthArray()
-        Dim tAnon = New String() {"1", "2"}
+        <Test()> _
+        Public Sub TestGetLengthArray()
+            Dim tAnon = New String() {"1", "2"}
 
 
-        Dim tOut As Integer = Impromptu.InvokeGet(tAnon, "Length")
+            Dim tOut As Integer = Impromptu.InvokeGet(tAnon, "Length")
 
-        Assert.AreEqual(2, tOut)
+            Assert.AreEqual(2, tOut)
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetIndexerArray()
-        Dim tSetValue As Object = "1"
-        Dim tAnon = New List(Of String)() From { _
-         tSetValue, _
-         "2" _
-        }
+        <Test()> _
+        Public Sub TestGetIndexerArray()
+            Dim tSetValue As Object = "1"
+            Dim tAnon = New List(Of String)() From { _
+             tSetValue, _
+             "2" _
+            }
 
 
-        Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
+            Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
 
-        Assert.AreEqual(tSetValue, tOut)
+            Assert.AreEqual(tSetValue, tOut)
 
-    End Sub
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableIndexer()
+        <Test()> _
+        Public Sub TestCacheableIndexer()
 
-        Dim tStrings = New String() {"1", "2"}
+            Dim tStrings = New String() {"1", "2"}
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.GetIndex, argCount:=1)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.GetIndex, argCount:=1)
 
-        Dim tOut = DirectCast(tCachedInvoke.Invoke(tStrings, 0), String)
+            Dim tOut = DirectCast(tCachedInvoke.Invoke(tStrings, 0), String)
 
-        Assert.AreEqual(tStrings(0), tOut)
+            Assert.AreEqual(tStrings(0), tOut)
 
-        Dim tOut2 = DirectCast(tCachedInvoke.Invoke(tStrings, 1), String)
+            Dim tOut2 = DirectCast(tCachedInvoke.Invoke(tStrings, 1), String)
 
-        Assert.AreEqual(tStrings(1), tOut2)
+            Assert.AreEqual(tStrings(1), tOut2)
 
-        Dim tInts = New Integer() {3, 4}
+            Dim tInts = New Integer() {3, 4}
 
-        Dim tOut3 = CInt(tCachedInvoke.Invoke(tInts, 0))
+            Dim tOut3 = CInt(tCachedInvoke.Invoke(tInts, 0))
 
-        Assert.AreEqual(tInts(0), tOut3)
+            Assert.AreEqual(tInts(0), tOut3)
 
-        Dim tOut4 = CInt(tCachedInvoke.Invoke(tInts, 1))
+            Dim tOut4 = CInt(tCachedInvoke.Invoke(tInts, 1))
 
-        Assert.AreEqual(tInts(1), tOut4)
+            Assert.AreEqual(tInts(1), tOut4)
 
-        Dim tList = New List(Of String)() From { _
-         "5", _
-         "6" _
-        }
+            Dim tList = New List(Of String)() From { _
+             "5", _
+             "6" _
+            }
 
-        Dim tOut5 = DirectCast(tCachedInvoke.Invoke(tList, 0), String)
+            Dim tOut5 = DirectCast(tCachedInvoke.Invoke(tList, 0), String)
 
-        Assert.AreEqual(tList(0), tOut5)
+            Assert.AreEqual(tList(0), tOut5)
 
-        Dim tOut6 = DirectCast(tCachedInvoke.Invoke(tList, 0), String)
+            Dim tOut6 = DirectCast(tCachedInvoke.Invoke(tList, 0), String)
 
-        Assert.AreEqual(tList(0), tOut6)
-    End Sub
+            Assert.AreEqual(tList(0), tOut6)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestSetIndexer()
+        <Test()> _
+        Public Sub TestSetIndexer()
 
-        Dim tSetValue As Object = "3"
-        Dim tAnon = New List(Of String)() From { _
-         "1", _
-         "2" _
-        }
+            Dim tSetValue As Object = "3"
+            Dim tAnon = New List(Of String)() From { _
+             "1", _
+             "2" _
+            }
 
-        Impromptu.InvokeSetIndex(tAnon, 0, tSetValue)
+            Impromptu.InvokeSetIndex(tAnon, 0, tSetValue)
 
-        Assert.AreEqual(tSetValue, tAnon(0))
+            Assert.AreEqual(tSetValue, tAnon(0))
 
-    End Sub
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableSetIndexer()
+        <Test()> _
+        Public Sub TestCacheableSetIndexer()
 
-        Dim tSetValue As Object = "3"
-        Dim tList = New List(Of String)() From { _
-         "1", _
-         "2" _
-        }
+            Dim tSetValue As Object = "3"
+            Dim tList = New List(Of String)() From { _
+             "1", _
+             "2" _
+            }
 
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.SetIndex, argCount:=2)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.SetIndex, argCount:=2)
 
-        tCachedInvoke.Invoke(tList, 0, tSetValue)
+            tCachedInvoke.Invoke(tList, 0, tSetValue)
 
-        Assert.AreEqual(tSetValue, tList(0))
+            Assert.AreEqual(tSetValue, tList(0))
 
-    End Sub
+        End Sub
 
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestMethodDynamicPassAndGetValue()
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Func = New Func(Of Integer, String)(Function(it) it.ToString())
+        <Test()> _
+        Public Sub TestMethodDynamicPassAndGetValue()
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Func = New Func(Of Integer, String)(Function(it) it.ToString())
 
-        Dim tValue = 1
+            Dim tValue = 1
 
-        Dim tOut = Impromptu.InvokeMember(tExpando, "Func", tValue)
+            Dim tOut = Impromptu.InvokeMember(tExpando, "Func", tValue)
 
-        Assert.AreEqual(tValue.ToString(), tOut)
-    End Sub
+            Assert.AreEqual(tValue.ToString(), tOut)
+        End Sub
 
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableMethodDynamicPassAndGetValue()
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Func = New Func(Of Integer, String)(Function(it) it.ToString())
+        <Test()> _
+        Public Sub TestCacheableMethodDynamicPassAndGetValue()
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Func = New Func(Of Integer, String)(Function(it) it.ToString())
 
-        Dim tValue = 1
+            Dim tValue = 1
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Func", 1)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Func", 1)
 
-        Dim tOut = tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
+            Dim tOut = tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
 
-        Assert.AreEqual(tValue.ToString(), tOut)
-    End Sub
+            Assert.AreEqual(tValue.ToString(), tOut)
+        End Sub
 
 
-  
 
-  
 
- 
 
-    ''' <summary>
-    ''' To dynamically invoke a method with out or ref parameters you need to know the signature
-    ''' </summary>
-    <Test(), TestMethod()> _
-    Public Sub TestOutMethod()
 
 
 
-        Dim tResult As String = [String].Empty
+        ''' <summary>
+        ''' To dynamically invoke a method with out or ref parameters you need to know the signature
+        ''' </summary>
+        <Test()> _
+        Public Sub TestOutMethod()
 
-        Dim tPoco = New MethOutPoco()
 
 
-        Dim tName As String = "Func"
-        Dim tContext As Type = [GetType]()
-        Dim tBinder = Binder.InvokeMember(BinderFlags.None, tName, Nothing, tContext, New Info() {Info.Create(InfoFlags.None, Nothing), Info.Create(InfoFlags.IsRef Or InfoFlags.UseCompileTimeType, Nothing)})
+            Dim tResult As String = [String].Empty
 
+            Dim tPoco = New MethOutPoco()
 
-        Dim tSite = Impromptu.CreateCallSite(Of DynamicTryString)(tBinder, tName, tContext)
 
+            Dim tName As String = "Func"
+            Dim tContext As Type = [GetType]()
+            Dim tBinder = Binder.InvokeMember(BinderFlags.None, tName, Nothing, tContext, New Info() {Info.Create(InfoFlags.None, Nothing), Info.Create(InfoFlags.IsRef Or InfoFlags.UseCompileTimeType, Nothing)})
 
-        tSite.Target.Invoke(tSite, tPoco, tResult)
 
-        Assert.AreEqual("success", tResult)
+            Dim tSite = Impromptu.CreateCallSite(Of DynamicTryString)(tBinder, tName, tContext)
 
-    End Sub
 
+            tSite.Target.Invoke(tSite, tPoco, tResult)
 
-    <Test(), TestMethod()> _
-    Public Sub TestMethodDynamicPassVoid()
-        Dim tTest = "Wrong"
+            Assert.AreEqual("success", tResult)
 
-        Dim tValue = "Correct"
+        End Sub
 
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
 
+        <Test()> _
+        Public Sub TestMethodDynamicPassVoid()
+            Dim tTest = "Wrong"
 
+            Dim tValue = "Correct"
 
-        Impromptu.InvokeMemberAction(tExpando, "Action", tValue)
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
 
-        Assert.AreEqual(tValue, tTest)
-    End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableMethodDynamicPassVoid()
-        Dim tTest = "Wrong"
 
-        Dim tValue = "Correct"
+            Impromptu.InvokeMemberAction(tExpando, "Action", tValue)
 
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
+            Assert.AreEqual(tValue, tTest)
+        End Sub
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMemberAction, "Action", argCount:=1)
+        <Test()> _
+        Public Sub TestCacheableMethodDynamicPassVoid()
+            Dim tTest = "Wrong"
 
-        tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
+            Dim tValue = "Correct"
 
-        Assert.AreEqual(tValue, tTest)
-    End Sub
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableMethodDynamicUnknowns()
-        Dim tTest = "Wrong"
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMemberAction, "Action", argCount:=1)
 
-        Dim tValue = "Correct"
+            tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
 
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
-        tExpando.Func = New Func(Of String, String)(Function(it) it)
+            Assert.AreEqual(tValue, tTest)
+        End Sub
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Action", argCount:=1)
+        <Test()> _
+        Public Sub TestCacheableMethodDynamicUnknowns()
+            Dim tTest = "Wrong"
 
-        tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
+            Dim tValue = "Correct"
 
-        Assert.AreEqual(tValue, tTest)
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Action = New Action(Of String)(Function(it) InlineAssignHelper(tTest, it))
+            tExpando.Func = New Func(Of String, String)(Function(it) it)
 
-        Dim tCachedInvoke2 = New CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Func", argCount:=1)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Action", argCount:=1)
 
-        Dim Test2 = tCachedInvoke2.Invoke(DirectCast(tExpando, Object), tValue)
+            tCachedInvoke.Invoke(DirectCast(tExpando, Object), tValue)
 
-        Assert.AreEqual(tValue, Test2)
-    End Sub
+            Assert.AreEqual(tValue, tTest)
 
+            Dim tCachedInvoke2 = New CacheableInvocation(InvocationKind.InvokeMemberUnknown, "Func", argCount:=1)
 
+            Dim Test2 = tCachedInvoke2.Invoke(DirectCast(tExpando, Object), tValue)
 
-    <Test(), TestMethod()> _
-    Public Sub TestMethodPocoGetValue()
+            Assert.AreEqual(tValue, Test2)
+        End Sub
 
 
-        Dim tValue = 1
 
-        Dim tOut = Impromptu.InvokeMember(tValue, "ToString")
+        <Test()> _
+        Public Sub TestMethodPocoGetValue()
 
-        Assert.AreEqual(tValue.ToString(), tOut)
-    End Sub
 
+            Dim tValue = 1
 
+            Dim tOut = Impromptu.InvokeMember(tValue, "ToString")
 
-    <Test(), TestMethod()> _
-    Public Sub TestMethodPocoPassAndGetValue()
+            Assert.AreEqual(tValue.ToString(), tOut)
+        End Sub
 
 
-        HelpTestPocoPassAndGetValue("Test", "Te")
 
+        <Test()> _
+        Public Sub TestMethodPocoPassAndGetValue()
 
-        HelpTestPocoPassAndGetValue("Test", "st")
-    End Sub
 
-    Private Sub HelpTestPocoPassAndGetValue(tValue As String, tParam As String)
-        Dim tExpected = tValue.StartsWith(tParam)
+            HelpTestPocoPassAndGetValue("Test", "Te")
 
-        Dim tOut = Impromptu.InvokeMember(tValue, "StartsWith", tParam)
 
-        Assert.AreEqual(tExpected, tOut)
-    End Sub
+            HelpTestPocoPassAndGetValue("Test", "st")
+        End Sub
 
+        Private Sub HelpTestPocoPassAndGetValue(tValue As String, tParam As String)
+            Dim tExpected = tValue.StartsWith(tParam)
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetDynamic()
+            Dim tOut = Impromptu.InvokeMember(tValue, "StartsWith", tParam)
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Test = tSetValue
+            Assert.AreEqual(tExpected, tOut)
+        End Sub
 
 
+        <Test()> _
+        Public Sub TestGetDynamic()
 
-        Dim tOut = Impromptu.InvokeGet(tExpando, "Test")
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Test = tSetValue
 
-        Assert.AreEqual(tSetValue, tOut)
-    End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetDynamicChained()
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Test = New ExpandoObject()
-        tExpando.Test.Test2 = New ExpandoObject()
-        tExpando.Test.Test2.Test3 = tSetValue
+            Dim tOut = Impromptu.InvokeGet(tExpando, "Test")
 
+            Assert.AreEqual(tSetValue, tOut)
+        End Sub
 
-        Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2.Test3")
+        <Test()> _
+        Public Sub TestGetDynamicChained()
 
-        Assert.AreEqual(tSetValue, tOut)
-    End Sub
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Test = New ExpandoObject()
+            tExpando.Test.Test2 = New ExpandoObject()
+            tExpando.Test.Test2.Test3 = tSetValue
 
 
+            Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2.Test3")
 
-    <Test(), TestMethod()> _
-    Public Sub TestSetDynamicChained()
+            Assert.AreEqual(tSetValue, tOut)
+        End Sub
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Test = New ExpandoObject()
-        tExpando.Test.Test2 = New ExpandoObject()
 
 
-        Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue)
+        <Test()> _
+        Public Sub TestSetDynamicChained()
 
-        Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3)
-    End Sub
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Test = New ExpandoObject()
+            tExpando.Test.Test2 = New ExpandoObject()
 
-    <Test(), TestMethod()> _
-    Public Sub TestSetDynamicChainedOne()
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
+            Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue)
 
+            Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3)
+        End Sub
 
-        Impromptu.InvokeSetChain(tExpando, "Test", tSetValue)
+        <Test()> _
+        Public Sub TestSetDynamicChainedOne()
 
-        Assert.AreEqual(tSetValue, tExpando.Test)
-    End Sub
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
 
-    <Test(), TestMethod()> _
-    Public Sub TestGetDynamicChainedOne()
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Test = tSetValue
+            Impromptu.InvokeSetChain(tExpando, "Test", tSetValue)
 
+            Assert.AreEqual(tSetValue, tExpando.Test)
+        End Sub
 
+        <Test()> _
+        Public Sub TestGetDynamicChainedOne()
 
-        Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test")
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Test = tSetValue
 
-        Assert.AreEqual(tSetValue, tOut)
-    End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableGetDynamic()
 
-        Dim tSetValue = "1"
-        Dim tExpando As Object = New ExpandoObject()
-        tExpando.Test = tSetValue
+            Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test")
 
-        Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Test")
+            Assert.AreEqual(tSetValue, tOut)
+        End Sub
 
-        Dim tOut = tCached.Invoke(DirectCast(tExpando, Object))
+        <Test()> _
+        Public Sub TestCacheableGetDynamic()
 
-        Assert.AreEqual(tSetValue, tOut)
-    End Sub
+            Dim tSetValue = "1"
+            Dim tExpando As Object = New ExpandoObject()
+            tExpando.Test = tSetValue
 
-    <Test(), TestMethod()> _
-    Public Sub TestStaticGet()
-        Dim tDate = Impromptu.InvokeGet(GetType(DateTime).WithStaticContext(), "Today")
-        Assert.AreEqual(DateTime.Today, tDate)
-    End Sub
+            Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Test")
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableStaticGet()
-        Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Today", context:=GetType(DateTime).WithStaticContext())
+            Dim tOut = tCached.Invoke(DirectCast(tExpando, Object))
 
-        Dim tDate = tCached.Invoke(GetType(DateTime))
-        Assert.AreEqual(DateTime.Today, tDate)
-    End Sub
+            Assert.AreEqual(tSetValue, tOut)
+        End Sub
 
+        <Test()> _
+        Public Sub TestStaticGet()
+            Dim tDate = Impromptu.InvokeGet(GetType(DateTime).WithStaticContext(), "Today")
+            Assert.AreEqual(DateTime.Today, tDate)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestStaticGet2()
-        Dim tVal = Impromptu.InvokeGet(GetType(StaticType).WithStaticContext(), "Test")
-        Assert.AreEqual(True, tVal)
-    End Sub
+        <Test()> _
+        Public Sub TestCacheableStaticGet()
+            Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Today", context:=GetType(DateTime).WithStaticContext())
 
-    <Test(), TestMethod()> _
-    Public Sub TestStaticSet()
-        Dim tValue As Integer = 12
-        Impromptu.InvokeSet(GetType(StaticType).WithStaticContext(), "TestSet", tValue)
-        Assert.AreEqual(tValue, StaticType.TestSet)
-    End Sub
+            Dim tDate = tCached.Invoke(GetType(DateTime))
+            Assert.AreEqual(DateTime.Today, tDate)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableStaticSet()
-        Dim tValue As Integer = 12
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "TestSet", context:=GetType(StaticType).WithStaticContext())
-        tCachedInvoke.Invoke(GetType(StaticType), tValue)
-        Assert.AreEqual(tValue, StaticType.TestSet)
-    End Sub
+        <Test()> _
+        Public Sub TestStaticGet2()
+            Dim tVal = Impromptu.InvokeGet(GetType(StaticType).WithStaticContext(), "Test")
+            Assert.AreEqual(True, tVal)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestStaticDateTimeMethod()
-        Dim tDateDyn As Object = "01/20/2009"
-        Dim tDate = Impromptu.InvokeMember(GetType(DateTime).WithStaticContext(), "Parse", tDateDyn)
-        Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
-    End Sub
+        <Test()> _
+        Public Sub TestStaticSet()
+            Dim tValue As Integer = 12
+            Impromptu.InvokeSet(GetType(StaticType).WithStaticContext(), "TestSet", tValue)
+            Assert.AreEqual(tValue, StaticType.TestSet)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableStaticDateTimeMethod()
-        Dim tDateDyn As Object = "01/20/2009"
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1, context:=GetType(DateTime).WithStaticContext())
-        Dim tDate = tCachedInvoke.Invoke(GetType(DateTime), tDateDyn)
-        Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
-    End Sub
+        <Test()> _
+        Public Sub TestCacheableStaticSet()
+            Dim tValue As Integer = 12
 
-  
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "TestSet", context:=GetType(StaticType).WithStaticContext())
+            tCachedInvoke.Invoke(GetType(StaticType), tValue)
+            Assert.AreEqual(tValue, StaticType.TestSet)
+        End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestIsEvent()
-        Dim tPoco As Object = New PocoEvent()
+        <Test()> _
+        Public Sub TestStaticDateTimeMethod()
+            Dim tDateDyn As Object = "01/20/2009"
+            Dim tDate = Impromptu.InvokeMember(GetType(DateTime).WithStaticContext(), "Parse", tDateDyn)
+            Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
+        End Sub
 
-        Dim tResult = Impromptu.InvokeIsEvent(tPoco, "Event")
+        <Test()> _
+        Public Sub TestCacheableStaticDateTimeMethod()
+            Dim tDateDyn As Object = "01/20/2009"
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1, context:=GetType(DateTime).WithStaticContext())
+            Dim tDate = tCachedInvoke.Invoke(GetType(DateTime), tDateDyn)
+            Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
+        End Sub
 
-        Assert.AreEqual(True, tResult)
-    End Sub
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableIsEventAndIsNotEvent()
-        Dim tPoco As Object = New PocoEvent()
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.IsEvent, "Event")
+        <Test()> _
+        Public Sub TestIsEvent()
+            Dim tPoco As Object = New PocoEvent()
 
-        Dim tResult = tCachedInvoke.Invoke(tPoco)
+            Dim tResult = Impromptu.InvokeIsEvent(tPoco, "Event")
 
-        Assert.AreEqual(True, tResult)
+            Assert.AreEqual(True, tResult)
+        End Sub
 
-        Dim tDynamic As Object = New ImpromptuDictionary()
+        <Test()> _
+        Public Sub TestCacheableIsEventAndIsNotEvent()
+            Dim tPoco As Object = New PocoEvent()
 
-        tDynamic.[Event] = Nothing
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.IsEvent, "Event")
 
-        Dim tResult2 = tCachedInvoke.Invoke(DirectCast(tDynamic, Object))
+            Dim tResult = tCachedInvoke.Invoke(tPoco)
 
-        Assert.AreEqual(False, tResult2)
-    End Sub
+            Assert.AreEqual(True, tResult)
 
-  
+            Dim tDynamic As Object = New ImpromptuDictionary()
 
-    <Test(), TestMethod()> _
-    Public Sub TestPocoAddAssign()
-        Dim tPoco = New PocoEvent()
-        Dim tTest As Boolean = False
+            tDynamic.[Event] = Nothing
 
-        Impromptu.InvokeAddAssign(tPoco, "Event", New EventHandler(Of EventArgs)(Function([object], args)
-                                                                                     tTest = True
+            Dim tResult2 = tCachedInvoke.Invoke(DirectCast(tDynamic, Object))
 
-                                                                                 End Function))
+            Assert.AreEqual(False, tResult2)
+        End Sub
 
-        tPoco.OnEvent(Nothing, Nothing)
 
-        Assert.AreEqual(True, tTest)
 
-        Dim tPoco2 = New PropPoco() With { _
-          .Prop2 = 3 _
-        }
+        <Test()> _
+        Public Sub TestPocoAddAssign()
+            Dim tPoco = New PocoEvent()
+            Dim tTest As Boolean = False
 
-        Impromptu.InvokeAddAssign(tPoco2, "Prop2", 4)
+            Impromptu.InvokeAddAssign(tPoco, "Event", New EventHandler(Of EventArgs)(Function([object], args)
+                                                                                         tTest = True
 
-        Assert.AreEqual(7L, tPoco2.Prop2)
-    End Sub
+                                                                                     End Function))
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheablePocoAddAssign()
-        Dim tPoco = New PocoEvent()
-        Dim tTest As Boolean = False
+            tPoco.OnEvent(Nothing, Nothing)
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.AddAssign, "Event")
+            Assert.AreEqual(True, tTest)
 
-        tCachedInvoke.Invoke(tPoco, New EventHandler(Of EventArgs)(Function([object], args)
-                                                                       tTest = True
+            Dim tPoco2 = New PropPoco() With { _
+              .Prop2 = 3 _
+            }
 
-                                                                   End Function))
+            Impromptu.InvokeAddAssign(tPoco2, "Prop2", 4)
 
-        tPoco.OnEvent(Nothing, Nothing)
+            Assert.AreEqual(7L, tPoco2.Prop2)
+        End Sub
 
-        Assert.AreEqual(True, tTest)
+        <Test()> _
+        Public Sub TestCacheablePocoAddAssign()
+            Dim tPoco = New PocoEvent()
+            Dim tTest As Boolean = False
 
-        Dim tPoco2 = New PropPoco() With { _
-          .[Event] = 3 _
-        }
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.AddAssign, "Event")
 
-        tCachedInvoke.Invoke(tPoco2, 4)
+            tCachedInvoke.Invoke(tPoco, New EventHandler(Of EventArgs)(Function([object], args)
+                                                                           tTest = True
 
-        Assert.AreEqual(7L, tPoco2.[Event])
-    End Sub
+                                                                       End Function))
 
+            tPoco.OnEvent(Nothing, Nothing)
 
+            Assert.AreEqual(True, tTest)
 
+            Dim tPoco2 = New PropPoco() With { _
+              .[Event] = 3 _
+            }
 
+            tCachedInvoke.Invoke(tPoco2, 4)
 
-    <Test(), TestMethod()> _
-    Public Sub TestDynamicAddAssign()
-        Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
-        Dim tTest As Boolean = False
+            Assert.AreEqual(7L, tPoco2.[Event])
+        End Sub
 
-        Impromptu.InvokeAddAssign(tDyanmic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
-                                                                                        tTest = True
 
-                                                                                    End Function))
 
-        tDyanmic.OnEvent(Nothing, Nothing)
 
-        Assert.AreEqual(True, tTest)
 
-        Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4)
+        <Test()> _
+        Public Sub TestDynamicAddAssign()
+            Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
+            Dim tTest As Boolean = False
 
-        Assert.AreEqual(7L, tDyanmic.Prop2)
-    End Sub
+            Impromptu.InvokeAddAssign(tDyanmic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
+                                                                                            tTest = True
 
-    <Test(), TestMethod()> _
-    Public Sub TestCacheableDynamicAddAssign()
-        Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
-        Dim tDynamic2 = Build.NewObject([Event]:=3)
-        Dim tTest As Boolean = False
+                                                                                        End Function))
 
-        Dim tCachedInvoke = New CacheableInvocation(InvocationKind.AddAssign, "Event")
+            tDyanmic.OnEvent(Nothing, Nothing)
 
-        tCachedInvoke.Invoke(DirectCast(tDyanmic, Object), New EventHandler(Of EventArgs)(Function([object], args)
-                                                                                              tTest = True
+            Assert.AreEqual(True, tTest)
 
-                                                                                          End Function))
+            Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4)
 
-        tDyanmic.OnEvent(Nothing, Nothing)
+            Assert.AreEqual(7L, tDyanmic.Prop2)
+        End Sub
 
-        Assert.AreEqual(True, tTest)
+        <Test()> _
+        Public Sub TestCacheableDynamicAddAssign()
+            Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
+            Dim tDynamic2 = Build.NewObject([Event]:=3)
+            Dim tTest As Boolean = False
 
-        tCachedInvoke.Invoke(DirectCast(tDynamic2, Object), 4)
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.AddAssign, "Event")
 
-        Assert.AreEqual(7, tDynamic2.[Event])
-    End Sub
+            tCachedInvoke.Invoke(DirectCast(tDyanmic, Object), New EventHandler(Of EventArgs)(Function([object], args)
+                                                                                                  tTest = True
 
-  
+                                                                                              End Function))
 
+            tDyanmic.OnEvent(Nothing, Nothing)
 
- 
-    <Test(), TestMethod()> _
-    Public Sub TestDynamicMemberNamesExpando()
-        Dim tExpando As ExpandoObject = Build(Of ExpandoObject).NewObject(One:=1)
+            Assert.AreEqual(True, tTest)
 
-        Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando, dynamicOnly:=True).[Single]())
-    End Sub
+            tCachedInvoke.Invoke(DirectCast(tDynamic2, Object), 4)
 
-    <Test(), TestMethod()> _
-    Public Sub TestDynamicMemberNamesImpromput()
-        Dim tDict As ImpromptuDictionary = Build.NewObject(Two:=2)
+            Assert.AreEqual(7, tDynamic2.[Event])
+        End Sub
 
-        Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly:=True).[Single]())
-    End Sub
-    Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
-        target = value
-        Return value
-    End Function
-End Class
 
+
+
+
+        <Test()> _
+        Public Sub TestDynamicMemberNamesExpando()
+            Dim tExpando As ExpandoObject = Build(Of ExpandoObject).NewObject(One:=1)
+
+            Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando, dynamicOnly:=True).[Single]())
+        End Sub
+
+        <Test()> _
+        Public Sub TestDynamicMemberNamesImpromput()
+            Dim tDict As ImpromptuDictionary = Build.NewObject(Two:=2)
+
+            Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly:=True).[Single]())
+        End Sub
+        Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+            target = value
+            Return value
+        End Function
+    End Class
+
+End Namespace

@@ -34,7 +34,7 @@
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Moq">
-      <HintPath>..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+      <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="mscorlib" />
@@ -57,7 +57,7 @@
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="Unquote">
-      <HintPath>..\..\packages\Unquote.2.0.3\lib\net40\Unquote.dll</HintPath>
+      <HintPath>..\..\packages\Unquote.2.1.0\lib\net40\Unquote.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>

@@ -51,7 +51,9 @@ namespace ImpromptuInterface.Build
         /// Returns the proxied object
         /// </summary>
         /// <value></value>
-        public dynamic Original{ get; private set;}
+        private dynamic ActLikeProxyOriginal { get; set; }
+
+        dynamic IActLikeProxy.Original { get { return ActLikeProxyOriginal; } }
 
         private bool _init = false;
 
@@ -61,7 +63,7 @@ namespace ImpromptuInterface.Build
         /// <param name="original"></param>
         /// <param name="interfaces"></param>
         /// <param name="informalInterface"></param>
-        public virtual void Initialize(dynamic original, IEnumerable<Type> interfaces=null, IDictionary<string, Type> informalInterface =null)
+        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface)
         {
             if(original == null)
                 throw new ArgumentNullException("original", "Can't proxy a Null value");
@@ -69,8 +71,8 @@ namespace ImpromptuInterface.Build
             if (_init)
                 throw new MethodAccessException("Initialize should not be called twice!");
             _init = true;
-            Original = original;
-            var tKnowOriginal = Original as IDynamicKnowLike;
+            ActLikeProxyOriginal = original;
+            var tKnowOriginal = ActLikeProxyOriginal as IDynamicKnowLike;
             if (tKnowOriginal != null)
             {
                 if(interfaces !=null)
@@ -94,8 +96,8 @@ namespace ImpromptuInterface.Build
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            if (ReferenceEquals(Original, obj)) return true;
-            if (!(obj is ActLikeProxy)) return Original.Equals(obj);
+            if (ReferenceEquals(ActLikeProxyOriginal, obj)) return true;
+            if (!(obj is ActLikeProxy)) return ActLikeProxyOriginal.Equals(obj);
             return Equals((ActLikeProxy) obj);
         }
 
@@ -108,8 +110,8 @@ namespace ImpromptuInterface.Build
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            if (ReferenceEquals(Original, other.Original)) return true;
-            return Equals(other.Original, Original);
+            if (ReferenceEquals(ActLikeProxyOriginal, other.ActLikeProxyOriginal)) return true;
+            return Equals(other.ActLikeProxyOriginal, ActLikeProxyOriginal);
         }
 
         /// <summary>
@@ -120,7 +122,7 @@ namespace ImpromptuInterface.Build
         /// </returns>
         public override int GetHashCode()
         {
-            return Original.GetHashCode();
+            return ActLikeProxyOriginal.GetHashCode();
         }
 
 #if !SILVERLIGHT
@@ -157,9 +159,9 @@ namespace ImpromptuInterface.Build
                           ? null
                           : tCustomAttr.Interfaces,typeof(Type[]));
 			}
-		
-			
-            info.AddValue("Original", (object)Original);
+
+
+            info.AddValue("Original", (object)ActLikeProxyOriginal);
 
         }
 #endif
@@ -172,7 +174,7 @@ namespace ImpromptuInterface.Build
         /// </returns>
         public override string ToString()
         {
-            return Original.ToString();
+            return ActLikeProxyOriginal.ToString();
         }
     }
 }

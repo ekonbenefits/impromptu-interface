@@ -5,21 +5,23 @@ namespace UnitTestImpromptuInterface.FSharp.Silverlight
 namespace UnitTestImpromptuInterface.FSharp
 #endif
 
+open NUnit.Framework
+open Swensen.Unquote
+open System
+open System.Dynamic
+open ImpromptuInterface.FSharp
+open ImpromptuInterface
+open ImpromptuInterface.Dynamic
+open System.Collections.Generic
+open UnitTestSupportLibrary
+open System.Xml.Linq
+open System.Numerics
+open Microsoft.CSharp.RuntimeBinder
+
+
 module Module1=
 
-    open NUnit.Framework
-    open Swensen.Unquote
-    open System
-    open System.Dynamic
-    open ImpromptuInterface.FSharp
-    open ImpromptuInterface
-    open ImpromptuInterface.Dynamic
-    open System.Collections.Generic
-    open UnitTestSupportLibrary
-    open System.Xml.Linq
-    open System.Numerics
-    open Microsoft.CSharp.RuntimeBinder
-    
+
     [<TestFixture>] 
     type ``Basic Dynamic Operator Tests`` ()=
                        

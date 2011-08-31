@@ -117,7 +117,7 @@ module Module1=
 
         [<Test>] member basic.``Test dynamic Implicit Conversion`` ()=
                         let ele = 50
-                        test <@ ele >?> typeof<BigInteger> = BigInteger(50) @>
+                        test <@ ele >?> typeof<decimal> = decimal(50) @>
 
 
         [<Test>] member basic.``Test Explicit Conversion`` ()=
@@ -127,7 +127,7 @@ module Module1=
 
         [<Test>] member basic.``Test Implicit Conversion`` ()=
                         let ele = 50
-                        test <@ ele |> dynImplicit = BigInteger(50) @>
+                        test <@ ele |> dynImplicit = decimal(50) @>
 
 
         [<Test>] member basic.``Test Implicit Conversion Fail`` ()=

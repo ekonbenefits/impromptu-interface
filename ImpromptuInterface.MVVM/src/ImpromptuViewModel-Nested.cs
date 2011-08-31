@@ -17,9 +17,161 @@ namespace ImpromptuInterface.MVVM
 {
     public partial class ImpromptuViewModel
     {
+
+        /// <summary>
+        /// Trampoline object to choose property
+        /// </summary>
+        [Obsolete]
+        public class PropertyDepends : DynamicObject
+        {
+            private readonly ImpromptuViewModel _parent;
+
+            internal PropertyDepends(ImpromptuViewModel parent)
+            {
+                _parent = parent;
+            }
+
+            public override IEnumerable<string> GetDynamicMemberNames()
+            {
+                return _parent.LinkedProperties.SelectMany(it => it.Value).Distinct();
+            }
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                result = new DependsOn(_parent, binder.Name);
+
+                return true;
+            }
+        }
+
+        public class PropertyDepend : DynamicObject
+        {
+            private readonly ImpromptuViewModel _parent;
+
+            internal PropertyDepend(ImpromptuViewModel parent)
+            {
+                _parent = parent;
+            }
+
+            public override IEnumerable<string> GetDynamicMemberNames()
+            {
+                return _parent.LinkedProperties.SelectMany(it => it.Value).Distinct();
+            }
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                result = new DependObject(_parent, binder.Name);
+
+                return true;
+            }
+
+
+        }
+
+        public class DependObject : Object
+        {
+            private readonly ImpromptuViewModel _parent;
+            private readonly string _property;
+            private Dependency _dependency;
+            private UnDependency _unDependency;
+
+            internal DependObject(ImpromptuViewModel parent, string property)
+            {
+                _parent = parent;
+                _property = property;
+                _dependency = new Dependency(_parent, _property);
+                _unDependency = new UnDependency(_parent, _property);
+            }
+
+            public dynamic On
+            {
+                get { return _dependency; }
+            }
+
+            public dynamic Remove
+            {
+                get { return _unDependency; }
+            }
+
+            public IEnumerable<string> List
+            {
+                get
+                {
+                   return _parent.LinkedProperties.Where(it => it.Value.Contains(_property)).Select(it => it.Key);
+                } 
+            }
+        }
+
+
+        public abstract class DependencyBase : DynamicObject
+        {
+            protected readonly ImpromptuViewModel _parent;
+            protected readonly string _property;
+            protected List<string> _dependencies;
+            internal DependencyBase(ImpromptuViewModel parent, string property)
+            {
+                _parent = parent;
+                _property = property;
+                _dependencies = new List<string>();
+            }
+
+            public override bool TryGetMember(GetMemberBinder binder, out object result)
+            {
+                var tDepenencyName = binder.Name;
+                _dependencies.Add(tDepenencyName);
+                result = this;
+                return true;
+            }
+
+            protected abstract void Finish();
+
+            public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
+            {
+                var tDepenencyName = binder.Name;
+                _dependencies.Add(tDepenencyName);
+                result = null;
+
+                Finish();
+
+                return true;
+            }
+        }
+
+        public class Dependency : DependencyBase
+        {
+            internal Dependency(ImpromptuViewModel parent, string property) : base(parent, property)
+            {
+            }
+
+            protected override void Finish()
+            {
+                foreach (var tDependency in _dependencies)
+                {
+                    _parent.DependencyLink(_property, tDependency);
+                }
+            }
+        }
+
+        internal class UnDependency : DependencyBase
+        {
+            internal UnDependency(ImpromptuViewModel parent, string property)
+                : base(parent, property)
+            {
+            }
+            protected override void Finish()
+            {
+                foreach (var tDependency in _dependencies)
+                {
+                    _parent.DependencyUnlink(_property, tDependency);
+                }
+            }
+        }
+
+
         /// <summary>
         /// Trampoline object to add dependency
         /// </summary>
+        [Obsolete]
         public class DependsOn : DynamicObject
         {
             private readonly ImpromptuViewModel _parent;
@@ -47,6 +199,7 @@ namespace ImpromptuInterface.MVVM
         /// <summary>
         /// Trampoline object to finish dependency link
         /// </summary>
+        [Obsolete]
         public class LinkFinal
         {
             private readonly ImpromptuViewModel _parent;
@@ -178,4 +331,6 @@ namespace ImpromptuInterface.MVVM
             }
         } 
     }
+
+   
 }

@@ -224,7 +224,7 @@ namespace UnitTestImpromptuInterface
 
             tNewViewModel.Prop1 = "Setup";
 
-            tNewViewModel.Dependencies.Prop2.Prop1.Link();
+            tNewViewModel.Depend.Prop2.On.Prop1();
 
             int tEvent1Count = 0;
             int tEvent2Count = 0;

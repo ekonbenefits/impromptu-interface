@@ -111,6 +111,7 @@ namespace ImpromptuInterface.MVVM
         private FireOnPropertyChanged _onChangedTrampoline;
 
         protected readonly IDictionary<string, List<string>> LinkedProperties;
+        private object _dependTrampoline;
 
         /// <summary>
         /// Convenient access to Dynamic Properties. When subclassing you can use Dynamic.PropertyName = x, etc.
@@ -143,11 +144,17 @@ namespace ImpromptuInterface.MVVM
         /// Sets up dependency relations amoung dependenant properties
         /// </summary>
         /// <value>The dependencies.</value>
+        [Obsolete("Use Depend instead")]
         public dynamic Dependencies
         {
             get {
                 return _dependencyTrampoline ?? (_dependencyTrampoline = new PropertyDepends(this));
             }
+        }
+
+        public dynamic Depend
+        {
+            get { return _dependTrampoline ?? (_dependTrampoline = new PropertyDepend(this)); }
         }
 
 
@@ -234,30 +241,8 @@ namespace ImpromptuInterface.MVVM
 
         #region Trampoline Classes
 
-        /// <summary>
-        /// Trampoline object to choose property
-        /// </summary>
-        public class PropertyDepends : DynamicObject
-        {
-            private readonly ImpromptuViewModel _parent;
+      
 
-            internal PropertyDepends(ImpromptuViewModel parent)
-            {
-                _parent = parent;
-            }
-
-            public override IEnumerable<string> GetDynamicMemberNames()
-            {
-                return _parent.LinkedProperties.SelectMany(it => it.Value).Distinct();
-            }
-
-            public override bool TryGetMember(GetMemberBinder binder, out object result)
-            {
-                result = new DependsOn(_parent, binder.Name);
-
-                return true;
-            }
-        }
 
         #endregion
     }

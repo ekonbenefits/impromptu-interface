@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
-using Microsoft.CSharp.RuntimeBinder;
-using ImpromptuInterface.Dynamic;
 using System.Reflection;
 
 namespace ImpromptuInterface.Optimization
@@ -86,7 +84,7 @@ namespace ImpromptuInterface.Optimization
 
         }
 
-        #region InvokeMemberAction Optimizations
+
 
 
         internal static void InvokeMemberAction(ref CallSite callsite,
@@ -103,6 +101,7 @@ namespace ImpromptuInterface.Optimization
             var tSwitch = args.Length;
             switch (tSwitch)
             {
+#region Optimizations
                 case 0:
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object>>)callsite;
@@ -253,6 +252,7 @@ namespace ImpromptuInterface.Optimization
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
                         break;
                     }
+#endregion
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
@@ -262,13 +262,13 @@ namespace ImpromptuInterface.Optimization
             }
         }
 
-        #endregion
+        
 
        
 
 	
 
-        #region InvokeMember Optimizations
+
 
 
         internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(
@@ -288,6 +288,7 @@ namespace ImpromptuInterface.Optimization
 
             switch (tSwitch)
             {
+#region Optimizations
                 case 0:
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget, TReturn>>)callsite;
@@ -423,6 +424,7 @@ namespace ImpromptuInterface.Optimization
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
                     }
+#endregion
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
@@ -433,13 +435,14 @@ namespace ImpromptuInterface.Optimization
 
      
 
-        #endregion
+
 
 
 		#if !__MonoCS__
 		internal static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
+#region Optimizations
 			   					case 0:
 						return new Func< TReturn>(()=> invokable());
   					case 1:
@@ -474,7 +477,7 @@ namespace ImpromptuInterface.Optimization
 						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15));
   					case 16:
 						return new Func< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, TReturn>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
-	
+#endregion	
 				default:
 					return new DynamicFunc<TReturn>(args=>(TReturn)Impromptu.Invoke((object)invokable,args));
 			}
@@ -482,14 +485,13 @@ namespace ImpromptuInterface.Optimization
 		#endif
 
 		internal static class MonoConvertCallSite<T>{
-// ReSharper disable StaticFieldInGenericType
 			internal static CallSite CallSite;
-// ReSharper restore StaticFieldInGenericType
 		}
 	    
 		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
+#region Optimizations
 			   					case 0:
 						return new Func< TReturn>(()=>{
 								 object tResult= invokable();
@@ -575,7 +577,7 @@ namespace ImpromptuInterface.Optimization
 								 object tResult= invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16);
 						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
 						 });
-	
+#endregion		
 				default:
 						return new DynamicFunc<TReturn>(args=>{
 								object tResult= Impromptu.Invoke((object)invokable,args);
@@ -588,6 +590,7 @@ namespace ImpromptuInterface.Optimization
         internal static Delegate WrapAction(dynamic invokable, int length)
         {
            	 switch(length){
+#region Optimizations
 				    case 0:
 					    return new Action(()=>invokable());
   					case 1:
@@ -622,7 +625,7 @@ namespace ImpromptuInterface.Optimization
 						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15));
   					case 16:
 						return new Action< object, object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>((a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16)=> invokable(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16));
-	
+#endregion		
 				default:
 					return new DynamicAction(args=>Impromptu.InvokeAction((object)invokable,args));
 			}

@@ -134,7 +134,7 @@ namespace UnitTestImpromptuInterface
             dynamic New = new ClayFactory();
             IRobot tRobot = New.Robot().Name("Bender");
             IRobot tRobotI = Impromptu.ActLike<IRobot>(New.Robot().Name("Bender"));
-
+         
              var tInteration = 50000;
              var tWatchC = TimeIt.Go(() =>
                                          {
@@ -145,7 +145,8 @@ namespace UnitTestImpromptuInterface
                                          {
                                              IRobot tOut = New.Robot().Name("Bender");
                                          },tInteration );
-
+           
+            TestContext.WriteLine("*CreateInterface*");
             TestContext.WriteLine("Impromptu: " + tWatchC.Elapsed);
             TestContext.WriteLine("Clay: " + tWatchC2.Elapsed);
             TestContext.WriteLine("Impromptu VS Clay: {0:0.0} x faster", (double)tWatchC2.ElapsedTicks / tWatchC.ElapsedTicks);
@@ -154,7 +155,8 @@ namespace UnitTestImpromptuInterface
             var tWatch = TimeIt.Go(() => { var tOut = tRobotI.Name; }, tInteration);
 
             var tWatch2 = TimeIt.Go(() => { var tOut = tRobot.Name; }, tInteration);
-
+            
+            TestContext.WriteLine("*Get from Interface*");
             TestContext.WriteLine("Impromptu: " + tWatch.Elapsed);
             TestContext.WriteLine("Clay: " + tWatch2.Elapsed);
 

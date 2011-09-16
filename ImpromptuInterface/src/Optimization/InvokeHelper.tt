@@ -23,8 +23,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using ImpromptuInterface.Build;
-using Microsoft.CSharp.RuntimeBinder;
-using ImpromptuInterface.Dynamic;
 using System.Reflection;
 
 namespace ImpromptuInterface.Optimization
@@ -67,7 +65,7 @@ namespace ImpromptuInterface.Optimization
 
         }
 
-        #region InvokeMemberAction Optimizations
+
 
 
         internal static void InvokeMemberAction(ref CallSite callsite,
@@ -84,6 +82,7 @@ namespace ImpromptuInterface.Optimization
             var tSwitch = args.Length;
             switch (tSwitch)
             {
+#region Optimizations
 <# for(int i=0; i <= 14; i++){ 
 		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i+1));
 		var tArrayArgs = String.Concat(Enumerable.Range(0,i).Select(it=>String.Format(", args[{0}]",it)));
@@ -99,6 +98,7 @@ namespace ImpromptuInterface.Optimization
                         break;
                     }
 <# } #>
+#endregion
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
@@ -108,13 +108,13 @@ namespace ImpromptuInterface.Optimization
             }
         }
 
-        #endregion
+        
 
        
 
 	
 
-        #region InvokeMember Optimizations
+
 
 
         internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(
@@ -134,6 +134,7 @@ namespace ImpromptuInterface.Optimization
 
             switch (tSwitch)
             {
+#region Optimizations
 <# for(int i=0; i <= 14; i++){ 
 		var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{"TReturn"}));
 		var tArrayArgs = String.Concat(Enumerable.Range(0,i).Select(it=>String.Format(", args[{0}]",it)));
@@ -148,6 +149,7 @@ namespace ImpromptuInterface.Optimization
                         return tCallSite.Target(tCallSite, target<#=tArrayArgs#>);
                     }
 <# } #>
+#endregion
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
@@ -158,19 +160,21 @@ namespace ImpromptuInterface.Optimization
 
      
 
-        #endregion
+
 
 
 		#if !__MonoCS__
 		internal static Delegate WrapFuncHelper<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
+#region Optimizations
 			 <# for(int i=0; i <= 16; i++){ 
 				var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{" TReturn"}));
   				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
 #>  					case <#=i#>:
 						return new Func<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
-<# } #>	
+<# } #>
+#endregion	
 				default:
 					return new DynamicFunc<TReturn>(args=>(TReturn)Impromptu.Invoke((object)invokable,args));
 			}
@@ -184,6 +188,7 @@ namespace ImpromptuInterface.Optimization
 		internal static Delegate WrapFuncHelperMono<TReturn>(dynamic invokable, int length)
         {
 			 switch(length){
+#region Optimizations
 			 <# for(int i=0; i <= 16; i++){ 
 				var tobjectArgs = String.Join(",",Enumerable.Repeat(" object",i).Concat(new[]{" TReturn"}));
   				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
@@ -192,7 +197,8 @@ namespace ImpromptuInterface.Optimization
 								 object tResult= invokable(<#=tArgList#>);
 						         return (TReturn) InvokeConvertCallSite(tResult, true, typeof(TReturn), typeof(object), ref MonoConvertCallSite<TReturn>.CallSite);
 						 });
-<# } #>	
+<# } #>
+#endregion		
 				default:
 						return new DynamicFunc<TReturn>(args=>{
 								object tResult= Impromptu.Invoke((object)invokable,args);
@@ -205,6 +211,7 @@ namespace ImpromptuInterface.Optimization
         internal static Delegate WrapAction(dynamic invokable, int length)
         {
            	 switch(length){
+#region Optimizations
 				    case 0:
 					    return new Action(()=>invokable());
 <# for(int i=1; i <= 16; i++){ 
@@ -212,7 +219,8 @@ namespace ImpromptuInterface.Optimization
 				var tArgList = String.Join(",",Enumerable.Range(0,i).Select(it=>"a"+(it+1)));
 #>  					case <#=i#>:
 						return new Action<<#=tobjectArgs#>>((<#=tArgList#>)=> invokable(<#=tArgList#>));
-<# } #>	
+<# } #>
+#endregion		
 				default:
 					return new DynamicAction(args=>Impromptu.InvokeAction((object)invokable,args));
 			}

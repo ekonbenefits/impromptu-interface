@@ -26,7 +26,7 @@ namespace ImpromptuInterface.Build
     /// </summary>
     [AttributeUsage(AttributeTargets.Class)]
 	[Serializable]
-    public class ActLikeProxyAttribute:Attribute
+    public sealed class ActLikeProxyAttribute:Attribute
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ActLikeProxyAttribute"/> class.

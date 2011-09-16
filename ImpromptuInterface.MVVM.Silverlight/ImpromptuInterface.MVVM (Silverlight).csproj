@@ -77,6 +77,9 @@
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuBindingList.cs">
       <Link>src\ImpromptuBindingList.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuCommandBinder.cs">
+      <Link>src\ImpromptuCommandBinder.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuRelayCommand.cs">
       <Link>src\ImpromptuRelayCommand.cs</Link>
     </Compile>
@@ -91,9 +94,6 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuWindowBuilder.cs">
       <Link>src\ImpromptuWindowBuilder.cs</Link>
-    </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\src\ImpropmtuCommandBinder.cs">
-      <Link>src\ImpropmtuCommandBinder.cs</Link>
     </Compile>
     <Compile Include="src\Support.cs" />
   </ItemGroup>

@@ -1,0 +1,3732 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<FxCopProject Version="10.0" Name="My FxCop Project">
+ <ProjectOptions>
+  <SharedProject>True</SharedProject>
+  <Stylesheet Apply="False">$(FxCopDir)\Xml\FxCopReport.xsl</Stylesheet>
+  <SaveMessages>
+   <Project Status="Active, Excluded, Good, Noise" NewOnly="False" />
+   <Report Status="Active, Good, Noise" NewOnly="False" />
+  </SaveMessages>
+  <ProjectFile Compress="True" DefaultTargetCheck="True" DefaultRuleCheck="True" SaveByRuleGroup="" Deterministic="True" />
+  <EnableMultithreadedLoad>True</EnableMultithreadedLoad>
+  <EnableMultithreadedAnalysis>True</EnableMultithreadedAnalysis>
+  <SourceLookup>True</SourceLookup>
+  <AnalysisExceptionsThreshold>10</AnalysisExceptionsThreshold>
+  <RuleExceptionsThreshold>1</RuleExceptionsThreshold>
+  <Spelling Locale="en-US" />
+  <OverrideRuleVisibilities>False</OverrideRuleVisibilities>
+  <CustomDictionaries SearchFxCopDir="True" SearchUserProfile="True" SearchProjectDir="True" />
+  <SearchGlobalAssemblyCache>False</SearchGlobalAssemblyCache>
+  <DeadlockDetectionTimeout>120</DeadlockDetectionTimeout>
+  <IgnoreGeneratedCode>False</IgnoreGeneratedCode>
+ </ProjectOptions>
+ <Targets>
+  <AssemblyReferenceDirectories>
+   <Directory>$(ProjectDir)/../../../../../../../Program Files/Reference Assemblies/Microsoft/FSharp/2.0/Runtime/v4.0/</Directory>
+  </AssemblyReferenceDirectories>
+  <Target Name="$(ProjectDir)/../ImpromptuInterface.FSharp/bin/Release/ImpromptuInterface.FSharp.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../ImpromptuInterface.MVVM/bin/Release/ImpromptuInterface.MVVM.dll" Analyze="True" AnalyzeAllChildren="True" />
+  <Target Name="$(ProjectDir)/../ImpromptuInterface/bin/Release/ImpromptuInterface.dll" Analyze="True" AnalyzeAllChildren="True" />
+ </Targets>
+ <Rules>
+  <RuleFiles>
+   <RuleFile Name="$(FxCopDir)\Rules\DesignRules.dll" Enabled="True" AllRulesEnabled="False">
+    <Rule Name="AbstractTypesShouldNotHaveConstructors" Enabled="True" />
+    <Rule Name="AvoidEmptyInterfaces" Enabled="True" />
+    <Rule Name="AvoidExcessiveParametersOnGenericTypes" Enabled="True" />
+    <Rule Name="AvoidNamespacesWithFewTypes" Enabled="True" />
+    <Rule Name="AvoidOutParameters" Enabled="True" />
+    <Rule Name="CollectionsShouldImplementGenericInterface" Enabled="True" />
+    <Rule Name="ConsiderPassingBaseTypesAsParameters" Enabled="True" />
+    <Rule Name="DeclareEventHandlersCorrectly" Enabled="True" />
+    <Rule Name="DeclareTypesInNamespaces" Enabled="True" />
+    <Rule Name="DefaultParametersShouldNotBeUsed" Enabled="True" />
+    <Rule Name="DefineAccessorsForAttributeArguments" Enabled="True" />
+    <Rule Name="DoNotCatchGeneralExceptionTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareProtectedMembersInSealedTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareStaticMembersOnGenericTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareVirtualMembersInSealedTypes" Enabled="True" />
+    <Rule Name="DoNotDeclareVisibleInstanceFields" Enabled="True" />
+    <Rule Name="DoNotExposeGenericLists" Enabled="True" />
+    <Rule Name="DoNotHideBaseClassMethods" Enabled="True" />
+    <Rule Name="DoNotNestGenericTypesInMemberSignatures" Enabled="True" />
+    <Rule Name="DoNotOverloadOperatorEqualsOnReferenceTypes" Enabled="True" />
+    <Rule Name="DoNotPassTypesByReference" Enabled="True" />
+    <Rule Name="DoNotRaiseExceptionsInUnexpectedLocations" Enabled="True" />
+    <Rule Name="EnumeratorsShouldBeStronglyTyped" Enabled="True" />
+    <Rule Name="EnumsShouldHaveZeroValue" Enabled="True" />
+    <Rule Name="EnumStorageShouldBeInt32" Enabled="True" />
+    <Rule Name="ExceptionsShouldBePublic" Enabled="True" />
+    <Rule Name="GenericMethodsShouldProvideTypeParameter" Enabled="True" />
+    <Rule Name="ICollectionImplementationsHaveStronglyTypedMembers" Enabled="True" />
+    <Rule Name="ImplementIDisposableCorrectly" Enabled="True" />
+    <Rule Name="ImplementStandardExceptionConstructors" Enabled="True" />
+    <Rule Name="IndexersShouldNotBeMultidimensional" Enabled="True" />
+    <Rule Name="InterfaceMethodsShouldBeCallableByChildTypes" Enabled="True" />
+    <Rule Name="ListsAreStronglyTyped" Enabled="True" />
+    <Rule Name="MarkAssembliesWithAssemblyVersion" Enabled="True" />
+    <Rule Name="MarkAssembliesWithClsCompliant" Enabled="True" />
+    <Rule Name="MarkAssembliesWithComVisible" Enabled="True" />
+    <Rule Name="MarkAttributesWithAttributeUsage" Enabled="True" />
+    <Rule Name="MarkEnumsWithFlags" Enabled="True" />
+    <Rule Name="MembersShouldNotExposeCertainConcreteTypes" Enabled="True" />
+    <Rule Name="MovePInvokesToNativeMethodsClass" Enabled="True" />
+    <Rule Name="NestedTypesShouldNotBeVisible" Enabled="True" />
+    <Rule Name="OverloadOperatorEqualsOnOverloadingAddAndSubtract" Enabled="True" />
+    <Rule Name="OverrideMethodsOnComparableTypes" Enabled="True" />
+    <Rule Name="PropertiesShouldNotBeWriteOnly" Enabled="True" />
+    <Rule Name="ProvideObsoleteAttributeMessage" Enabled="True" />
+    <Rule Name="ReplaceRepetitiveArgumentsWithParamsArray" Enabled="True" />
+    <Rule Name="StaticHolderTypesShouldBeSealed" Enabled="True" />
+    <Rule Name="StaticHolderTypesShouldNotHaveConstructors" Enabled="True" />
+    <Rule Name="StringUriOverloadsCallSystemUriOverloads" Enabled="True" />
+    <Rule Name="TypesShouldNotExtendCertainBaseTypes" Enabled="True" />
+    <Rule Name="TypesThatOwnDisposableFieldsShouldBeDisposable" Enabled="True" />
+    <Rule Name="TypesThatOwnNativeResourcesShouldBeDisposable" Enabled="True" />
+    <Rule Name="UriParametersShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UriPropertiesShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UriReturnValuesShouldNotBeStrings" Enabled="True" />
+    <Rule Name="UseEventsWhereAppropriate" Enabled="True" />
+    <Rule Name="UseGenericEventHandlerInstances" Enabled="True" />
+    <Rule Name="UseGenericsWhereAppropriate" Enabled="True" />
+    <Rule Name="UseIntegralOrStringArgumentForIndexers" Enabled="True" />
+    <Rule Name="UsePropertiesWhereAppropriate" Enabled="True" />
+   </RuleFile>
+   <RuleFile Name="$(FxCopDir)\Rules\GlobalizationRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\InteroperabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\MobilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\NamingRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PerformanceRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\PortabilityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\SecurityTransparencyRules.dll" Enabled="True" AllRulesEnabled="True" />
+   <RuleFile Name="$(FxCopDir)\Rules\UsageRules.dll" Enabled="True" AllRulesEnabled="True" />
+  </RuleFiles>
+  <Groups />
+  <Settings />
+ </Rules>
+ <FxCopReport Version="10.0">
+  <Namespaces>
+   <Namespace Name="ImpromptuInterface.InvokeExt">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Created="2011-08-03 20:58:23Z">
+      <Issue>
+       <Item>ImpromptuInterface.InvokeExt</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="ImpromptuInterface.MVVM">
+    <Messages>
+     <Message Id="MVVM" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Status="Excluded" Created="2011-08-03 20:58:23Z">
+      <Issue Name="Namespace">
+       <Item>MVVM</Item>
+       <Item>ImpromptuInterface.MVVM</Item>
+       <Item>Mvvm</Item>
+      </Issue>
+      <Notes>
+       <User Name="jayt">
+        <Note Id="10" />
+       </User>
+      </Notes>
+     </Message>
+    </Messages>
+   </Namespace>
+   <Namespace Name="ImpromptuInterface.Optimization">
+    <Messages>
+     <Message TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020" Created="2011-08-03 20:58:23Z">
+      <Issue>
+       <Item>ImpromptuInterface.Optimization</Item>
+      </Issue>
+     </Message>
+    </Messages>
+   </Namespace>
+  </Namespaces>
+  <Targets>
+   <Target Name="$(ProjectDir)/../ImpromptuInterface.FSharp/bin/Release/ImpromptuInterface.FSharp.dll">
+    <Modules>
+     <Module Name="impromptuinterface.fsharp.dll">
+      <Namespaces>
+       <Namespace Name="ImpromptuInterface">
+        <Types>
+         <Type Name="FSharp">
+          <Members>
+           <Member Name="#convert@58`1(System.Type,!!0)">
+            <Messages>
+             <Message Id="____________" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FSharp.convert@58&lt;a&gt;(Type, a)'</Item>
+               <Item>'____________'</Item>
+               <Item>'Type'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#dynExplicit`1(System.Object)">
+            <Messages>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynExplicit&lt;TResult&gt;(object)'</Item>
+               <Item>Dyn</Item>
+              </Issue>
+             </Message>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynExplicit&lt;TResult&gt;(object)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#dynImplicit`1(System.Object)">
+            <Messages>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynImplicit&lt;TResult&gt;(object)'</Item>
+               <Item>Dyn</Item>
+              </Issue>
+             </Message>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynImplicit&lt;TResult&gt;(object)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#dynStaticContext(System.Type)">
+            <Messages>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynStaticContext(Type)'</Item>
+               <Item>Dyn</Item>
+              </Issue>
+             </Message>
+             <Message Id="dyn" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>dyn</Item>
+               <Item>'FSharp.dynStaticContext(Type)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FSharp+lambda@67-1">
+          <Members>
+           <Member Name="#Invoke(!0)">
+            <Messages>
+             <Message Id="_____________________" TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FSharp.lambda@67-1&lt;a&gt;.Invoke(a)'</Item>
+               <Item>'_____________________'</Item>
+               <Item>'Type'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="FSharpUtil">
+          <Messages>
+           <Message Id="Util" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+            <Issue Name="Type">
+             <Item>Util</Item>
+             <Item>'FSharpUtil'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FSharpUtil+PropertyGetCallsNamedArgument">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'FSharpUtil.PropertyGetCallsNamedArgument'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="12" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FSharpUtil+PropertySetCallsAddAssign">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'FSharpUtil.PropertySetCallsAddAssign'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="12" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FSharpUtil+PropertySetCallsSubtractAssign">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'FSharpUtil.PropertySetCallsSubtractAssign'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="12" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/../ImpromptuInterface.MVVM/bin/Release/ImpromptuInterface.MVVM.dll">
+    <Modules>
+     <Module Name="impromptuinterface.mvvm.dll">
+      <Messages>
+       <Message Id="MVVM" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Status="Excluded" Created="2011-08-03 20:58:23Z">
+        <Issue Name="Assembly">
+         <Item>MVVM</Item>
+         <Item>'ImpromptuInterface.MVVM.dll'</Item>
+         <Item>Mvvm</Item>
+        </Issue>
+        <Notes>
+         <User Name="jayt">
+          <Note Id="10" />
+         </User>
+        </Notes>
+       </Message>
+      </Messages>
+      <Namespaces>
+       <Namespace Name="ImpromptuInterface.MVVM">
+        <Types>
+         <Type Name="DialogBox">
+          <Members>
+           <Member Name="#ShowDialog(System.Windows.Window)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'DialogBox.ShowDialog(Window)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Event">
+          <Messages>
+           <Message Id="Event" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2011-08-03 20:58:23Z">
+            <Issue Name="Type">
+             <Item>'Event'</Item>
+             <Item>Event</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="Event+BinderEventHandlerMemberName">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'Event.BinderEventHandlerMemberName'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Invoke(System.Object,System.Object)">
+            <Messages>
+             <Message Id="e" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterMoreMeaningfulName">
+               <Item>'Event.BinderEventHandlerMemberName.Invoke(object, object)'</Item>
+               <Item>'e'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EventBinder">
+          <Members>
+           <Member Name="#RegisterUnRegister(System.Boolean,System.Object,System.String,System.String)">
+            <Messages>
+             <Message TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822" Created="2011-08-03 20:58:23Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'EventBinder.RegisterUnRegister(bool, object, string, string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#To">
+            <Messages>
+             <Message Id="To" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>'EventBinder.To'</Item>
+               <Item>To</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#UnRegister(System.Object)">
+            <Messages>
+             <Message Id="UnRegister" TypeName="CompoundWordsShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1702" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberShouldBeDiscreteTerm">
+               <Item>UnRegister</Item>
+               <Item>'EventBinder.UnRegister(object)'</Item>
+               <Item>Unregister</Item>
+              </Issue>
+             </Message>
+             <Message Id="Un" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>Un</Item>
+               <Item>'EventBinder.UnRegister(object)'</Item>
+               <Item>UN</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EventBinder+EventBinderTo">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'EventBinder.EventBinderTo'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="FireOnPropertyChanged">
+          <Members>
+           <Member Name="#EventStore">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FireOnPropertyChanged.EventStore'</Item>
+               <Item>'IDictionary&lt;string, PropertyChangedEventHandler&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FireOnPropertyChanged.EventStore'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Parent">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FireOnPropertyChanged.Parent'</Item>
+               <Item>'INotifyPropertyChanged'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'FireOnPropertyChanged.Parent'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuBindingList">
+          <Messages>
+           <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuBindingList'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.IEnumerable`1&lt;System.Object&gt;,System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuBindingList.ImpromptuBindingList(IEnumerable&lt;object&gt;, IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuBindingList.ImpromptuBindingList(IEnumerable&lt;object&gt;, IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuCommandBinder">
+          <Members>
+           <Member Name="#Item[System.String]">
+            <Accessors>
+             <Accessor Name="#get_Item(System.String)">
+              <Messages>
+               <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 21:19:20Z">
+                <Issue Name="IFormatProviderAlternateString">
+                 <Item>'string.Format(string, object)'</Item>
+                 <Item>'ImpromptuCommandBinder.this.get(string)'</Item>
+                 <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+                 <Item>'CultureInfo.CurrentCulture'</Item>
+                 <Item>'CultureInfo.InvariantCulture'</Item>
+                </Issue>
+                <Notes>
+                 <User Name="jayt">
+                  <Note Id="7" />
+                 </User>
+                </Notes>
+               </Message>
+              </Messages>
+             </Accessor>
+            </Accessors>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuRelayCommand">
+          <Members>
+           <Member Name="#RaiseCanExecuteChanged()">
+            <Messages>
+             <Message TypeName="UseEventsWhereAppropriate" Category="Microsoft.Design" CheckId="CA1030" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuRelayCommand.RaiseCanExecuteChanged()'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="5" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuResultToString">
+          <Messages>
+           <Message TypeName="CollectionsShouldImplementGenericInterface" Category="Microsoft.Design" CheckId="CA1010" Created="2011-08-03 20:58:23Z">
+            <Issue Certainty="60">
+             <Item>'ImpromptuResultToString'</Item>
+             <Item>IEnumerable</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuResultToString'</Item>
+             <Item>Collection</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuResultToString'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuToString`1">
+          <Messages>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuToString&lt;TTarget&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#NullValue(System.Func`2&lt;!0,System.String&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuToString&lt;TTarget&gt;.NullValue(Func&lt;TTarget, string&gt;)'</Item>
+               <Item>'ImpromptuToString&lt;TTarget&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#NullValue(System.String)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuToString&lt;TTarget&gt;.NullValue(string)'</Item>
+               <Item>'ImpromptuToString&lt;TTarget&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="string" TypeName="IdentifiersShouldNotContainTypeNames" Category="Microsoft.Naming" CheckId="CA1720" Created="2011-08-03 20:58:23Z">
+              <Issue Name="LanguageIndependentMemberParameter">
+               <Item>'ImpromptuToString&lt;TTarget&gt;.NullValue(string)'</Item>
+               <Item>String</Item>
+               <Item>'toStringValue'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuToStringExtensions">
+          <Members>
+           <Member Name="#ProxyAllToString`1(System.Collections.Generic.IEnumerable`1&lt;!!0&gt;,System.Func`2&lt;!!0,System.String&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuToStringExtensions.ProxyAllToString&lt;T&gt;(this IEnumerable&lt;T&gt;, Func&lt;T, string&gt;)'</Item>
+               <Item>'IEnumerable&lt;ImpromptuToString&lt;T&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuViewModel">
+          <Members>
+           <Member Name="#LinkedProperties">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuViewModel.LinkedProperties'</Item>
+               <Item>'IDictionary&lt;string, List&lt;string&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuViewModel.LinkedProperties'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuViewModel.LinkedProperties'</Item>
+               <Item>'IDictionary&lt;string, List&lt;string&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuViewModel`1">
+          <Messages>
+           <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel&lt;TInterfaceContract&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuViewModel+DependsOn">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel.DependsOn'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuViewModel+FireOnPropertyChangedDependencyAware">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel.FireOnPropertyChangedDependencyAware'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuViewModel+FireOnPropertyChangedDependencyAware+DelegateAddRemove`1">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel.FireOnPropertyChangedDependencyAware.DelegateAddRemove&lt;T&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#op_Addition(ImpromptuInterface.MVVM.ImpromptuViewModel+FireOnPropertyChangedDependencyAware+DelegateAddRemove`1&lt;!0&gt;,!0)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>Add</Item>
+               <Item>'ImpromptuViewModel.FireOnPropertyChangedDependencyAware.DelegateAddRemove&lt;T&gt;.operator +(ImpromptuViewModel.FireOnPropertyChangedDependencyAware.DelegateAddRemove&lt;T&gt;, T)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Subtraction(ImpromptuInterface.MVVM.ImpromptuViewModel+FireOnPropertyChangedDependencyAware+DelegateAddRemove`1&lt;!0&gt;,!0)">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>Subtract</Item>
+               <Item>'ImpromptuViewModel.FireOnPropertyChangedDependencyAware.DelegateAddRemove&lt;T&gt;.operator -(ImpromptuViewModel.FireOnPropertyChangedDependencyAware.DelegateAddRemove&lt;T&gt;, T)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuViewModel+LinkFinal">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel.LinkFinal'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuViewModel+PropertyDepends">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuViewModel.PropertyDepends'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="IWindowBuilder`1">
+          <Members>
+           <Member Name="#New">
+            <Messages>
+             <Message Id="New" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>'IWindowBuilder&lt;TInterface&gt;.New'</Item>
+               <Item>New</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Win`1+WinObscure">
+          <Messages>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'Win&lt;T&gt;.WinObscure'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'Win&lt;T&gt;.WinObscure'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+   <Target Name="$(ProjectDir)/../ImpromptuInterface/bin/Release/ImpromptuInterface.dll">
+    <Modules>
+     <Module Name="impromptuinterface.dll">
+      <Namespaces>
+       <Namespace Name="ImpromptuInterface">
+        <Types>
+         <Type Name="Impromptu">
+          <Members>
+           <Member Name="#CreateCallSite(System.Type,System.Runtime.CompilerServices.CallSiteBinder,ImpromptuInterface.String_OR_InvokeMemberName,System.Type,System.String[],System.Boolean,System.Boolean)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.CreateCallSite(Type, CallSiteBinder, String_OR_InvokeMemberName, Type, string[], bool, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateCallSite`1(System.Runtime.CompilerServices.CallSiteBinder,ImpromptuInterface.String_OR_InvokeMemberName,System.Type,System.String[],System.Boolean,System.Boolean)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.CreateCallSite&lt;T&gt;(CallSiteBinder, String_OR_InvokeMemberName, Type, string[], bool, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Curry(System.Object,System.Nullable`1&lt;System.Int32&gt;)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'target'</Item>
+               <Item>'Delegate'</Item>
+               <Item>'Impromptu.Curry(object, int?)'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.Curry(object, int?)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GenericDelegateType(System.Int32,System.Boolean)">
+            <Messages>
+             <Message Id="param" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'Impromptu.GenericDelegateType(int, bool)'</Item>
+               <Item>param</Item>
+               <Item>'paramCount'</Item>
+              </Issue>
+             </Message>
+             <Message Id="paramCount-1" TypeName="OperationsShouldNotOverflow" Category="Microsoft.Usage" CheckId="CA2233" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>paramCount-1</Item>
+               <Item>'Impromptu.GenericDelegateType(int, bool)'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.GenericDelegateType(int, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'Impromptu.GenericDelegateType(int, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'Impromptu.GenericDelegateType(int, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetMemberNames(System.Object,System.Boolean)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.GetMemberNames(object, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#InvokeConvert(System.Object,System.Type,System.Boolean)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Impromptu.InvokeConvert(object, Type, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="InvokeArg">
+          <Members>
+           <Member Name="#Create">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeArg.Create'</Item>
+               <Item>'Func&lt;string, object, InvokeArg&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Explicit(System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;):ImpromptuInterface.InvokeArg">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'InvokeArg.explicit operator InvokeArg(KeyValuePair&lt;string, object&gt;)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="InvokeArg`1">
+          <Members>
+           <Member Name="#op_Explicit(System.Collections.Generic.KeyValuePair`2&lt;System.String,!0&gt;):ImpromptuInterface.InvokeArg`1&lt;!0&gt;">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'InvokeArg&lt;T&gt;.explicit operator InvokeArg&lt;T&gt;(KeyValuePair&lt;string, T&gt;)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="InvokeContext">
+          <Members>
+           <Member Name="#CreateContext">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeContext.CreateContext'</Item>
+               <Item>'Func&lt;object, object, InvokeContext&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateStatic">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeContext.CreateStatic'</Item>
+               <Item>'Func&lt;Type, InvokeContext&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateStaticWithContext">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeContext.CreateStaticWithContext'</Item>
+               <Item>'Func&lt;Type, object, InvokeContext&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="InvokeMemberName">
+          <Members>
+           <Member Name="#Create">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeMemberName.Create'</Item>
+               <Item>'Func&lt;string, Type[], InvokeMemberName&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateSpecialName">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeMemberName.CreateSpecialName'</Item>
+               <Item>'Func&lt;string, InvokeMemberName&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Equals(System.Object)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'obj'</Item>
+               <Item>'InvokeMemberName'</Item>
+               <Item>'InvokeMemberName.Equals(object)'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Implicit(System.String):ImpromptuInterface.InvokeMemberName">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'InvokeMemberName.implicit operator InvokeMemberName(string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="StaticContext">
+          <Members>
+           <Member Name="#op_Explicit(System.Type):ImpromptuInterface.StaticContext">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'StaticContext.explicit operator StaticContext(Type)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="String_OR_InvokeMemberName">
+          <Messages>
+           <Message TypeName="IdentifiersShouldNotContainUnderscores" Category="Microsoft.Naming" CheckId="CA1707" Created="2011-08-03 20:58:23Z">
+            <Issue Name="Type">
+             <Item>'String_OR_InvokeMemberName'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#GenericArgs">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'String_OR_InvokeMemberName.GenericArgs'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#op_Implicit(System.String):ImpromptuInterface.String_OR_InvokeMemberName">
+            <Messages>
+             <Message TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Multiple">
+               <Item>ToXXX</Item>
+               <Item>FromXXX</Item>
+               <Item>'String_OR_InvokeMemberName.implicit operator String_OR_InvokeMemberName(string)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="ImpromptuInterface.Build">
+        <Types>
+         <Type Name="ActLikeProxy">
+          <Messages>
+           <Message TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240" Created="2011-08-03 20:58:23Z">
+            <Issue Name="MakeOverridable">
+             <Item>'ActLikeProxy'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Equals(System.Object)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'obj'</Item>
+               <Item>'ActLikeProxy'</Item>
+               <Item>'ActLikeProxy.Equals(object)'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Initialize(System.Object,System.Collections.Generic.IEnumerable`1&lt;System.Type&gt;,System.Collections.Generic.IDictionary`2&lt;System.String,System.Type&gt;)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxy.Initialize(dynamic, IEnumerable&lt;Type&gt;, IDictionary&lt;string, Type&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ActLikeProxyAttribute">
+          <Messages>
+           <Message TypeName="DefineAccessorsForAttributeArguments" Category="Microsoft.Design" CheckId="CA1019" Created="2011-08-03 20:58:23Z" FixCategory="Breaking">
+            <Issue Name="RemoveSetter">
+             <Item>'ActLikeProxyAttribute.Context'</Item>
+             <Item>'context'</Item>
+            </Issue>
+            <Issue Name="RemoveSetter">
+             <Item>'ActLikeProxyAttribute.Interfaces'</Item>
+             <Item>'interfaces'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Interfaces">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxyAttribute.Interfaces'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ActLikeProxySerializationHelper">
+          <Members>
+           <Member Name="#Context">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxySerializationHelper.Context'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Interfaces">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxySerializationHelper.Interfaces'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#MonoInterfaces">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxySerializationHelper.MonoInterfaces'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Original">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ActLikeProxySerializationHelper.Original'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="BuildProxy">
+          <Members>
+           <Member Name="#BuildTypeHelper(System.Reflection.Emit.ModuleBuilder,System.Type,System.Collections.Generic.IDictionary`2&lt;System.String,System.Type&gt;)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.BuildTypeHelper(ModuleBuilder, Type, IDictionary&lt;string, Type&gt;)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#BuildTypeHelper(System.Reflection.Emit.ModuleBuilder,System.Type,System.Type[])">
+            <Messages>
+             <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'BuildProxy.BuildTypeHelper(ModuleBuilder, Type, params Type[])'</Item>
+               <Item>'object'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.BuildTypeHelper(ModuleBuilder, Type, params Type[])'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitProperty(System.Reflection.PropertyInfo,System.String,System.String,System.Type,System.String,System.Type[],System.Reflection.MethodInfo,System.String,System.Type[],System.Reflection.Emit.TypeBuilder,System.Reflection.Emit.MethodBuilder,System.Type,System.Type,System.Type,System.Type,System.Reflection.Emit.PropertyBuilder,System.Type,System.Boolean)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.EmitProperty(PropertyInfo, string, string, Type, string, Type[], MethodInfo, string, Type[], TypeBuilder, MethodBuilder, Type, Type, Type, Type, PropertyBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GenerateAssembly(System.String,System.Reflection.Emit.AssemblyBuilderAccess,System.Reflection.Emit.AssemblyBuilder&amp;,System.Reflection.Emit.ModuleBuilder&amp;)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'BuildProxy.GenerateAssembly(string, AssemblyBuilderAccess, ref AssemblyBuilder, ref ModuleBuilder)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GenerateFullDelegate(System.Reflection.Emit.TypeBuilder,System.Type,System.Collections.Generic.IEnumerable`1&lt;System.Type&gt;,System.Reflection.MethodInfo)">
+            <Messages>
+             <Message Id="builder" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Status="Excluded" Created="2011-08-03 20:58:23Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'builder'</Item>
+               <Item>'BuildProxy.GenerateFullDelegate(TypeBuilder, Type, IEnumerable&lt;Type&gt;, MethodInfo)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="6" />
+               </User>
+              </Notes>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.GenerateFullDelegate(TypeBuilder, Type, IEnumerable&lt;Type&gt;, MethodInfo)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#MakeEvent(System.Reflection.Emit.ModuleBuilder,System.Reflection.EventInfo,System.Reflection.Emit.TypeBuilder,System.Type,System.Boolean)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakeEvent(ModuleBuilder, EventInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakeEvent(ModuleBuilder, EventInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakeEvent(ModuleBuilder, EventInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#MakeMethod(System.Reflection.Emit.ModuleBuilder,System.Reflection.MethodInfo,System.Reflection.Emit.TypeBuilder,System.Type,System.Boolean)">
+            <Messages>
+             <Message TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'BuildProxy.MakeMethod(ModuleBuilder, MethodInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'object'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakeMethod(ModuleBuilder, MethodInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakeMethod(ModuleBuilder, MethodInfo, TypeBuilder, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#MakePropertyHelper(System.Reflection.PropertyInfo,System.String,System.Reflection.Emit.ModuleBuilder,System.Type,System.Reflection.MethodInfo,System.Reflection.Emit.TypeBuilder,System.String,System.Type,System.Boolean)">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakePropertyHelper(PropertyInfo, string, ModuleBuilder, Type, MethodInfo, TypeBuilder, string, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakePropertyHelper(PropertyInfo, string, ModuleBuilder, Type, MethodInfo, TypeBuilder, string, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.MakePropertyHelper(PropertyInfo, string, ModuleBuilder, Type, MethodInfo, TypeBuilder, string, Type, bool)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#PreLoadProxiesFromAssembly(System.Reflection.Assembly)">
+            <Messages>
+             <Message Id="PreLoad" TypeName="CompoundWordsShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1702" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberShouldBeDiscreteTerm">
+               <Item>PreLoad</Item>
+               <Item>'BuildProxy.PreLoadProxiesFromAssembly(Assembly)'</Item>
+               <Item>Preload</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#PreLoadProxy(System.Type,ImpromptuInterface.Build.ActLikeProxyAttribute)">
+            <Messages>
+             <Message Id="PreLoad" TypeName="CompoundWordsShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1702" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberShouldBeDiscreteTerm">
+               <Item>PreLoad</Item>
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+               <Item>Preload</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotRaiseReservedExceptionTypes" Category="Microsoft.Usage" CheckId="CA2201" Created="2011-08-03 20:58:23Z">
+              <Issue Name="TooGeneric">
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+               <Item>'Exception'</Item>
+              </Issue>
+              <Issue Name="TooGeneric">
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+               <Item>'Exception'</Item>
+              </Issue>
+              <Issue Name="TooGeneric">
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+               <Item>'Exception'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object, object)'</Item>
+               <Item>'BuildProxy.PreLoadProxy(Type, ActLikeProxyAttribute)'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="BuildProxy+TempBuilder">
+          <Members>
+           <Member Name="#Close()">
+            <Messages>
+             <Message TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'BuildProxy.TempBuilder.Close()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Dispose()">
+            <Messages>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'BuildProxy.TempBuilder.Dispose()'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EmitExtensions">
+          <Members>
+           <Member Name="#EmitArray(System.Reflection.Emit.ILGenerator,System.Type,System.Collections.Generic.IList`1&lt;System.Action`1&lt;System.Reflection.Emit.ILGenerator&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'EmitExtensions.EmitArray(this ILGenerator, Type, IList&lt;Action&lt;ILGenerator&gt;&gt;)'</Item>
+               <Item>'IList&lt;Action&lt;ILGenerator&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitCallInvokeFunc(System.Reflection.Emit.ILGenerator,System.Type,System.Boolean)">
+            <Messages>
+             <Message Id="isAction" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2011-08-03 20:58:23Z" FixCategory="DependsOnFix">
+              <Issue>
+               <Item>'isAction'</Item>
+               <Item>'EmitExtensions.EmitCallInvokeFunc(this ILGenerator, Type, bool)'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'EmitExtensions.EmitCallInvokeFunc(this ILGenerator, Type, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitCallsiteCreate(System.Reflection.Emit.ILGenerator,System.Type)">
+            <Messages>
+             <Message Id="Callsite" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>Callsite</Item>
+               <Item>'EmitExtensions.EmitCallsiteCreate(this ILGenerator, Type)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitCreateCSharpArgumentInfo(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags,System.String)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'EmitExtensions.EmitCreateCSharpArgumentInfo(this ILGenerator, CSharpArgumentInfoFlags, string)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitCreateCSharpArgumentInfo(this ILGenerator, CSharpArgumentInfoFlags, string)'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicBinaryOpBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.Linq.Expressions.ExpressionType,System.Type,System.Type[])">
+            <Messages>
+             <Message Id="expr" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'EmitExtensions.EmitDynamicBinaryOpBinder(this ILGenerator, CSharpBinderFlags, ExpressionType, Type, params Type[])'</Item>
+               <Item>expr</Item>
+               <Item>'exprType'</Item>
+              </Issue>
+             </Message>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicBinaryOpBinder(this ILGenerator, CSharpBinderFlags, ExpressionType, Type, params Type[])'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicConvertBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.Type,System.Type)">
+            <Messages>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicConvertBinder(this ILGenerator, CSharpBinderFlags, Type, Type)'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicGetBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.String,System.Type,System.Type[])">
+            <Messages>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicGetBinder(this ILGenerator, CSharpBinderFlags, string, Type, params Type[])'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicIsEventBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.String,System.Type)">
+            <Messages>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicIsEventBinder(this ILGenerator, CSharpBinderFlags, string, Type)'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicMethodInvokeBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.String,System.Type,System.Reflection.ParameterInfo[],System.Collections.Generic.IEnumerable`1&lt;System.String&gt;)">
+            <Messages>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicMethodInvokeBinder(this ILGenerator, CSharpBinderFlags, string, Type, ParameterInfo[], IEnumerable&lt;string&gt;)'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicSetBinder(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.String,System.Type,System.Type[])">
+            <Messages>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicSetBinder(this ILGenerator, CSharpBinderFlags, string, Type, params Type[])'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#EmitDynamicSetBinderDynamicParams(System.Reflection.Emit.ILGenerator,Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags,System.String,System.Type,System.Type[])">
+            <Messages>
+             <Message Id="Params" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>Params</Item>
+               <Item>'EmitExtensions.EmitDynamicSetBinderDynamicParams(this ILGenerator, CSharpBinderFlags, string, Type, params Type[])'</Item>
+              </Issue>
+             </Message>
+             <Message Id="flag" TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameterNoAlternate">
+               <Item>'EmitExtensions.EmitDynamicSetBinderDynamicParams(this ILGenerator, CSharpBinderFlags, string, Type, params Type[])'</Item>
+               <Item>flag</Item>
+               <Item>'flag'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="8" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="EmitExtensions+BranchTrueOverBlock">
+          <Messages>
+           <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Created="2011-08-03 20:58:23Z">
+            <Issue Name="ProvideDisposeBool">
+             <Item>'EmitExtensions.BranchTrueOverBlock'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'EmitExtensions.BranchTrueOverBlock'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Dispose()">
+            <Messages>
+             <Message TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063" Created="2011-08-03 20:58:23Z">
+              <Issue Name="DisposeImplementation">
+               <Item>'EmitExtensions.BranchTrueOverBlock.Dispose()'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="CallGCSuppressFinalizeCorrectly" Category="Microsoft.Usage" CheckId="CA1816" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="NotCalled">
+               <Item>'EmitExtensions.BranchTrueOverBlock.Dispose()'</Item>
+               <Item>'GC.SuppressFinalize(object)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="9" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="IActLikeProxyInitialize">
+          <Members>
+           <Member Name="#Initialize(System.Object,System.Collections.Generic.IEnumerable`1&lt;System.Type&gt;,System.Collections.Generic.IDictionary`2&lt;System.String,System.Type&gt;)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'IActLikeProxyInitialize.Initialize(dynamic, IEnumerable&lt;Type&gt;, IDictionary&lt;string, Type&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="TypeHash">
+          <Members>
+           <Member Name="#InformalInterface">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'TypeHash.InformalInterface'</Item>
+               <Item>'IDictionary&lt;string, Type&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'TypeHash.InformalInterface'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Types">
+            <Messages>
+             <Message TypeName="ArrayFieldsShouldNotBeReadOnly" Category="Microsoft.Security" CheckId="CA2105" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'TypeHash.Types'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'TypeHash.Types'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="ImpromptuInterface.Dynamic">
+        <Types>
+         <Type Name="Activate">
+          <Members>
+           <Member Name="#Type">
+            <Messages>
+             <Message TypeName="PropertyNamesShouldNotMatchGetMethods" Category="Microsoft.Naming" CheckId="CA1721" Created="2011-08-03 20:58:23Z">
+              <Issue Name="BaseType">
+               <Item>'Activate.Type'</Item>
+               <Item>'object.GetType()'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Build">
+          <Messages>
+           <Message TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'Build'</Item>
+             <Item>ImpromptuInterface.Build</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="Build`1">
+          <Members>
+           <Member Name="#NewList">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Build&lt;TObjectPrototype&gt;.NewList'</Item>
+               <Item>'Build&lt;TObjectPrototype&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#NewObject">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Build&lt;TObjectPrototype&gt;.NewObject'</Item>
+               <Item>'Build&lt;TObjectPrototype&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Builder">
+          <Members>
+           <Member Name="#New`1()">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Builder.New&lt;TObjectPrototype&gt;()'</Item>
+               <Item>'TObjectPrototype'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="CacheableInvocation">
+          <Members>
+           <Member Name="#.ctor(ImpromptuInterface.Dynamic.InvocationKind,ImpromptuInterface.String_OR_InvokeMemberName,System.Int32,System.String[],System.Object,System.Type,System.Boolean,System.Object[])">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'CacheableInvocation.CacheableInvocation(InvocationKind, String_OR_InvokeMemberName, int, string[], object, Type, bool, object[])'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateCall(ImpromptuInterface.Dynamic.InvocationKind,ImpromptuInterface.String_OR_InvokeMemberName,System.Dynamic.CallInfo,System.Object)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'CacheableInvocation.CreateCall(InvocationKind, String_OR_InvokeMemberName, CallInfo, object)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#CreateConvert(System.Type,System.Boolean)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'CacheableInvocation.CreateConvert(Type, bool)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Invoke(System.Object,System.Object[])">
+            <Messages>
+             <Message TypeName="InstantiateArgumentExceptionsCorrectly" Category="Microsoft.Usage" CheckId="CA2208" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IncorrectMessage">
+               <Item>'CacheableInvocation.Invoke(object, params object[])'</Item>
+               <Item>args</Item>
+               <Item>'message'</Item>
+               <Item>'ArgumentException'</Item>
+              </Issue>
+             </Message>
+             <Message Id="System.String.Format(System.String,System.Object)" TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Name="IFormatProviderAlternateString">
+               <Item>'string.Format(string, object)'</Item>
+               <Item>'CacheableInvocation.Invoke(object, params object[])'</Item>
+               <Item>'string.Format(IFormatProvider, string, params object[])'</Item>
+               <Item>'CultureInfo.CurrentCulture'</Item>
+               <Item>'CultureInfo.InvariantCulture'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="7" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="IDynamicKnowLike">
+          <Members>
+           <Member Name="#KnownInterfaces">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Created="2011-08-03 20:58:23Z">
+              <Issue Name="AddGetter">
+               <Item>'IDynamicKnowLike.KnownInterfaces'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#KnownPropertySpec">
+            <Messages>
+             <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'IDynamicKnowLike.KnownPropertySpec'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044" Created="2011-08-03 20:58:23Z">
+              <Issue Name="AddGetter">
+               <Item>'IDynamicKnowLike.KnownPropertySpec'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="IImpromptuBuilder">
+          <Members>
+           <Member Name="#ArraySetup`1()">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'IImpromptuBuilder.ArraySetup&lt;TList&gt;()'</Item>
+               <Item>'TList'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ListSetup`1()">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'IImpromptuBuilder.ListSetup&lt;TList&gt;()'</Item>
+               <Item>'TList'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Object">
+            <Messages>
+             <Message Id="Object" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>'IImpromptuBuilder.Object'</Item>
+               <Item>Object</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuBuilder`1">
+          <Messages>
+           <Message Id="ProtoType" TypeName="CompoundWordsShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1702" Created="2011-08-03 20:58:23Z" FixCategory="NonBreaking">
+            <Issue Name="TypeTypeParameterShouldBeDiscreteTerm">
+             <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;'</Item>
+             <Item>ProtoType</Item>
+             <Item>'TObjectProtoType'</Item>
+             <Item>Prototype</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#_buildType">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;._buildType'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ArraySetup`1()">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;.ArraySetup&lt;TList&gt;()'</Item>
+               <Item>'TList'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ListSetup`1()">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;.ListSetup&lt;TList&gt;()'</Item>
+               <Item>'TList'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuBuilder`1+BuilderTrampoline">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;.BuilderTrampoline'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuBuilder`1+SetupTrampoline">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuBuilder&lt;TObjectProtoType&gt;.SetupTrampoline'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuChainableDictionary">
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuChainableDictionary.ImpromptuChainableDictionary(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="dict" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'ImpromptuChainableDictionary.ImpromptuChainableDictionary(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>dict</Item>
+               <Item>'dict'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuDictionary">
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionary.ImpromptuDictionary(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="dict" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'ImpromptuDictionary.ImpromptuDictionary(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>dict</Item>
+               <Item>'dict'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Create`1(System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionary.Create&lt;T&gt;(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="dict" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'ImpromptuDictionary.Create&lt;T&gt;(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>dict</Item>
+               <Item>'dict'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionary.Create&lt;T&gt;(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuDictionaryBase">
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'dict'</Item>
+               <Item>'IDictionary&lt;string, object&gt;'</Item>
+               <Item>'ImpromptuDictionaryBase.ImpromptuDictionaryBase(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionaryBase.ImpromptuDictionaryBase(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="dict" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="MemberParameter">
+               <Item>'ImpromptuDictionaryBase.ImpromptuDictionaryBase(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>dict</Item>
+               <Item>'dict'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionaryBase.ImpromptuDictionaryBase(IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#_dictionary">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionaryBase._dictionary'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#TryGetValue(System.String,System.Object&amp;)">
+            <Messages>
+             <Message TypeName="UseGenericsWhereAppropriate" Category="Microsoft.Design" CheckId="CA1007" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuDictionaryBase.TryGetValue(string, out object)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="4" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuFactory">
+          <Messages>
+           <Message TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuFactory'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuForwarder">
+          <Members>
+           <Member Name="#TrySetMember(System.Dynamic.SetMemberBinder,System.Object)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'value'</Item>
+               <Item>'ImpromptuForwarderAddRemove'</Item>
+               <Item>'ImpromptuForwarder.TrySetMember(SetMemberBinder, object)'</Item>
+               <Item>isint</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuLateLibraryType">
+          <Members>
+           <Member Name="#new">
+            <Messages>
+             <Message Id="new" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>new</Item>
+               <Item>'ImpromptuLateLibraryType.new'</Item>
+               <Item>New</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuLateLibraryType+ConstructorForward">
+          <Messages>
+           <Message TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ImpromptuLateLibraryType.ConstructorForward'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="13" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ImpromptuList">
+          <Members>
+           <Member Name="#.ctor(System.Collections.Generic.IEnumerable`1&lt;System.Object&gt;,System.Collections.Generic.IEnumerable`1&lt;System.Collections.Generic.KeyValuePair`2&lt;System.String,System.Object&gt;&gt;)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'contents'</Item>
+               <Item>'IList&lt;object&gt;'</Item>
+               <Item>'ImpromptuList.ImpromptuList(IEnumerable&lt;object&gt;, IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>isint</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuList.ImpromptuList(IEnumerable&lt;object&gt;, IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+               <Item>'IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuList.ImpromptuList(IEnumerable&lt;object&gt;, IEnumerable&lt;KeyValuePair&lt;string, object&gt;&gt;)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#_list">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuList._list'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetRepresentedItem()">
+            <Messages>
+             <Message TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue Certainty="50">
+               <Item>'ImpromptuList.GetRepresentedItem()'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="3" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedAction,System.Object,System.Object,System.Nullable`1&lt;System.Int32&gt;,System.Nullable`1&lt;System.Int32&gt;)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuList.OnCollectionChanged(NotifyCollectionChangedAction, object, object, int?, int?)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#OverrideGettingItemMethodNames">
+            <Messages>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuList.OverrideGettingItemMethodNames'</Item>
+               <Item>'Func&lt;IEnumerable&lt;object&gt;, IEnumerable&lt;string&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuObject">
+          <Members>
+           <Member Name="#_hash">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject._hash'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#_returnTypHash">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject._returnTypHash'</Item>
+               <Item>'IDictionary&lt;TypeHash, IDictionary&lt;string, Type&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject._returnTypHash'</Item>
+               <Item>'IDictionary&lt;TypeHash, IDictionary&lt;string, Type&gt;&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message Id="return" TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>return</Item>
+               <Item>'ImpromptuObject._returnTypHash'</Item>
+               <Item>Return</Item>
+              </Issue>
+             </Message>
+             <Message Id="Typ" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>Typ</Item>
+               <Item>'ImpromptuObject._returnTypHash'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="IdentifiersShouldNotContainUnderscores" Category="Microsoft.Naming" CheckId="CA1707" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Member">
+               <Item>'ImpromptuObject._returnTypHash'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ImpromptuInterface.Dynamic.IDynamicKnowLike.KnownPropertySpec">
+            <Messages>
+             <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject.IDynamicKnowLike.KnownPropertySpec'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#KnownPropertySpec">
+            <Messages>
+             <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject.KnownPropertySpec'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#PropertySpec">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuObject.PropertySpec'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuRecorder">
+          <Members>
+           <Member Name="#Recording">
+            <Messages>
+             <Message TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuRecorder.Recording'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ImpromptuSingleInstancesFactory">
+          <Members>
+           <Member Name="#_hashFactoryTypes">
+            <Messages>
+             <Message TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuSingleInstancesFactory._hashFactoryTypes'</Item>
+               <Item>'Dictionary&lt;string, object&gt;'</Item>
+              </Issue>
+             </Message>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuSingleInstancesFactory._hashFactoryTypes'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#_lockTable">
+            <Messages>
+             <Message TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'ImpromptuSingleInstancesFactory._lockTable'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Invocation">
+          <Members>
+           <Member Name="#Args">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Invocation.Args'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Return`1">
+          <Messages>
+           <Message Id="R" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z" FixCategory="NonBreaking">
+            <Issue Name="TypeTypeParameterMoreMeaningfulName">
+             <Item>'Return&lt;TR&gt;'</Item>
+             <Item>'TR'</Item>
+            </Issue>
+           </Message>
+           <Message Id="Return" TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716" Created="2011-08-03 20:58:23Z">
+            <Issue Name="Type">
+             <Item>'Return&lt;TR&gt;'</Item>
+             <Item>Return</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#Arguments(System.Func`1&lt;!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments(Func&lt;TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`1(System.Func`2&lt;!!0,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1&gt;(Func&lt;T1, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`10(System.Func`11&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`11(System.Func`12&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`12(System.Func`13&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`13(System.Func`14&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`14(System.Func`15&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`15(System.Func`16&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13,!!14,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`16(System.Func`17&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13,!!14,!!15,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`2(System.Func`3&lt;!!0,!!1,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2&gt;(Func&lt;T1, T2, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`3(System.Func`4&lt;!!0,!!1,!!2,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3&gt;(Func&lt;T1, T2, T3, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`4(System.Func`5&lt;!!0,!!1,!!2,!!3,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4&gt;(Func&lt;T1, T2, T3, T4, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`5(System.Func`6&lt;!!0,!!1,!!2,!!3,!!4,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5&gt;(Func&lt;T1, T2, T3, T4, T5, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`6(System.Func`7&lt;!!0,!!1,!!2,!!3,!!4,!!5,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6&gt;(Func&lt;T1, T2, T3, T4, T5, T6, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`7(System.Func`8&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`8(System.Func`9&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#Arguments`9(System.Func`10&lt;!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.Arguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9&gt;(Func&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments(ImpromptuInterface.Dynamic.ThisFunc`1&lt;!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments(ThisFunc&lt;TR&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`1(ImpromptuInterface.Dynamic.ThisFunc`2&lt;!0,!!0&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1&gt;(ThisFunc&lt;TR, T1&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`10(ImpromptuInterface.Dynamic.ThisFunc`11&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`11(ImpromptuInterface.Dynamic.ThisFunc`12&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`12(ImpromptuInterface.Dynamic.ThisFunc`13&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`13(ImpromptuInterface.Dynamic.ThisFunc`14&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`14(ImpromptuInterface.Dynamic.ThisFunc`15&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`15(ImpromptuInterface.Dynamic.ThisFunc`16&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13,!!14&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`16(ImpromptuInterface.Dynamic.ThisFunc`17&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8,!!9,!!10,!!11,!!12,!!13,!!14,!!15&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`2(ImpromptuInterface.Dynamic.ThisFunc`3&lt;!0,!!0,!!1&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2&gt;(ThisFunc&lt;TR, T1, T2&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`3(ImpromptuInterface.Dynamic.ThisFunc`4&lt;!0,!!0,!!1,!!2&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3&gt;(ThisFunc&lt;TR, T1, T2, T3&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`4(ImpromptuInterface.Dynamic.ThisFunc`5&lt;!0,!!0,!!1,!!2,!!3&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4&gt;(ThisFunc&lt;TR, T1, T2, T3, T4&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`5(ImpromptuInterface.Dynamic.ThisFunc`6&lt;!0,!!0,!!1,!!2,!!3,!!4&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`6(ImpromptuInterface.Dynamic.ThisFunc`7&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`7(ImpromptuInterface.Dynamic.ThisFunc`8&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`8(ImpromptuInterface.Dynamic.ThisFunc`9&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#ThisAndArguments`9(ImpromptuInterface.Dynamic.ThisFunc`10&lt;!0,!!0,!!1,!!2,!!3,!!4,!!5,!!6,!!7,!!8&gt;)">
+            <Messages>
+             <Message TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Return&lt;TR&gt;.ThisAndArguments&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9&gt;(ThisFunc&lt;TR, T1, T2, T3, T4, T5, T6, T7, T8, T9&gt;)'</Item>
+               <Item>'Return&lt;TR&gt;'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="2" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="ThisAction`10">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`11">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`12">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`13">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`14">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`15">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`16">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`3">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`4">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`5">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`6">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`7">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`8">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisAction`9">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisAction&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisDelegate">
+          <Messages>
+           <Message TypeName="IdentifiersShouldNotHaveIncorrectSuffix" Category="Microsoft.Naming" CheckId="CA1711" Created="2011-08-03 20:58:23Z">
+            <Issue Name="TypeNoAlternate">
+             <Item>'ThisDelegate'</Item>
+             <Item>Delegate</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`10">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`11">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`12">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`13">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`14">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`15">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`16">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`17">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, T9, T10, T11, T12, T13, T14, T15, T16, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`3">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`4">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`5">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`6">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`7">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`8">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="ThisFunc`9">
+          <Messages>
+           <Message TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005" Status="Excluded" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'ThisFunc&lt;T1, T2, T3, T4, T5, T6, T7, T8, TResult&gt;'</Item>
+            </Issue>
+            <Notes>
+             <User Name="jayt">
+              <Note Id="0" />
+             </User>
+            </Notes>
+           </Message>
+          </Messages>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="ImpromptuInterface.Internal">
+        <Types>
+         <Type Name="Currying">
+          <Members>
+           <Member Name="#Args">
+            <Messages>
+             <Message TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Currying.Args'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="ImpromptuInterface.InvokeExt">
+        <Types>
+         <Type Name="InvokeExt">
+          <Messages>
+           <Message TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'InvokeExt'</Item>
+             <Item>ImpromptuInterface.InvokeExt</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#WithContext`1(System.Object)">
+            <Messages>
+             <Message TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeExt.WithContext&lt;TContext&gt;(this object)'</Item>
+               <Item>'TContext'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#WithStaticContext(System.Type,System.Object)">
+            <Messages>
+             <Message TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeExt.WithStaticContext(this Type, object)'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="1" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+       <Namespace Name="ImpromptuInterface.Optimization">
+        <Types>
+         <Type Name="BinderHash">
+          <Members>
+           <Member Name="#Equals(System.Object)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Parameter">
+               <Item>'obj'</Item>
+               <Item>'BinderHash'</Item>
+               <Item>'BinderHash.Equals(object)'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="DummmyNull">
+          <Messages>
+           <Message TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812" Created="2011-08-03 20:58:23Z">
+            <Issue>
+             <Item>'DummmyNull'</Item>
+            </Issue>
+           </Message>
+          </Messages>
+         </Type>
+         <Type Name="InvokeHelper">
+          <Members>
+           <Member Name="#.cctor()">
+            <Messages>
+             <Message TypeName="InitializeReferenceTypeStaticFieldsInline" Category="Microsoft.Performance" CheckId="CA1810" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'InvokeHelper'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#InvokeConstructorCallSite(System.Type,System.Boolean,System.Object[],System.String[],System.Type,System.Runtime.CompilerServices.CallSite&amp;)">
+            <Messages>
+             <Message Id="context" TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801" Created="2011-08-03 20:58:23Z" FixCategory="NonBreaking">
+              <Issue>
+               <Item>'context'</Item>
+               <Item>'InvokeHelper.InvokeConstructorCallSite(Type, bool, object[], string[], Type, ref CallSite)'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+         <Type Name="Util">
+          <Messages>
+           <Message Id="Util" TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704" Created="2011-08-03 20:58:23Z">
+            <Issue Name="Type">
+             <Item>Util</Item>
+             <Item>'Util'</Item>
+            </Issue>
+           </Message>
+           <Message TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724" Created="2011-08-03 20:58:23Z">
+            <Issue Name="System">
+             <Item>'Util'</Item>
+             <Item>System.Web.Util</Item>
+            </Issue>
+           </Message>
+          </Messages>
+          <Members>
+           <Member Name="#.cctor()">
+            <Messages>
+             <Message TypeName="InitializeReferenceTypeStaticFieldsInline" Category="Microsoft.Performance" CheckId="CA1810" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'Util'</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetArgsAndNames(System.Object[],System.String[]&amp;)">
+            <Messages>
+             <Message TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800" Created="2011-08-03 20:58:23Z">
+              <Issue Name="Local">
+               <Item>'tArg'</Item>
+               <Item>'InvokeArg'</Item>
+               <Item>'Util.GetArgsAndNames(object[], out string[])'</Item>
+               <Item>castclass</Item>
+              </Issue>
+              <Issue Name="Local">
+               <Item>'tArg'</Item>
+               <Item>'InvokeArg'</Item>
+               <Item>'Util.GetArgsAndNames(object[], out string[])'</Item>
+               <Item>castclass</Item>
+              </Issue>
+             </Message>
+            </Messages>
+           </Member>
+           <Member Name="#GetTargetContext(System.Object,System.Type&amp;,System.Boolean&amp;)">
+            <Messages>
+             <Message Id="1#" TypeName="AvoidOutParameters" Category="Microsoft.Design" CheckId="CA1021" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'context'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="11" />
+               </User>
+              </Notes>
+             </Message>
+             <Message Id="2#" TypeName="AvoidOutParameters" Category="Microsoft.Design" CheckId="CA1021" Status="Excluded" Created="2011-08-03 20:58:23Z">
+              <Issue>
+               <Item>'staticContext'</Item>
+              </Issue>
+              <Notes>
+               <User Name="jayt">
+                <Note Id="11" />
+               </User>
+              </Notes>
+             </Message>
+            </Messages>
+           </Member>
+          </Members>
+         </Type>
+        </Types>
+       </Namespace>
+      </Namespaces>
+     </Module>
+    </Modules>
+   </Target>
+  </Targets>
+  <Notes>
+   <User Name="jayt">
+    <Note Id="0" Modified="2011-08-03 21:24:54Z">These match up with microsoft types</Note>
+    <Note Id="1" Modified="2011-08-03 21:25:58Z">We are using default parameters</Note>
+    <Note Id="2" Modified="2011-08-03 21:27:52Z">These are meant to have all generice parameters specfied</Note>
+    <Note Id="3" Modified="2011-08-03 21:29:26Z">not appropriate</Note>
+    <Note Id="4" Modified="2011-08-03 21:30:21Z">mirroring public microsoft methods</Note>
+    <Note Id="5" Modified="2011-08-03 21:30:43Z">Calls events</Note>
+    <Note Id="6" Modified="2011-08-03 21:41:10Z">May switch to nested types if i figure out how to do it, thus would need the typebuilder</Note>
+    <Note Id="7" Modified="2011-08-03 21:42:30Z">Not carring about IFormatProvider</Note>
+    <Note Id="8" Modified="2011-08-03 21:44:14Z">flag is appropriate here</Note>
+    <Note Id="9" Modified="2011-08-03 21:47:55Z">Not a real dispose</Note>
+    <Note Id="10" Modified="2011-08-03 21:48:40Z">mvvm seems better</Note>
+    <Note Id="11" Modified="2011-08-03 21:50:28Z">Used as optimization</Note>
+    <Note Id="12" Modified="2011-08-03 21:51:31Z">This is fsharp not CLS compliant</Note>
+    <Note Id="13" Modified="2011-08-03 21:52:09Z">These are internal constructors and used via dynamic typing</Note>
+   </User>
+  </Notes>
+  <Rules>
+   <Rule TypeName="ArrayFieldsShouldNotBeReadOnly" Category="Microsoft.Security" CheckId="CA2105">
+    <Resolution Name="Default">Either replace {0} with a strongly typed collection that cannot be changed, or replace the public field with a method that returns a clone of a private array.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidExcessiveParametersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1005">
+    <Resolution Name="Default">Consider a design where {0} has no more than 2 type parameters.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidNamespacesWithFewTypes" Category="Microsoft.Design" CheckId="CA1020">
+    <Resolution Name="Default">Consider merging the types defined in '{0}' with another namespace.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidOutParameters" Category="Microsoft.Design" CheckId="CA1021">
+    <Resolution Name="Default">Consider a design that does not require that {0} be an out parameter.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUncalledPrivateCode" Category="Microsoft.Performance" CheckId="CA1811">
+    <Resolution Name="Default">{0} appears to have no upstream public or protected callers.</Resolution>
+   </Rule>
+   <Rule TypeName="AvoidUninstantiatedInternalClasses" Category="Microsoft.Performance" CheckId="CA1812">
+    <Resolution Name="Default">{0} is an internal class that is apparently never instantiated. If so, remove the code from the assembly. If this class is intended to contain only static methods, consider adding a private constructor to prevent the compiler from generating a default constructor.</Resolution>
+   </Rule>
+   <Rule TypeName="CallGCSuppressFinalizeCorrectly" Category="Microsoft.Usage" CheckId="CA1816">
+    <Resolution Name="NotCalled">Change {0} to call {1}. This will prevent derived types that introduce a finalizer from needing to re-implement 'IDisposable' to call it.</Resolution>
+   </Rule>
+   <Rule TypeName="CollectionPropertiesShouldBeReadOnly" Category="Microsoft.Usage" CheckId="CA2227">
+    <Resolution Name="Default">Change {0} to be read-only by removing the property setter.</Resolution>
+   </Rule>
+   <Rule TypeName="CollectionsShouldImplementGenericInterface" Category="Microsoft.Design" CheckId="CA1010">
+    <Resolution Name="Default">{0} appears to be a non-generic, strongly typed collection. Add an implementation to the instance of {1}&lt;T&gt; where T is the underlying element type of {0}.</Resolution>
+   </Rule>
+   <Rule TypeName="CompoundWordsShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1702">
+    <Resolution Name="MemberShouldBeDiscreteTerm">The compound word '{0}' in member name {1} exists as a discrete term. If your usage is intended to be single word, case it as '{2}' or strip the first token entirely if it represents any sort of Hungarian notation.</Resolution>
+    <Resolution Name="TypeTypeParameterShouldBeDiscreteTerm">On type {0}, the compound word '{1}' in generic type parameter name {2} exists as a discrete term. If your usage is intended to be single word, case it as '{3}'.</Resolution>
+   </Rule>
+   <Rule TypeName="DefaultParametersShouldNotBeUsed" Category="Microsoft.Design" CheckId="CA1026">
+    <Resolution Name="Default">Replace method {0} with an overload that supplies all default arguments.</Resolution>
+   </Rule>
+   <Rule TypeName="DefineAccessorsForAttributeArguments" Category="Microsoft.Design" CheckId="CA1019">
+    <Resolution Name="RemoveSetter">Remove the property setter from {0} or reduce its accessibility because it corresponds to positional argument {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotCastUnnecessarily" Category="Microsoft.Performance" CheckId="CA1800">
+    <Resolution Name="Local">{0}, a variable, is cast to type {1} multiple times in method {2}. Cache the result of the 'as' operator or direct cast in order to eliminate the redundant {3} instruction.</Resolution>
+    <Resolution Name="Parameter">{0}, a parameter, is cast to type {1} multiple times in method {2}. Cache the result of the 'as' operator or direct cast in order to eliminate the redundant {3} instruction.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotCatchGeneralExceptionTypes" Category="Microsoft.Design" CheckId="CA1031">
+    <Resolution Name="Default">Modify {0} to catch a more specific exception than {1} or rethrow the exception.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotDeclareReadOnlyMutableReferenceTypes" Category="Microsoft.Security" CheckId="CA2104">
+    <Resolution Name="Default">Remove the read-only designation from {0} or change the field to one that is an immutable reference type. If the reference type {1} is, in fact, immutable, exclude this message.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotDeclareStaticMembersOnGenericTypes" Category="Microsoft.Design" CheckId="CA1000">
+    <Resolution Name="Default">Remove {0} from {1} or make it an instance member.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotDeclareVisibleInstanceFields" Category="Microsoft.Design" CheckId="CA1051">
+    <Resolution Name="Default">Because field {0} is visible outside of its declaring type, change its accessibility to private and add a property, with the same accessibility as the field has currently, to provide access to it.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotNestGenericTypesInMemberSignatures" Category="Microsoft.Design" CheckId="CA1006">
+    <Resolution Name="Default">Consider a design where {0} doesn't nest generic type {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="DoNotRaiseReservedExceptionTypes" Category="Microsoft.Usage" CheckId="CA2201">
+    <Resolution Name="TooGeneric">{0} creates an exception of type {1}, an exception type that is not sufficiently specific and should never be raised by user code. If this exception instance might be thrown, use a different exception type.</Resolution>
+   </Rule>
+   <Rule TypeName="GenericMethodsShouldProvideTypeParameter" Category="Microsoft.Design" CheckId="CA1004">
+    <Resolution Name="Default">Consider a design where {0} doesn't require explicit type parameter {1} in any call to it.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldBeCasedCorrectly" Category="Microsoft.Naming" CheckId="CA1709">
+    <Resolution Name="Assembly">Correct the casing of '{0}' in assembly name {1} by changing it to '{2}'.</Resolution>
+    <Resolution Name="Member">Correct the casing of '{0}' in member name {1} by changing it to '{2}'.</Resolution>
+    <Resolution Name="Namespace">Correct the casing of '{0}' in namespace name '{1}' by changing it to '{2}'.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldBeSpelledCorrectly" Category="Microsoft.Naming" CheckId="CA1704">
+    <Resolution Name="Member">Correct the spelling of '{0}' in member name {1} or remove it entirely if it represents any sort of Hungarian notation.</Resolution>
+    <Resolution Name="MemberParameter">In method {0}, correct the spelling of '{1}' in parameter name {2} or remove it entirely if it represents any sort of Hungarian notation.</Resolution>
+    <Resolution Name="MemberParameterMoreMeaningfulName">In method {0}, consider providing a more meaningful name than parameter name {1}.</Resolution>
+    <Resolution Name="Type">Correct the spelling of '{0}' in type name {1}.</Resolution>
+    <Resolution Name="TypeTypeParameterMoreMeaningfulName">On type {0}, consider providing a more meaningful name than generic type parameter name {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldHaveCorrectSuffix" Category="Microsoft.Naming" CheckId="CA1710">
+    <Resolution Name="Default">Rename {0} to end in '{1}'.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotContainTypeNames" Category="Microsoft.Naming" CheckId="CA1720">
+    <Resolution Name="LanguageIndependentMemberParameter">In member {0}, consider replacing the data type identifier '{1}' in parameter name {2} with a more generic term, such as 'value'.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotContainUnderscores" Category="Microsoft.Naming" CheckId="CA1707">
+    <Resolution Name="Member">Remove the underscores from member name {0}.</Resolution>
+    <Resolution Name="Type">Remove the underscores from type name {0}.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotHaveIncorrectSuffix" Category="Microsoft.Naming" CheckId="CA1711">
+    <Resolution Name="TypeNoAlternate">Rename type name {0} so that it does not end in '{1}'.</Resolution>
+   </Rule>
+   <Rule TypeName="IdentifiersShouldNotMatchKeywords" Category="Microsoft.Naming" CheckId="CA1716">
+    <Resolution Name="Member">Rename virtual/interface member {0} so that it no longer conflicts with the reserved language keyword '{1}'. Using a reserved keyword as the name of a virtual/interface member makes it harder for consumers in other languages to override/implement the member.</Resolution>
+    <Resolution Name="Type">Rename type {0} so that it no longer conflicts with the reserved language keyword '{1}'. Using a reserved keyword as the name of a type makes it harder for consumers in other languages to use the type.</Resolution>
+   </Rule>
+   <Rule TypeName="ImplementIDisposableCorrectly" Category="Microsoft.Design" CheckId="CA1063">
+    <Resolution Name="DisposeImplementation">Modify {0} so that it calls Dispose(true), then calls GC.SuppressFinalize on the current object instance ('this' or 'Me' in Visual Basic), and then returns.</Resolution>
+    <Resolution Name="ProvideDisposeBool">Provide an overridable implementation of Dispose(bool) on {0} or mark the type as sealed. A call to Dispose(false) should only clean up native resources. A call to Dispose(true) should clean up both managed and native resources.</Resolution>
+   </Rule>
+   <Rule TypeName="ImplementISerializableCorrectly" Category="Microsoft.Usage" CheckId="CA2240">
+    <Resolution Name="Default">Add an implementation of GetObjectData to type {0}.</Resolution>
+    <Resolution Name="MakeOverridable">Make {0}.GetObjectData virtual and overridable.</Resolution>
+   </Rule>
+   <Rule TypeName="InitializeReferenceTypeStaticFieldsInline" Category="Microsoft.Performance" CheckId="CA1810">
+    <Resolution Name="Default">Initialize all static fields in {0} when those fields are declared and remove the explicit static constructor.</Resolution>
+   </Rule>
+   <Rule TypeName="InstantiateArgumentExceptionsCorrectly" Category="Microsoft.Usage" CheckId="CA2208">
+    <Resolution Name="IncorrectMessage">Method {0} passes parameter name '{1}' as the {2} argument to a {3} constructor. Replace this argument with a descriptive message and pass the parameter name in the correct position.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkISerializableTypesWithSerializable" Category="Microsoft.Usage" CheckId="CA2237">
+    <Resolution Name="Default">Add [Serializable] to {0} as this type implements ISerializable.</Resolution>
+   </Rule>
+   <Rule TypeName="MarkMembersAsStatic" Category="Microsoft.Performance" CheckId="CA1822">
+    <Resolution Name="Default">The 'this' parameter (or 'Me' in Visual Basic) of {0} is never used. Mark the member as static (or Shared in Visual Basic) or use 'this'/'Me' in the method body or at least one property accessor, if appropriate.</Resolution>
+   </Rule>
+   <Rule TypeName="NestedTypesShouldNotBeVisible" Category="Microsoft.Design" CheckId="CA1034">
+    <Resolution Name="Default">Do not nest type {0}. Alternatively, change its accessibility so that it is not externally visible.</Resolution>
+   </Rule>
+   <Rule TypeName="OperationsShouldNotOverflow" Category="Microsoft.Usage" CheckId="CA2233">
+    <Resolution Name="Default">Correct the potential overflow in the operation '{0}' in {1}.</Resolution>
+   </Rule>
+   <Rule TypeName="OperatorOverloadsHaveNamedAlternates" Category="Microsoft.Usage" CheckId="CA2225">
+    <Resolution Name="Default">Provide a method named '{0}' as a friendly alternate for operator {1}.</Resolution>
+    <Resolution Name="Multiple">Provide a method named '{0}' or '{1}' as an alternate for operator {2}.</Resolution>
+   </Rule>
+   <Rule TypeName="PropertiesShouldNotBeWriteOnly" Category="Microsoft.Design" CheckId="CA1044">
+    <Resolution Name="AddGetter">Because property {0} is write-only, either add a property getter with an accessibility that is greater than or equal to its setter or convert this property into a method.</Resolution>
+   </Rule>
+   <Rule TypeName="PropertiesShouldNotReturnArrays" Category="Microsoft.Performance" CheckId="CA1819">
+    <Resolution Name="Default">Change {0} to return a collection or make it a method.</Resolution>
+   </Rule>
+   <Rule TypeName="PropertyNamesShouldNotMatchGetMethods" Category="Microsoft.Naming" CheckId="CA1721">
+    <Resolution Name="BaseType">The property name {0} is confusing given the existence of inherited method {1}. Rename or remove this property.</Resolution>
+   </Rule>
+   <Rule TypeName="RemoveUnusedLocals" Category="Microsoft.Performance" CheckId="CA1804">
+    <Resolution Name="Default">{0} declares a variable, {1}, of type {2}, which is never used or is only assigned to. Use this variable or remove it.</Resolution>
+   </Rule>
+   <Rule TypeName="ReviewUnusedParameters" Category="Microsoft.Usage" CheckId="CA1801">
+    <Resolution Name="Default">Parameter {0} of {1} is never used. Remove the parameter or use it in the method body.</Resolution>
+   </Rule>
+   <Rule TypeName="SpecifyIFormatProvider" Category="Microsoft.Globalization" CheckId="CA1305">
+    <Resolution Name="IFormatProviderAlternateString">Because the behavior of {0} could vary based on the current user's locale settings, replace this call in {1} with a call to {2}. If the result of {2} will be displayed to the user, specify {3} as the 'IFormatProvider' parameter. Otherwise, if the result will be stored and accessed by software, such as when it is persisted to disk or to a database, specify {4}.</Resolution>
+   </Rule>
+   <Rule TypeName="TypeNamesShouldNotMatchNamespaces" Category="Microsoft.Naming" CheckId="CA1724">
+    <Resolution Name="Default">The type name {0} conflicts in whole or in part with the namespace name '{1}'. Change either name to eliminate the conflict.</Resolution>
+    <Resolution Name="System">The type name {0} conflicts in whole or in part with the namespace name '{1}' defined in the .NET Framework. Rename the type to eliminate the conflict.</Resolution>
+   </Rule>
+   <Rule TypeName="UseEventsWhereAppropriate" Category="Microsoft.Design" CheckId="CA1030">
+    <Resolution Name="Default">Consider making {0} an event.</Resolution>
+   </Rule>
+   <Rule TypeName="UseGenericsWhereAppropriate" Category="Microsoft.Design" CheckId="CA1007">
+    <Resolution Name="Default">Consider using generics instead of a reference to System.Object in {0}.</Resolution>
+   </Rule>
+   <Rule TypeName="UsePreferredTerms" Category="Microsoft.Naming" CheckId="CA1726">
+    <Resolution Name="MemberParameterNoAlternate">In member {0}, replace the term '{1}' in parameter name {2} with an appropriate alternate or remove it entirely.</Resolution>
+   </Rule>
+   <Rule TypeName="UsePropertiesWhereAppropriate" Category="Microsoft.Design" CheckId="CA1024">
+    <Resolution Name="Default">Change {0} to a property if appropriate.</Resolution>
+   </Rule>
+  </Rules>
+ </FxCopReport>
+</FxCopProject>

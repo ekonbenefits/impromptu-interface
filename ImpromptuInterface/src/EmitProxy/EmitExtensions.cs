@@ -189,14 +189,12 @@ namespace ImpromptuInterface.Build
         }
 
 
-
         /// <summary>
         /// Emits the call invoke delegate.
         /// </summary>
         /// <param name="generator">The generator.</param>
         /// <param name="funcType">Type of the func.</param>
-        /// <param name="isAction">if set to <c>true</c> [is action].</param>
-        public static void EmitCallInvokeFunc(this ILGenerator generator, Type funcType, bool isAction = false)
+        public static void EmitCallInvokeFunc(this ILGenerator generator, Type funcType)
         {
             generator.Emit(OpCodes.Callvirt, funcType.GetMethodEvenIfGeneric("Invoke"));
         }

@@ -239,11 +239,13 @@ namespace ImpromptuInterface.Build
          
             var tGetName = "get_"+tName;
 
+            var tEmitInfo = new PropertyEmitInfo
+                                {Name = tName, GetName = tGetName, DefaultInterfaceImplementation = true, ContextType =  contextType, ResolveReturnType =  tReturnType};
 
 
 
 
-            MakePropertyHelper(null, tName, builder, tReturnType, null, typeBuilder, tGetName, contextType, true);
+            MakePropertyHelper(builder,typeBuilder,tEmitInfo);
         }
 
         private class MethodSigHash
@@ -481,8 +483,9 @@ namespace ImpromptuInterface.Build
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
         {
 
+            var tEmitInfo = new MethodEmitInfo {Name = info.Name, DefaultInterfaceImplementation = defaultImp};
 
-            var tName = info.Name;
+         
 
             var tParamAttri = info.GetParameters();
             Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
@@ -509,8 +512,8 @@ namespace ImpromptuInterface.Build
                 tReturnType = info.ReturnParameter.ParameterType;
 
 
-            var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
-            var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
+            var tCallSiteName = tEmitInfo.CallSiteName;
+            var tCStp = DefineBuilderForCallSite(builder, tCallSiteName);
 
 
 
@@ -521,14 +524,14 @@ namespace ImpromptuInterface.Build
                 tParamTypes = tReplacedTypes.Item2;
             }
 
-            var tConvert = "Convert_Method";
+            var tConvert = tEmitInfo.CallSiteConvertName;
             Type tConvertFuncType = null;
             if (tReturnType != typeof(void))
             {
                 tConvertFuncType = tCStp.DefineCallsiteField(tConvert, tReturnType);
             }
 
-            var tInvokeMethod = "Invoke_Method";
+            var tInvokeMethod = tEmitInfo.CallSiteInvokeName;
             var tInvokeFuncType = tCStp.DefineCallsiteFieldForMethod(tInvokeMethod, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes, info);
 
 
@@ -537,8 +540,8 @@ namespace ImpromptuInterface.Build
             var tCallSite = tCStp.CreateType();
 
             var tPublicPrivate = MethodAttributes.Public;
-            var tPrefixName = tName;
-            if (!defaultImp)
+            var tPrefixName = tEmitInfo.Name;
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 tPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixName);
 
@@ -599,12 +602,18 @@ namespace ImpromptuInterface.Build
 
             }
 
-            if (!defaultImp)
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 typeBuilder.DefineMethodOverride(tMethodBuilder, info);
             }
-
-            EmitMethodBody(tName, tReducedParams, tParamAttri, tReturnType, tConvert, tInvokeMethod, tMethodBuilder, tCallSite, contextType, tConvertFuncType, tInvokeFuncType, tArgNames);
+            tEmitInfo.ResolvedParamTypes = tReducedParams;
+            tEmitInfo.ResolveReturnType = tReturnType;
+            tEmitInfo.CallSiteType = tCallSite;
+            tEmitInfo.ContextType = contextType;
+            tEmitInfo.CallSiteConvertFuncType = tConvertFuncType;
+            tEmitInfo.CallSiteInvokeFuncType = tInvokeFuncType;
+            tEmitInfo.ArgNames = tArgNames;
+            EmitMethodBody(tMethodBuilder, tParamAttri, tEmitInfo);
         }
 
         private static TypeBuilder DefineBuilderForCallSite(ModuleBuilder builder, string tCallSiteInvokeName)
@@ -654,66 +663,65 @@ namespace ImpromptuInterface.Build
             return null;
         }
 
+
+
+
         private static void EmitMethodBody(
-            string name,
-            Type[] paramTypes, 
+            MethodBuilder methodBuilder,
             ParameterInfo[] paramInfo, 
-            Type returnType, 
-            string convert,
-            string invokeMethod, 
-            MethodBuilder methodBuilder, 
-            Type callSite,
-            Type contextType, 
-            Type convertFuncType, 
-            Type invokeFuncType,
-            IEnumerable<string> argNames
+            MethodEmitInfo emitInfo
             )
         {
             var tIlGen = methodBuilder.GetILGenerator();
 
-            var tConvertField = callSite.GetFieldEvenIfGeneric(convert);
-            if (returnType != typeof(void))
+            var tConvertField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
+            if (emitInfo.ResolveReturnType != typeof(void))
             {
 
               
                 using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tConvertField)))
                 {
-                    tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, returnType, contextType);
-                    tIlGen.EmitCallsiteCreate(convertFuncType);
+                    tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, emitInfo.ResolveReturnType, emitInfo.ContextType);
+                    tIlGen.EmitCallsiteCreate(emitInfo.CallSiteConvertFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tConvertField);
                 }
             }
-            
-            var tInvokeField = callSite.GetFieldEvenIfGeneric(invokeMethod);
+
+            var tInvokeField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeName);
 
             using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tInvokeField)))
             {
-                tIlGen.EmitDynamicMethodInvokeBinder(returnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None, name, contextType, paramInfo, argNames);
-                tIlGen.EmitCallsiteCreate(invokeFuncType);
+                tIlGen.EmitDynamicMethodInvokeBinder(
+                    emitInfo.ResolveReturnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None,
+                    emitInfo.Name, 
+                    emitInfo.ContextType,
+                    paramInfo, 
+                    emitInfo.ArgNames);
+                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
 
-            if (returnType != typeof(void))
+            if (emitInfo.ResolveReturnType != typeof(void))
             {
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
-                tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(convertFuncType).GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteConvertFuncType).GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
             }
 
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
-            tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(invokeFuncType).GetFieldEvenIfGeneric("Target"));
+            tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteInvokeFuncType).GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
-            for (var i = 1; i <= paramTypes.Length; i++)
+            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+            for (var i = 1; i <= emitInfo.ResolvedParamTypes.Length; i++)
             {
 
                 tIlGen.EmitLoadArgument(i);
             }
-            tIlGen.EmitCallInvokeFunc(invokeFuncType, returnType == typeof(void));
-            if (returnType != typeof(void))
+            tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeFuncType);
+            if (emitInfo.ResolveReturnType != typeof(void))
             {
-                tIlGen.EmitCallInvokeFunc(convertFuncType);
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }
 
             tIlGen.Emit(OpCodes.Ret);
@@ -722,216 +730,161 @@ namespace ImpromptuInterface.Build
 
         private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
         {
-            var tName = info.Name;
 
             var tGetMethod = info.GetGetMethod();
             var tSetMethod = info.GetSetMethod();
-            var tReturnType = tGetMethod.ReturnType;
-            var tGetName = tGetMethod.Name;
+
+            var tEmitInfo = new PropertyEmitInfo() { 
+                Name = info.Name,
+                ResolveReturnType = tGetMethod.ReturnType,
+                GetName = tGetMethod.Name,
+                ContextType =  contextType,
+                DefaultInterfaceImplementation = defaultImp};
 
 
-         
+
+            MakePropertyHelper(builder, typeBuilder,tEmitInfo, info, tGetMethod, tSetMethod );
+        }
+
+        private class PropertyEmitInfo : EmitInfo
+        {
+            public PropertyEmitInfo()
+            {
+                CallSiteConvertName = "Convert_Get";
+                CallSiteInvokeGetName = "Invoke_Get";
+                CallSiteInvokeSetName = "Invoke_Set";
+
+            }
+            public string GetName { get; set; }
+            public string SetName { get; set; }
+
+            public string CallSiteInvokeSetName { get; protected set; }
+            public string CallSiteInvokeGetName { get; protected set; }
+            public string CallSiteConvertName { get; protected set; }
+
+            public Type[] ResolvedIndexParamTypes { get; set; }
+            public Type CallSiteConvertFuncType { get; set; }
+            public Type CallSiteInvokeGetFuncType { get; set; }
+            public Type CallSiteInvokeSetFuncType { get; set; }
+        }
+
+        private class EmitEventInfo : PropertyEmitInfo
+        {
+            public string CallSiteIsEventName { get; protected set; }
+            public string CallSiteAddAssignName { get; protected set; }
+            public string CallSiteSubtractAssignName { get; protected set; }
+            public string CallSiteAddName { get; protected set; }
+            public string CallSiteRemoveName { get; protected set; }
 
 
-            MakePropertyHelper(info, tName, builder, tReturnType, tSetMethod, typeBuilder, tGetName, contextType, defaultImp);
+            public Type CallSiteIsEventFuncType{ get;  set; }
+            public Type CallSiteAddAssignFuncType { get;  set; }
+            public Type CallSiteSubtractAssignFuncType { get;  set; }
+            public Type CallSiteAddFuncType { get;  set; }
+            public Type CallSiteRemoveFuncType { get;  set; }
+            public Type[] ResolvedAddParamTypes { get; set; }
+            public Type[] ResolvedRemoveParamTypes { get; set; }
+
+            public EmitEventInfo()
+            {
+                CallSiteIsEventName = "Invoke_IsEvent";
+                CallSiteAddAssignName = "Invoke_AddAssign";
+                CallSiteSubtractAssignName = "Invoke_SubtractAssign";
+                CallSiteAddName = "Invoke_Add";
+                CallSiteRemoveName = "Invoke_Remove";
+            }
         }
 
         private static void MakeEvent(ModuleBuilder builder, EventInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp)
         {
-            var tName = info.Name;
+            var tEmitInfo = new EmitEventInfo
+                                {
+                                    Name = info.Name,
+                                    ContextType = contextType,
+                                    DefaultInterfaceImplementation = defaultImp
+                                };
+
              var tAddMethod = info.GetAddMethod();
             var tRemoveMethod = info.GetRemoveMethod();
-            var tReturnType = info.EventHandlerType;
+            tEmitInfo.ResolveReturnType = info.EventHandlerType;
 
 
-            var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
-            var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
+            var tCStp = DefineBuilderForCallSite(builder, tEmitInfo.CallSiteName);
 
 
-            var tInvokeIsEvent = "Invoke_IsEvent";
-            var tInvokeIseventFuncType = tCStp.DefineCallsiteField(tInvokeIsEvent, typeof(bool));
+            tEmitInfo.CallSiteIsEventFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteIsEventName, typeof(bool));
 
 
-            var tInvokeAddAssign = "Invoke_AddAssign";
-            var tInvokeAddAssignFuncType = tCStp.DefineCallsiteField(tInvokeAddAssign, typeof(object), tReturnType);
+            tEmitInfo.CallSiteAddAssignFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteAddAssignName, typeof(object), tEmitInfo.ResolveReturnType);
 
-            var tInvokeSubtractAssign = "Invoke_SubtractAssign";
-            var tInvokeSubtractAssignFuncType = tCStp.DefineCallsiteField(tInvokeSubtractAssign, typeof(object), tReturnType);
+            tEmitInfo.CallSiteSubtractAssignFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteSubtractAssignName, typeof(object), tEmitInfo.ResolveReturnType);
 
-            var tAddParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
-            var tInvokeAdd = "Invoke_Add";
-            var tInvokeAddFuncType = tCStp.DefineCallsiteField(tInvokeAdd, typeof(object), tAddParamTypes);
+            tEmitInfo.ResolvedAddParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
+            tEmitInfo.CallSiteAddFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteAddName, typeof(object), tEmitInfo.ResolvedAddParamTypes);
+
+            tEmitInfo.ResolvedRemoveParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
+            tEmitInfo.CallSiteRemoveFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteRemoveName, typeof(object), tEmitInfo.ResolvedRemoveParamTypes);
+
+            tEmitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteInvokeGetName, typeof(object));
+
+            tEmitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteInvokeSetName, typeof(object), typeof(object));
+
+            tEmitInfo.CallSiteType = tCStp.CreateType();
+
+            var tMp = typeBuilder.DefineEvent(info.Name, EventAttributes.None, tEmitInfo.ResolveReturnType);
+           
             
-            var tRemoveParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
-            var tInvokeRemove = "Invoke_Remove";
-            var tInvokeRemoveFuncType = tCStp.DefineCallsiteField(tInvokeRemove, typeof(object), tRemoveParamTypes);
+            var tSetField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteInvokeSetName);
+            var tGetField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteInvokeGetName);
+            var tIsEventField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteIsEventName);
 
-            var tInvokeGet = "Invoke_Get";
-            var tInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object));
-
-            var tInvokeSet = "Invoke_Set";
-
-            var tInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof(object), typeof(object));
-
-            var tCallSite = tCStp.CreateType();
-
-            var tMp = typeBuilder.DefineEvent(tName, EventAttributes.None, tReturnType);
+            var tPublicPrivate = MethodAttributes.Public;
+            if (!tEmitInfo.DefaultInterfaceImplementation)
+            {
+                 tPublicPrivate = MethodAttributes.Private;
+            }
 
             //AddMethod
-            var tPublicPrivate = MethodAttributes.Public;
             var tAddPrefixName = tAddMethod.Name;
-            if (!defaultImp)
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 tAddPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tAddPrefixName);
-
-                tPublicPrivate = MethodAttributes.Private;
             }
 
             var tAddBuilder = typeBuilder.DefineMethod(tAddPrefixName,
                                                              tPublicPrivate | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
                                                              typeof(void),
-                                                             tAddParamTypes);
+                                                             tEmitInfo.ResolvedAddParamTypes);
 
-            if (!defaultImp)
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 typeBuilder.DefineMethodOverride(tAddBuilder,info.GetAddMethod());
             }
-
 
             foreach (var tParam in tAddMethod.GetParameters())
             {
                 tAddBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
             }
 
-
-            var tIlGen = tAddBuilder.GetILGenerator();
-
-            var tIsEventField = tCallSite.GetFieldEvenIfGeneric(tInvokeIsEvent);
-
-            using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tIsEventField)))
-            {
-                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, tName, contextType);
-                tIlGen.EmitCallsiteCreate(tInvokeIseventFuncType);
-                tIlGen.Emit(OpCodes.Stsfld, tIsEventField);
-            }
-          
-            var tSetField = tCallSite.GetFieldEvenIfGeneric(tInvokeSet);
-            var tGetField = tCallSite.GetFieldEvenIfGeneric(tInvokeGet);
-
-
-
-            using (tIlGen.EmitBranchTrue(
-                      load => load.EmitInvocation(
-                           target => target.EmitInvocation(
-                               t => t.Emit(OpCodes.Ldsfld, tIsEventField),
-                               i => i.Emit(OpCodes.Ldfld, tIsEventField.FieldType.GetFieldEvenIfGeneric("Target"))
-                           ),
-                           invoke => invoke.EmitCallInvokeFunc(tInvokeIseventFuncType),
-                           param => param.Emit(OpCodes.Ldsfld, tIsEventField),
-                           param => param.EmitInvocation(
-                                  t => t.Emit(OpCodes.Ldarg_0),
-                                  i => i.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod())
-                           )
-                     )
-              )
-            ) //if IsEvent Not True
-            {
-         
-                using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tSetField)))
-                {
-                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, tName, contextType, typeof(Object));
-                    tIlGen.EmitCallsiteCreate(tInvokeSetFuncType);
-                    tIlGen.Emit(OpCodes.Stsfld, tSetField);
-                }
-
-                var tAddAssigneField = tCallSite.GetFieldEvenIfGeneric(tInvokeAddAssign);
-
-                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tAddAssigneField)))
-                {
-                    tIlGen.EmitDynamicBinaryOpBinder(CSharpBinderFlags.None, ExpressionType.AddAssign, contextType, tReturnType);
-                    tIlGen.EmitCallsiteCreate(tInvokeAddAssignFuncType);
-                    tIlGen.Emit(OpCodes.Stsfld, tAddAssigneField);
-                }
-               
-                using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tGetField)))
-                {
-                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, tName, contextType);
-                    tIlGen.EmitCallsiteCreate(tInvokeGetFuncType);
-                    tIlGen.Emit(OpCodes.Stsfld, tGetField);
-                }
-
-               
-
-
-                tIlGen.Emit(OpCodes.Ldsfld, tSetField);
-                tIlGen.Emit(OpCodes.Ldfld, tSetField.FieldType.GetFieldEvenIfGeneric("Target"));
-                tIlGen.Emit(OpCodes.Ldsfld, tSetField);
-                tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
-
-                tIlGen.Emit(OpCodes.Ldsfld, tAddAssigneField);
-                tIlGen.Emit(OpCodes.Ldfld, tAddAssigneField.FieldType.GetFieldEvenIfGeneric("Target"));
-                tIlGen.Emit(OpCodes.Ldsfld, tAddAssigneField);
-
-                tIlGen.Emit(OpCodes.Ldsfld, tGetField);
-                tIlGen.Emit(OpCodes.Ldfld, tGetField.FieldType.GetFieldEvenIfGeneric("Target"));
-                tIlGen.Emit(OpCodes.Ldsfld, tGetField);
-                tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
-
-                tIlGen.EmitCallInvokeFunc(tInvokeGetFuncType);
-                
-                tIlGen.Emit(OpCodes.Ldarg_1);
-                tIlGen.EmitCallInvokeFunc(tInvokeAddAssignFuncType);
-
-                tIlGen.EmitCallInvokeFunc(tInvokeSetFuncType);
-                tIlGen.Emit(OpCodes.Pop);
-                tIlGen.Emit(OpCodes.Ret);
+            EmitAddEvent(tMp, tAddBuilder, info, tAddMethod, tGetField, tSetField, tIsEventField, tEmitInfo);
               
-            }
-
-            var tAddCallSiteField = tCallSite.GetFieldEvenIfGeneric(tInvokeAdd);
-
-            using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tAddCallSiteField)))
-            {
-                tIlGen.EmitDynamicMethodInvokeBinder(
-                    CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
-                    tAddMethod.Name,
-                    contextType,
-                    tAddMethod.GetParameters(),
-                    Enumerable.Repeat(default(string),
-                    tAddParamTypes.Length));
-                tIlGen.EmitCallsiteCreate(tInvokeAddFuncType);
-                tIlGen.Emit(OpCodes.Stsfld, tAddCallSiteField);
-            }
-            tIlGen.Emit(OpCodes.Ldsfld, tAddCallSiteField);
-            tIlGen.Emit(OpCodes.Ldfld, tAddCallSiteField.FieldType.GetFieldEvenIfGeneric("Target"));
-            tIlGen.Emit(OpCodes.Ldsfld, tAddCallSiteField);
-            tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
-            for (var i = 1; i <= tAddParamTypes.Length; i++)
-            {
-                tIlGen.EmitLoadArgument(i);
-            }
-            tIlGen.EmitCallInvokeFunc(tInvokeAddFuncType);
-            tIlGen.Emit(OpCodes.Pop);
-            tIlGen.Emit(OpCodes.Ret);
-
-            tMp.SetAddOnMethod(tAddBuilder);
-
+            //Remove Method
             var tRemovePrefixName = tRemoveMethod.Name;
-            if (!defaultImp)
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 tRemovePrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tRemovePrefixName);
 
             }
-
-            //Remove Method
             var tRemoveBuilder = typeBuilder.DefineMethod(tRemovePrefixName,
-                                                           tPublicPrivate | MethodAttributes.SpecialName | MethodAttributes.HideBySig | MethodAttributes.Virtual | MethodAttributes.Final | MethodAttributes.NewSlot,
-                                                           typeof(void), 
-                                                           tAddParamTypes);
-            if (!defaultImp)
+                                                           tPublicPrivate 
+                                                           | MethodAttributes.SpecialName 
+                                                           | MethodAttributes.HideBySig
+                                                           | MethodAttributes.Virtual
+                                                           | MethodAttributes.Final 
+                                                           | MethodAttributes.NewSlot,
+                                                           typeof(void),
+                                                           tEmitInfo.ResolvedAddParamTypes);
+            if (!tEmitInfo.DefaultInterfaceImplementation)
             {
                 typeBuilder.DefineMethodOverride(tRemoveBuilder, info.GetRemoveMethod());
             }
@@ -942,54 +895,62 @@ namespace ImpromptuInterface.Build
             }
 
 
-            tIlGen = tRemoveBuilder.GetILGenerator();
+            EmitRemoveEvent(tMp, tRemoveBuilder, info, tRemoveMethod, tGetField, tSetField, tIsEventField, tEmitInfo);
+        }
+
+        private static void EmitRemoveEvent(EventBuilder tMp, MethodBuilder tRemoveBuilder, EventInfo info, MethodInfo tRemoveMethod,
+                                            FieldInfo tGetField, FieldInfo tSetField, FieldInfo tIsEventField,
+                                             EmitEventInfo tEmitInfo)
+        {
+            var tIlGen = tRemoveBuilder.GetILGenerator();
 
 
             using (tIlGen.EmitBranchTrue(load => load.Emit(OpCodes.Ldsfld, tIsEventField)))
             {
-                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, tName, contextType);
-                tIlGen.EmitCallsiteCreate(tInvokeIseventFuncType);
+                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteIsEventFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tIsEventField);
             }
 
             using (tIlGen.EmitBranchTrue(
-                             load => load.EmitInvocation(
-                                  target => target.EmitInvocation(
-                                      t=>t.Emit(OpCodes.Ldsfld, tIsEventField),
-                                      i=>i.Emit(OpCodes.Ldfld, tIsEventField.FieldType.GetFieldEvenIfGeneric("Target"))
+                load => load.EmitInvocation(
+                    target => target.EmitInvocation(
+                        t => t.Emit(OpCodes.Ldsfld, tIsEventField),
+                        i => i.Emit(OpCodes.Ldfld, tIsEventField.FieldType.GetFieldEvenIfGeneric("Target"))
                                   ),
-                                  invoke => invoke.EmitCallInvokeFunc(tInvokeIseventFuncType),
-                                  param => param.Emit(OpCodes.Ldsfld, tIsEventField),
-                                  param => param.EmitInvocation(
-                                         t => t.Emit(OpCodes.Ldarg_0),
-                                         i => i.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod())
-                                  ) 
+                    invoke => invoke.EmitCallInvokeFunc(tEmitInfo.CallSiteIsEventFuncType),
+                    param => param.Emit(OpCodes.Ldsfld, tIsEventField),
+                    param => param.EmitInvocation(
+                        t => t.Emit(OpCodes.Ldarg_0),
+                        i => i.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod())
+                                 )
                             )
-                     )
+                )
                 ) //if IsEvent Not True
             {
-                
-                using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tSetField)))
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tSetField)))
                 {
-                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, tName, contextType, tReturnType);
-                    tIlGen.EmitCallsiteCreate(tInvokeSetFuncType);
+                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, info.Name,
+                                                             tEmitInfo.ContextType, tEmitInfo.ResolveReturnType);
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeSetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSetField);
                 }
 
-                var tSubrtractAssignField = tCallSite.GetFieldEvenIfGeneric(tInvokeSubtractAssign);
-             
+                var tSubrtractAssignField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteSubtractAssignName);
+
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tSubrtractAssignField)))
                 {
-                    tIlGen.EmitDynamicBinaryOpBinder(CSharpBinderFlags.None, ExpressionType.SubtractAssign, contextType, tReturnType);
-                    tIlGen.EmitCallsiteCreate(tInvokeSubtractAssignFuncType);
+                    tIlGen.EmitDynamicBinaryOpBinder(CSharpBinderFlags.None, ExpressionType.SubtractAssign,
+                                                     tEmitInfo.ContextType, tEmitInfo.ResolveReturnType);
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteSubtractAssignFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSubrtractAssignField);
                 }
 
 
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tGetField)))
                 {
-                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, tName, contextType);
-                    tIlGen.EmitCallsiteCreate(tInvokeGetFuncType);
+                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeGetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tGetField);
                 }
 
@@ -997,7 +958,7 @@ namespace ImpromptuInterface.Build
                 tIlGen.Emit(OpCodes.Ldfld, tSetField.FieldType.GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tSetField);
                 tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
 
                 tIlGen.Emit(OpCodes.Ldsfld, tSubrtractAssignField);
                 tIlGen.Emit(OpCodes.Ldfld, tSubrtractAssignField.FieldType.GetFieldEvenIfGeneric("Target"));
@@ -1007,94 +968,209 @@ namespace ImpromptuInterface.Build
                 tIlGen.Emit(OpCodes.Ldfld, tGetField.FieldType.GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tGetField);
                 tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
 
-                tIlGen.EmitCallInvokeFunc(tInvokeGetFuncType);
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteInvokeGetFuncType);
 
                 tIlGen.Emit(OpCodes.Ldarg_1);
-                tIlGen.EmitCallInvokeFunc(tInvokeSubtractAssignFuncType);
-                
-                tIlGen.EmitCallInvokeFunc(tInvokeSetFuncType);
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteSubtractAssignFuncType);
+
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteInvokeSetFuncType);
 
                 tIlGen.Emit(OpCodes.Pop);
                 tIlGen.Emit(OpCodes.Ret);
-             
             }
 
-            var tRemoveCallSiteField = tCallSite.GetFieldEvenIfGeneric(tInvokeRemove);
+            var tRemoveCallSiteField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteRemoveName);
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tRemoveCallSiteField)))
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
                     tRemoveMethod.Name,
-                    contextType,
+                    tEmitInfo.ContextType,
                     tRemoveMethod.GetParameters(),
                     Enumerable.Repeat(default(string),
-                    tRemoveParamTypes.Length));
-                tIlGen.EmitCallsiteCreate(tInvokeRemoveFuncType);
+                                      tEmitInfo.ResolvedRemoveParamTypes.Length));
+                tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteRemoveFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tRemoveCallSiteField);
             }
             tIlGen.Emit(OpCodes.Ldsfld, tRemoveCallSiteField);
             tIlGen.Emit(OpCodes.Ldfld, tRemoveCallSiteField.FieldType.GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tRemoveCallSiteField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
+            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
             tIlGen.Emit(OpCodes.Ldarg_1);
-            tIlGen.EmitCallInvokeFunc(tInvokeRemoveFuncType);
+            tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteRemoveFuncType);
             tIlGen.Emit(OpCodes.Pop);
             tIlGen.Emit(OpCodes.Ret);
 
             tMp.SetRemoveOnMethod(tRemoveBuilder);
         }
 
+        private static void EmitAddEvent(EventBuilder tMp, MethodBuilder tAddBuilder, EventInfo info, MethodInfo tAddMethod,
+                                               FieldInfo tGetField, FieldInfo tSetField, FieldInfo tIsEventField, EmitEventInfo tEmitInfo)
+        {
+            var tIlGen = tAddBuilder.GetILGenerator();
+
+  
+
+            using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tIsEventField)))
+            {
+                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteIsEventFuncType);
+                tIlGen.Emit(OpCodes.Stsfld, tIsEventField);
+            }
+
+    
+
+            using (tIlGen.EmitBranchTrue(
+                load => load.EmitInvocation(
+                    target => target.EmitInvocation(
+                        t => t.Emit(OpCodes.Ldsfld, tIsEventField),
+                        i => i.Emit(OpCodes.Ldfld, tIsEventField.FieldType.GetFieldEvenIfGeneric("Target"))
+                                  ),
+                    invoke => invoke.EmitCallInvokeFunc(tEmitInfo.CallSiteIsEventFuncType),
+                    param => param.Emit(OpCodes.Ldsfld, tIsEventField),
+                    param => param.EmitInvocation(
+                        t => t.Emit(OpCodes.Ldarg_0),
+                        i => i.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod())
+                                 )
+                            )
+                )
+                ) //if IsEvent Not True
+            {
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tSetField)))
+                {
+                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, info.Name,
+                                                             tEmitInfo.ContextType, typeof (Object));
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeSetFuncType);
+                    tIlGen.Emit(OpCodes.Stsfld, tSetField);
+                }
+
+                var tAddAssigneField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteAddAssignName);
+
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tAddAssigneField)))
+                {
+                    tIlGen.EmitDynamicBinaryOpBinder(CSharpBinderFlags.None, ExpressionType.AddAssign, tEmitInfo.ContextType,
+                                                     tEmitInfo.ResolveReturnType);
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteAddAssignFuncType);
+                    tIlGen.Emit(OpCodes.Stsfld, tAddAssigneField);
+                }
+
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tGetField)))
+                {
+                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                    tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeGetFuncType);
+                    tIlGen.Emit(OpCodes.Stsfld, tGetField);
+                }
+
+
+                tIlGen.Emit(OpCodes.Ldsfld, tSetField);
+                tIlGen.Emit(OpCodes.Ldfld, tSetField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tSetField);
+                tIlGen.Emit(OpCodes.Ldarg_0);
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+
+                tIlGen.Emit(OpCodes.Ldsfld, tAddAssigneField);
+                tIlGen.Emit(OpCodes.Ldfld, tAddAssigneField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tAddAssigneField);
+
+                tIlGen.Emit(OpCodes.Ldsfld, tGetField);
+                tIlGen.Emit(OpCodes.Ldfld, tGetField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tGetField);
+                tIlGen.Emit(OpCodes.Ldarg_0);
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteInvokeGetFuncType);
+
+                tIlGen.Emit(OpCodes.Ldarg_1);
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteAddAssignFuncType);
+
+                tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteInvokeSetFuncType);
+                tIlGen.Emit(OpCodes.Pop);
+                tIlGen.Emit(OpCodes.Ret);
+            }
+
+            var tAddCallSiteField = tEmitInfo.CallSiteType.GetFieldEvenIfGeneric(tEmitInfo.CallSiteAddName);
+
+            using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tAddCallSiteField)))
+            {
+                tIlGen.EmitDynamicMethodInvokeBinder(
+                    CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
+                    tAddMethod.Name,
+                    tEmitInfo.ContextType,
+                    tAddMethod.GetParameters(),
+                    Enumerable.Repeat(default(string),
+                                      tEmitInfo.ResolvedAddParamTypes.Length));
+                tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteAddFuncType);
+                tIlGen.Emit(OpCodes.Stsfld, tAddCallSiteField);
+            }
+            tIlGen.Emit(OpCodes.Ldsfld, tAddCallSiteField);
+            tIlGen.Emit(OpCodes.Ldfld, tAddCallSiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+            tIlGen.Emit(OpCodes.Ldsfld, tAddCallSiteField);
+            tIlGen.Emit(OpCodes.Ldarg_0);
+            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+            for (var i = 1; i <= tEmitInfo.ResolvedAddParamTypes.Length; i++)
+            {
+                tIlGen.EmitLoadArgument(i);
+            }
+            tIlGen.EmitCallInvokeFunc(tEmitInfo.CallSiteAddFuncType);
+            tIlGen.Emit(OpCodes.Pop);
+            tIlGen.Emit(OpCodes.Ret);
+
+            tMp.SetAddOnMethod(tAddBuilder);
+            
+        }
+
 
         /// <summary>
         /// Makes the property helper.
         /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="tName">Name of the t.</param>
         /// <param name="builder">The builder.</param>
-        /// <param name="tReturnType">Type of the t return.</param>
-        /// <param name="tSetMethod">The t set method.</param>
         /// <param name="typeBuilder">The type builder.</param>
-        /// <param name="tGetName">Name of the t get.</param>
-        /// <param name="contextType">Type of the context.</param>
-        /// <param name="defaultImp">if set to <c>true</c> [default imp].</param>
-        private static void MakePropertyHelper(PropertyInfo info, string tName, ModuleBuilder builder, Type tReturnType, MethodInfo tSetMethod, TypeBuilder typeBuilder, string tGetName, Type contextType, bool defaultImp)
+        /// <param name="info">The info.</param>
+        /// <param name="getMethod">The get method.</param>
+        /// <param name="setMethod">The set method.</param>
+        /// <param name="emitInfo">The emit info.</param>
+        private static void MakePropertyHelper(ModuleBuilder builder, TypeBuilder typeBuilder, PropertyEmitInfo emitInfo, PropertyInfo info = null, MethodInfo getMethod = null, MethodInfo setMethod = null)
         {
-            var tIndexParamTypes = new Type[]{};
-            if(info!=null)
-                 tIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
-            Type[] tSetParamTypes = null;
-            Type tInvokeSetFuncType = null;
+      
 
-            var tCallSiteInvokeName = string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), tName);
+            emitInfo.ResolvedIndexParamTypes = new Type[]{};
+            if(info!=null)
+                emitInfo.ResolvedIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
+
+            
+
+      
+
+            var tCallSiteInvokeName = emitInfo.CallSiteName;
             var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
 
-            var tConvertGet = "Convert_Get";
+            var tConvertGet = emitInfo.CallSiteConvertName;
            
-            var tConvertFuncType = tCStp.DefineCallsiteField(tConvertGet, tReturnType);
+            emitInfo.CallSiteConvertFuncType = tCStp.DefineCallsiteField(tConvertGet, emitInfo.ResolveReturnType);
 
-            var tInvokeGet = "Invoke_Get";
-            var tInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object), tIndexParamTypes);
+            var tInvokeGet = emitInfo.CallSiteInvokeGetName;
+            emitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object), emitInfo.ResolvedIndexParamTypes);
             
-            var tInvokeSet = "Invoke_Set";
-            if (tSetMethod != null)
+            var tInvokeSet = emitInfo.CallSiteInvokeSetName;
+            if (setMethod != null)
             {
-                tSetParamTypes = tSetMethod.GetParameters().Select(it => it.ParameterType).ToArray();
+                emitInfo.ResolvedParamTypes = setMethod.GetParameters().Select(it => it.ParameterType).ToArray();
                 
-                tInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof (object), tSetParamTypes);
+                emitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof (object), emitInfo.ResolvedParamTypes);
             }
 
-            var tCallSite = tCStp.CreateType();
+            emitInfo.CallSiteType = tCStp.CreateType();
 
 
          
             var tPublicPrivate = MethodAttributes.Public;
-            var tPrefixedGet = tGetName;
-            var tPrefixedName = tName;
-            if (!defaultImp)
+            var tPrefixedGet = emitInfo.GetName;
+            var tPrefixedName = emitInfo.Name;
+            if (!emitInfo.DefaultInterfaceImplementation)
             {
                 tPublicPrivate = MethodAttributes.Private;
                 tPrefixedGet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedGet);
@@ -1107,7 +1183,7 @@ namespace ImpromptuInterface.Build
 #if !SILVERLIGHT
                 CallingConventions.HasThis,
 #endif
- tReturnType, tIndexParamTypes);
+ emitInfo.ResolveReturnType, emitInfo.ResolvedIndexParamTypes);
 
 
     
@@ -1120,11 +1196,11 @@ namespace ImpromptuInterface.Build
                                                              | MethodAttributes.Virtual
                                                              | MethodAttributes.Final 
                                                              | MethodAttributes.NewSlot,
-                                                             tReturnType,
-                                                             tIndexParamTypes);
+                                                             emitInfo.ResolveReturnType,
+                                                             emitInfo.ResolvedIndexParamTypes);
 
 
-            if (!defaultImp)
+            if (!emitInfo.DefaultInterfaceImplementation)
             {
                 typeBuilder.DefineMethodOverride(tGetMethodBuilder, info.GetGetMethod());
             }
@@ -1141,67 +1217,86 @@ namespace ImpromptuInterface.Build
             }
 
             EmitProperty(
-                info,
-                tName, 
-                tConvertGet,
-                tReturnType, 
-                tInvokeGet, 
-                tIndexParamTypes,
-                tSetMethod, 
-                tInvokeSet, 
-                tSetParamTypes, 
                 typeBuilder,
                 tGetMethodBuilder,
-                tCallSite, 
-                contextType,
-                tConvertFuncType, 
-                tInvokeGetFuncType, 
-                tMp, 
-                tInvokeSetFuncType, defaultImp);
+                tMp,
+                info,
+                setMethod,
+                emitInfo );
+        }
+        private abstract class EmitInfo
+        {
+            public string Name { get; set; }
+
+            protected EmitInfo()
+            {
+                _callSiteName =
+                    new Lazy<string>(
+                        () => string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), Name));
+            }
+
+            private readonly Lazy<string> _callSiteName;
+            public string CallSiteName
+            {
+                get { return _callSiteName.Value; }
+            }
+
+            public bool DefaultInterfaceImplementation { get; set; }
+            public IEnumerable<string> ArgNames { get; set; }
+            public Type[] ResolvedParamTypes { get; set; }
+            public Type ResolveReturnType { get; set; }
+            public Type CallSiteType { get; set; }
+            public Type ContextType { get; set; }
+
         }
 
+        private class MethodEmitInfo : EmitInfo
+        {
+            public MethodEmitInfo()
+            {
+                CallSiteInvokeName = "Invoke_Method";
+                CallSiteConvertName = "Convert_Method";
+            }
+          
+
+
+            public string CallSiteInvokeName { get; protected set; }
+            public string CallSiteConvertName { get; protected set; }
+
+            public Type CallSiteConvertFuncType { get; set; }
+            public Type CallSiteInvokeFuncType { get; set; }
+        }
+   
+
         private static void EmitProperty(
-            PropertyInfo info, 
-            string name, 
-            string convertGet,
-            Type tGetReturnType, 
-            string invokeGet, 
-            Type[] indexParamTypes,
-            MethodInfo setMethod,
-            string invokeSet,
-            Type[] setParamTypes, 
             TypeBuilder typeBuilder,
-            MethodBuilder getMethodBuilder, 
-            Type callSite,
-            Type contextType, 
-            Type tConvertFuncType, 
-            Type invokeGetFuncType, 
-            PropertyBuilder tMp, 
-            Type invokeSetFuncType, bool defaultImp)
+            MethodBuilder getMethodBuilder,
+            PropertyBuilder tMp,
+            PropertyInfo info, 
+            MethodInfo setMethod,
+            PropertyEmitInfo emitInfo
+            )
         {
            
-            if (indexParamTypes == null) throw new ArgumentNullException("indexParamTypes");
+            if (emitInfo.ResolvedIndexParamTypes == null) throw new ArgumentNullException("emitInfo","ResolvedIndexParams can't be null");
             var tIlGen = getMethodBuilder.GetILGenerator();
 
-            var tConvertCallsiteField = callSite.GetFieldEvenIfGeneric(convertGet);
-            var tReturnLocal = tIlGen.DeclareLocal(tGetReturnType);
-
-
-       
+            var tConvertCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
+            var tReturnLocal = tIlGen.DeclareLocal(emitInfo.ResolveReturnType);
             
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tConvertCallsiteField)))
             {
-                tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, tGetReturnType, contextType);
-                tIlGen.EmitCallsiteCreate(tConvertFuncType);
+                tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, emitInfo.ResolveReturnType, emitInfo.ContextType);
+                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteConvertFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tConvertCallsiteField);
             }
 
-            var tInvokeGetCallsiteField = callSite.GetFieldEvenIfGeneric(invokeGet);
+            var tInvokeGetCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeGetName);
 
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField)))
             {
-                tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, name, contextType, indexParamTypes);
-                tIlGen.EmitCallsiteCreate(invokeGetFuncType);
+                tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedIndexParamTypes);
+                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeGetFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeGetCallsiteField);
             }
 
@@ -1213,13 +1308,13 @@ namespace ImpromptuInterface.Build
             tIlGen.Emit(OpCodes.Ldfld, tInvokeGetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Call, typeof(ActLikeProxy).GetProperty("Original").GetGetMethod());
-            for (var i = 1; i <= indexParamTypes.Length; i++)
+            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+            for (var i = 1; i <= emitInfo.ResolvedIndexParamTypes.Length; i++)
             {
                 tIlGen.EmitLoadArgument(i);
             }
-            tIlGen.EmitCallInvokeFunc(invokeGetFuncType);
-            tIlGen.EmitCallInvokeFunc(tConvertFuncType);
+            tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeGetFuncType);
+            tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
             var tReturnLabel =tIlGen.DefineLabel();
             tIlGen.Emit(OpCodes.Br_S, tReturnLabel);
@@ -1234,7 +1329,7 @@ namespace ImpromptuInterface.Build
              
                 MethodAttributes tPublicPrivate = MethodAttributes.Public;
                 var tPrefixedSet = setMethod.Name;
-                if (!defaultImp)
+                if (!emitInfo.DefaultInterfaceImplementation)
                 {
                     tPublicPrivate = MethodAttributes.Private;
                     tPrefixedSet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedSet);
@@ -1246,9 +1341,9 @@ namespace ImpromptuInterface.Build
                                                                  MethodAttributes.HideBySig | MethodAttributes.Virtual |
                                                                  MethodAttributes.Final | MethodAttributes.NewSlot,
                                                                  null,
-                                                                 setParamTypes);
+                                                                 emitInfo.ResolvedParamTypes);
 
-                if (!defaultImp)
+                if (!emitInfo.DefaultInterfaceImplementation)
                 {
                     typeBuilder.DefineMethodOverride(tSetMethodBuilder, info.GetSetMethod());
                 }
@@ -1259,24 +1354,24 @@ namespace ImpromptuInterface.Build
                 }
 
                 tIlGen = tSetMethodBuilder.GetILGenerator();
-                var tSetCallsiteField = callSite.GetFieldEvenIfGeneric(invokeSet);
+                var tSetCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeSetName);
 
                 using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tSetCallsiteField)))
                 {
-                    tIlGen.EmitDynamicSetBinder(CSharpBinderFlags.None, name, contextType, setParamTypes);
-                    tIlGen.EmitCallsiteCreate(invokeSetFuncType);
+                    tIlGen.EmitDynamicSetBinder(CSharpBinderFlags.None, emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedParamTypes);
+                    tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeSetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSetCallsiteField);
                 }
                 tIlGen.Emit(OpCodes.Ldsfld, tSetCallsiteField);
                 tIlGen.Emit(OpCodes.Ldfld, tSetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tSetCallsiteField);
                 tIlGen.Emit(OpCodes.Ldarg_0);
-                tIlGen.Emit(OpCodes.Call, typeof (ActLikeProxy).GetProperty("Original").GetGetMethod());
-                for (var i = 1; i <= setParamTypes.Length; i++)
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+                for (var i = 1; i <= emitInfo.ResolvedParamTypes.Length; i++)
                 {
                     tIlGen.EmitLoadArgument(i);
                 }
-                tIlGen.EmitCallInvokeFunc(invokeSetFuncType);
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeSetFuncType);
                 tIlGen.Emit(OpCodes.Pop);
                 tIlGen.Emit(OpCodes.Ret);
                 tMp.SetSetMethod(tSetMethodBuilder);

@@ -25,7 +25,7 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
     [AttributeUsage(System.AttributeTargets.Method |
                        System.AttributeTargets.Parameter)]
-    public class UseNamedArgumentAttribute : Attribute
+    public sealed class UseNamedArgumentAttribute : Attribute
     {
 
     }

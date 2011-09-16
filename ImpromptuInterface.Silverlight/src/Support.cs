@@ -16,8 +16,14 @@ namespace ImpromptuInterface
     /// <summary>
     /// Added for silverlight compile time compatability
     /// </summary>
-    public class SerializableAttribute:Attribute{
+    public sealed class SerializableAttribute : Attribute
+    {
     }
+
+    public sealed class NonSerialized : Attribute
+    {
+    }
+
     /// <summary>
     /// Added for silverlight compile time compatability
     /// </summary>

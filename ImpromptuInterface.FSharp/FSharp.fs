@@ -14,7 +14,7 @@
 //    limitations under the License.
 namespace ImpromptuInterface
 
-///Module to add DLR dynamic invocation to FSharp through the dynamic operator (?)
+///Module to add DLR dynamic invocation to FSharp through the dynamic operator (?) and other extensions
 module FSharp=
 
     open System
@@ -24,24 +24,32 @@ module FSharp=
     open ImpromptuInterface.Dynamic
     open FSharpUtil
 
-
+   
     type dynAddAssign = PropertySetCallsAddAssign
     type dynSubtractAssign = PropertySetCallsSubtractAssign
     type dynArg = PropertyGetCallsNamedArgument
-
+    
+    ///Wrap type to dynamically call static methods
     let inline dynStaticContext (target:Type) = InvokeContext.CreateStatic.Invoke(target)
 
-
-    //dynamic implict convert to type
+    ///dynamic implict convert to type
     let (>?>) (target:obj) (convertType: Type) : 'TResult =
-        Impromptu.InvokeConvert(target, convertType, explict = false) :?> 'TResult
+        Impromptu.InvokeConvert(target, convertType, explicit = false) :?> 'TResult
      
-    //dynamic explicit convert to type dynamically
+    ///dynamic explicit convert to type dynamically
     let (>>?>>) (target:obj) (convertType: Type) : 'TResult =
-        Impromptu.InvokeConvert(target, convertType, explict = true) :?> 'TResult
+        Impromptu.InvokeConvert(target, convertType, explicit = true) :?> 'TResult
+
+    ///Use type inteference to dynamically convert implicitly
+    let inline dynImplicit (target:obj) : 'TResult =
+        target >?> typeof<'TResult>
+    
+    ///Use type inteference to dynamically convert explicitly
+    let inline dynExplicit (target:obj) : 'TResult =
+        target >>?>> typeof<'TResult>
 
     ///Dynamic get property or method invocation
-    let (?)  (target : obj) (name:string)  : 'TResult  = 
+    let (?)  (target : obj) (name:string)  : 'TResult = 
         let resultType = typeof<'TResult>
         let (|NoConversion| Conversion|) t = if t = typeof<obj> then NoConversion else Conversion
 
@@ -49,33 +57,35 @@ module FSharp=
         then 
             let convert r = match resultType with
                                 | NoConversion -> r
-                                | ____________ -> r >?> resultType
+                                | ____________ -> dynImplicit(r)
 
-            Impromptu.InvokeGet(target, name) |> convert |> unbox
+            Impromptu.InvokeGet(target, name)
+                |> convert
+                |> unbox
         else
             let lambda = fun arg ->
                                let argType,returnType = FSharpType.GetFunctionElements resultType
 
-                               let argList = 
+                               let argArray = 
                                     match argType with
                                     | a when FSharpType.IsTuple(a) -> FSharpValue.GetTupleFields(arg)
                                     | a when a = typeof<unit>      -> [| |]
                                     | ____________________________ -> [|arg|]
 
-                               let invoker k = Invocation(k, InvokeMemberName(name,null)).Invoke(target,argList)
+                               let invoker k = Invocation(k, InvokeMemberName(name ,null)).Invoke(target, argArray)
 
                                let (|Action|Func|) t = if t = typeof<unit> then Action else Func
                                let (|Invoke|InvokeMember|) n = if n = "_" then Invoke else InvokeMember
                                
                                let result =
-                                    try
+                                    try //Either it has a member or it's something directly callable
                                         match (returnType, name) with
                                         | (Action,Invoke) -> invoker(InvocationKind.InvokeAction)
                                         | (Action,InvokeMember) -> invoker(InvocationKind.InvokeMemberAction)
                                         | (Func, Invoke) -> invoker(InvocationKind.Invoke)
                                         | (Func, InvokeMember) -> invoker(InvocationKind.InvokeMember)
                                     with  //Last chance incase we are trying to invoke an fsharpfunc 
-                                        |  :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e  -> 
+                                        |  :? RuntimeBinderException as e  -> 
                                             try
                                                 let invokeName =InvokeMemberName("Invoke", null) //FSharpFunc Invoke
                                                 let invokeContext t = InvokeContext(t,typeof<obj>) //Improve cache hits by using the same context
@@ -84,10 +94,18 @@ module FSharp=
                                                 let seed = match name with
                                                            |InvokeMember -> Impromptu.InvokeGet(target,name)
                                                            |Invoke       -> target
-                                                List.foldBack invokeFSharpFoldBack (argList |> List.ofArray |> List.rev) seed
+                                                let reverseArgList = argArray
+                                                                      |> List.ofArray
+                                                                      |> List.rev
+                                                List.foldBack invokeFSharpFoldBack reverseArgList seed
                                             with
-                                                | :? Microsoft.CSharp.RuntimeBinder.RuntimeBinderException as e2
+                                            #if SILVERLIGHT
+                                                | :? RuntimeBinderException
+                                                     -> raise e
+                                            #else
+                                                | :? RuntimeBinderException as e2
                                                      -> AggregateException(e,e2) |> raise
+                                            #endif
 
                                match returnType with
                                | Action | NoConversion -> result

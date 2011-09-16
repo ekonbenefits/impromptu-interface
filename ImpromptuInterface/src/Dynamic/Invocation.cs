@@ -258,10 +258,10 @@ namespace ImpromptuInterface.Dynamic
                         }
                     }
                 case InvocationKind.AddAssign:
-                    Impromptu.InvokeAddAssign(target, Name.Name, args.FirstOrDefault());
+                    Impromptu.InvokeAddAssignMember(target, Name.Name, args.FirstOrDefault());
                     return null;
                 case InvocationKind.SubtractAssign:
-                    Impromptu.InvokeSubtractAssign(target, Name.Name, args.FirstOrDefault());
+                    Impromptu.InvokeSubtractAssignMember(target, Name.Name, args.FirstOrDefault());
                     return null;
                 case InvocationKind.IsEvent:
                     return Impromptu.InvokeIsEvent(target, Name.Name);

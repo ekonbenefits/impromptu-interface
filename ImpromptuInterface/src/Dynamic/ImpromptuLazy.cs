@@ -2,10 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text;
-using ImpromptuInterface.Dynamic;
 
-namespace ImpromptuInterface.src.Dynamic
+namespace ImpromptuInterface.Dynamic
 {
 
     /// <summary>
@@ -20,9 +18,9 @@ namespace ImpromptuInterface.src.Dynamic
         /// <typeparam name="T"></typeparam>
         /// <param name="valuefactory">The valuefactory.</param>
         /// <returns></returns>
-        public static dynamic Create<T>(Func<T> valuefactory)
+        public static dynamic Create<T>(Func<T> valueFactory)
         {
-            return new ImpromptuLazy<T>(valuefactory);
+            return new ImpromptuLazy<T>(valueFactory);
         }
         /// <summary>
         /// Creates ImpromptuLazy based on the specified target.
@@ -60,6 +58,7 @@ namespace ImpromptuInterface.src.Dynamic
     /// Wraps a Lazy Type evalutaes on first method call
     /// </summary>
     /// <typeparam name="T"></typeparam>
+    [Serializable]
     public class ImpromptuLazy<T> : ImpromptuLazy
     {
         /// <summary>
@@ -76,7 +75,7 @@ namespace ImpromptuInterface.src.Dynamic
         /// </summary>
         /// <param name="info">The info.</param>
         /// <param name="context">The context.</param>
-        public ImpromptuLazy(SerializationInfo info, StreamingContext context)
+        protected ImpromptuLazy(SerializationInfo info, StreamingContext context)
             : base(info, context)
         {
         }

@@ -23,6 +23,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
+using ImpromptuInterface.MVVM;
 
 namespace ImpromptuInterface.MVVM
 {
@@ -107,11 +108,14 @@ namespace ImpromptuInterface.MVVM
 
 
         private ImpromptuCommandBinder _commandTrampoline;
+
+        [Obsolete]
         private PropertyDepends _dependencyTrampoline;
-        private FireOnPropertyChanged _onChangedTrampoline;
+
 
         protected readonly IDictionary<string, List<string>> LinkedProperties;
-        private object _dependTrampoline;
+   
+        private ISetupViewModel _setup;
 
         /// <summary>
         /// Convenient access to Dynamic Properties. When subclassing you can use Dynamic.PropertyName = x, etc.
@@ -128,7 +132,7 @@ namespace ImpromptuInterface.MVVM
         /// <value>The command.</value>
         public virtual dynamic Command
         {
-            get { return _commandTrampoline ?? (_commandTrampoline = new ImpromptuCommandBinder(this)); }
+            get { return _commandTrampoline ?? (_commandTrampoline = new ImpromptuCommandBinder(this, Setup)); }
         }
 
         /// <summary>
@@ -144,7 +148,7 @@ namespace ImpromptuInterface.MVVM
         /// Sets up dependency relations amoung dependenant properties
         /// </summary>
         /// <value>The dependencies.</value>
-        [Obsolete("Use Depend instead")]
+        [Obsolete("Use Setup.Property instead")]
         public dynamic Dependencies
         {
             get {
@@ -152,10 +156,17 @@ namespace ImpromptuInterface.MVVM
             }
         }
 
-        public dynamic Depend
+
+        /// <summary>
+        /// Has Properties to configure view model at setup
+        /// </summary>
+        /// <value>The setup.</value>
+        public ISetupViewModel Setup
         {
-            get { return _dependTrampoline ?? (_dependTrampoline = new PropertyDepend(this)); }
+            get { return _setup ?? (_setup = new SetupTrampoline(this)); }
         }
+
+      
 
 
         /// <summary>
@@ -172,11 +183,12 @@ namespace ImpromptuInterface.MVVM
         /// Subscribe to OnProeprtyChanged notififcations of specific properties
         /// </summary>
         /// <value>The on changed.</value>
+        [Obsolete("Use Setup.Property instead")]
         public dynamic OnChanged
         {
             get
             {
-                return _onChangedTrampoline ?? (_onChangedTrampoline = new FireOnPropertyChangedDependencyAware(this));
+                return (Setup as SetupTrampoline).OnChangedTrampoline;
             }
         }
 

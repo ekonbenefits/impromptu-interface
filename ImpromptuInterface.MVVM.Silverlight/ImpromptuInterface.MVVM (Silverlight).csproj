@@ -95,6 +95,9 @@
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuWindowBuilder.cs">
       <Link>src\ImpromptuWindowBuilder.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\ISetupViewModel.cs">
+      <Link>src\ISetupViewModel.cs</Link>
+    </Compile>
     <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>

@@ -15,10 +15,12 @@ namespace ImpromptuInterface.MVVM
         private readonly Dictionary<string, ImpromptuRelayCommand> _commands =
             new Dictionary<string, ImpromptuRelayCommand>();
 
+        private ISetupViewModel _setup;
 
-        internal ImpromptuCommandBinder(object viewModel)
+        internal ImpromptuCommandBinder(object viewModel, ISetupViewModel setup = null)
         {
             _parent = viewModel;
+            _setup = setup;
         }
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
@@ -46,11 +48,11 @@ namespace ImpromptuInterface.MVVM
                     if ((tDictParent != null && tDictParent.ContainsKey(tCanExecute))
                         || _parent.GetType().GetMethod(tCanExecute) != null)
                     {
-                        result = new ImpromptuRelayCommand(_parent, key, _parent, tCanExecute);
+                        result = new ImpromptuRelayCommand(_parent, key, _parent, tCanExecute,_setup);
                     }
                     else
                     {
-                        result = new ImpromptuRelayCommand(_parent, key);
+                        result = new ImpromptuRelayCommand(_parent, key,_setup);
                     }
                     _commands[key] = result;
                 }

@@ -59,6 +59,7 @@
     <Compile Include="src\ImpromptuViewModel.cs" />
     <Compile Include="src\ImpromptuWindowBuilder.cs" />
     <Compile Include="src\ImpromptuCommandBinder.cs" />
+    <Compile Include="src\ISetupViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">

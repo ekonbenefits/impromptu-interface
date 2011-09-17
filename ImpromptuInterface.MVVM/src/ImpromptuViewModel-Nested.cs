@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM
 {
@@ -47,10 +48,12 @@ namespace ImpromptuInterface.MVVM
         public class PropertyDepend : DynamicObject
         {
             private readonly ImpromptuViewModel _parent;
+            private readonly FireOnPropertyChangedDependencyAware _onChange;
 
-            internal PropertyDepend(ImpromptuViewModel parent)
+            internal PropertyDepend(ImpromptuViewModel parent, FireOnPropertyChangedDependencyAware onChange)
             {
                 _parent = parent;
+                _onChange = onChange;
             }
 
             public override IEnumerable<string> GetDynamicMemberNames()
@@ -60,7 +63,7 @@ namespace ImpromptuInterface.MVVM
 
             public override bool TryGetMember(GetMemberBinder binder, out object result)
             {
-                result = new DependObject(_parent, binder.Name);
+                result = new DependObject(_parent, binder.Name, _onChange);
 
                 return true;
             }
@@ -72,25 +75,39 @@ namespace ImpromptuInterface.MVVM
         {
             private readonly ImpromptuViewModel _parent;
             private readonly string _property;
+            private readonly FireOnPropertyChangedDependencyAware _onChange;
             private Dependency _dependency;
             private UnDependency _unDependency;
+            private CacheableInvocation _getProprty;
+            private CacheableInvocation _setProprty;
 
-            internal DependObject(ImpromptuViewModel parent, string property)
+
+            internal DependObject(ImpromptuViewModel parent, string property, FireOnPropertyChangedDependencyAware onChange)
             {
                 _parent = parent;
                 _property = property;
+                _onChange = onChange;
                 _dependency = new Dependency(_parent, _property);
                 _unDependency = new UnDependency(_parent, _property);
+                _getProprty = new CacheableInvocation(InvocationKind.Get,_property);
+                _setProprty = new CacheableInvocation(InvocationKind.Set, _property);
+
             }
 
-            public dynamic On
+            public dynamic DependsOn
             {
                 get { return _dependency; }
             }
 
-            public dynamic Remove
+            public dynamic RemoveDependency
             {
                 get { return _unDependency; }
+            }
+
+            public dynamic OnChange
+            {
+                get { return _getProprty.Invoke(_onChange); }
+                set { _setProprty.Invoke(_onChange, value); }
             }
 
             public IEnumerable<string> List
@@ -293,7 +310,7 @@ namespace ImpromptuInterface.MVVM
             /// Initializes a new instance of the <see cref="FireOnPropertyChangedDependencyAware"/> class.
             /// </summary>
             /// <param name="parent">The parent.</param>
-            public FireOnPropertyChangedDependencyAware(ImpromptuViewModel parent)
+            internal FireOnPropertyChangedDependencyAware(ImpromptuViewModel parent)
                 : base(parent)
             {
                 _parent = parent;
@@ -329,8 +346,44 @@ namespace ImpromptuInterface.MVVM
                 }
                 return true;
             }
-        } 
-    }
+        }
 
-   
+
+        public class SetupTrampoline:ISetupViewModel
+        {
+            private readonly ImpromptuViewModel _viewModel;
+
+            private PropertyDepend _dependTrampoline;
+
+            private FireOnPropertyChangedDependencyAware _onChangedTrampoline;
+
+            internal SetupTrampoline(ImpromptuViewModel viewModel)
+            {
+                _viewModel = viewModel;
+                _onChangedTrampoline = new FireOnPropertyChangedDependencyAware(_viewModel);
+            }
+
+            [Obsolete]
+            internal FireOnPropertyChanged OnChangedTrampoline
+            {
+                get { return _onChangedTrampoline; }
+            }
+
+            public dynamic Property
+            {
+                get { return _dependTrampoline ?? (_dependTrampoline = new PropertyDepend(_viewModel, _onChangedTrampoline)); }
+            }
+
+            public event Action<Exception> CommandErrorHandler;
+
+            public bool RaiseCommandErrorHandler(Exception ex)
+            {
+                if (CommandErrorHandler == null) return false;
+                CommandErrorHandler(ex);
+                return true;
+            }
+
+           
+        }
+    }
 }

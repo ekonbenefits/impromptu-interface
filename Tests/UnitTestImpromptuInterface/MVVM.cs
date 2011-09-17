@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
 using System.Windows.Media;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
@@ -173,11 +175,101 @@ namespace UnitTestImpromptuInterface
 
 
 
+        [Test]
+        public void TestCommandBindingWithArg()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action<object>((arg) => tRun = true));
 
-   
+
+            ICommand command =tViewModel.Command.TestCommand;
+            
+            command.Execute(null);
+
+            Assert.AreEqual(true, tRun);
+        }
 
         [Test]
-        public void TestEventBindingNonGenericType()
+        public void TestCommandBindingWithError()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action<object>((arg) =>
+                                                                                                                    {
+                                                                                                                        throw
+                                                                                                                            new Exception
+                                                                                                                                ("Test");
+                                                                                                                        
+                                                                                                                    }));
+            Action<Exception> onError = (ex) => tRun = true;
+            tViewModel.Setup.CommandErrorHandler += onError;
+
+            ICommand command = tViewModel.Command.TestCommand;
+
+            command.Execute(null);
+
+            Assert.AreEqual(true, tRun);
+        }
+
+        [Test]
+        public void TestCommandBindingWithNoArg()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action(() => tRun = true));
+
+
+            ICommand command = tViewModel.Command.TestCommand;
+
+            command.Execute(null);
+
+            Assert.AreEqual(true, tRun);
+        }
+
+        [Test]
+        public void TestCommandBindingCanProperty()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action(() => tRun = true) ,CanTestCommand:false);
+
+
+            ICommand command = tViewModel.Command.TestCommand;
+
+            var tCanCommand = command.CanExecute(null);
+
+            Assert.AreEqual(false, tCanCommand);
+        }
+        [Test]
+        public void TestCommandBindingCanNoArg()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action(() => tRun = true), CanTestCommand: new Func<bool>(()=>false));
+
+
+            ICommand command = tViewModel.Command.TestCommand;
+
+            var tCanCommand = command.CanExecute(null);
+
+            Assert.AreEqual(false, tCanCommand);
+        }
+
+        [Test]
+        public void TestCommandBindingCanArg()
+        {
+            var tRun = false;
+            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestCommand: new Action(() => tRun = true), CanTestCommand: new Func<object,bool>((param) => false));
+
+
+            ICommand command = tViewModel.Command.TestCommand;
+
+            var tCanCommand = command.CanExecute(null);
+
+            Assert.AreEqual(false, tCanCommand);
+        }
+
+
+   
+   
+        [Test]
+        public void TestEventBinding()
         {
             var tRun = false;
             var tTextBox = new TestDependency();
@@ -191,20 +283,6 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tRun);
         }
 
-        [Test]
-        public void TestEventBindingGenericType()
-        {
-            var tRun = false;
-            var tTextBox = new TestDependency();
-            var tViewModel = Build<ImpromptuViewModel>.NewObject(TestEvent: new Action<object, EventArgs>((sender, e) => tRun = true));
-
-
-            Event.SetBind(tTextBox, tViewModel.Events.TextChange2.To["TestEvent"]);
-
-            tTextBox.OnTextChanged2(tTextBox, null);
-
-            Assert.AreEqual(true, tRun);
-        }
 
              [Test]
          public void TestTypeConverter()
@@ -224,7 +302,7 @@ namespace UnitTestImpromptuInterface
 
             tNewViewModel.Prop1 = "Setup";
 
-            tNewViewModel.Depend.Prop2.On.Prop1();
+            tNewViewModel.Setup.Property.Prop2.DependsOn.Prop1();
 
             int tEvent1Count = 0;
             int tEvent2Count = 0;
@@ -234,9 +312,9 @@ namespace UnitTestImpromptuInterface
             var tEvent2 = new PropertyChangedEventHandler(tEvent2Func);
             var tEvent2Again = new PropertyChangedEventHandler(tEvent2Func);
 
-            tNewViewModel.OnChanged.Prop1 += tEvent1;
-            tNewViewModel.OnChanged.Prop1 += tEvent2;
-            tNewViewModel.OnChanged.Prop2 += tEvent2Again;
+            tNewViewModel.Setup.Property.Prop1.OnChange += tEvent1;
+            tNewViewModel.Setup.Property.Prop1.OnChange += tEvent2;
+            tNewViewModel.Setup.Property.Prop2.OnChange += tEvent2Again;
 
 
             tNewViewModel.Prop1 = "Run";

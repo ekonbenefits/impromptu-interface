@@ -46,10 +46,16 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Castle.Core">
-      <HintPath>..\..\packages\Castle.Core.1.1.0\lib\Castle.Core.dll</HintPath>
+      <HintPath>..\..\packages\Castle.Core.1.2.0\lib\Castle.Core.dll</HintPath>
     </Reference>
     <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\packages\Castle.DynamicProxy.2.1.0\lib\Castle.DynamicProxy2.dll</HintPath>
+      <HintPath>..\..\packages\Castle.DynamicProxy.2.2.0\lib\Castle.DynamicProxy2.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.log4netIntegration">
+      <HintPath>..\..\packages\Castle.Core.1.2.0\lib\Castle.Services.Logging.log4netIntegration.dll</HintPath>
+    </Reference>
+    <Reference Include="Castle.Services.Logging.NLogIntegration">
+      <HintPath>..\..\packages\Castle.Core.1.2.0\lib\Castle.Services.Logging.NLogIntegration.dll</HintPath>
     </Reference>
     <Reference Include="ClaySharp">
       <HintPath>..\..\packages\Clay.1.0\lib\ClaySharp.dll</HintPath>
@@ -59,6 +65,9 @@
     </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="NLog">
+      <HintPath>..\..\packages\NLog.1.0.0.505\lib\NLog.dll</HintPath>
     </Reference>
     <Reference Include="nunit.framework, Version=2.5.9.10348, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -71,6 +80,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Xaml" />
@@ -81,6 +91,7 @@
   <ItemGroup>
     <Compile Include="ClayTest.cs" />
     <Compile Include="Curry.cs" />
+    <Compile Include="MEFTest.cs" />
     <Compile Include="MVVM.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
@@ -94,6 +105,10 @@
     <Compile Include="SingleMethodInvoke.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ImpromptuInterface.MVVM.MEF\ImpromptuInterface.MVVM.MEF.csproj">
+      <Project>{67291F49-E412-4913-941A-0C259419FCAA}</Project>
+      <Name>ImpromptuInterface.MVVM.MEF</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
       <Project>{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}</Project>
       <Name>ImpromptuInterface.MVVM</Name>

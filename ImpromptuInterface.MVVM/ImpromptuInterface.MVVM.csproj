@@ -32,9 +32,6 @@
     <DocumentationFile>bin\Release\ImpromptuInterface.MVVM.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImpromptuInterface">
-      <HintPath>..\ImpromptuInterface\bin\Release\ImpromptuInterface.dll</HintPath>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -52,6 +49,7 @@
     <Compile Include="src\DialogBox.cs" />
     <Compile Include="src\Event.cs" />
     <Compile Include="src\FireOnChange.cs" />
+    <Compile Include="src\IContainer.cs" />
     <Compile Include="src\ImpromptuBindingList.cs" />
     <Compile Include="src\ImpromptuRelayCommand.cs" />
     <Compile Include="src\ImpromptuToString.cs" />
@@ -59,13 +57,21 @@
     <Compile Include="src\ImpromptuViewModel.cs" />
     <Compile Include="src\ImpromptuWindowBuilder.cs" />
     <Compile Include="src\ImpromptuCommandBinder.cs" />
+    <Compile Include="src\IoC.cs" />
     <Compile Include="src\ISetupViewModel.cs" />
+    <Compile Include="src\Runtime.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
       <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
       <SubType>Designer</SubType>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImpromptuInterface\ImpromptuInterface.csproj">
+      <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
+      <Name>ImpromptuInterface</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

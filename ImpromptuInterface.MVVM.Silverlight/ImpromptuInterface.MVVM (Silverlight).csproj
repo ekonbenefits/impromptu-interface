@@ -47,9 +47,6 @@
     <DocumentationFile>Bin\Release\ImpromptuInterface.MVVM.XML</DocumentationFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ImpromptuInterface">
-      <HintPath>..\ImpromptuInterface.Silverlight\Bin\Release\ImpromptuInterface.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -104,6 +101,12 @@
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
       <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
+      <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
+      <Name>ImpromptuInterface %28Silverlight%29</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />
   <ProjectExtensions>

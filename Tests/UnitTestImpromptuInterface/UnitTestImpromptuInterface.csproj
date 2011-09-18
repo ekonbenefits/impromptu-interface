@@ -105,10 +105,6 @@
     <Compile Include="SingleMethodInvoke.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ImpromptuInterface.MVVM.MEF\ImpromptuInterface.MVVM.MEF.csproj">
-      <Project>{67291F49-E412-4913-941A-0C259419FCAA}</Project>
-      <Name>ImpromptuInterface.MVVM.MEF</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
       <Project>{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}</Project>
       <Name>ImpromptuInterface.MVVM</Name>

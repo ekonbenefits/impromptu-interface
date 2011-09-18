@@ -35,6 +35,7 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
@@ -59,6 +60,10 @@
     <Compile Include="src\ImpromptuCommandBinder.cs" />
     <Compile Include="src\IoC.cs" />
     <Compile Include="src\ISetupViewModel.cs" />
+    <Compile Include="src\MEF\Constants.cs" />
+    <Compile Include="src\MEF\Container.cs" />
+    <Compile Include="src\MEF\ViewAttribute.cs" />
+    <Compile Include="src\MEF\ViewModelAttribute.cs" />
     <Compile Include="src\Runtime.cs" />
   </ItemGroup>
   <ItemGroup>

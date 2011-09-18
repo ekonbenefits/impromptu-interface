@@ -12,6 +12,11 @@ namespace ImpromptuInterface.MVVM
     {
         private static IContainer _container = null;
 
+        internal static bool Initialized
+        {
+            get { return _container != null; }
+        }
+
         /// <summary>
         /// Sets the container
         /// </summary>

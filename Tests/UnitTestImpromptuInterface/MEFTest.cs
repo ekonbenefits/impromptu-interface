@@ -7,10 +7,6 @@ using ImpromptuInterface.MVVM.MEF;
 using NUnit.Framework;
 #endif
 
-#if !SELFRUNNER
-using NUnit.Framework;
-#endif
-
 using ImpromptuInterface.MVVM;
 
 #if SILVERLIGHT

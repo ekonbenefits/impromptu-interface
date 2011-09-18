@@ -140,6 +140,9 @@
     <Compile Include="..\ImpromptuInterface\src\Dynamic\Invocation.cs">
       <Link>src\Dynamic\Invocation.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\Mimic.cs">
+      <Link>src\Dynamic\Mimic.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ThisFunctions.cs">
       <Link>src\Dynamic\ThisFunctions.cs</Link>
     </Compile>

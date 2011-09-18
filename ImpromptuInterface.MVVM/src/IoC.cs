@@ -10,11 +10,15 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public static class IoC
     {
-        private static IContainer _container = null;
+        internal static IContainer Container
+        {
+            get;
+            private set;
+        }
 
         internal static bool Initialized
         {
-            get { return _container != null; }
+            get { return Container != null; }
         }
 
         /// <summary>
@@ -23,7 +27,7 @@ namespace ImpromptuInterface.MVVM
         /// <param name="container"></param>
         internal static void Initialize(IContainer container)
         {
-            _container = container;
+            Container = container;
         }
 
         /// <summary>
@@ -34,7 +38,7 @@ namespace ImpromptuInterface.MVVM
         public static T Get<T>()
              where T : class
         {
-            return _container.Get<T>();
+            return Container.Get<T>();
         }
 
         /// <summary>
@@ -44,7 +48,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static dynamic Get(string name)
         {
-            return _container.Get(name);
+            return Container.Get(name);
         }
 
         /// <summary>
@@ -55,7 +59,7 @@ namespace ImpromptuInterface.MVVM
         public static IEnumerable<T> GetMany<T>()
              where T : class
         {
-            return _container.GetMany<T>();
+            return Container.GetMany<T>();
         }
 
         /// <summary>
@@ -65,7 +69,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static IEnumerable<dynamic> GetMany(string name)
         {
-            return _container.GetMany(name);
+            return Container.GetMany(name);
         }
 
         /// <summary>
@@ -75,7 +79,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static dynamic GetView(string name)
         {
-            return _container.GetView(name);
+            return Container.GetView(name);
         }
 
         /// <summary>
@@ -85,7 +89,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static dynamic GetViewModel(string name)
         {
-            return _container.GetViewModel(name);
+            return Container.GetViewModel(name);
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static dynamic GetViewFor(dynamic viewModel)
         {
-            return _container.GetViewFor(viewModel);
+            return Container.GetViewFor(viewModel);
         }
     }
 }

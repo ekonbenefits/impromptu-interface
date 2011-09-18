@@ -93,6 +93,7 @@
     <Compile Include="Curry.cs" />
     <Compile Include="MEFTest.cs" />
     <Compile Include="MVVM.cs" />
+    <Compile Include="RuntimeTest.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
     <Compile Include="Generics.cs" />

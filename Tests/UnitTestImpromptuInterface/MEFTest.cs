@@ -7,6 +7,7 @@ using ImpromptuInterface.MVVM.MEF;
 using NUnit.Framework;
 #endif
 
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.MVVM;
 
 #if SILVERLIGHT
@@ -21,7 +22,7 @@ namespace UnitTestImpromptuInterface
         #region Test Types
 
         [View("Test")]
-        private sealed class TestView
+        private sealed class TestView : Mimic
         {
 
         }

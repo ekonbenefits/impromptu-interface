@@ -12,6 +12,15 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public sealed class Runtime
     {
+        private static Dictionary<string, Func<dynamic, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, IContainer>>
+        {
+            { "System.ComponentModel.Composition.Hosting.CompositionContainer", c => new MEF.Container(c) },
+        };
+        private Assembly _callingAssembly = null;
+
+        private Runtime()
+        { }
+
         /// <summary>
         /// Gets the "Main" view of the application, the one invoked from Runtime.Start()
         /// </summary>
@@ -27,7 +36,10 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public static Runtime Initialize()
         {
-            return new Runtime();
+            return new Runtime
+            {
+                _callingAssembly = Assembly.GetCallingAssembly(),
+            };
         }
 
         /// <summary>
@@ -36,11 +48,7 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public Runtime SetupContainer()
         {
-#if SILVERLIGHT
-            var container = new CompositionContainer(new AssemblyCatalog(Assembly.GetCallingAssembly()));
-#else
-            var container = new CompositionContainer(new AssemblyCatalog(Assembly.GetEntryAssembly() ?? Assembly.GetCallingAssembly()));
-#endif
+            var container = new CompositionContainer(new AssemblyCatalog(_callingAssembly));
             IoC.Initialize(new MEF.Container(container));
             return this;
         }
@@ -52,7 +60,19 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public Runtime SetupContainer(dynamic container)
         {
-            IoC.Initialize(container);
+            if (container is IContainer)
+            {
+                IoC.Initialize(container);
+            }
+            else
+            {
+                Type type = container.GetType();
+                Func<dynamic, IContainer> func;
+                if (_containerLookup.TryGetValue(type.FullName, out func))
+                {
+                    IoC.Initialize(func(container));
+                }
+            }
             return this;
         }
 
@@ -64,9 +84,13 @@ namespace ImpromptuInterface.MVVM
         /// <returns></returns>
         public Runtime Start(string name)
         {
+            if (!IoC.Initialized)
+            {
+                SetupContainer();
+            }
             dynamic viewModel = IoC.GetViewModel(name);
             MainView =
-                Application.Current.RootVisual = viewModel.View;
+                System.Windows.Application.Current.RootVisual = viewModel.View;
             return this;
         }
 #else

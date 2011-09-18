@@ -92,6 +92,7 @@
     <Reference Include="NUnit.Silverlight.Metadata">
       <HintPath>..\..\tools\Silverlight4-NUnit2.5.8-Apr2010\NUnit.Silverlight.Metadata.dll</HintPath>
     </Reference>
+    <Reference Include="System.ComponentModel.Composition, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Core">
       <Private>False</Private>
@@ -117,11 +118,17 @@
     <Compile Include="..\UnitTestImpromptuInterface\ImpromptuDynamic.cs">
       <Link>ImpromptuDynamic.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\MEFTest.cs">
+      <Link>MEFTest.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\MVVM.cs">
       <Link>MVVM.cs</Link>
     </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\PrivateTest.cs">
       <Link>PrivateTest.cs</Link>
+    </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\RuntimeTest.cs">
+      <Link>RuntimeTest.cs</Link>
     </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\SingleMethodInvoke.cs">
       <Link>SingleMethodInvoke.cs</Link>

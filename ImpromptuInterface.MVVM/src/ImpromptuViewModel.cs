@@ -145,6 +145,20 @@ namespace ImpromptuInterface.MVVM
         }
 
         /// <summary>
+        /// Locates the View for this ViewModel
+        /// NOTE: this hits the IoC container every time, this enables non-singleton views
+        /// </summary>
+        public virtual dynamic View
+        {
+            get
+            {
+                dynamic view = IoC.GetViewFor(this);
+                view.DataContext = Dynamic;
+                return view;
+            }
+        }
+
+        /// <summary>
         /// Sets up dependency relations amoung dependenant properties
         /// </summary>
         /// <value>The dependencies.</value>

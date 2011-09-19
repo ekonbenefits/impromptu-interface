@@ -142,6 +142,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\Support\SupportDefinitions.cs">
       <Link>Support\SupportDefinitions.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\Support\TestTypes.cs">
+      <Link>Support\TestTypes.cs</Link>
+    </Compile>
     <Compile Include="Support\Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

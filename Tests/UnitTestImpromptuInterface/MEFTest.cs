@@ -19,63 +19,6 @@ namespace UnitTestImpromptuInterface
     [TestFixture]
     public class MEFTest
     {
-        #region Test Types
-
-        [View("Test")]
-        private sealed class TestView : Mimic
-        {
-
-        }
-
-        [ViewModel("Test")]
-        private sealed class TestViewModel : ImpromptuViewModel
-        {
-
-        }
-
-        private interface ITestInterface
-        {
-            void Test();
-        }
-
-        [Export(typeof(ITestInterface))]
-        private sealed class TestClassA : ITestInterface
-        {
-            public void Test()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        [Export(typeof(ITestInterface))]
-        private sealed class TestClassB : ITestInterface
-        {
-            public void Test()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        [Export("Testing123")]
-        private sealed class TestClassC : ITestInterface
-        {
-            public void Test()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        [Export("Testing123")]
-        private sealed class TestClassD : ITestInterface
-        {
-            public void Test()
-            {
-                throw new NotImplementedException();
-            }
-        }
-
-        #endregion
-
         [Test]
         public void Get_View()
         {

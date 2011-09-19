@@ -29,7 +29,7 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public override bool TryConvert(ConvertBinder binder, out object result)
         {
-            result = Activator.CreateInstance(binder.ReturnType);
+            result = Impromptu.InvokeConstructor(binder.ReturnType);
             return true;
         }
 

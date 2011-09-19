@@ -12,7 +12,7 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public sealed class Runtime
     {
-        private static Dictionary<string, Func<dynamic, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, IContainer>>
+        private static readonly Dictionary<string, Func<dynamic, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, IContainer>>
         {
             { "System.ComponentModel.Composition.Hosting.CompositionContainer", c => new MEF.Container(c) },
         };

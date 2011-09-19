@@ -104,6 +104,7 @@
     <Compile Include="Basic.cs" />
     <Compile Include="PrivateTest.cs" />
     <Compile Include="SingleMethodInvoke.cs" />
+    <Compile Include="Support\TestTypes.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">

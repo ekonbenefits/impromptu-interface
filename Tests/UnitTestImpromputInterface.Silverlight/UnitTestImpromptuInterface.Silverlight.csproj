@@ -121,6 +121,9 @@
     <Compile Include="..\UnitTestImpromptuInterface\MEFTest.cs">
       <Link>MEFTest.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\MimicTest.cs">
+      <Link>MimicTest.cs</Link>
+    </Compile>
     <Compile Include="..\UnitTestImpromptuInterface\MVVM.cs">
       <Link>MVVM.cs</Link>
     </Compile>

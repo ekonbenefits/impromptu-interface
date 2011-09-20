@@ -14,7 +14,7 @@ namespace ImpromptuInterface.MVVM
         /// </summary>
         /// <param name="name">Name of ViewModel</param>
         public ViewModelAttribute(string name)
-            : base(name + Constants.ViewModel)
+            : base(name + IoC.ViewModel)
         { }
     }
 }

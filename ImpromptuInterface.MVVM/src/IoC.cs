@@ -10,6 +10,9 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public static class IoC
     {
+        internal const string View = "__View__";
+        internal const string ViewModel = "__ViewModel__";
+
         internal static IContainer Container
         {
             get;
@@ -100,6 +103,18 @@ namespace ImpromptuInterface.MVVM
         public static dynamic GetViewFor(dynamic viewModel)
         {
             return Container.GetViewFor(viewModel);
+        }
+
+        /// <summary>
+        /// Registers a View/ViewModel pair with the container
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="viewType"></param>
+        /// <param name="viewModelType"></param>
+        /// <returns></returns>
+        public static void AddView(string name, Type viewType, Type viewModelType)
+        {
+            Container.AddView(name, viewType, viewModelType);
         }
     }
 }

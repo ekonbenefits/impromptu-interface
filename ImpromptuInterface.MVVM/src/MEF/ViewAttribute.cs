@@ -14,7 +14,7 @@ namespace ImpromptuInterface.MVVM
         /// </summary>
         /// <param name="name">Name of View</param>
         public ViewAttribute(string name)
-            : base(name + Constants.View)
+            : base(name + IoC.View)
         { }
     }
 }

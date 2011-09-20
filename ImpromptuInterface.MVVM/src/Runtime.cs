@@ -15,6 +15,7 @@ namespace ImpromptuInterface.MVVM
         private static readonly Dictionary<string, Func<dynamic, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, IContainer>>
         {
             { "System.ComponentModel.Composition.Hosting.CompositionContainer", c => new MEF.Container(c) },
+            { "TinyIoC.TinyIoCContainer", c => new TinyIoC.Container(c) }
         };
         private Assembly _callingAssembly = null;
 

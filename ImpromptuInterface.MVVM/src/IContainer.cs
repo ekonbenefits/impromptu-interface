@@ -58,5 +58,14 @@ namespace ImpromptuInterface.MVVM
         /// <param name="viewModel"></param>
         /// <returns></returns>
         dynamic GetViewFor(dynamic viewModel);
+
+        /// <summary>
+        /// Registers a View/ViewModel pair with the container
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="viewType"></param>
+        /// <param name="viewModelType"></param>
+        /// <returns></returns>
+        IContainer AddView(string name, Type viewType, Type viewModelType);
     }
 }

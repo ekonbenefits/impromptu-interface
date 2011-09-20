@@ -102,9 +102,6 @@
     <Compile Include="..\ImpromptuInterface.MVVM\src\ISetupViewModel.cs">
       <Link>src\ISetupViewModel.cs</Link>
     </Compile>
-    <Compile Include="..\ImpromptuInterface.MVVM\src\MEF\Constants.cs">
-      <Link>src\MEF\Constants.cs</Link>
-    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\MEF\Container.cs">
       <Link>src\MEF\Container.cs</Link>
     </Compile>
@@ -116,6 +113,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Runtime.cs">
       <Link>src\Runtime.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\TinyIoC\Container.cs">
+      <Link>src\TinyIoC\Container.cs</Link>
     </Compile>
     <Compile Include="src\Support.cs" />
   </ItemGroup>

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using ImpromptuInterface.MVVM.MEF;
 
@@ -69,7 +68,7 @@ namespace UnitTestImpromptuInterface
 
             foreach (var item in container.GetMany<ITestInterface>())
             {
-                Assert.IsInstanceOf<ITestInterface>(item);
+                Assert.IsNotNull(item);
             }
         }
 

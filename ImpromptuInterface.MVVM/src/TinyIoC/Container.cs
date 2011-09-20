@@ -1,24 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition.Hosting;
-using System.ComponentModel.Composition.Primitives;
-using System.Linq;
 
-namespace ImpromptuInterface.MVVM.MEF
+namespace ImpromptuInterface.MVVM.TinyIoC
 {
     /// <summary>
-    /// An IContainer wrapping a MEF CompositionContainer for ImpromptuInterface.MVVM
+    /// An IContainer wrapping a TinyIoC container for ImpromptuInterface.MVVM
     /// </summary>
     public sealed class Container : IContainer
     {
-        private readonly CompositionContainer _container;
+        private readonly dynamic _container;
         private readonly Dictionary<Type, string> _viewLookup = new Dictionary<Type, string>();
 
         /// <summary>
-        /// Default ctor, requires a MEF CompositionContainer
+        /// Default ctor, requires a TinyIoCContainer
         /// </summary>
         /// <param name="container"></param>
-        public Container(CompositionContainer container)
+        public Container(dynamic container)
         {
             _container = container;
         }
@@ -31,7 +28,7 @@ namespace ImpromptuInterface.MVVM.MEF
         public T Get<T>()
              where T : class
         {
-            return _container.GetExportedValue<T>();
+            return _container.Resolve<T>();
         }
 
         /// <summary>
@@ -41,7 +38,7 @@ namespace ImpromptuInterface.MVVM.MEF
         /// <returns></returns>
         public dynamic Get(string name)
         {
-            return _container.GetExportedValue<object>(name);
+            return _container.Resolve(typeof(object), name);
         }
 
         /// <summary>
@@ -52,17 +49,18 @@ namespace ImpromptuInterface.MVVM.MEF
         public IEnumerable<T> GetMany<T>()
              where T : class
         {
-            return _container.GetExportedValues<T>();
+            return _container.ResolveAll<T>();
         }
 
         /// <summary>
         /// Gets a list of exported values by export name
+        /// NOTE: TinyIoC does not support this operation
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public IEnumerable<dynamic> GetMany(string name)
         {
-            return _container.GetExportedValues<object>(name);
+            throw new NotSupportedException("TinyIoC does not support this operation!");
         }
 
         /// <summary>
@@ -92,24 +90,10 @@ namespace ImpromptuInterface.MVVM.MEF
         /// <returns></returns>
         public dynamic GetViewFor(dynamic viewModel)
         {
-            Type type = viewModel.GetType();
             string name;
-            if (_viewLookup.TryGetValue(type, out name))
+            if (_viewLookup.TryGetValue(viewModel.GetType(), out name))
             {
                 return GetView(name);
-            }
-            else
-            {
-                var attribute = type
-                    .GetCustomAttributes(typeof(ViewModelAttribute), false)
-                    .Cast<ViewModelAttribute>()
-                    .FirstOrDefault();
-                if (attribute != null)
-                {
-                    name = attribute.ContractName.Replace(IoC.ViewModel, string.Empty);
-                    _viewLookup[type] = name;
-                    return GetView(name);
-                }
             }
 
             throw new Exception("View not found!");
@@ -124,7 +108,10 @@ namespace ImpromptuInterface.MVVM.MEF
         /// <returns></returns>
         public IContainer AddView(string name, Type viewType, Type viewModelType)
         {
-            throw new NotSupportedException("MEF does not support this operation!");
+            _container.Register(typeof(object), viewType, name + IoC.View);
+            _container.Register(typeof(object), viewModelType, name + IoC.ViewModel);
+            _viewLookup[viewModelType] = name;
+            return this;
         }
     }
 }

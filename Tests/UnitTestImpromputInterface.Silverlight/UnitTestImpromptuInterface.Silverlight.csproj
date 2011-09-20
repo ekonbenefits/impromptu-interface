@@ -148,8 +148,12 @@
     <Compile Include="..\UnitTestImpromptuInterface\Support\TestTypes.cs">
       <Link>Support\TestTypes.cs</Link>
     </Compile>
+    <Compile Include="..\UnitTestImpromptuInterface\TinyIoCTest.cs">
+      <Link>TinyIoCTest.cs</Link>
+    </Compile>
     <Compile Include="Support\Helper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TinyIoC.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

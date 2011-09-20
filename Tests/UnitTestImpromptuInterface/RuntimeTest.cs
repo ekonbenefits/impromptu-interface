@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.ComponentModel.Composition.Hosting;
+using TinyIoC;
 
 #if !SELFRUNNER
 using NUnit.Framework;
@@ -9,7 +7,6 @@ using NUnit.Framework;
 
 using ImpromptuInterface;
 using ImpromptuInterface.MVVM;
-using System.ComponentModel.Composition.Hosting;
 
 #if SILVERLIGHT
 namespace UnitTestImpromptuInterface.Silverlight
@@ -27,6 +24,8 @@ namespace UnitTestImpromptuInterface
 
             Impromptu.InvokeSet(staticContext(typeof(IoC)), "Container", null);
         }
+
+        #region MEF Tests
 
         [Test]
         public void Standard_MEF_Default_Container()
@@ -86,5 +85,50 @@ namespace UnitTestImpromptuInterface
             var container = new CompositionContainer(new TypeCatalog(typeof(TestView), typeof(TestViewModel)));
             Runtime.Initialize().SetupContainer(container).Start("Test");
         }
+
+        #endregion 
+
+        #region TinyIoC Tests
+
+        [Test]
+        public void Standard_TinyIoC_IContainer()
+        {
+            var tinyContainer = new TinyIoCContainer();
+            var container = new ImpromptuInterface.MVVM.TinyIoC.Container(tinyContainer);
+            container.AddView("Test", typeof(TestView), typeof(TestViewModel));
+            var runtime = Runtime.Initialize();
+            runtime.SetupContainer(container);
+            runtime.Start("Test");
+        }
+
+        [Test]
+        public void Standard_TinyIoC_Container()
+        {
+            var tinyContainer = new TinyIoCContainer();
+            var runtime = Runtime.Initialize();
+            runtime.SetupContainer(tinyContainer);
+            IoC.AddView("Test", typeof(TestView), typeof(TestViewModel));
+            runtime.Start("Test");
+        }
+
+        [Test]
+        public void Fluent_TinyIoC_IContainer()
+        {
+            var tinyContainer = new TinyIoCContainer();
+            var container = new ImpromptuInterface.MVVM.TinyIoC.Container(tinyContainer);
+            container.AddView("Test", typeof(TestView), typeof(TestViewModel));
+            Runtime.Initialize().SetupContainer(container).Start("Test");
+        }
+
+        [Test]
+        public void Fluent_TinyIoC_Container()
+        {
+            var tinyContainer = new TinyIoCContainer();
+            var runtime = Runtime.Initialize().SetupContainer(tinyContainer);
+            IoC.AddView("Test", typeof(TestView), typeof(TestViewModel));
+            runtime.Start("Test");
+        }
+
+        #endregion 
     }
 }

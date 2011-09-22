@@ -63,8 +63,20 @@
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation">
+      <HintPath>..\..\packages\CommonServiceLocator.1.0\lib\NET35\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration">
+      <HintPath>..\..\packages\Unity.2.1.505.0\lib\NET35\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
     <Reference Include="Moq">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\NET40\Moq.dll</HintPath>
+    </Reference>
+    <Reference Include="Ninject">
+      <HintPath>..\..\packages\Ninject.2.2.1.4\lib\net40-Full\Ninject.dll</HintPath>
     </Reference>
     <Reference Include="NLog">
       <HintPath>..\..\packages\NLog.1.0.0.505\lib\NLog.dll</HintPath>
@@ -94,6 +106,7 @@
     <Compile Include="Curry.cs" />
     <Compile Include="MEFTest.cs" />
     <Compile Include="MVVM.cs" />
+    <Compile Include="NinjectTest.cs" />
     <Compile Include="RuntimeTest.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
@@ -108,6 +121,7 @@
     <Compile Include="Support\TestTypes.cs" />
     <Compile Include="TinyIoC.cs" />
     <Compile Include="TinyIoCTest.cs" />
+    <Compile Include="UnityTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">

@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.Composition.Hosting;
 using TinyIoC;
+using Ninject;
 
 #if !SELFRUNNER
 using NUnit.Framework;
@@ -126,6 +127,45 @@ namespace UnitTestImpromptuInterface
             var tinyContainer = new TinyIoCContainer();
             var runtime = Runtime.Initialize().SetupContainer(tinyContainer);
             IoC.AddView("Test", typeof(TestView), typeof(TestViewModel));
+            runtime.Start("Test");
+        }
+
+        #endregion 
+
+        #region Ninject Tests
+
+        [Test]
+        public void Standard_Ninject_IContainer()
+        {
+            var kernel = new StandardKernel();
+            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel);
+            var runtime = Runtime.Initialize();
+            runtime.SetupContainer(container);
+            runtime.Start("Test");
+        }
+
+        [Test]
+        public void Standard_Ninject_Container()
+        {
+            var kernel = new StandardKernel();
+            var runtime = Runtime.Initialize();
+            runtime.SetupContainer(kernel);
+            runtime.Start("Test");
+        }
+
+        [Test]
+        public void Fluent_Ninject_IContainer()
+        {
+            var kernel = new StandardKernel();
+            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel);
+            Runtime.Initialize().SetupContainer(container).Start("Test");
+        }
+
+        [Test]
+        public void Fluent_Ninject_Container()
+        {
+            var kernel = new StandardKernel();
+            var runtime = Runtime.Initialize().SetupContainer(kernel);
             runtime.Start("Test");
         }
 

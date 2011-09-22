@@ -221,6 +221,9 @@ Global
 		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{A009FD57-4F7A-43F5-A155-0EE35C0F5FC1} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Test\Test.csproj
 		Policies = $0

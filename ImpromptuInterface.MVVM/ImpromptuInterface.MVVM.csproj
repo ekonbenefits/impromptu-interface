@@ -63,8 +63,11 @@
     <Compile Include="src\MEF\Container.cs" />
     <Compile Include="src\MEF\ViewAttribute.cs" />
     <Compile Include="src\MEF\ViewModelAttribute.cs" />
+    <Compile Include="src\Ninject\Container.cs" />
+    <Compile Include="src\Ninject\Extensions.cs" />
     <Compile Include="src\Runtime.cs" />
     <Compile Include="src\TinyIoC\Container.cs" />
+    <Compile Include="src\Unity\Adapter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">

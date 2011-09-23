@@ -26,7 +26,7 @@ namespace UnitTestImpromptuInterface
         public void Get_View()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
             var view = container.GetView("Test");
 
             Assert.IsInstanceOf<TestView>(view);
@@ -36,7 +36,7 @@ namespace UnitTestImpromptuInterface
         public void Get_ViewModel()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
             var viewModel = container.GetViewModel("Test");
 
             Assert.IsInstanceOf<TestViewModel>(viewModel);
@@ -46,7 +46,7 @@ namespace UnitTestImpromptuInterface
         public void Get_ViewFor()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
 
             var viewModel = container.GetViewModel("Test");
             var view = container.GetViewFor(viewModel);
@@ -58,7 +58,7 @@ namespace UnitTestImpromptuInterface
         public void Get_Many()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
 
             foreach (var item in container.GetMany<ITestInterface>())
             {
@@ -70,7 +70,7 @@ namespace UnitTestImpromptuInterface
         public void Get_Many_Dynamic()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
 
             foreach (var item in container.GetMany("Testing123"))
             {
@@ -82,7 +82,7 @@ namespace UnitTestImpromptuInterface
         public void Get()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
             kernel.Bind<ITestInterface>().To<TestClassA>();
             var item = container.Get<ITestInterface>();
 
@@ -93,7 +93,7 @@ namespace UnitTestImpromptuInterface
         public void Get_Dynamic()
         {
             var kernel = new StandardKernel();
-            var container = new Container(kernel, _assembly);
+            var container = new Container(kernel, typeof(IKernel), _assembly);
             kernel.Bind<object>().To<TestClassC>().Named("Testing123");
             var item = container.Get("Testing123");
 

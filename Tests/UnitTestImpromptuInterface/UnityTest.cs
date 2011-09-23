@@ -25,11 +25,11 @@ namespace UnitTestImpromptuInterface
         {
             var unityContainer = new UnityContainer();
             unityContainer.RegisterInstance(typeof(object), "Test__View__", new TestView());
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             var view = container.GetView("Test");
 
-            Assert.IsInstanceOfType(view, typeof(TestView));
+            Assert.IsInstanceOf<TestView>(view);
         }
 
         [Test]
@@ -37,18 +37,18 @@ namespace UnitTestImpromptuInterface
         {
             var unityContainer = new UnityContainer();
             unityContainer.RegisterInstance(typeof(object), "Test__ViewModel__", new TestViewModel());
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             var viewModel = container.GetViewModel("Test");
 
-            Assert.IsInstanceOfType(viewModel, typeof(TestViewModel));
+            Assert.IsInstanceOf<TestViewModel>(viewModel);
         }
 
         [Test]
         public void Get_ViewFor()
         {
             var unityContainer = new UnityContainer();
-            var container = new Container(unityContainer);
+            var container = new Container(unityContainer, typeof(IUnityContainer));
             container.AddView("Test", typeof(TestView), typeof(TestViewModel));
 
             var viewModel = container.GetViewModel("Test");
@@ -63,7 +63,7 @@ namespace UnitTestImpromptuInterface
             var unityContainer = new UnityContainer();
             unityContainer.RegisterType<ITestInterface, TestClassA>();
             unityContainer.RegisterType<ITestInterface, TestClassB>();
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             foreach (var item in container.GetMany<ITestInterface>())
             {
@@ -77,7 +77,7 @@ namespace UnitTestImpromptuInterface
             var unityContainer = new UnityContainer();
             unityContainer.RegisterInstance(typeof(object), "Testing123", new TestClassC());
             unityContainer.RegisterInstance(typeof(object), "Testing123", new TestClassD());
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             foreach (var item in container.GetMany("Testing123"))
             {
@@ -90,7 +90,7 @@ namespace UnitTestImpromptuInterface
         {
             var unityContainer = new UnityContainer();
             unityContainer.RegisterType<ITestInterface, TestClassA>();
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             var item = container.Get<ITestInterface>();
 
@@ -102,7 +102,7 @@ namespace UnitTestImpromptuInterface
         {
             var unityContainer = new UnityContainer();
             unityContainer.RegisterInstance(typeof(object), "Testing123", new TestClassC());
-            IContainer container = new Container(unityContainer);
+            IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
             var item = container.Get("Testing123");
 

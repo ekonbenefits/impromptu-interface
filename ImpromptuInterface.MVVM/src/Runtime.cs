@@ -12,12 +12,12 @@ namespace ImpromptuInterface.MVVM
     /// </summary>
     public sealed class Runtime
     {
-        private readonly Dictionary<string, Func<dynamic, Assembly, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, Assembly, IContainer>>
+        private readonly Dictionary<string, Func<dynamic, Assembly, Type, IContainer>> _containerLookup = new Dictionary<string, Func<dynamic, Assembly, Type, IContainer>>
         {
-            { "System.ComponentModel.Composition.Hosting.CompositionContainer", (c, a) => new MEF.Container(c) },
-            { "TinyIoC.TinyIoCContainer", (c, a) => new TinyIoC.Container(c) },
-            { "Microsoft.Practices.Unity.IUnityContainer", (c, a) => new Unity.Container(c) },
-            { "Ninject.IKernel", (c, a) => new Ninject.Container(c, a) },
+            { "System.ComponentModel.Composition.Hosting.CompositionContainer", (c, a, t) => new MEF.Container(c) },
+            { "TinyIoC.TinyIoCContainer", (c, a, t) => new TinyIoC.Container(c) },
+            { "Microsoft.Practices.Unity.IUnityContainer", (c, a, t) => new Unity.Container(c,t) },
+            { "Ninject.IKernel", (c, a, t) => new Ninject.Container(c, t, a) },
         };
         private Assembly _callingAssembly = null;
 
@@ -70,10 +70,10 @@ namespace ImpromptuInterface.MVVM
             else
             {
                 Type type = container.GetType();
-                Func<dynamic, Assembly, IContainer> func;
+                Func<dynamic, Assembly, Type, IContainer> func;
                 if (_containerLookup.TryGetValue(type.FullName, out func))
                 {
-                    IoC.Initialize(func(container, _callingAssembly));
+                    IoC.Initialize(func(container, _callingAssembly, type));
                 }
                 else
                 {
@@ -81,7 +81,7 @@ namespace ImpromptuInterface.MVVM
                     {
                         if (_containerLookup.TryGetValue(@interface.FullName, out func))
                         {
-                            IoC.Initialize(func(container, _callingAssembly));
+                            IoC.Initialize(func(container, _callingAssembly, @interface));
                             return this;
                         }
                     }

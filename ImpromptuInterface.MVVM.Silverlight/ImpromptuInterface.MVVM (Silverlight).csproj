@@ -111,11 +111,20 @@
     <Compile Include="..\ImpromptuInterface.MVVM\src\MEF\ViewModelAttribute.cs">
       <Link>src\MEF\ViewModelAttribute.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\Ninject\Container.cs">
+      <Link>src\Ninject\Container.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\Ninject\Extensions.cs">
+      <Link>src\Ninject\Extensions.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Runtime.cs">
       <Link>src\Runtime.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\TinyIoC\Container.cs">
       <Link>src\TinyIoC\Container.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface.MVVM\src\Unity\Container.cs">
+      <Link>src\Unity\Container.cs</Link>
     </Compile>
     <Compile Include="src\Support.cs" />
   </ItemGroup>

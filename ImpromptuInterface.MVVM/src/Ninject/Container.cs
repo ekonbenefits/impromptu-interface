@@ -12,16 +12,20 @@ namespace ImpromptuInterface.MVVM.Ninject
     public sealed class Container : IContainer
     {
         private readonly dynamic _kernel;
+        private readonly Type _kernelInterface;
         private string[] _fullyQualifiedTypes;
         private InvokeContext _staticContext;
+        private dynamic _resolutionExtensions;
 
         /// <summary>
         /// Constructor, taking in an IKernel
         /// </summary>
         /// <param name="kernel"></param>
-        public Container(dynamic kernel)
+        /// <param name="kernelInterface"></param>
+        public Container(dynamic kernel, Type kernelInterface)
         {
             _kernel = kernel;
+            _kernelInterface = kernelInterface;
 
 #if SILVERLIGHT
             var assembly = Assembly.GetCallingAssembly();
@@ -37,10 +41,12 @@ namespace ImpromptuInterface.MVVM.Ninject
         /// Constructor, taking in an IKernel and list of assemblies that Views and ViewModel could be found in
         /// </summary>
         /// <param name="kernel"></param>
+        /// <param name="kernelInterface"></param>
         /// <param name="assemblies"></param>
-        public Container(dynamic kernel, params Assembly[] assemblies)
+        public Container(dynamic kernel,Type kernelInterface,  params Assembly[] assemblies)
         {
             _kernel = kernel;
+            _kernelInterface = kernelInterface;
 
             LateBind();
             ReflectNamespaces(assemblies);
@@ -54,7 +60,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         public T Get<T>() where T : class
         {
             var name = InvokeMemberName.Create;
-            return Impromptu.InvokeMember(_staticContext, name("Get", new Type[] {typeof (T)}), _kernel);
+            return Impromptu.InvokeMember(_staticContext, name("Get", new[] {typeof (T)}), _kernel);
         }
 
         /// <summary>
@@ -64,7 +70,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         /// <returns></returns>
         public dynamic Get(string name)
         {
-            return Impromptu.InvokeMember(_staticContext, "Get", _kernel, typeof(object), name);
+            return _resolutionExtensions.Get(_kernel, typeof (object), name);
         }
 
         /// <summary>
@@ -75,7 +81,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         public IEnumerable<T> GetMany<T>() where T : class
         {
             var name = InvokeMemberName.Create;
-            return Impromptu.InvokeMember(_staticContext, name("GetAll", new Type[] { typeof(T) }), _kernel);
+            return Impromptu.InvokeMember(_staticContext, name("GetAll", new[] { typeof(T) }), _kernel);
         }
 
         /// <summary>
@@ -85,7 +91,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         /// <returns></returns>
         public IEnumerable<dynamic> GetMany(string name)
         {
-            return Impromptu.InvokeMember(_staticContext, "GetAll", _kernel, typeof(object), name);
+            return _resolutionExtensions.GetAll(_kernel, typeof (object), name);
         }
 
         /// <summary>
@@ -95,7 +101,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         /// <returns></returns>
         public dynamic GetView(string name)
         {
-            return Impromptu.InvokeMember(_staticContext, "Get", _kernel, FindType(name + "View"));
+            return _resolutionExtensions.Get(_kernel, FindType(name + "View"));
         }
 
         /// <summary>
@@ -105,7 +111,7 @@ namespace ImpromptuInterface.MVVM.Ninject
         /// <returns></returns>
         public dynamic GetViewModel(string name)
         {
-            return Impromptu.InvokeMember(_staticContext, "Get", _kernel, FindType(name + "ViewModel"));
+            return _resolutionExtensions.Get(_kernel, FindType(name + "ViewModel"));
         }
 
         /// <summary>
@@ -116,14 +122,15 @@ namespace ImpromptuInterface.MVVM.Ninject
         public dynamic GetViewFor(dynamic viewModel)
         {
             Type type = viewModel.GetType();
-            return Impromptu.InvokeMember(_staticContext, "Get", _kernel, FindType(type.Name.Replace("Model", string.Empty)));
+            return _resolutionExtensions.Get(_kernel, FindType(type.Name.Replace("Model", string.Empty)));
         }
 
         private void LateBind()
         {
-            Type type = _kernel.GetType();
+            Type type = _kernelInterface;
             Type staticType = Type.GetType("Ninject.ResolutionExtensions, " + type.Assembly.FullName, true);
             _staticContext = InvokeContext.CreateStatic(staticType);
+            _resolutionExtensions = new ImpromptuLateLibraryType(staticType);
         }
 
         private void ReflectNamespaces(params Assembly[] assemblies)

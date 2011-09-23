@@ -138,7 +138,7 @@ namespace UnitTestImpromptuInterface
         public void Standard_Ninject_IContainer()
         {
             var kernel = new StandardKernel();
-            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel);
+            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel,typeof(IKernel));
             var runtime = Runtime.Initialize();
             runtime.SetupContainer(container);
             runtime.Start("Test");
@@ -157,7 +157,7 @@ namespace UnitTestImpromptuInterface
         public void Fluent_Ninject_IContainer()
         {
             var kernel = new StandardKernel();
-            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel);
+            var container = new ImpromptuInterface.MVVM.Ninject.Container(kernel, typeof(IKernel));
             Runtime.Initialize().SetupContainer(container).Start("Test");
         }
 

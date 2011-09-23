@@ -199,6 +199,7 @@ namespace UnitTestImpromptuInterface
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
+#if !SILVERLIGHT
         [Test]
         public void TestConstructorNoARgTimed()
         {
@@ -242,7 +243,7 @@ namespace UnitTestImpromptuInterface
             Assert.Ignore("I don't think this is beatable at the moment");
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
-
+#endif
 
         [Test]
         public void TestConstructorValueTypeTimed()
@@ -416,7 +417,7 @@ namespace UnitTestImpromptuInterface
             TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
-
+#if !SILVERLIGHT
         [Test]
         public void TestMethodPocoGetValuePassNullTimed()
         {
@@ -496,7 +497,7 @@ namespace UnitTestImpromptuInterface
             TestContext.WriteLine("Impromptu VS Reflection: {0:0.0} x faster", (double)tWatch2.Elapsed.Ticks / tWatch.Elapsed.Ticks);
             Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
-
+#endif
         [Test]
         public void TestCacheableMethodPocoGetValuePassNullDoubleCallTimed()
         {
@@ -640,18 +641,5 @@ namespace UnitTestImpromptuInterface
 
     }
 
-    public static class TimeIt
-    {
-        public static Stopwatch Go(Action action, int interation = 1000000)
-        {
-            var tStopwatch = new Stopwatch();
-            tStopwatch.Start();
-            for (int i = 0; i < interation; i++)
-            {
-                action();
-            }
-            tStopwatch.Stop();
-            return tStopwatch;
-        }
-    }
+   
 }

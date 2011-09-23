@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM.Unity
 {
@@ -11,15 +12,28 @@ namespace ImpromptuInterface.MVVM.Unity
     public class Container : IContainer
     {
         private readonly dynamic _container;
+        private readonly Type _containerInterface;
         private readonly Dictionary<Type, string> _viewLookup = new Dictionary<Type, string>();
+        private InvokeContext _staticContext;
+        private dynamic _unityContainerExtensions;
 
         /// <summary>
         /// Default ctor, requires an IUnityContainer
         /// </summary>
-        /// <param name="container"></param>
-        public Container(dynamic container)
+        /// <param name="container">The container.</param>
+        /// <param name="containerInterface">The container interface.</param>
+        public Container(dynamic container, Type containerInterface)
         {
             _container = container;
+            _containerInterface = containerInterface;
+            LateBind();
+        }
+
+        private void LateBind()
+        {
+            Type staticType = Type.GetType("Microsoft.Practices.Unity.UnityContainerExtensions, " + _containerInterface.Assembly.FullName, true);
+            _unityContainerExtensions = new ImpromptuLateLibraryType(staticType);
+            _staticContext = InvokeContext.CreateStatic(staticType);
         }
 
         /// <summary>
@@ -29,7 +43,7 @@ namespace ImpromptuInterface.MVVM.Unity
         /// <returns></returns>
         public T Get<T>() where T : class
         {
-            return _container.Resolve<T>();
+            return Impromptu.InvokeMember(_staticContext, new InvokeMemberName("Resolve", typeof (T)), _container);
         }
 
         /// <summary>
@@ -39,7 +53,7 @@ namespace ImpromptuInterface.MVVM.Unity
         /// <returns></returns>
         public dynamic Get(string name)
         {
-            return _container.Resolve<object>(name);
+            return Impromptu.InvokeMember(_staticContext, new InvokeMemberName("Resolve", typeof(object)), _container, name);
         }
 
         /// <summary>
@@ -49,7 +63,7 @@ namespace ImpromptuInterface.MVVM.Unity
         /// <returns></returns>
         public IEnumerable<T> GetMany<T>() where T : class
         {
-            return _container.ResolveAll<T>();
+            return Impromptu.InvokeMember(_staticContext, new InvokeMemberName("ResolveAll", typeof(T)), _container);
         }
 
         /// <summary>
@@ -109,8 +123,9 @@ namespace ImpromptuInterface.MVVM.Unity
         /// <returns></returns>
         public IContainer AddView(string name, Type viewType, Type viewModelType)
         {
-            _container.RegisterType(typeof(object), viewType, name + IoC.View);
-            _container.RegisterType(typeof(object), viewModelType, name + IoC.ViewModel);
+
+            _unityContainerExtensions.RegisterType(_container,typeof(object), viewType, name + IoC.View);
+            _unityContainerExtensions.RegisterType(_container,typeof(object), viewModelType, name + IoC.ViewModel);
             _viewLookup[viewModelType] = name;
             return this;
         }

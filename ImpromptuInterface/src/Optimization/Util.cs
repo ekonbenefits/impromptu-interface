@@ -145,6 +145,15 @@ namespace ImpromptuInterface.Optimization
 
                         if (tType.IsInterface)
                         {
+                            if (result is IDictionary<string, object> && !(result is ImpromptuDictionaryBase))
+                            {
+                                result = new ImpromptuDictionary((IDictionary<string, object>)result);
+                            }else
+                            {
+                                result = new ImpromptuGet(result);
+                            }
+
+
                             result = Impromptu.DynamicActLike(result, tType);
                         }
                         else

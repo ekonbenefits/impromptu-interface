@@ -14,6 +14,8 @@
     <TargetFrameworkProfile>
     </TargetFrameworkProfile>
     <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\impromptu-interface.stable\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -38,7 +40,7 @@
     <StartupObject />
   </PropertyGroup>
   <ItemGroup>
-    <Content Include="..\packages\NuGet.CommandLine.1.3.20425.372\tools\NuGet.exe">
+    <Content Include="..\.nuget\NuGet.exe">
       <Link>NuGet.exe</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -128,13 +130,14 @@ call "$(SolutionDir)tools\RunTemplate.bat" "$(ProjectDir)FSharp\ImpromptuInterfa
 </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols" 
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.nuspec" –OutputDirectory  "$(SolutionDir)\nuget" 
-call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.Symbol.nuspec" –OutputDirectory  "$(SolutionDir)\nuget\symbols"</PostBuildEvent>
+    <PostBuildEvent>call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.nuspec" -OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)Core\ImpromptuInterface.Symbol.nuspec" -OutputDirectory  "$(SolutionDir)\nuget\symbols" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.nuspec" -OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)MVVM\ImpromptuInterface.MVVM.Symbol.nuspec" -OutputDirectory  "$(SolutionDir)\nuget\symbols"
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.nuspec" -OutputDirectory  "$(SolutionDir)\nuget" 
+call "$(OutputDir)nuget.exe" pack "$(OutputDir)FSharp\ImpromptuInterface.FSharp.Symbol.nuspec" -OutputDirectory  "$(SolutionDir)\nuget\symbols"</PostBuildEvent>
   </PropertyGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

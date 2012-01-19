@@ -160,6 +160,23 @@ namespace UnitTestImpromptuInterface
         IDictionary<string,object> TestD { get; }
     }
 
+    public interface IDoubleInterface
+    {
+        int Test1 { get; }
+
+        long Test2 { get; }
+
+        IRecursiveInterface TestD { get; }
+    }
+
+    public interface IRecursiveInterface
+    {
+        string TestA { get; }
+
+        string TestB { get; }
+        int TestC { get; }
+    }
+
     public interface ISimpleStringProperty
     {
         int Length { get; }

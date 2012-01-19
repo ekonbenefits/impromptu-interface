@@ -300,6 +300,8 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("B", tNew.TestD.TestB);
         }
 
+
+
         [Test, TestMethod]
         public void InterfaceDictionaryWrappedTest()
         {
@@ -311,13 +313,16 @@ namespace UnitTestImpromptuInterface
                                       {"TestD",  new Dictionary<string,object>()
                                                      {
                                                          {"TestA","A"},
-                                                         {"TestB","B"}
+                                                         {"TestB","B"},
+                                                         {"TestC","1"}
                                                      }
                                       }
                                   };
 
             dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
             dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
+            dynamic tRecursiveDynamic = ImpromptuDictionary.Create<IDoubleInterface>(tDictionary);
+
 
             Assert.AreEqual(tDynamic, tNotDynamic);
 
@@ -325,6 +330,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(2L, tDynamic.Test2);
             Assert.AreEqual("A", tDynamic.TestD.TestA);
             Assert.AreEqual("B", tDynamic.TestD.TestB);
+            Assert.AreEqual("1", tDynamic.TestD.TestC);
 
             Assert.AreEqual(1, tNotDynamic.Test1);
             Assert.AreEqual(2L, tNotDynamic.Test2);
@@ -332,6 +338,10 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());
             Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
+
+            Assert.AreEqual("A", tRecursiveDynamic.TestD.TestA);
+            Assert.AreEqual("B", tRecursiveDynamic.TestD.TestB);
+            Assert.AreEqual(1, tRecursiveDynamic.TestD.TestC);
         }
 
         [Test, TestMethod]

@@ -22,3 +22,5 @@ glob:_UpgradeReport_Files/*
 glob:UpgradeLog.XML
 glob:nuget/symbols/*.nupkg
 glob:Thumbs.db
+syntax: glob
+packages/*

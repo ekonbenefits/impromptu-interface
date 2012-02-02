@@ -569,7 +569,7 @@ namespace ImpromptuInterface
                
                 if(ComObjectType !=null && ComObjectType.IsInstanceOfType(target))
                 {
-                    tList.AddRange(ComBinder.GetDynamicMemberNames(target));
+                    tList.AddRange(ComBinder.GetDynamicDataMemberNames(target));
                 }
             }
             return tList;

@@ -34,6 +34,24 @@ namespace ImpromptuInterface
     public static class Impromptu
     {
 
+
+        private static readonly Type ComObjectType;
+
+        private static readonly dynamic ComBinder;
+
+        static Impromptu()
+        {
+            try
+            {
+                ComObjectType = typeof(object).Assembly.GetType("System.__ComObject");
+                ComBinder = new Dynamic.ImpromptuLateLibraryType(
+                "System.Dynamic.ComBinder, System.Dynamic, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+            }
+            catch
+            {
+                
+            }
+        }
         /// <summary>
         /// Creates a cached call site at runtime.
         /// </summary>
@@ -546,6 +564,13 @@ namespace ImpromptuInterface
             if (tTarget !=null)
             {
                 tList.AddRange(tTarget.GetMetaObject(Expression.Constant(tTarget)).GetDynamicMemberNames());
+            }else
+            {
+               
+                if(ComObjectType !=null && ComObjectType.IsInstanceOfType(target))
+                {
+                    tList.AddRange(ComBinder.GetDynamicMemberNames(target));
+                }
             }
             return tList;
         } 

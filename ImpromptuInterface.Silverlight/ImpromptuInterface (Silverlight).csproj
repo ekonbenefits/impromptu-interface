@@ -85,6 +85,9 @@
     <Compile Include="..\ImpromptuInterface\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\ActLikeCaster.cs">
+      <Link>src\ActLikeCaster.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\Builder.cs">
       <Link>src\Dynamic\Builder.cs</Link>
     </Compile>

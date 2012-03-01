@@ -149,7 +149,24 @@ namespace UnitTestImpromptuInterface
             string result = curry("D");
             Assert.AreEqual("Test A, B, C, D", result);
         }
-              
+
+       [Test, TestMethod]
+        public void TestCurryNamedMethods()
+        {
+            Person adam = new Person();
+            dynamic jump = Impromptu.Curry(adam).Jump();
+
+           Assert.Throws<NotImplementedException>(() => jump(cheer: "yay", height: (uint)3));
+        }
+
+       private class Person
+       {
+           public void Jump(uint height, string cheer)
+           {
+              throw new NotImplementedException();
+           }
+       }
+
       
 
         [Test, TestMethod]

@@ -99,7 +99,7 @@ namespace UnitTestImpromptuInterface
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
-            ISimpeleClassProps tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
+            ISimpeleClassProps tActsLike = Impromptu.ActLike(tNew);
    
 
 
@@ -140,7 +140,7 @@ namespace UnitTestImpromptuInterface
             tNew.Prop3 = Guid.NewGuid();
             tNew.ReturnProp = new PropPoco();
 
-            IInheritProp tActsLike = Impromptu.ActLike<IInheritProp>(tNew, typeof(ISimpeleClassProps));
+            IInheritProp tActsLike = Impromptu.ActLike(tNew, typeof(ISimpeleClassProps));
 
 
 

@@ -192,6 +192,24 @@ namespace UnitTestImpromptuInterface
         {
             throw new AssertionException(message);
         }
+
+        public void Throws<T>(Func<object> func) where T:Exception
+        {
+            var tFail = true;
+            try
+            {
+                func();
+            }
+            catch (T e)
+            {
+                tFail = false;
+            }
+
+            if (tFail)
+            {
+                throw new AssertionException(String.Format("Expected {0} to be Thrown", typeof(T)));
+            }
+        }
     }
 
   

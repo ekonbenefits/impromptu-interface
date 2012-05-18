@@ -33,27 +33,27 @@ namespace UnitTestImpromptuInterface
 #endif
 {
 
-       
+
     [TestFixture]
-	public class Basic:Helper
-	{
+    public class Basic : Helper
+    {
 
 
 
-         [Test]
+        [Test]
         public void AnonPropertyTest()
         {
-            var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
+            var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
 
             var tActsLike = tAnon.ActLike<ISimpeleClassProps>();
 
-		   
-            Assert.AreEqual(tAnon.Prop1,tActsLike.Prop1);
+
+            Assert.AreEqual(tAnon.Prop1, tActsLike.Prop1);
             Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
             Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
         }
 
-  
+
 
 
 
@@ -66,15 +66,15 @@ namespace UnitTestImpromptuInterface
             var tActsLike = tAnon.ActLike<ISimpeleClassProps>();
             var tActsLike2 = tAnon2.ActLike<ISimpeleClassProps>();
 
-           Assert.AreEqual(tActsLike.GetType(), tActsLike2.GetType());
+            Assert.AreEqual(tActsLike.GetType(), tActsLike2.GetType());
 
-           Assert.AreEqual(tAnon.Prop1, tActsLike.Prop1);
-           Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
-           Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
+            Assert.AreEqual(tAnon.Prop1, tActsLike.Prop1);
+            Assert.AreEqual(tAnon.Prop2, tActsLike.Prop2);
+            Assert.AreEqual(tAnon.Prop3, tActsLike.Prop3);
 
-           Assert.AreEqual(tAnon2.Prop1, tActsLike2.Prop1);
-           Assert.AreEqual(tAnon2.Prop2, tActsLike2.Prop2);
-           Assert.AreEqual(tAnon2.Prop3, tActsLike2.Prop3);
+            Assert.AreEqual(tAnon2.Prop1, tActsLike2.Prop1);
+            Assert.AreEqual(tAnon2.Prop2, tActsLike2.Prop2);
+            Assert.AreEqual(tAnon2.Prop3, tActsLike2.Prop3);
 
         }
 
@@ -94,14 +94,14 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void ExpandoPropertyTest()
         {
-          
+
             dynamic tNew = new ExpandoObject();
             tNew.Prop1 = "Test";
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
             ISimpeleClassProps tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
-   
+
 
 
 
@@ -220,7 +220,7 @@ namespace UnitTestImpromptuInterface
         public void DictIndexTest()
         {
 
-			
+
             dynamic tNew = new ImpromptuDictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
@@ -237,8 +237,8 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void ArrayIndexTest()
         {
-			
-			
+
+
             var tNew = new[] { "Test1", "Test2" };
 
             var tActsLike = Impromptu.ActLike<IStringIntIndexer>(tNew);
@@ -254,11 +254,11 @@ namespace UnitTestImpromptuInterface
         {
 
             var tNew = new
-                               {
-                                   Action1 = new Action(Assert.Fail),
-                                   Action2 = new Action<bool>(Assert.IsFalse),
-                                   Action3 = new Func<string>(() => "test"),
-                               };
+            {
+                Action1 = new Action(Assert.Fail),
+                Action2 = new Action<bool>(Assert.IsFalse),
+                Action3 = new Func<string>(() => "test"),
+            };
 
             ISimpeleClassMeth tActsLike = tNew.ActLike<ISimpeleClassMeth>();
 
@@ -280,18 +280,18 @@ namespace UnitTestImpromptuInterface
             dynamic tNew = new ExpandoObject();
             tNew.Action1 = new Action(Assert.Fail);
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
-            tNew.Action3 = new Func<string>(()=> "test");
+            tNew.Action3 = new Func<string>(() => "test");
 
             ISimpeleClassMeth tActsLike = Impromptu.ActLike<ISimpeleClassMeth>(tNew);
 
-			
-		
+
+
             AssertException<AssertionException>(tActsLike.Action1);
             AssertException<AssertionException>(() => tActsLike.Action2(true));
-        
-            Assert.AreEqual("test",tActsLike.Action3());
-		
-          
+
+            Assert.AreEqual("test", tActsLike.Action3());
+
+
         }
         [Test]
         public void EventPocoPropertyTest()
@@ -300,10 +300,10 @@ namespace UnitTestImpromptuInterface
             var tActsLike = tPoco.ActLike<IEvent>();
             var tSet = false;
             tActsLike.Event += (obj, args) => tSet = true;
-           
-            tActsLike.OnEvent(null,null);
+
+            tActsLike.OnEvent(null, null);
             Assert.AreEqual(true, tSet);
-            
+
         }
 
 
@@ -354,7 +354,7 @@ namespace UnitTestImpromptuInterface
         {
             var tAnon = "Test 123";
             var tActsLike = tAnon.ActLike<ISimpleStringProperty>();
-   
+
 
             Assert.AreEqual(tAnon.Length, tActsLike.Length);
         }
@@ -364,9 +364,9 @@ namespace UnitTestImpromptuInterface
         {
             var tAnon = "Test 123";
             var tActsLike = tAnon.ActLike<ISimpleStringMethod>();
-      
 
-            Assert.AreEqual(tAnon.StartsWith("Te"),tActsLike.StartsWith("Te"));
+
+            Assert.AreEqual(tAnon.StartsWith("Te"), tActsLike.StartsWith("Te"));
         }
 
         [Test]
@@ -382,7 +382,7 @@ namespace UnitTestImpromptuInterface
         }
 
 
-   
+
         [Test]
         public void DynamicArgMethodTest2()
         {
@@ -390,12 +390,12 @@ namespace UnitTestImpromptuInterface
             dynamic tActsLike = Impromptu.ActLike<IDynamicArg>(tPoco);
 
 
-          
-            Assert.AreEqual(DynamicArgsHelper(tPoco,new[] { 1, 2, 3 }), tActsLike.Params(1, 2, 3));
+
+            Assert.AreEqual(DynamicArgsHelper(tPoco, new[] { 1, 2, 3 }), tActsLike.Params(1, 2, 3));
             Assert.AreEqual(tPoco.Params("test"), tActsLike.Params("test"));
         }
 
-        private bool DynamicArgsHelper(dynamic obj,params dynamic [] objects)
+        private bool DynamicArgsHelper(dynamic obj, params dynamic[] objects)
         {
             return obj.Params(objects);
         }
@@ -408,14 +408,14 @@ namespace UnitTestImpromptuInterface
             dynamic tNew = new ExpandoObject();
             tNew.Prop1 = "Test";
             tNew.Prop2 = 42L;
-            var tActsLike = Impromptu.ActLikeProperties(tNew,new Dictionary<string, Type>() {{"Prop1", typeof (string)}});
+            var tActsLike = Impromptu.ActLikeProperties(tNew, new Dictionary<string, Type>() { { "Prop1", typeof(string) } });
 
 
             Assert.AreEqual(tNew.Prop1, tActsLike.Prop1);
             AssertException<RuntimeBinderException>(() => { var tTest = tActsLike.Prop2; });
         }
 
-  
+
 
 
         [Test]
@@ -512,6 +512,6 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tOut);
             Assert.AreEqual(4, tResult2);
         }
-	}
+    }
 }
 

@@ -27,25 +27,25 @@ namespace UnitTestImpromptuInterface
             var tCurriedAdd4 = Impromptu.Curry(tAdd)(4);
             var tResult = tCurriedAdd4(6);
 
-       
+
             Assert.AreEqual(10, tResult);
-     
+
         }
 
-      
+
 
         [Test]
         public void TestBasicNamedCurry()
         {
             Func<int, int, int> tSub = (x, y) => x - y;
-            var tCurriedSub7 = Impromptu.Curry(tSub)(arg2:7);
-            var tResult = tCurriedSub7(arg1:10);
+            var tCurriedSub7 = Impromptu.Curry(tSub)(arg2: 7);
+            var tResult = tCurriedSub7(arg1: 10);
 
 
             Assert.AreEqual(3, tResult);
 
         }
-    
+
         [Test]
         public void TestBasicConvertDelegateCurry()
         {
@@ -73,7 +73,7 @@ namespace UnitTestImpromptuInterface
         {
             Func<string, string, bool> tContains = (x, y) => y.Contains(x);
             var tCurriedContains = Impromptu.Curry(tContains)("it");
-            TestDeclaredDelagate tCastToDel =  tCurriedContains;
+            TestDeclaredDelagate tCastToDel = tCurriedContains;
             var tResult = tCastToDel("bait");
             Assert.AreEqual(true, tResult);
         }
@@ -82,7 +82,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertNonGenericDelegateAction()
         {
             var tBool = false;
-            Action<string, string> tContains = (x, y) => tBool =y.Contains(x);
+            Action<string, string> tContains = (x, y) => tBool = y.Contains(x);
             var tCurriedContains = Impromptu.Curry(tContains)("it");
             TestRunDelagate tCastToDel = tCurriedContains;
             tCastToDel("bait");
@@ -104,7 +104,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertMoreCurryParamValueType()
         {
             Func<int, int, int, int> tAdd = (x, y, z) => x + y + z;
-            Func<int, Func<int,int>> Curry1 =Impromptu.Curry(tAdd)(4);
+            Func<int, Func<int, int>> Curry1 = Impromptu.Curry(tAdd)(4);
             Func<int, int> Curry2 = Curry1(6);
             int tResult = Curry2(10);
 
@@ -114,7 +114,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestBasicConvertMoreMoreCurryParamValueType()
         {
-            Func<int, int, int, int, int> tAdd = (x, y, z, bbq) => x + y + z +bbq;
+            Func<int, int, int, int, int> tAdd = (x, y, z, bbq) => x + y + z + bbq;
             Func<int, Func<int, Func<int, Func<int, int>>>> Curry0 = Impromptu.Curry(tAdd);
             var Curry1 = Curry0(4);
             var Curry2 = Curry1(5);
@@ -151,8 +151,8 @@ namespace UnitTestImpromptuInterface
             string result = curry("D");
             Assert.AreEqual("Test A, B, C, D", result);
         }
-              
-      
+
+
 
         [Test]
         public void TestStaticMethodCurry2()
@@ -174,7 +174,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestStaticMethodCurry3()
         {
-            var tFormat =Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
+            var tFormat = Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
 
 
             dynamic curriedWrite = Impromptu.Curry(Console.Out, 101).WriteLine(tFormat);
@@ -189,11 +189,11 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestDynamicMethodCurry()
         {
-            var tNewObj =Build.NewObject(Add: Return<int>.Arguments<int, int>((x, y) => x + y));
+            var tNewObj = Build.NewObject(Add: Return<int>.Arguments<int, int>((x, y) => x + y));
 
             var tCurry = Impromptu.Curry(tNewObj).Add(4);
             var tResult = tCurry(10);
-            Assert.AreEqual(14,tResult);
+            Assert.AreEqual(14, tResult);
             //Test cached invocation;
             var tResult2 = tCurry(30);
             Assert.AreEqual(34, tResult2);
@@ -203,10 +203,10 @@ namespace UnitTestImpromptuInterface
         public void UnboundedCurry()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject);
-            var tCurriedNewObject =tNewObject(One: 1);
+            var tCurriedNewObject = tNewObject(One: 1);
             var tResult = tCurriedNewObject(Two: 2);
-            Assert.AreEqual(1,tResult.One);
-            Assert.AreEqual(2,tResult.Two);
+            Assert.AreEqual(1, tResult.One);
+            Assert.AreEqual(2, tResult.Two);
 
         }
         [Test]
@@ -224,9 +224,9 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void BoundedCurryCont()
         {
-            var tNewObject = Impromptu.Curry(Build.NewObject,3);
+            var tNewObject = Impromptu.Curry(Build.NewObject, 3);
             tNewObject = tNewObject(One: 1);
-            tNewObject = tNewObject(Two: 2); 
+            tNewObject = tNewObject(Two: 2);
             var tResult = tNewObject(Three: 3);
             Assert.AreEqual(1, tResult.One);
             Assert.AreEqual(2, tResult.Two);
@@ -234,20 +234,38 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
+        public void TestCurryNamedMethods()
+        {
+            Person adam = new Person();
+            dynamic jump = Impromptu.Curry(adam).Jump();
+
+            Assert.Throws<NotImplementedException>(() => jump(cheer: "yay", height: (uint)3));
+        }
+
+        private class Person
+        {
+            public void Jump(uint height, string cheer)
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+
+        [Test]
         public void TestPococMethodPartialApply()
         {
             var tNewObj = new PocoAdder();
-            var tCurry = Impromptu.Curry(tNewObj).Add(4,6);
+            var tCurry = Impromptu.Curry(tNewObj).Add(4, 6);
             var tResult = tCurry();
             Assert.AreEqual(10, tResult);
         }
-        
+
         [Test]
         public void UnboundedPartialApply()
         {
             var tNewObject = Impromptu.Curry(Build.NewObject);
-            tNewObject = tNewObject(One: 1,Two:2);
-            var tResult = tNewObject(Three: 3, Four:4);
+            tNewObject = tNewObject(One: 1, Two: 2);
+            var tResult = tNewObject(Three: 3, Four: 4);
             Assert.AreEqual(1, tResult.One);
             Assert.AreEqual(2, tResult.Two);
             Assert.AreEqual(3, tResult.Three);

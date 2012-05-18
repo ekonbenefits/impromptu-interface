@@ -152,8 +152,6 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("Test A, B, C, D", result);
         }
 
-
-
         [Test]
         public void TestStaticMethodCurry2()
         {
@@ -167,9 +165,9 @@ namespace UnitTestImpromptuInterface
                 .Aggregate(curriedJoin, applyFunc);
 
             Console.WriteLine(final);
-
-
         }
+
+
 #if !SILVERLIGHT
         [Test]
         public void TestStaticMethodCurry3()

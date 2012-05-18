@@ -287,6 +287,7 @@ namespace ImpromptuInterface.Optimization
             argNames = new string[args.Length];
 
             var tArgSet = false;
+            var tNewArgs = new object[args.Length];
             for (int i = 0; i < args.Length; i++)
             {
                 var tArg = args[i];
@@ -296,16 +297,20 @@ namespace ImpromptuInterface.Optimization
                 {
                     tName = ((InvokeArg)tArg).Name;
 
-                    args[i] = ((InvokeArg)tArg).Value;
+                    tNewArgs[i] = ((InvokeArg)tArg).Value;
                     tArgSet = true;
+                }else
+                {
+                    tNewArgs[i] = tArg;
                 }
                 argNames[i] = tName;
             }
+
             // ReSharper restore ForCanBeConvertedToForeach
             // ReSharper restore LoopCanBeConvertedToQuery
             if (!tArgSet)
                 argNames = null;
-            return args;
+            return tNewArgs;
         }
     }
 }

@@ -29,12 +29,32 @@ namespace ImpromptuInterface
     using System;
 
 
+ 
+
     /// <summary>
     /// Main API
     /// </summary>
     public static class Impromptu
     {
 
+
+        private static readonly Type ComObjectType;
+
+        private static readonly dynamic ComBinder;
+
+        static Impromptu()
+        {
+            try
+            {
+                ComObjectType = typeof(object).Assembly.GetType("System.__ComObject");
+                ComBinder = new Dynamic.ImpromptuLateLibraryType(
+                "System.Dynamic.ComBinder, System.Dynamic, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+            }
+            catch
+            {
+                
+            }
+        }
         /// <summary>
         /// Creates a cached call site at runtime.
         /// </summary>
@@ -651,7 +671,7 @@ namespace ImpromptuInterface
         {
             var tParamCount = returnVoid ? paramCount : paramCount - 1;
             if (tParamCount > 16)
-                throw new ArgumentException(String.Format("{0} only handle at most {1} parameters", returnVoid ? "Action" : "Func", returnVoid ? 16 : 17), "paramCount");
+                throw new ArgumentException(String.Format("{0} only handle at  most {1} parameters", returnVoid ? "Action" : "Func", returnVoid ? 16 : 17), "paramCount");
             if(tParamCount < 0)
                 throw new ArgumentException(String.Format("{0} must have at least {1} parameter(s)", returnVoid ? "Action" : "Func", returnVoid ? 0 : 1), "paramCount");
 
@@ -679,6 +699,13 @@ namespace ImpromptuInterface
             if (tTarget !=null)
             {
                 tList.AddRange(tTarget.GetMetaObject(Expression.Constant(tTarget)).GetDynamicMemberNames());
+            }else
+            {
+               
+                if(ComObjectType !=null && ComObjectType.IsInstanceOfType(target))
+                {
+                    tList.AddRange(ComBinder.GetDynamicDataMemberNames(target));
+                }
             }
             return tList;
         } 
@@ -755,6 +782,18 @@ namespace ImpromptuInterface
                 InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
 
+
+
+        /// <summary>
+        /// Extension Method that Wraps an existing object with an Interface of what it is implicitly assigned to.
+        /// </summary>
+        /// <param name="originalDynamic">The original dynamic.</param>
+        /// <param name="otherInterfaces">The other interfaces.</param>
+        /// <returns></returns>
+        public static dynamic ActLike(this object originalDynamic, params Type[] otherInterfaces)
+        {
+            return new ActLikeCaster(originalDynamic, otherInterfaces);
+        }
 
 
         /// <summary>

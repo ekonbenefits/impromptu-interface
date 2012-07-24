@@ -153,6 +153,37 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
+        public void NestedInterfacetest()
+        {
+            dynamic tNew = new ExpandoObject();
+            tNew.NameLevel1 = "one";
+            tNew.Nested = new ExpandoObject();
+            tNew.Nested.NameLevel2 = "two";
+
+            INest tActsLike = Impromptu.ActLike<INest>(tNew);
+
+            Assert.AreEqual(tNew.NameLevel1, tActsLike.NameLevel1);
+            Assert.AreEqual(tNew.Nested.NameLevel2, tActsLike.Nested.NameLevel2);
+
+        }
+
+        [Test]
+        public void NestedInterfaceMethodtest()
+        {
+            dynamic tNew = new ExpandoObject();
+            dynamic tNew2 = new ExpandoObject();
+            tNew.NameLevel1 = "one";
+            tNew.Nested = new Func<object, object, object>((x, y) => tNew2);
+            tNew.Nested(1, 2).NameLevel2 = "two";
+
+            INestMeth tActsLike = Impromptu.ActLike<INestMeth>(tNew);
+
+            Assert.AreEqual(tNew.NameLevel1, tActsLike.NameLevel1);
+            Assert.AreEqual(tNew.Nested(1,2).NameLevel2, tActsLike.Nested(1,2).NameLevel2);
+
+        }
+
+        [Test]
         public void DoublePropertyTest()
         {
 

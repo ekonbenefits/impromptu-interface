@@ -60,6 +60,31 @@ namespace ImpromptuInterface.Build
             }
         }
 
+        public class BranchFalseOverBlock : IDisposable
+        {
+            private readonly ILGenerator _generator;
+            private readonly Label _label;
+
+            ///<summary>
+            /// Constructor
+            ///</summary>
+            ///<param name="generator"></param>
+            public BranchFalseOverBlock(ILGenerator generator)
+            {
+                _generator = generator;
+                _label = generator.DefineLabel();
+                _generator.Emit(OpCodes.Brfalse, _label);
+            }
+
+            /// <summary>
+            /// Finishes block
+            /// </summary>
+            public void Dispose()
+            {
+                //_generator.Emit(OpCodes.Br_S, _label);
+                _generator.MarkLabel(_label);
+            }
+        }
         /// <summary>
         /// Gets the field info even if generic type parameter.
         /// </summary>
@@ -152,6 +177,12 @@ namespace ImpromptuInterface.Build
         {
             condition(generator);
             return new BranchTrueOverBlock(generator);
+        }
+
+        public static BranchFalseOverBlock EmitBranchFalse(this ILGenerator generator, Action<ILGenerator> condition)
+        {
+            condition(generator);
+            return new BranchFalseOverBlock(generator);
         }
 
         /// <summary>

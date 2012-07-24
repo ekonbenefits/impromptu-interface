@@ -47,6 +47,15 @@ namespace ImpromptuInterface.Build
         private static readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
         private static readonly object DelegateCacheLock = new object();
 
+        private static readonly MethodInfo ActLike = typeof(BuildProxy).GetMethod("SimpleActLike",
+                                                                                  new[] {typeof(object)});
+
+        public static TInterface SimpleActLike<TInterface>(object target) where TInterface:class 
+        {
+            return target.ActLike<TInterface>();
+        }
+
+
 #if !SILVERLIGHT
         internal class TempBuilder : IDisposable
         {
@@ -701,7 +710,7 @@ namespace ImpromptuInterface.Build
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
 
-            if (emitInfo.ResolveReturnType != typeof(void))
+            if (emitInfo.ResolveReturnType != typeof(void) && !emitInfo.ResolveReturnType.IsInterface)
             {
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
                 tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteConvertFuncType).GetFieldEvenIfGeneric("Target"));
@@ -719,10 +728,34 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitLoadArgument(i);
             }
             tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeFuncType);
-            if (emitInfo.ResolveReturnType != typeof(void))
+            if (emitInfo.ResolveReturnType != typeof(void) && !emitInfo.ResolveReturnType.IsInterface)
             {
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }
+
+            //If return type is interface and instance is not interface, try actlike
+            if (emitInfo.ResolveReturnType.IsInterface)
+            {
+                var tReturnLocal = tIlGen.DeclareLocal(typeof(object));
+                tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
+                using (tIlGen.EmitBranchFalse(gen => gen.EmitLoadLocation(tReturnLocal.LocalIndex)))
+                {
+                    tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                    using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
+                    {
+                        tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                        tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
+                        tIlGen.Emit(OpCodes.Ret);
+                    }
+                }
+
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
+                tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteConvertFuncType).GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
+                tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
+            }
+
 
             tIlGen.Emit(OpCodes.Ret);
         }
@@ -1282,7 +1315,10 @@ namespace ImpromptuInterface.Build
             var tIlGen = getMethodBuilder.GetILGenerator();
 
             var tConvertCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
-            var tReturnLocal = tIlGen.DeclareLocal(emitInfo.ResolveReturnType);
+
+            //If we want to do recursive Interfaces we need to test the interface before we dynamically cast
+            var tReturnLocal = tIlGen.DeclareLocal(emitInfo.ResolveReturnType.IsInterface? typeof(object) : emitInfo.ResolveReturnType);
+        
             
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tConvertCallsiteField)))
             {
@@ -1301,9 +1337,13 @@ namespace ImpromptuInterface.Build
             }
 
 
-            tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
-            tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
-            tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+            //If it's an interface we do this later.
+            if (!emitInfo.ResolveReturnType.IsInterface)
+            {
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+            }
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
             tIlGen.Emit(OpCodes.Ldfld, tInvokeGetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
@@ -1314,12 +1354,46 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitLoadArgument(i);
             }
             tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeGetFuncType);
-            tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
+            
+            //If it's an interface we do this later.
+            if (!emitInfo.ResolveReturnType.IsInterface)
+            {
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
+            }
+
             tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
+
+
+            //If return type is interface and instance is not interface, try actlike
+            if (emitInfo.ResolveReturnType.IsInterface)
+            {
+                using (tIlGen.EmitBranchFalse(gen => gen.EmitLoadLocation(tReturnLocal.LocalIndex)))
+                {
+                    tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                    using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
+                    {
+                        tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                        tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
+                        tIlGen.Emit(OpCodes.Ret);
+                    }
+                }
+            }
+
             var tReturnLabel =tIlGen.DefineLabel();
             tIlGen.Emit(OpCodes.Br_S, tReturnLabel);
             tIlGen.MarkLabel(tReturnLabel);
+            if (emitInfo.ResolveReturnType.IsInterface)
+            {
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+            }
             tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+            if (emitInfo.ResolveReturnType.IsInterface)
+            {
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
+            }
+
             tIlGen.Emit(OpCodes.Ret);
             tMp.SetGetMethod(getMethodBuilder);
 

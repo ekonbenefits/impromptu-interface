@@ -402,7 +402,13 @@ namespace UnitTestImpromptuInterface
 		String NameLevel1 {get;set;}
 		INested Nested {get;set;}
 	}
-	
+
+    public interface INestMeth
+    {
+        String NameLevel1 { get; set; }
+        INested Nested(object one, object two);
+    }
+
     public interface INested
     {
 		string NameLevel2 {get;}

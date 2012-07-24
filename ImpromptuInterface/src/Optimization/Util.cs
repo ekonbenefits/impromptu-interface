@@ -120,6 +120,7 @@ namespace ImpromptuInterface.Optimization
             return context;
         }
 
+   
         internal static bool MassageResultBasedOnInterface(this ImpromptuObject target, string binderName, bool resultFound, ref object result)
         {
             if (result is ImpromptuForwarderAddRemove) //Don't massage AddRemove Proxies
@@ -138,104 +139,10 @@ namespace ImpromptuInterface.Optimization
                 {
                     result = new ImpromptuDictionary((IDictionary<string, object>)result);
                 }
-                else if (tTryType)
-                {
-                    if (result != null && !tType.IsAssignableFrom(result.GetType()))
-                    {
-
-                        if (tType.IsInterface)
-                        {
-                            if (result is IDictionary<string, object> && !(result is ImpromptuDictionaryBase))
-                            {
-                                result = new ImpromptuDictionary((IDictionary<string, object>)result);
-                            }else
-                            {
-                                result = new ImpromptuGet(result);
-                            }
-
-
-                            result = Impromptu.DynamicActLike(result, tType);
-                        }
-                        else
-                        {
-                          
-                            try
-                            {
-                                object tResult;
-
-                                tResult = Impromptu.InvokeConvert(target, tType, @explicit: true);
-
-                                result = tResult;
-                            }catch(RuntimeBinderException)
-                            {
-                                Type tReducedType = tType;
-                                if (tType.IsGenericType && tType.GetGenericTypeDefinition().Equals(typeof (Nullable<>)))
-                                {
-                                    tReducedType = tType.GetGenericArguments().First();
-                                }
-
-
-                                if (result is IConvertible && typeof(IConvertible).IsAssignableFrom(tReducedType))
-                                {
-
-                                    result = Convert.ChangeType(result, tReducedType, Thread.CurrentThread.CurrentCulture);
-
-                                }else
-                                {  //finally check type converter since it's the slowest.
-
-#if !SILVERLIGHT
-                                    var tConverter = TypeDescriptor.GetConverter(tType);
-#else
-                                    
-                                    TypeConverter tConverter = null;
-                                    var tAttributes = tType.GetCustomAttributes(typeof(TypeConverterAttribute), false);
-                                    var tAttribute  =tAttributes.OfType<TypeConverterAttribute>().FirstOrDefault();
-                                    if(tAttribute !=null)
-                                    {
-                                        tConverter =
-                                            Impromptu.InvokeConstructor(Type.GetType(tAttribute.ConverterTypeName));
-                                    }
-
-                                  
-#endif
-                                    if (tConverter !=null && tConverter.CanConvertFrom(result.GetType()))
-                                    {
-                                        result = tConverter.ConvertFrom(result);
-                                    } 
-                                    
- #if SILVERLIGHT                                   
-                                    else if (result is string)
-                                    {
-
-                                        var tDC = new SilverConvertertDC(result as String);
-                                        var tFE = new SilverConverterFE
-                                        {
-                                            DataContext = tDC
-                                        };
-
-
-                                        var tProp = SilverConverterFE.GetProperty(tType);
-
-                                        tFE.SetBinding(tProp, new System.Windows.Data.Binding("StringValue"));
-
-                                        var tResult = tFE.GetValue(tProp);
-
-                                        if(tResult != null)
-                                        {
-                                            result = tResult;
-                                        }
-                                    }
-
-#endif
-                                }
-                            }
-                        }
-                    }
-                    else if (result == null && tType.IsValueType)
-                    {
-                        result = Impromptu.InvokeConstructor(tType);
-                    }
-                }
+              else if (tTryType)
+              {
+                  result = Impromptu.CoerceConvert(result, tType);
+              }
             }
             else
             {

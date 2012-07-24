@@ -311,6 +311,8 @@ namespace UnitTestImpromptuInterface
                                   {
                                       {"Test1", 1},
                                       {"Test2", 2L},
+                                      {"Test3",1},
+                                      {"Test4","Two"},
                                       {"TestD",  new Dictionary<string,object>()
                                                      {
                                                          {"TestA","A"},
@@ -326,12 +328,16 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(1, tDynamic.Test1);
             Assert.AreEqual(2L, tDynamic.Test2);
+            Assert.AreEqual(TestEnum.One, tDynamic.Test3);
+            Assert.AreEqual(TestEnum.Two, tDynamic.Test4);
+
             Assert.AreEqual("A", tDynamic.TestD.TestA);
             Assert.AreEqual("B", tDynamic.TestD.TestB);
 
             Assert.AreEqual(1, tNotDynamic.Test1);
             Assert.AreEqual(2L, tNotDynamic.Test2);
-
+            Assert.AreEqual(TestEnum.One, tNotDynamic.Test3);
+            Assert.AreEqual(TestEnum.Two, tNotDynamic.Test4);
 
             Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());
             Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());

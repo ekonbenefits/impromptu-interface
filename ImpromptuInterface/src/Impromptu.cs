@@ -19,10 +19,13 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using ImpromptuInterface.Build;
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Internal;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
+using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface
 {
@@ -607,6 +610,109 @@ namespace ImpromptuInterface
             CallSite tCallSite =null;
             return InvokeHelper.InvokeConvertCallSite(target, @explicit, type, tContext, ref tCallSite);
 
+        }
+
+        public static dynamic CoerceConvert(object target, Type type)
+        {
+            if (target != null && !type.IsInstanceOfType(target))
+            {
+
+                if (type.IsInterface)
+                {
+                    if (target is IDictionary<string, object> && !(target is ImpromptuDictionaryBase))
+                    {
+                        target = new ImpromptuDictionary((IDictionary<string, object>)target);
+                    }
+                    else
+                    {
+                        target = new ImpromptuGet(target);
+                    }
+
+
+                    target = Impromptu.DynamicActLike(target, type);
+                }
+                else
+                {
+
+                    try
+                    {
+                        object tResult;
+
+                        tResult = Impromptu.InvokeConvert(target, type, @explicit: true);
+
+                        target = tResult;
+                    }
+                    catch (RuntimeBinderException)
+                    {
+                        Type tReducedType = type;
+                        if (type.IsGenericType && type.GetGenericTypeDefinition().Equals(typeof(Nullable<>)))
+                        {
+                            tReducedType = type.GetGenericArguments().First();
+                        }
+
+
+                        if (target is IConvertible && typeof(IConvertible).IsAssignableFrom(tReducedType) && !typeof(Enum).IsAssignableFrom(tReducedType))
+                        {
+
+                            target = Convert.ChangeType(target, tReducedType, Thread.CurrentThread.CurrentCulture);
+
+                        }
+                        else
+                        {  //finally check type converter since it's the slowest.
+
+#if !SILVERLIGHT
+                            var tConverter = TypeDescriptor.GetConverter(tReducedType);
+#else
+                                    
+                                    TypeConverter tConverter = null;
+                                    var tAttributes = tReducedType.GetCustomAttributes(typeof(TypeConverterAttribute), false);
+                                    var tAttribute  =tAttributes.OfType<TypeConverterAttribute>().FirstOrDefault();
+                                    if(tAttribute !=null)
+                                    {
+                                        tConverter =
+                                            Impromptu.InvokeConstructor(Type.GetType(tAttribute.ConverterTypeName));
+                                    }
+
+                                  
+#endif
+                            if (tConverter != null && tConverter.CanConvertFrom(target.GetType()))
+                            {
+                                target = tConverter.ConvertFrom(target);
+                            }
+
+#if SILVERLIGHT                                   
+                                    else if (target is string)
+                                    {
+
+                                        var tDC = new SilverConvertertDC(target as String);
+                                        var tFE = new SilverConverterFE
+                                        {
+                                            DataContext = tDC
+                                        };
+
+
+                                        var tProp = SilverConverterFE.GetProperty(tReducedType);
+
+                                        tFE.SetBinding(tProp, new System.Windows.Data.Binding("StringValue"));
+
+                                        var tResult = tFE.GetValue(tProp);
+
+                                        if(tResult != null)
+                                        {
+                                            target = tResult;
+                                        }
+                                    }
+
+#endif
+                        }
+                    }
+                }
+            }
+            else if (target == null && type.IsValueType)
+            {
+                target = Impromptu.InvokeConstructor(type);
+            }
+            return target;
         }
 
         /// <summary>

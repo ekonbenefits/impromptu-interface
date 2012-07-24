@@ -156,11 +156,22 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+    public enum TestEnum
+    {
+       None,
+       One,
+       Two
+    }
+
     public interface IDynamicDict
     {
         int Test1 { get; }
 
         long Test2 { get; }
+
+        TestEnum Test3 { get; }
+
+        TestEnum Test4 { get; }
 
         dynamic TestD { get; }
     }
@@ -170,6 +181,10 @@ namespace UnitTestImpromptuInterface
         int Test1 { get; }
 
         long Test2 { get; }
+
+        TestEnum Test3 { get; }  
+        
+        TestEnum Test4 { get; }
 
         IDictionary<string,object> TestD { get; }
     }

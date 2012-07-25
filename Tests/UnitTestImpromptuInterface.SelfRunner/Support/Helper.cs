@@ -193,7 +193,7 @@ namespace UnitTestImpromptuInterface
             throw new AssertionException(message);
         }
 
-        public void Throws<T>(Func<object> func) where T:Exception
+        public void Throws<T>(Action func) where T:Exception
         {
             var tFail = true;
             try

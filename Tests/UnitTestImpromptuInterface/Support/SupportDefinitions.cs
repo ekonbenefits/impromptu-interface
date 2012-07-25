@@ -396,7 +396,24 @@ namespace UnitTestImpromptuInterface
 
          INested Nester2([UseNamedArgument]string NameLevel2);	
 	}
-	
+
+    [NonRecursiveInterface]
+    public interface INonNest
+    {
+        String NameLevel1 { get; set; }
+        INested Nested { get; set; }
+        INested Nested2();
+    }
+
+    public interface INonPartialNest
+    {
+        String NameLevel1 { get; set; }
+        INested Nested { get; set; }
+
+        [NonRecursiveInterface]
+        INested Nested2();
+    }
+
 	public interface INest
     {
 		String NameLevel1 {get;set;}

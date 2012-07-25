@@ -168,6 +168,48 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
+        public void NonNestedInterfaceTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            dynamic tNew2 = new ExpandoObject();
+            tNew.NameLevel1 = "one";
+            tNew.Nested = new ExpandoObject();
+            tNew.Nested2 = new Func<object>(() => tNew2);
+
+            INonNest tActsLike = Impromptu.ActLike(tNew);
+
+            Assert.AreEqual(tNew.NameLevel1, tActsLike.NameLevel1);
+            Assert.Throws<RuntimeBinderException>(() => { var tval= tActsLike.Nested; });
+            Assert.Throws<RuntimeBinderException>(() =>
+                                                      {
+                                                          var tval = tActsLike.Nested2();
+                                                          ;
+                                                      });
+        }
+
+        [Test]
+        public void PartialNonNestedInterfaceTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            dynamic tNew2 = new ExpandoObject();
+            tNew.NameLevel1 = "one";
+     
+            tNew.Nested = new ExpandoObject();
+            tNew.Nested2 = new Func<object>(() => tNew2);
+            tNew.Nested.NameLevel2 = "two";
+
+            INonPartialNest tActsLike = Impromptu.ActLike(tNew);
+
+            Assert.AreEqual(tNew.NameLevel1, tActsLike.NameLevel1);
+            Assert.Throws<RuntimeBinderException>(() =>
+            {
+                var tVal2 = tActsLike.Nested2();
+                ;
+            });
+            Assert.AreEqual(tNew.Nested.NameLevel2, tActsLike.Nested.NameLevel2);
+        }
+
+        [Test]
         public void NestedInterfaceMethodtest()
         {
             dynamic tNew = new ExpandoObject();

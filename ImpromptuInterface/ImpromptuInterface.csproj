@@ -134,6 +134,7 @@
       <DependentUpon>InlineLambdas.tt</DependentUpon>
     </Compile>
     <Compile Include="src\Dynamic\Invocation.cs" />
+    <Compile Include="src\Dynamic\NonRecursiveInterfaceAttribute.cs" />
     <Compile Include="src\Dynamic\ThisFunctions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

@@ -5,20 +5,18 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.50727</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{56215C8D-85AE-4FCB-BD33-89E6ABBA407B}</ProjectGuid>
+    <ProjectGuid>{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}</ProjectGuid>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ImpromptuInterface.MVVM</RootNamespace>
     <AssemblyName>ImpromptuInterface.MVVM</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\impromptu-interface.stable\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <!-- This property group is only here to support building this project using the 
        MSBuild 3.5 toolset. In order to work correctly with this older toolset, it needs 
@@ -41,7 +39,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>Bin\Release</OutputPath>
-    <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;SILVERLIGHT SILVERLIGHT5</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -55,11 +53,9 @@
     <AssemblyOriginatorKeyFile>sn.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
+    <Reference Include="Microsoft.CSharp, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="mscorlib" />
-    <Reference Include="System.ComponentModel.Composition, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.ComponentModel.Composition, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Windows" />
     <Reference Include="system" />
     <Reference Include="System.Core" />
@@ -68,47 +64,50 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\ImpromptuInterface.MVVM.Silverlight\src\Support.cs">
+      <Link>src\Support.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\DialogBox.cs">
-      <Link>src\DialogBox.cs</Link>
+      <Link>DialogBox.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Event.cs">
-      <Link>src\Event.cs</Link>
+      <Link>Event.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\FireOnChange.cs">
-      <Link>src\FireOnChange.cs</Link>
+      <Link>FireOnChange.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\IContainer.cs">
-      <Link>src\IContainer.cs</Link>
+      <Link>IContainer.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuBindingList.cs">
-      <Link>src\ImpromptuBindingList.cs</Link>
+      <Link>ImpromptuBindingList.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuCommandBinder.cs">
-      <Link>src\ImpromptuCommandBinder.cs</Link>
+      <Link>ImpromptuCommandBinder.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuRelayCommand.cs">
-      <Link>src\ImpromptuRelayCommand.cs</Link>
+      <Link>ImpromptuRelayCommand.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuToString.cs">
-      <Link>src\ImpromptuToString.cs</Link>
+      <Link>ImpromptuToString.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuViewModel-Nested.cs">
-      <Link>src\ImpromptuViewModel-Nested.cs</Link>
+      <Link>ImpromptuViewModel-Nested.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuViewModel.cs">
-      <Link>src\ImpromptuViewModel.cs</Link>
+      <Link>ImpromptuViewModel.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ImpromptuWindowBuilder.cs">
-      <Link>src\ImpromptuWindowBuilder.cs</Link>
+      <Link>ImpromptuWindowBuilder.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\IoC.cs">
-      <Link>src\IoC.cs</Link>
+      <Link>IoC.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\ISetupViewModel.cs">
-      <Link>src\ISetupViewModel.cs</Link>
+      <Link>ISetupViewModel.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\MEF\Container.cs">
       <Link>src\MEF\Container.cs</Link>
@@ -126,25 +125,24 @@
       <Link>src\Ninject\Extensions.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Runtime.cs">
-      <Link>src\Runtime.cs</Link>
+      <Link>Runtime.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\TinyIoC\Container.cs">
-      <Link>src\TinyIoC\Container.cs</Link>
+      <Link>src\TinyIoc\Container.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface.MVVM\src\Unity\Container.cs">
       <Link>src\Unity\Container.cs</Link>
     </Compile>
-    <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\NuGetBuild\MVVM\ImpromptuInterface.MVVM.MetaData.xml">
-      <Link>Properties\ImpromptuInterface.MVVM.MetaData.xml</Link>
+      <Link>ImpromptuInterface.MVVM.MetaData.xml</Link>
     </Content>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
-      <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
-      <Name>ImpromptuInterface %28Silverlight%29</Name>
+    <ProjectReference Include="..\ImpromptuInterface.Silverlight5\ImpromptuInterface %28Silverlight5%29.csproj">
+      <Project>{EC1B3513-CB1E-4796-899F-125FC05B2F41}</Project>
+      <Name>ImpromptuInterface %28Silverlight5%29</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -158,11 +156,6 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
-  </PropertyGroup>
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

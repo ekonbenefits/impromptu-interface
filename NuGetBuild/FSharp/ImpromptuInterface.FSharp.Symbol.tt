@@ -7,10 +7,14 @@
     <file src="..\..\..\..\docs\Readme.FSharp.txt" />
     <file src="..\..\..\..\ImpromptuInterface.FSharp\bin\Release\ImpromptuInterface.FSharp.xml" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.FSharp\bin\Release\ImpromptuInterface.FSharp.dll" target="lib\net40" />
+    <file src="..\..\..\..\ImpromptuInterface.FSharp.Silverlight\bin\Release\ImpromptuInterface.FSharp.xml" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.FSharp.Silverlight\bin\Release\ImpromptuInterface.FSharp.dll" target="lib\SL40" />
     
 	  <file src="..\..\..\..\ImpromptuInterface.FSharp\bin\Release\ImpromptuInterface.FSharp.pdb" target="lib\net40" />
-
-    <file src="..\..\..\..\ImpromptuInterface.FSharp\*.fs" target="src" />
+    <file src="..\..\..\..\ImpromptuInterface.FSharp.Silverlight\bin\Release\ImpromptuInterface.FSharp.pdb" target="lib\SL40" />
+    
+    <file src="..\..\..\..\ImpromptuInterface.FSharp\*.fs" target="src" />  
+    <file src="..\..\..\..\ImpromptuInterface.FSharp.Silverlight\*.fs" target="src" />
   </files>
 </package>
 

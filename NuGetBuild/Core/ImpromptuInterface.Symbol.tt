@@ -9,13 +9,17 @@
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\bin\Release\Impromptu*.xml" target="lib\SL50" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\bin\Release\Impromptu*.dll" target="lib\SL50" />
     
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.pdb" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.pdb" target="lib\SL40" />
-
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\bin\Release\Impromptu*.pdb" target="lib\SL50" />
 	
 	<file src="..\..\..\..\ImpromptuInterface\src\**\*" target="src\src" />
 
 	<file src="..\..\..\..\ImpromptuInterface.Silverlight\src\**\*" target="src\src" />
+
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\src\**\*" target="src\src" />
   </files>
 </package>

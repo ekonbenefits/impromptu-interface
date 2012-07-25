@@ -2,7 +2,7 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface.MVVM</id>
-  <version>3.8.0</version>
+  <version>4.0.0</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.</description>
@@ -15,7 +15,7 @@
     <frameworkAssembly assemblyName="Microsoft.CSharp" />
   </frameworkAssemblies>
   <dependencies>
-    <dependency id="ImpromptuInterface" version="5.8.0" />
+    <dependency id="ImpromptuInterface" version="6.0.0" />
   </dependencies>
 </metadata>
   <files>
@@ -25,12 +25,16 @@
     <file src="..\..\..\..\ImpromptuInterface.MVVM\bin\Release\ImpromptuInterface.MVVM.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\bin\Release\ImpromptuInterface.MVVM.xml" target="lib\SL40" />
     <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\bin\Release\ImpromptuInterface.MVVM.dll" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight5\bin\Release\ImpromptuInterface.MVVM.xml" target="lib\SL50" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight5\bin\Release\ImpromptuInterface.MVVM.dll" target="lib\SL50" />
     
 	<file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\bin\Release\ImpromptuInterface.MVVM.pdb" target="lib\SL40" />
 	<file src="..\..\..\..\ImpromptuInterface.MVVM\bin\Release\ImpromptuInterface.MVVM.pdb" target="lib\net40" />
-
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight5\bin\Release\ImpromptuInterface.MVVM.pdb" target="lib\SL50" />
+    
     <file src="..\..\..\..\ImpromptuInterface.MVVM\src\**\*" target="src\src" />
 	<file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight\src\**\*" target="src\src" />
+    <file src="..\..\..\..\ImpromptuInterface.MVVM.Silverlight5\src\**\*" target="src\src" />
   </files>
 </package>
 

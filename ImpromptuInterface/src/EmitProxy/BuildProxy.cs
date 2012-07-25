@@ -16,6 +16,7 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build
@@ -352,13 +353,21 @@ namespace ImpromptuInterface.Build
                 }
 #endif
 
+
+                var tNonRecursive = tInterface.GetCustomAttributes(typeof(NonRecursiveInterfaceAttribute), true).Any();
+
                 foreach (var tInfo in tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
-                    MakeProperty(builder, tInfo, tB, contextType, defaultImp: tPropertyNameHash.Add(tInfo.Name));
+                     var tNonRecursiveProp = tNonRecursive ||
+                                    tInfo.GetCustomAttributes(typeof (NonRecursiveInterfaceAttribute), true).Any();
+
+                     MakeProperty(builder, tInfo, tB, contextType, nonRecursive: tNonRecursiveProp, defaultImp: tPropertyNameHash.Add(tInfo.Name));
                 }
                 foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
                 {
-                    MakeMethod(builder, tInfo, tB, contextType, defaultImp: tMethodHashSet.Add(new MethodSigHash(tInfo)));
+                    var tNonRecursiveMeth = tNonRecursive ||
+                            tInfo.GetCustomAttributes(typeof(NonRecursiveInterfaceAttribute), true).Any();
+                    MakeMethod(builder, tInfo, tB, contextType, nonRecursive: tNonRecursiveMeth, defaultImp: tMethodHashSet.Add(new MethodSigHash(tInfo)));
                 }
                 foreach (var tInfo in tInterface.GetEvents(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
                 {
@@ -489,10 +498,10 @@ namespace ImpromptuInterface.Build
         }
 #endif
 
-        private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
+        private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool nonRecursive= false, bool defaultImp =true)
         {
 
-            var tEmitInfo = new MethodEmitInfo {Name = info.Name, DefaultInterfaceImplementation = defaultImp};
+            var tEmitInfo = new MethodEmitInfo {Name = info.Name, DefaultInterfaceImplementation = defaultImp, NonRecursive = nonRecursive};
 
          
 
@@ -710,7 +719,10 @@ namespace ImpromptuInterface.Build
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
 
-            if (emitInfo.ResolveReturnType != typeof(void) && !emitInfo.ResolveReturnType.IsInterface)
+            //If it's an interface and not nonrecursive this will be true
+            var tRecurse = emitInfo.ResolveReturnType.IsInterface && !emitInfo.NonRecursive;
+
+            if (emitInfo.ResolveReturnType != typeof(void) && !tRecurse)
             {
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertField);
                 tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteConvertFuncType).GetFieldEvenIfGeneric("Target"));
@@ -728,13 +740,13 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitLoadArgument(i);
             }
             tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeFuncType);
-            if (emitInfo.ResolveReturnType != typeof(void) && !emitInfo.ResolveReturnType.IsInterface)
+            if (emitInfo.ResolveReturnType != typeof(void) && !tRecurse)
             {
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }
 
-            //If return type is interface and instance is not interface, try actlike
-            if (emitInfo.ResolveReturnType.IsInterface)
+            //If we are recursing, try actlike
+            if (tRecurse)
             {
                 var tReturnLocal = tIlGen.DeclareLocal(typeof(object));
                 tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
@@ -761,7 +773,7 @@ namespace ImpromptuInterface.Build
         }
 
 
-        private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType, bool defaultImp =true)
+        private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType, bool nonRecursive=false, bool defaultImp =true)
         {
 
             var tGetMethod = info.GetGetMethod();
@@ -772,7 +784,9 @@ namespace ImpromptuInterface.Build
                 ResolveReturnType = tGetMethod.ReturnType,
                 GetName = tGetMethod.Name,
                 ContextType =  contextType,
-                DefaultInterfaceImplementation = defaultImp};
+                DefaultInterfaceImplementation = defaultImp,
+                NonRecursive = nonRecursive
+            };
 
 
 
@@ -1273,7 +1287,7 @@ namespace ImpromptuInterface.Build
             {
                 get { return _callSiteName.Value; }
             }
-
+            public bool NonRecursive { get; set; }
             public bool DefaultInterfaceImplementation { get; set; }
             public IEnumerable<string> ArgNames { get; set; }
             public Type[] ResolvedParamTypes { get; set; }
@@ -1290,8 +1304,8 @@ namespace ImpromptuInterface.Build
                 CallSiteInvokeName = "Invoke_Method";
                 CallSiteConvertName = "Convert_Method";
             }
-          
 
+      
 
             public string CallSiteInvokeName { get; protected set; }
             public string CallSiteConvertName { get; protected set; }
@@ -1316,8 +1330,11 @@ namespace ImpromptuInterface.Build
 
             var tConvertCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
 
+            //If it's an interface and not nonrecursive this will be true
+            var tRecurse = emitInfo.ResolveReturnType.IsInterface && !emitInfo.NonRecursive;
+
             //If we want to do recursive Interfaces we need to test the interface before we dynamically cast
-            var tReturnLocal = tIlGen.DeclareLocal(emitInfo.ResolveReturnType.IsInterface? typeof(object) : emitInfo.ResolveReturnType);
+            var tReturnLocal = tIlGen.DeclareLocal(tRecurse ? typeof(object) : emitInfo.ResolveReturnType);
         
             
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tConvertCallsiteField)))
@@ -1337,8 +1354,9 @@ namespace ImpromptuInterface.Build
             }
 
 
-            //If it's an interface we do this later.
-            if (!emitInfo.ResolveReturnType.IsInterface)
+    
+
+            if (!tRecurse)
             {
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
                 tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
@@ -1355,8 +1373,8 @@ namespace ImpromptuInterface.Build
             }
             tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeGetFuncType);
             
-            //If it's an interface we do this later.
-            if (!emitInfo.ResolveReturnType.IsInterface)
+            //If we are are recursing than do it later
+            if (!tRecurse)
             {
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }
@@ -1365,7 +1383,7 @@ namespace ImpromptuInterface.Build
 
 
             //If return type is interface and instance is not interface, try actlike
-            if (emitInfo.ResolveReturnType.IsInterface)
+            if (tRecurse)
             {
                 using (tIlGen.EmitBranchFalse(gen => gen.EmitLoadLocation(tReturnLocal.LocalIndex)))
                 {
@@ -1382,14 +1400,14 @@ namespace ImpromptuInterface.Build
             var tReturnLabel =tIlGen.DefineLabel();
             tIlGen.Emit(OpCodes.Br_S, tReturnLabel);
             tIlGen.MarkLabel(tReturnLabel);
-            if (emitInfo.ResolveReturnType.IsInterface)
+            if (tRecurse)
             {
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
                 tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
                 tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
             }
             tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-            if (emitInfo.ResolveReturnType.IsInterface)
+            if (tRecurse)
             {
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }

@@ -21,10 +21,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.MVVM (Si
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NuGetBuild", "NuGetBuild\NuGetBuild.csproj", "{114BB5F5-AA44-4932-99E1-328A11F6C497}"
 	ProjectSection(ProjectDependencies) = postProject
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41} = {EC1B3513-CB1E-4796-899F-125FC05B2F41}
 		{9181A92F-9A17-45A3-BBDB-EAC085A901A0} = {9181A92F-9A17-45A3-BBDB-EAC085A901A0}
 		{DAB7C056-660A-4153-8FF2-B80A41310AD7} = {DAB7C056-660A-4153-8FF2-B80A41310AD7}
 		{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB} = {D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}
 		{56215C8D-85AE-4FCB-BD33-89E6ABBA407B} = {56215C8D-85AE-4FCB-BD33-89E6ABBA407B}
+		{D4D82191-1F83-43FB-8309-83637D8D11E8} = {D4D82191-1F83-43FB-8309-83637D8D11E8}
+		{C6F699C3-C2C7-4393-B8C2-B5C234ED23D7} = {C6F699C3-C2C7-4393-B8C2-B5C234ED23D7}
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73} = {4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}
 	EndProjectSection
 EndProject
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "ImpromptuInterface.FSharp", "ImpromptuInterface.FSharp\ImpromptuInterface.FSharp.fsproj", "{D4D82191-1F83-43FB-8309-83637D8D11E8}"
@@ -54,6 +58,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{0D3016
 		.nuget\NuGet.exe = .nuget\NuGet.exe
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface (Silverlight5)", "ImpromptuInterface.Silverlight5\ImpromptuInterface (Silverlight5).csproj", "{EC1B3513-CB1E-4796-899F-125FC05B2F41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.MVVM (Silverlight5)", "ImpromptuInterface.MVVM.Silverlight5\ImpromptuInterface.MVVM (Silverlight5).csproj", "{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -225,6 +233,26 @@ Global
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Release|x86.ActiveCfg = Release|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{EC1B3513-CB1E-4796-899F-125FC05B2F41}.Release|x86.ActiveCfg = Release|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

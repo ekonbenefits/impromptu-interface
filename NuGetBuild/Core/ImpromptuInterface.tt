@@ -9,5 +9,7 @@
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.dll" target="lib\SL40" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\bin\Release\Impromptu*.xml" target="lib\SL50" />
+    <file src="..\..\..\..\ImpromptuInterface.Silverlight5\bin\Release\Impromptu*.dll" target="lib\SL50" />
   </files>
 </package>

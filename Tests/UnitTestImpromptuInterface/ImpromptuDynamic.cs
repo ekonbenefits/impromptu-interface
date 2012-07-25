@@ -590,9 +590,7 @@ namespace UnitTestImpromptuInterface
 
             if (tBigIntType.IsAvailable)
             {
-#if SILVERLIGHT
-                Assert.Fail();
-#endif
+
                 var one = tBigIntType.@new(1);
                 var two = tBigIntType.@new(2);
 

@@ -5,13 +5,16 @@ using System.Linq;
 using Microsoft.Practices.Unity;
 
 #if !SELFRUNNER
+
 using NUnit.Framework;
 #endif
 
 using ImpromptuInterface.MVVM;
 using ImpromptuInterface.MVVM.Unity;
+using Assert = NUnit.Framework.Assert;
 
 #if SILVERLIGHT
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 namespace UnitTestImpromptuInterface.Silverlight
 #else
 namespace UnitTestImpromptuInterface

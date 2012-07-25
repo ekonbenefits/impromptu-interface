@@ -9,6 +9,94 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using NUnit.Framework;
+using Assert = NUnit.Framework.Assert;
+using MSTest =Microsoft.VisualStudio.TestTools.UnitTesting;
+namespace NUnit.Framework
+{
+    public delegate void TestDelegate();
+
+
+    public class Assert
+    {
+        public static void Throws<T>(TestDelegate fun) where T:Exception
+        {
+            var run = false;
+            try
+            {
+                fun();
+            }
+            catch (Exception e)
+            {
+
+                run = e is T || e is MSTest.AssertFailedException && new AssertionException("Dummy") is T;
+            }
+
+            MSTest.Assert.IsTrue(run,"Did Not Catch " + typeof(T).Name);
+        }
+
+        public static void AreEqual(dynamic a, dynamic b)
+        {
+            MSTest.Assert.AreEqual(a,b);
+        }
+
+        public static void Fail()
+        {
+            MSTest.Assert.Fail();
+        }
+
+        public static void IsFalse(bool test)
+        {
+            MSTest.Assert.IsFalse(test);
+        }
+        
+        public static void IsInstanceOf<T>(object obj)
+        {
+            MSTest.Assert.IsInstanceOfType(obj,typeof(T));
+        }
+
+        public static void IsNotNull(object obj)
+        {
+            MSTest.Assert.IsNotNull(obj);
+        }
+
+        public static void Less(dynamic a, dynamic b)
+        {
+            MSTest.Assert.IsTrue( a < b, String.Format("Expected {0} to be less than {1}",a,b));
+        }
+    }
+    
+    public class AssertionException:MSTest.AssertFailedException
+    {
+        public AssertionException(string message) : base(message)
+        {
+        }
+
+        public AssertionException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
+    public class TestFixtureSetUpAttribute : Attribute
+    {
+
+    }
+
+    public class SetUpAttribute : Attribute
+    {
+
+    }
+
+    public class TestFixtureAttribute:Attribute
+    {
+        
+    }
+
+    public class TestAttribute : Attribute
+    {
+
+    }
+}
+
 
 namespace UnitTestImpromptuInterface
 {

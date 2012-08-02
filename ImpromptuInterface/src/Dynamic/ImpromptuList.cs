@@ -21,6 +21,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 

@@ -22,6 +22,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.MVVM
 {

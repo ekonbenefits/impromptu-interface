@@ -17,6 +17,7 @@ using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build

@@ -24,6 +24,7 @@ using System.Windows.Input;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.MVVM
 {

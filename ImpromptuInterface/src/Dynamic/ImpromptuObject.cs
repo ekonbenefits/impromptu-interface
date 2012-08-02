@@ -19,7 +19,8 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface.Build;
-using ImpromptuInterface.Optimization;
+using ImpromptuInterface.Internal.Support;
+using System.Reflection;
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
@@ -28,7 +29,7 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
      
     [Serializable]
-    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike,ISerializable
+    public abstract class ImpromptuObject : DynamicObject, IDynamicKnowLike, IActLike,ISerializable,ICustomTypeProvider
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ImpromptuObject"/> class.

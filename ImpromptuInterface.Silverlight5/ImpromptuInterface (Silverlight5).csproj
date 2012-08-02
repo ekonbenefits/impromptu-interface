@@ -68,9 +68,6 @@
     <Compile Include="..\ImpromptuInterface.Silverlight\src\Optimization\SilverlightConverter.cs">
       <Link>src\Optimization\SilverlightConverter.cs</Link>
     </Compile>
-    <Compile Include="..\ImpromptuInterface.Silverlight\src\Support.cs">
-      <Link>src\Support.cs</Link>
-    </Compile>
     <Compile Include="..\ImpromptuInterface\Properties\AssemblyInfo.cs">
       <Link>Properties\AssemblyInfo.cs</Link>
     </Compile>
@@ -181,6 +178,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Internal\InvokeSetters.cs">
       <Link>src\Internal\InvokeSetters.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Internal\Support.cs">
+      <Link>src\Internal\Support.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\InvokeArg.cs">
       <Link>src\InvokeArg.cs</Link>

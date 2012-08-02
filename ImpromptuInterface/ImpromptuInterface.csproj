@@ -153,6 +153,7 @@
     <Compile Include="src\Impromptu.cs" />
     <Compile Include="src\Internal\Curry.cs" />
     <Compile Include="src\Internal\InvokeSetters.cs" />
+    <Compile Include="src\Internal\Support.cs" />
     <Compile Include="src\InvokeArg.cs" />
     <Compile Include="src\InvokeContext.cs" />
     <Compile Include="src\InvokeExt\InvokeExt.cs" />

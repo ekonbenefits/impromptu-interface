@@ -16,6 +16,7 @@
 
 using System;
 using System.Linq;
+using ImpromptuInterface.Internal.Support;
 using Microsoft.CSharp.RuntimeBinder;
 
 namespace ImpromptuInterface.Dynamic

@@ -1,8 +1,12 @@
 ﻿using System;
 using System.Dynamic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
+using ImpromptuInterface.Internal.Support;
+using ImpromptuInterface.Optimization;
+
 namespace ImpromptuInterface.Dynamic
 {
 
@@ -11,6 +15,7 @@ namespace ImpromptuInterface.Dynamic
         string Value { get;}
     }
 
+    [Serializable]
     public class ImpromptuMatch : ImpromptuObject, IFluentMatch
     {
         private readonly Match _match;
@@ -20,6 +25,28 @@ namespace ImpromptuInterface.Dynamic
             _match = match;
             _regex = regex;
         }
+
+#if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuList"/> class.
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        protected ImpromptuMatch(SerializationInfo info, 
+           StreamingContext context):base(info,context)
+        {
+            _match = info.GetValue<Match>("_match");
+            _regex = info.GetValue<Regex>("_regex");
+        }
+
+        public override void GetObjectData(SerializationInfo info, StreamingContext context)
+        {
+         
+            base.GetObjectData(info,context);
+            info.AddValue("_match", _match);
+            info.AddValue("_regex", _regex);
+        }
+#endif
 
         public override IEnumerable<string> GetDynamicMemberNames()
         {

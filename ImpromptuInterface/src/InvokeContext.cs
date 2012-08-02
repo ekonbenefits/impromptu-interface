@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface
 {

@@ -24,6 +24,7 @@ using System.Text;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 using ImpromptuInterface.MVVM;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.MVVM
 {

@@ -199,6 +199,9 @@
     <Compile Include="..\ImpromptuInterface\src\Internal\InvokeSetters.cs">
       <Link>src\Internal\InvokeSetters.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Internal\Support.cs">
+      <Link>src\Internal\Support.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\InvokeArg.cs">
       <Link>src\InvokeArg.cs</Link>
     </Compile>
@@ -227,7 +230,6 @@
       <Link>src\Optimization\Util.cs</Link>
     </Compile>
     <Compile Include="src\Optimization\SilverlightConverter.cs" />
-    <Compile Include="src\Support.cs" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

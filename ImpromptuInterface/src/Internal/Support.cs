@@ -1,17 +1,21 @@
 ﻿using System;
 using System.Collections;
-using System.Net;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Documents;
-using System.Windows.Ink;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Animation;
-using System.Windows.Shapes;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-namespace ImpromptuInterface
+namespace ImpromptuInterface.Internal.Support
 {
+
+#if !SILVERLIGHT5
+
+    public interface ICustomTypeProvider
+    {
+       
+    }
+
+#endif
+
 #if SILVERLIGHT
     /// <summary>
     /// Added for silverlight compile time compatability
@@ -27,16 +31,16 @@ namespace ImpromptuInterface
     /// <summary>
     /// Added for silverlight compile time compatability
     /// </summary>
-    public interface IObjectReference {}
+    public interface IObjectReference { }
     /// <summary>
     /// Added for silverlight compile time compatability
     /// </summary>
-    public interface ISerializable {}
+    public interface ISerializable { }
     /// <summary>
     /// Added for silverlight compile time compatability
     /// </summary>
     public interface ITypedList { }
-#endif
+
 
     /// <summary>
     /// Added for silverlight compile time compatability
@@ -75,4 +79,5 @@ namespace ImpromptuInterface
             return tObj != null ? tObj.GetHashCode(this) : obj.GetHashCode();
         }
     }
+#endif
 }

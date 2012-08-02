@@ -21,6 +21,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Threading;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 

@@ -2,6 +2,7 @@
 using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 

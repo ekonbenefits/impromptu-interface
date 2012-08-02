@@ -20,6 +20,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic

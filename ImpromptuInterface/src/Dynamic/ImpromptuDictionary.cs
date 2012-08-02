@@ -21,6 +21,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.Dynamic
 {

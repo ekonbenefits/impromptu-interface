@@ -19,6 +19,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build

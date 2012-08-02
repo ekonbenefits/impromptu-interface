@@ -24,6 +24,8 @@ using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface.InvokeExt;
+using ImpromptuInterface.Internal.Support;
+
 namespace ImpromptuInterface.MVVM
 {
     /// <summary>
@@ -205,7 +207,7 @@ namespace ImpromptuInterface.MVVM
     /// <summary>
     /// Helper Object to create event bindings.
     /// </summary>
-    public class EventBinder:DynamicObject
+    public class EventBinder:DynamicObject, ICustomTypeProvider
     {
         /// <summary>
         /// Gets or sets the target.
@@ -226,6 +228,18 @@ namespace ImpromptuInterface.MVVM
             Child = new Lazy<EventBinderTo>(()=>new EventBinderTo(target, this));
         }
 
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
 
         /// <summary>
         /// Registers the events on the  specified source.

@@ -1105,6 +1105,18 @@ namespace ImpromptuInterface
         }
 
 
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public static Type GetDynamicCustomType(this object target)
+        {
+            return new ImpromptuRuntimeType(target.GetType(), target);
+        }
+#endif
+
     }
 
 }

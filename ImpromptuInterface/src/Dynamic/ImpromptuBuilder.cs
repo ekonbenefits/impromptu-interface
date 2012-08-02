@@ -18,8 +18,9 @@ using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Text;
+using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
-
+using System.Reflection;
 
 namespace ImpromptuInterface.Dynamic
 {
@@ -259,7 +260,7 @@ namespace ImpromptuInterface.Dynamic
         ///<summary>
         /// Trampoline for builder
         ///</summary>
-        public class BuilderTrampoline:DynamicObject
+        public class BuilderTrampoline:DynamicObject,ICustomTypeProvider
         {
             ImpromptuBuilder<TObjectProtoType> _buider;
 
@@ -281,12 +282,18 @@ namespace ImpromptuInterface.Dynamic
                 result = InvokeHelper(binder.CallInfo, args, tBuildType);
                 return true;
             }
+#if SILVERLIGHT5
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
         /// <summary>
         /// Trampoline for setup builder
         /// </summary>
-		public class SetupTrampoline:DynamicObject
+        public class SetupTrampoline : DynamicObject, ICustomTypeProvider
         {
 			ImpromptuBuilder<TObjectProtoType> _buider;
 
@@ -310,6 +317,12 @@ namespace ImpromptuInterface.Dynamic
 				result = _buider;
 				return true;
             }
+#if SILVERLIGHT5
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 		
 		public override bool TrySetMember(SetMemberBinder binder, dynamic value){

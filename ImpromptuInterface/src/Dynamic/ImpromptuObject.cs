@@ -213,7 +213,7 @@ namespace ImpromptuInterface.Dynamic
         /// <returns></returns>
         public Type GetCustomType()
         {
-            return new ImpromptuRuntimeType(GetType(), this);
+            return this.GetDynamicCustomType();
         }
 #endif
     }

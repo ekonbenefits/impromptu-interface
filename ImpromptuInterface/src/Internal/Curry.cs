@@ -20,13 +20,15 @@ using System.Linq;
 using System.Linq.Expressions;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
+using ImpromptuInterface.Internal.Support;
+using System.Reflection;
 
 namespace ImpromptuInterface.Internal
 {
     /// <summary>
     /// Internal Implementation of <see cref="Impromptu.Curry(object,System.Nullable{int})"/>
     /// </summary>
-    public class Curry:DynamicObject
+    public class Curry:DynamicObject,ICustomTypeProvider
         {
             private readonly object _target;
             private readonly int? _totalArgCount;
@@ -50,6 +52,19 @@ namespace ImpromptuInterface.Internal
             {
                 return CurryConverter.TryConvert(this, binder, out result);
             }
+
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
 
             /// <summary>
             /// Provides the implementation for operations that invoke a member. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as calling a method.
@@ -144,7 +159,7 @@ namespace ImpromptuInterface.Internal
         /// <summary>
         /// Internal method for subsequent invocations of <see cref="Impromptu.Curry(object,System.Nullable{int})"/>
         /// </summary>
-        public class Currying:DynamicObject
+        public class Currying : DynamicObject, ICustomTypeProvider
         {
 
 
@@ -161,7 +176,18 @@ namespace ImpromptuInterface.Internal
                 return CurryConverter.TryConvert(this, binder, out result);
             }
 
-          
+
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
 
             internal Currying(object target, string memberName, object[] args, int? totalCount=null, InvocationKind? invocationKind=null)
             {

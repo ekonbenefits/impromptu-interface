@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface.Internal.Support;
@@ -47,7 +48,7 @@ namespace ImpromptuInterface.Dynamic
         /// <summary>
         /// Forward argument to constructor including named arguments
         /// </summary>
-        public class ConstructorForward:DynamicObject
+        public class ConstructorForward:DynamicObject,ICustomTypeProvider
         {
             private readonly Type _type;
             internal ConstructorForward(Type type)
@@ -59,6 +60,12 @@ namespace ImpromptuInterface.Dynamic
                 result = Impromptu.InvokeConstructor(_type, Util.NameArgsIfNecessary(binder.CallInfo, args));
                 return true;
             }
+#if SILVERLIGHT5
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
         /// <summary>

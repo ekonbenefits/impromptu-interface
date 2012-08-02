@@ -11,13 +11,14 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
-
+using System.Reflection;
+using ImpromptuInterface.Internal.Support;
 namespace ImpromptuInterface.MVVM
 {
     /// <summary>
     /// Proxy that gives a syntax for setting property changes calls for specific properties.
     /// </summary>
-    public class FireOnPropertyChanged : DynamicObject
+    public class FireOnPropertyChanged : DynamicObject, ICustomTypeProvider
     {
         protected readonly INotifyPropertyChanged Parent;
 
@@ -33,6 +34,19 @@ namespace ImpromptuInterface.MVVM
             EventStore = new Dictionary<string, PropertyChangedEventHandler>();
         
         }
+
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {

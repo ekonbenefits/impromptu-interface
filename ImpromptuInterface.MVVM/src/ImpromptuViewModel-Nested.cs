@@ -13,7 +13,8 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Shapes;
 using ImpromptuInterface.Dynamic;
-
+using ImpromptuInterface.Internal.Support;
+using System.Reflection;
 namespace ImpromptuInterface.MVVM
 {
     public partial class ImpromptuViewModel
@@ -23,7 +24,7 @@ namespace ImpromptuInterface.MVVM
         /// Trampoline object to choose property
         /// </summary>
         [Obsolete]
-        public class PropertyDepends : DynamicObject
+        public class PropertyDepends : DynamicObject,ICustomTypeProvider
         {
             private readonly ImpromptuViewModel _parent;
 
@@ -43,9 +44,22 @@ namespace ImpromptuInterface.MVVM
 
                 return true;
             }
+
+
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
-        public class PropertyDepend : DynamicObject
+        public class PropertyDepend : DynamicObject, ICustomTypeProvider
         {
             private readonly ImpromptuViewModel _parent;
             private readonly FireOnPropertyChangedDependencyAware _onChange;
@@ -69,9 +83,20 @@ namespace ImpromptuInterface.MVVM
             }
 
 
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
-        public class DependObject : Object
+        public class DependObject : Object, ICustomTypeProvider
         {
             private readonly ImpromptuViewModel _parent;
             private readonly string _property;
@@ -117,10 +142,23 @@ namespace ImpromptuInterface.MVVM
                    return _parent.LinkedProperties.Where(it => it.Value.Contains(_property)).Select(it => it.Key);
                 } 
             }
+
+
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
 
-        public abstract class DependencyBase : DynamicObject
+        public abstract class DependencyBase : DynamicObject, ICustomTypeProvider
         {
             protected readonly ImpromptuViewModel _parent;
             protected readonly string _property;
@@ -152,6 +190,17 @@ namespace ImpromptuInterface.MVVM
 
                 return true;
             }
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
         public class Dependency : DependencyBase
@@ -189,7 +238,7 @@ namespace ImpromptuInterface.MVVM
         /// Trampoline object to add dependency
         /// </summary>
         [Obsolete]
-        public class DependsOn : DynamicObject
+        public class DependsOn : DynamicObject,ICustomTypeProvider
         {
             private readonly ImpromptuViewModel _parent;
             private readonly string _property;
@@ -211,6 +260,19 @@ namespace ImpromptuInterface.MVVM
             {
                 return _parent.LinkedProperties.Where(it => it.Value.Contains(_property)).Select(it=>it.Key);
             }
+
+
+#if SILVERLIGHT5
+
+            /// <summary>
+            /// Gets the custom Type.
+            /// </summary>
+            /// <returns></returns>
+            public Type GetCustomType()
+            {
+                return this.GetDynamicCustomType();
+            }
+#endif
         }
 
         /// <summary>

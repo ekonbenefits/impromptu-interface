@@ -5,18 +5,34 @@ using System.Dynamic;
 using System.Linq;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
+using ImpromptuInterface.Internal.Support;
+using System.Reflection;
 
 namespace ImpromptuInterface.Internal
 {
     /// <summary>
     /// Internal class implmenation for <see cref="Impromptu.InvokeSetAll"/>
     /// </summary>
-    public class InvokeSetters : DynamicObject
+    public class InvokeSetters : DynamicObject,ICustomTypeProvider
     {
         internal InvokeSetters()
         {
 
         }
+
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
+
         /// <summary>
         /// Provides the implementation for operations that invoke an object. Classes derived from the <see cref="T:System.Dynamic.DynamicObject"/> class can override this method to specify dynamic behavior for operations such as invoking an object or a delegate.
         /// </summary>

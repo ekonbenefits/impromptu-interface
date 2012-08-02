@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using ImpromptuInterface.Dynamic;
-
+using ImpromptuInterface.Internal.Support;
+using System.Reflection;
 namespace ImpromptuInterface.MVVM
 {
     /// <summary>
     /// Trampoline object to give access to methods as Commands of original viewmodal
     /// </summary>
-    public class ImpromptuCommandBinder : DynamicObject
+    public class ImpromptuCommandBinder : DynamicObject,ICustomTypeProvider
     {
         private readonly object _parent;
 
@@ -22,6 +23,19 @@ namespace ImpromptuInterface.MVVM
             _parent = viewModel;
             _setup = setup;
         }
+
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {

@@ -1,12 +1,14 @@
 ﻿using System.Dynamic;
 using System;
+using System.Reflection;
+using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Class for TDD, used for mocking any dynamic object
     /// </summary>
-    public class Mimic : DynamicObject
+    public class Mimic : DynamicObject,ICustomTypeProvider
     {
         /// <summary>
         /// Override on DynamicObject
@@ -152,5 +154,18 @@ namespace ImpromptuInterface.Dynamic
             result = new Mimic();
             return true;
         }
+
+
+#if SILVERLIGHT5
+
+        /// <summary>
+        /// Gets the custom Type.
+        /// </summary>
+        /// <returns></returns>
+        public Type GetCustomType()
+        {
+            return this.GetDynamicCustomType();
+        }
+#endif
     }
 }

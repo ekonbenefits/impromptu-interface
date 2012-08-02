@@ -27,7 +27,7 @@ namespace UnitTestImpromptuInterface
         {
             var kernel = new StandardKernel();
             var container = new Container(kernel, typeof(IKernel), _assembly);
-            var view = container.GetView("Test");
+            var view = container.View.Test();
 
             Assert.IsInstanceOf<TestView>(view);
         }
@@ -37,7 +37,7 @@ namespace UnitTestImpromptuInterface
         {
             var kernel = new StandardKernel();
             var container = new Container(kernel, typeof(IKernel), _assembly);
-            var viewModel = container.GetViewModel("Test");
+            var viewModel = container.ViewModel.Test();
 
             Assert.IsInstanceOf<TestViewModel>(viewModel);
         }

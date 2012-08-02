@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM
 {
@@ -20,9 +21,12 @@ namespace ImpromptuInterface.MVVM
             { "Ninject.IKernel", (c, a, t) => new Ninject.Container(c, t, a) },
         };
         private Assembly _callingAssembly = null;
+        private FluentStringLookup _startLookup;
 
         private Runtime()
-        { }
+        {
+            _startLookup = new FluentStringLookup(StartView);
+        }
 
         /// <summary>
         /// Gets the "Main" view of the application, the one invoked from Runtime.Start()
@@ -32,6 +36,8 @@ namespace ImpromptuInterface.MVVM
             get;
             private set;
         }
+
+
 
         /// <summary>
         /// Creates an instance of Runtime
@@ -92,13 +98,26 @@ namespace ImpromptuInterface.MVVM
             return this;
         }
 
+
+        /// <summary>
+        /// Starts the runtime by opening the specified View (Window) Start.Main();
+        /// </summary>
+        /// <returns></returns>
+        public dynamic Start
+        {
+            get
+            {
+                return _startLookup;
+            }
+        }
+
 #if SILVERLIGHT
         /// <summary>
         /// Starts the runtime by setting the specified View to Application.Current.RootVisual
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Runtime Start(string name)
+        private Runtime StartView(string name)
         {
             if (!IoC.Initialized)
             {
@@ -110,12 +129,12 @@ namespace ImpromptuInterface.MVVM
             return this;
         }
 #else
-        /// <summary>
-        /// Starts the runtime by opening the specified View (Window)
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Runtime Start(string name)
+
+   
+
+
+       
+        private Runtime StartView(string name)
         {
             if (!IoC.Initialized)
             {

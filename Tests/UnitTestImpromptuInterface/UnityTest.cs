@@ -30,7 +30,7 @@ namespace UnitTestImpromptuInterface
             unityContainer.RegisterInstance(typeof(object), "Test__View__", new TestView());
             IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
-            var view = container.GetView("Test");
+            var view = container.View.Test();
 
             Assert.IsInstanceOf<TestView>(view);
         }
@@ -42,7 +42,7 @@ namespace UnitTestImpromptuInterface
             unityContainer.RegisterInstance(typeof(object), "Test__ViewModel__", new TestViewModel());
             IContainer container = new Container(unityContainer, typeof(IUnityContainer));
 
-            var viewModel = container.GetViewModel("Test");
+            var viewModel = container.ViewModel.Test();
 
             Assert.IsInstanceOf<TestViewModel>(viewModel);
         }

@@ -24,3 +24,4 @@ glob:nuget/symbols/*.nupkg
 glob:Thumbs.db
 syntax: glob
 packages/*
+*.swp

@@ -83,6 +83,9 @@
     <Compile Include="..\ImpromptuInterface\src\Dynamic\FluentRegex.cs">
       <Link>src\Dynamic\FluentRegex.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\FluentStringLookup.cs">
+      <Link>src\Dynamic\FluentStringLookup.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\IActLike.cs">
       <Link>src\Dynamic\IActLike.cs</Link>
     </Compile>

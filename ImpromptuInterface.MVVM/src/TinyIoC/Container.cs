@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM.TinyIoC
 {
@@ -10,6 +11,8 @@ namespace ImpromptuInterface.MVVM.TinyIoC
     {
         private readonly dynamic _container;
         private readonly Dictionary<Type, string> _viewLookup = new Dictionary<Type, string>();
+        private readonly FluentStringLookup _viewStringLookup;
+        private readonly FluentStringLookup _viewModelStringLookup;
 
         /// <summary>
         /// Default ctor, requires a TinyIoCContainer
@@ -18,6 +21,8 @@ namespace ImpromptuInterface.MVVM.TinyIoC
         public Container(dynamic container)
         {
             _container = container;
+            _viewStringLookup = new FluentStringLookup(GetView);
+            _viewModelStringLookup = new FluentStringLookup(GetViewModel);
         }
 
         /// <summary>
@@ -73,6 +78,11 @@ namespace ImpromptuInterface.MVVM.TinyIoC
             return Get(name + IoC.View);
         }
 
+        public dynamic View
+        {
+            get { return _viewStringLookup; }
+        }
+
         /// <summary>
         /// Gets a ViewModel of the specified name
         /// </summary>
@@ -81,6 +91,11 @@ namespace ImpromptuInterface.MVVM.TinyIoC
         public dynamic GetViewModel(string name)
         {
             return Get(name + IoC.ViewModel);
+        }
+
+        public dynamic ViewModel
+        {
+            get { return _viewModelStringLookup; }
         }
 
         /// <summary>

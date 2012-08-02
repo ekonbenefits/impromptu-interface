@@ -33,14 +33,14 @@ namespace UnitTestImpromptuInterface
         {
             var runtime = Runtime.Initialize();
             runtime.SetupContainer();
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         [Test]
         public void Standard_MEF_Auto_Container()
         {
             var runtime = Runtime.Initialize();
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace UnitTestImpromptuInterface
             var container = new CompositionContainer(new TypeCatalog(typeof (TestView), typeof (TestViewModel)));
             var runtime = Runtime.Initialize();
             runtime.SetupContainer(new ImpromptuInterface.MVVM.MEF.Container(container));
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         [Test]
@@ -58,33 +58,33 @@ namespace UnitTestImpromptuInterface
             var container = new CompositionContainer(new TypeCatalog(typeof(TestView), typeof(TestViewModel)));
             var runtime = Runtime.Initialize();
             runtime.SetupContainer(container);
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         [Test]
         public void Fluent_MEF_Default_Container()
         {
-            Runtime.Initialize().SetupContainer().Start("Test");
+            Runtime.Initialize().SetupContainer().Start.Test();
         }
 
         [Test]
         public void Fluent_MEF_Auto_Container()
         {
-            Runtime.Initialize().Start("Test");
+            Runtime.Initialize().Start.Test();
         }
 
         [Test]
         public void Fluent_MEF_IContainer()
         {
             var container = new CompositionContainer(new TypeCatalog(typeof(TestView), typeof(TestViewModel)));
-            Runtime.Initialize().SetupContainer(new ImpromptuInterface.MVVM.MEF.Container(container)).Start("Test");
+            Runtime.Initialize().SetupContainer(new ImpromptuInterface.MVVM.MEF.Container(container)).Start.Test();
         }
 
         [Test]
         public void Fluent_MEF_Container()
         {
             var container = new CompositionContainer(new TypeCatalog(typeof(TestView), typeof(TestViewModel)));
-            Runtime.Initialize().SetupContainer(container).Start("Test");
+            Runtime.Initialize().SetupContainer(container).Start.Test();
         }
 
         #endregion 
@@ -99,7 +99,7 @@ namespace UnitTestImpromptuInterface
             container.AddView("Test", typeof(TestView), typeof(TestViewModel));
             var runtime = Runtime.Initialize();
             runtime.SetupContainer(container);
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         [Test]
@@ -166,7 +166,7 @@ namespace UnitTestImpromptuInterface
         {
             var kernel = new StandardKernel();
             var runtime = Runtime.Initialize().SetupContainer(kernel);
-            runtime.Start("Test");
+            runtime.Start.Test();
         }
 
         #endregion 

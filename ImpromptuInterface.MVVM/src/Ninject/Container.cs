@@ -16,6 +16,8 @@ namespace ImpromptuInterface.MVVM.Ninject
         private string[] _fullyQualifiedTypes;
         private InvokeContext _staticContext;
         private dynamic _resolutionExtensions;
+        private readonly FluentStringLookup _viewStringlookup;
+        private readonly FluentStringLookup _viewModelStringLookup;
 
         /// <summary>
         /// Constructor, taking in an IKernel
@@ -26,6 +28,9 @@ namespace ImpromptuInterface.MVVM.Ninject
         {
             _kernel = kernel;
             _kernelInterface = kernelInterface;
+
+            _viewStringlookup = new FluentStringLookup(GetView);
+            _viewModelStringLookup = new FluentStringLookup(GetViewModel);
 
 #if SILVERLIGHT
             var assembly = Assembly.GetCallingAssembly();
@@ -47,6 +52,9 @@ namespace ImpromptuInterface.MVVM.Ninject
         {
             _kernel = kernel;
             _kernelInterface = kernelInterface;
+
+            _viewStringlookup = new FluentStringLookup(GetView);
+            _viewModelStringLookup = new FluentStringLookup(GetViewModel);
 
             LateBind();
             ReflectNamespaces(assemblies);
@@ -104,6 +112,11 @@ namespace ImpromptuInterface.MVVM.Ninject
             return _resolutionExtensions.Get(_kernel, FindType(name + "View"));
         }
 
+        public dynamic View
+        {
+            get { return _viewStringlookup; }
+        }
+
         /// <summary>
         /// Gets a ViewModel of the specified name
         /// </summary>
@@ -112,6 +125,11 @@ namespace ImpromptuInterface.MVVM.Ninject
         public dynamic GetViewModel(string name)
         {
             return _resolutionExtensions.Get(_kernel, FindType(name + "ViewModel"));
+        }
+
+        public dynamic ViewModel
+        {
+            get { return _viewModelStringLookup; }
         }
 
         /// <summary>

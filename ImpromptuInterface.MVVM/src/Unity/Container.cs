@@ -16,6 +16,8 @@ namespace ImpromptuInterface.MVVM.Unity
         private readonly Dictionary<Type, string> _viewLookup = new Dictionary<Type, string>();
         private InvokeContext _staticContext;
         private dynamic _unityContainerExtensions;
+        private readonly FluentStringLookup _viewStringLookup;
+        private FluentStringLookup _viewModelStringLookup;
 
         /// <summary>
         /// Default ctor, requires an IUnityContainer
@@ -26,6 +28,8 @@ namespace ImpromptuInterface.MVVM.Unity
         {
             _container = container;
             _containerInterface = containerInterface;
+            _viewStringLookup = new FluentStringLookup(GetView);
+            _viewModelStringLookup = new FluentStringLookup(GetViewModel);
             LateBind();
         }
 
@@ -87,6 +91,11 @@ namespace ImpromptuInterface.MVVM.Unity
             return Get(name + IoC.View);
         }
 
+        public dynamic View
+        {
+            get { return _viewStringLookup; }
+        }
+
         /// <summary>
         /// Gets a ViewModel of the specified name
         /// </summary>
@@ -95,6 +104,11 @@ namespace ImpromptuInterface.MVVM.Unity
         public dynamic GetViewModel(string name)
         {
             return Get(name + IoC.ViewModel);
+        }
+
+        public dynamic ViewModel
+        {
+            get { return _viewModelStringLookup; }
         }
 
         /// <summary>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.Composition.Hosting;
 using System.ComponentModel.Composition.Primitives;
 using System.Linq;
+using ImpromptuInterface.Dynamic;
 
 namespace ImpromptuInterface.MVVM.MEF
 {
@@ -13,6 +14,8 @@ namespace ImpromptuInterface.MVVM.MEF
     {
         private readonly CompositionContainer _container;
         private readonly Dictionary<Type, string> _viewLookup = new Dictionary<Type, string>();
+        private readonly FluentStringLookup _viewStringLookup;
+        private readonly FluentStringLookup _viewModelStringLookup;
 
         /// <summary>
         /// Default ctor, requires a MEF CompositionContainer
@@ -21,6 +24,8 @@ namespace ImpromptuInterface.MVVM.MEF
         public Container(CompositionContainer container)
         {
             _container = container;
+            _viewStringLookup = new FluentStringLookup(GetView);
+            _viewModelStringLookup = new FluentStringLookup(GetViewModel);
         }
 
         /// <summary>
@@ -76,6 +81,15 @@ namespace ImpromptuInterface.MVVM.MEF
         }
 
         /// <summary>
+        /// Gets a View of the specified name View.Name()
+        /// </summary>
+        /// <value>The view.</value>
+        public dynamic View
+        {
+            get { return _viewStringLookup; }
+        }
+
+        /// <summary>
         /// Gets a ViewModel of the specified name
         /// </summary>
         /// <param name="name"></param>
@@ -83,6 +97,15 @@ namespace ImpromptuInterface.MVVM.MEF
         public dynamic GetViewModel(string name)
         {
             return Get(name + IoC.ViewModel);
+        }
+
+        /// <summary>
+        /// Gets a ViewModel of the specified name ViewModel.Name()
+        /// </summary>
+        /// <value>The view.</value>
+        public dynamic ViewModel
+        {
+            get { return _viewModelStringLookup; }
         }
 
         /// <summary>

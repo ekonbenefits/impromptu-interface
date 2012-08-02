@@ -46,11 +46,24 @@ namespace ImpromptuInterface.MVVM
         dynamic GetView(string name);
 
         /// <summary>
+        /// Gets a View of the specified name View.Name()
+        /// </summary>
+        /// <value>The view.</value>
+        dynamic View { get; }
+
+        /// <summary>
         /// Gets a ViewModel of the specified name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         dynamic GetViewModel(string name);
+
+
+        /// <summary>
+        /// Gets a ViewModel of the specified name ViewModel.Name()
+        /// </summary>
+        /// <value>The view.</value>
+        dynamic ViewModel { get; }
 
         /// <summary>
         /// Gets the View for specified ViewModel

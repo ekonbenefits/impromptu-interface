@@ -26,7 +26,7 @@ namespace UnitTestImpromptuInterface
 
             IContainer container = new Container(compositionContainer);
 
-            var view = container.GetView("Test");
+            var view = container.View.Test();
 
             Assert.IsInstanceOf<TestView>(view);
         }
@@ -39,7 +39,7 @@ namespace UnitTestImpromptuInterface
 
             IContainer container = new Container(compositionContainer);
 
-            var viewModel = container.GetViewModel("Test");
+            var viewModel = container.ViewModel.Test();
 
             Assert.IsInstanceOf<TestViewModel>(viewModel);
         }

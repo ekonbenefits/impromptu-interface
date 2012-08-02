@@ -26,7 +26,7 @@ using ImpromptuInterface.Internal;
 using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
-
+using System.Text.RegularExpressions;
 namespace ImpromptuInterface
 {
     using System;
@@ -306,7 +306,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="indexesThenValue">The indexes then value.</param>
-        public static void InvokeSetIndex(object target, params object[] indexesThenValue)
+        public static object InvokeSetIndex(object target, params object[] indexesThenValue)
         {
             string[] tArgNames;
             Type tContext;
@@ -315,7 +315,7 @@ namespace ImpromptuInterface
             indexesThenValue = Util.GetArgsAndNames(indexesThenValue, out tArgNames);
 
             CallSite tCallSite = null;
-            InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext,
+            return InvokeHelper.InvokeSetIndexCallSite(target, indexesThenValue, tArgNames, tContext, tStaticContext,
                                                 ref tCallSite);
         }
 
@@ -417,12 +417,46 @@ namespace ImpromptuInterface
         /// <param name="value">The value.</param>
         public static object InvokeSetChain(object target, string propertyChain, object value)
         {
-            var tProperties = propertyChain.Split('.');
-            var tGetProperties = tProperties.Take(tProperties.Length - 1);
+            var tProperties = _chainRegex.FluentMatches(propertyChain).ToList();
+            var tGetProperties = tProperties.Take(tProperties.Count - 1);
+
+       
+            var tTarget = target;
+            foreach (var tProperty in tGetProperties)
+            {
+                var tGetter = tProperty.Getter;
+                var tIntIndexer = tProperty.IntIndexer;
+                var tStringIndexer = tProperty.StringIndexer;
+
+                if (tGetter != null)
+                    tTarget = InvokeGet(tTarget, tGetter);
+                else if (tIntIndexer != null)
+                    tTarget = InvokeGetIndex(tTarget, Impromptu.CoerceConvert(tIntIndexer, typeof(int)));
+                else if (tStringIndexer != null)
+                    tTarget = InvokeGetIndex(tTarget, tStringIndexer);
+                else
+                {
+                    throw new Exception(string.Format("Could Not Parse :'{0}'", propertyChain));
+                }
+            }
+
             var tSetProperty = tProperties.Last();
-            var tSetTarget = tGetProperties.Aggregate(target, InvokeGet);
-            return InvokeSet(tSetTarget, tSetProperty, value);
+
+            var tSetGetter = tSetProperty.Getter;
+            var tSetIntIndexer = tSetProperty.IntIndexer;
+            var tSetStringIndexer = tSetProperty.StringIndexer;
+
+            if (tSetGetter != null)
+                return InvokeSet(tTarget, tSetGetter, value);
+            if (tSetIntIndexer != null)
+                return InvokeSetIndex(tTarget, Impromptu.CoerceConvert(tSetIntIndexer, typeof(int)), value);
+            if (tSetStringIndexer != null)
+                return InvokeSetIndex(tTarget, tSetStringIndexer, value);
+            
+            throw new Exception(string.Format("Could Not Parse :'{0}'", propertyChain));
         }
+
+           
 
 
 
@@ -489,7 +523,14 @@ namespace ImpromptuInterface
             CallSite tSite = null;
             return InvokeHelper.InvokeGetCallSite(target, name, tContext, tStaticContext, ref tSite);
         }
-
+#if SILVERLIGHT
+  private static readonly Regex _chainRegex
+           = new Regex(@"((\.?(?<Getter>\w+))|(\[(?<IntIndexer>\d+)\])|(\['(?<StringIndexer>\w+)'\]))");
+#else
+  private static readonly Regex _chainRegex
+           = new Regex(@"((\.?(?<Getter>\w+))|(\[(?<IntIndexer>\d+)\])|(\['(?<StringIndexer>\w+)'\]))",RegexOptions.Compiled);
+#endif
+      
         /// <summary>
         /// Invokes the getter property chain.
         /// </summary>
@@ -498,8 +539,26 @@ namespace ImpromptuInterface
         /// <returns></returns>
         public static dynamic InvokeGetChain(object target, string propertyChain)
         {
-            var tProperties = propertyChain.Split('.');
-            return tProperties.Aggregate(target, InvokeGet);
+            var tProperties = _chainRegex.FluentMatches(propertyChain);
+            var tTarget = target;
+            foreach (var tProperty in tProperties)
+            {
+                var tGetter = tProperty.Getter;
+                var tIntIndexer = tProperty.IntIndexer;
+                var tStringIndexer = tProperty.StringIndexer;
+
+                if (tGetter != null)
+                    tTarget = InvokeGet(tTarget, tGetter);
+                else if (tIntIndexer != null)
+                    tTarget = InvokeGetIndex(tTarget, Impromptu.CoerceConvert(tIntIndexer,typeof(int)));
+                else if (tStringIndexer != null)
+                    tTarget = InvokeGetIndex(tTarget, tStringIndexer);
+                else
+                {
+                    throw new Exception(string.Format("Could Not Parse :'{0}'", propertyChain));
+                }
+            }
+            return tTarget;
         }
 
         /// <summary>

@@ -100,6 +100,9 @@
     <Compile Include="..\ImpromptuInterface\src\Dynamic\CacheableInvocation.cs">
       <Link>src\Dynamic\CacheableInvocation.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\FluentRegex.cs">
+      <Link>src\Dynamic\FluentRegex.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\IActLike.cs">
       <Link>src\Dynamic\IActLike.cs</Link>
     </Compile>
@@ -138,6 +141,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuList.cs">
       <Link>src\Dynamic\ImpromptuList.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuMatch.cs">
+      <Link>src\Dynamic\ImpromptuMatch.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ImpromptuObject.cs">
       <Link>src\Dynamic\ImpromptuObject.cs</Link>

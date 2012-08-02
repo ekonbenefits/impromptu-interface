@@ -411,7 +411,7 @@ namespace ImpromptuInterface.Optimization
             return InvokeMember<object>(ref callSite,tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, context, argNames, target, indexes);
         }
 
-        internal static void InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite tCallSite)
+        internal static object InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite tCallSite)
         {
             LazyBinder tBinder =null;
             Type tBinderType = null;
@@ -428,7 +428,7 @@ namespace ImpromptuInterface.Optimization
                 tBinderType = typeof (SetIndexBinder);
             }
 
-            InvokeMemberAction(ref tCallSite, tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, tContext, tArgNames, target, indexesThenValue);
+            return InvokeMember<object>(ref tCallSite, tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, tContext, tArgNames, target, indexesThenValue);
         }
 
         internal static void InvokeMemberActionCallSite(object target,String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext,ref CallSite callSite)

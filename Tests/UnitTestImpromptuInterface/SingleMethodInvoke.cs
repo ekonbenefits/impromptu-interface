@@ -847,6 +847,25 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tOut);
         }
 
+        [Test]
+        public void TestGetDynamicChainedWithIndexes()
+        {
+
+            var tSetValue = "1";
+            dynamic tExpando = Build.NewObject(
+                Test: Build.NewObject(
+                        Test2: Build.NewList(
+                        Build.NewObject(Test3: Build.NewObject(Test4: tSetValue))
+                        )
+                    )
+                );
+  
+
+
+            var tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2[0].Test3['Test4']");
+
+            Assert.AreEqual(tSetValue, tOut);
+        }
 
 
         [Test]
@@ -864,6 +883,25 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
         }
 
+        [Test]
+        public void TestSetDynamicChainedWithInexes()
+        {
+            var tSetValue = "1";
+            dynamic tExpando = Build.NewObject(
+                Test: Build.NewObject(
+                        Test2: Build.NewList(
+                        Build.NewObject(Test3: Build.NewObject())
+                        )
+                    )
+                );
+
+
+            var tOut = Impromptu.InvokeSetChain(tExpando, "Test.Test2[0].Test3['Test4']", tSetValue);
+
+            Assert.AreEqual(tSetValue, tExpando.Test.Test2[0].Test3["Test4"]);
+
+            Assert.AreEqual(tSetValue, tOut);
+        }
 
         [Test]
         public void TestSetDynamicAllDict()

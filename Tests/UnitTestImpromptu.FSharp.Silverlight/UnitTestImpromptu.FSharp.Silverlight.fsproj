@@ -19,6 +19,8 @@
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
     <RootNamespace>UnitTestImpromptu.FSharp.Silverlight</RootNamespace>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -105,10 +107,11 @@
       <SpecificVersion>True</SpecificVersion>
     </Reference>
     <Reference Include="Unquote">
-      <HintPath>..\..\packages\Unquote.2.1.0\lib\sl4\Unquote.dll</HintPath>
+      <HintPath>..\..\packages\Unquote.2.2.2\lib\sl4\Unquote.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
 	     Other similar extension points exist, see Microsoft.Common.targets.
 	<Target Name="BeforeBuild">

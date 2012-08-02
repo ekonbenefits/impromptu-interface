@@ -109,6 +109,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\ActLikeCaster.cs" />
+    <Compile Include="src\Dynamic\ImpromptuMatch.cs" />
+    <Compile Include="src\Dynamic\FluentRegex.cs" />
     <Compile Include="src\Dynamic\Mimic.cs" />
     <Compile Include="src\Dynamic\Builder.cs" />
     <Compile Include="src\Dynamic\CacheableInvocation.cs" />

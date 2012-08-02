@@ -2,7 +2,7 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface.MVVM</id>
-  <version>4.0.0</version>
+  <version>4.0.1-beta</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.</description>

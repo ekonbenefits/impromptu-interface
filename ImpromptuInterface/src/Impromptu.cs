@@ -302,12 +302,30 @@ namespace ImpromptuInterface
 
 
         /// <summary>
+        /// Convenience version of InvokeSetIndex that separates value and indexes.
+        /// </summary>
+        /// <param name="target">The target.</param>
+        /// <param name="value">The value</param>
+        /// <param name="indexes">The indexes </param>
+        /// <returns></returns>
+        public static object InvokeSetValueOnIndexes(object target, object value, params object[] indexes)
+        {
+            var tList = new List<object>(indexes) {value};
+            return InvokeSetIndex(target, indexesThenValue: tList.ToArray());
+        }
+
+        /// <summary>
         /// Invokes setindex.
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="indexesThenValue">The indexes then value.</param>
         public static object InvokeSetIndex(object target, params object[] indexesThenValue)
         {
+            if (indexesThenValue.Length < 2)
+            {
+                throw new ArgumentException("Requires atleast one index and one value", "indexesThenValue");
+            }
+
             string[] tArgNames;
             Type tContext;
             bool tStaticContext;

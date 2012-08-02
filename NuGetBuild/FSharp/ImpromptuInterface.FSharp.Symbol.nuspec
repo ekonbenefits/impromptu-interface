@@ -2,7 +2,7 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface.FSharp</id>
-  <version>1.2.4</version>
+  <version>1.2.5</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A complete dlr based dynamic operator implementation for F#</description>
@@ -15,7 +15,7 @@
     <frameworkAssembly assemblyName="Microsoft.CSharp" />
   </frameworkAssemblies>
   <dependencies>
-    <dependency id="ImpromptuInterface" version="6.0.4" />
+    <dependency id="ImpromptuInterface" version="6.0.5" />
   </dependencies>
 </metadata>
   <files>

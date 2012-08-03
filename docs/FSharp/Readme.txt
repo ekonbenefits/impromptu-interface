@@ -1,8 +1,8 @@
-impromptu-interface.mvvm http://code.google.com/p/impromptu-interface/
+impromptu-interface.fsharp http://code.google.com/p/impromptu-interface/
 
 A complete FSharp dynamic operator implementation using the DLR.
 
-Copyright 2011 Ekon Benefits
+Copyright 2011-2012 Ekon Benefits
 Apache Licensed: http://www.apache.org/licenses/LICENSE-2.0
 
 Author:

@@ -2,14 +2,14 @@
 <package> 
 <metadata>
   <id>ImpromptuInterface</id>
-  <version>6.0.5</version>
+  <version>6.0.6</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A Lightweight Duck Casting Framework for dynamic C# 4.0 (.net4 &amp; silverlight4 &amp; silveright5 ). Includes helper methods for dynamic invocation via method and property names known only at runtime (runs faster than reflection).</description>
   <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
   <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
   <iconUrl>http://impromptu-interface.googlecode.com/files/ImpromptuInterface-Icon.png</iconUrl>
-  <tags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr</tags>
+  <tags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr currying</tags>
   <language>en-US</language>
   <frameworkAssemblies>
     <frameworkAssembly assemblyName="Microsoft.CSharp" />
@@ -17,7 +17,7 @@
 </metadata>
   <files>
     <file src="..\..\..\..\docs\License.txt" />
-    <file src="..\..\..\..\docs\Readme.txt" />
+    <file src="..\..\..\..\docs\Core\Readme.txt" />
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />

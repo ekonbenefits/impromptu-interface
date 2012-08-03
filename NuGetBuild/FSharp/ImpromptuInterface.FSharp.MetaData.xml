@@ -1,18 +1,18 @@
 ﻿<metadata>
   <id>ImpromptuInterface.FSharp</id>
-  <version>1.2.5</version>
+  <version>1.2.6</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
-  <description>A complete dlr based dynamic operator implementation for F#</description>
+  <description>A complete dlr based dynamic operator implementation for F# (.net4 &amp; silverlight4)</description>
   <projectUrl>http://code.google.com/p/impromptu-interface/</projectUrl>
   <licenseUrl>http://www.apache.org/licenses/LICENSE-2.0</licenseUrl>
   <iconUrl>http://impromptu-interface.googlecode.com/files/ImpromptuInterface.FSharp-Icon.png</iconUrl>
-  <tags>dynamic .net40 FSharp dlr impromptu interface</tags>
+  <tags>dynamic .net40 FSharp dlr impromptu interface silverlight</tags>
   <language>en-US</language>
   <frameworkAssemblies>
     <frameworkAssembly assemblyName="Microsoft.CSharp" />
   </frameworkAssemblies>
   <dependencies>
-    <dependency id="ImpromptuInterface" version="6.0.5" />
+    <dependency id="ImpromptuInterface" version="6.0.6" />
   </dependencies>
 </metadata>

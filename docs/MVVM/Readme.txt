@@ -1,20 +1,24 @@
 impromptu-interface.mvvm http://code.google.com/p/impromptu-interface/
 
-A Lightweight Dynamic MVVM View Model(.net4 &amp; silverlight4). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.
+A Lightweight Dynamic MVVM View Model(.net4 & silverlight4 & silverlight5). Removes boilerplate code for MVVM, makes it practical to use MVVM in small apps.
 
-Copyright 2011 Ekon Benefits
+Copyright 2011-2012 Ekon Benefits
 Apache Licensed: http://www.apache.org/licenses/LICENSE-2.0
 
-Author:
+Authors:
 Jay Tuley jay+code@tuley.name
+Jonathan Peppers jonathan.peppers+mvvm@gmail.com
 
 Usage:
     Just subclass ImpromptuViewModel and set your properties using Dynamic.PropertyName. Your commands need to be 'void CommandName(object parameter)' and then they can be bound with the path Command.CommandName and optionally have a method 'bool CanCommandName(object parameter)'
 
+Has IOC support for MEF, Unity, NInject & TinyIOC
+
+Samples can be found at http://code.google.com/p/impromptu-interface/source/browse/?repo=sample
 
 Example:
 
-Note: the below example is using WPF, for Silverlight since as of 4.0 it still doesn't support dynamic properties use indexers when binding, e.g. {Binding [Progress]} or {Binding Command[Search]} instead.
+Note: the below example is using WPF, for Silverlight below 5.0 it doesn't support dynamic properties so use indexers when binding, e.g. {Binding [Progress]} or {Binding Command[Search]} instead.
 
 ---
      <StackPanel DockPanel.Dock="Top" Orientation="Horizontal">

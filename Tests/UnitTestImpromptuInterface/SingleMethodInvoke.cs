@@ -341,6 +341,24 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(typeof(long), tCast.GetType());
         }
 
+
+        [Test]
+        public void TestCoerceConverterDBNULL()
+        {
+            var tEl = DBNull.Value;
+
+            var tCast = Impromptu.CoerceConvert(tEl, typeof(long));
+
+            Assert.AreEqual(typeof(long), tCast.GetType());
+
+            var tCast2 = Impromptu.CoerceConvert(tEl, typeof(string));
+            Assert.AreEqual(null, tCast2);
+
+            Assert.AreNotEqual(null, tEl);
+        }   
+
+ 
+
         [Test]
         public void TestCacheableImplicitConvert()
         {

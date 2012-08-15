@@ -66,7 +66,7 @@ namespace ImpromptuInterface.Build
         /// <param name="informalInterface"></param>
         void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface)
         {
-            if(original == null)
+            if(((object)original) == null)
                 throw new ArgumentNullException("original", "Can't proxy a Null value");
 
             if (_init)

@@ -691,7 +691,7 @@ namespace ImpromptuInterface
 
         public static dynamic CoerceConvert(object target, Type type)
         {
-            if (target != null && !type.IsInstanceOfType(target))
+            if (target != null && !type.IsInstanceOfType(target) && DBNull.Value != target)
             {
 
                 if (type.IsInterface)
@@ -785,9 +785,12 @@ namespace ImpromptuInterface
                     }
                 }
             }
-            else if (target == null && type.IsValueType)
+            else if (((target == null)|| target == DBNull.Value)&& type.IsValueType)
             {
                 target = Impromptu.InvokeConstructor(type);
+            }else if(!type.IsInstanceOfType(target) && DBNull.Value == target)
+            {
+                return null;
             }
             return target;
         }

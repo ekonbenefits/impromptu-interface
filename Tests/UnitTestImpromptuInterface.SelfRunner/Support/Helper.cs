@@ -135,7 +135,16 @@ namespace UnitTestImpromptuInterface
                 return;
             if(expected ==null || !expected.Equals(actual))
                 FailExpected(expected, actual);
+        }
+
+        public void AreNotEqual(dynamic expected, dynamic actual)
+        {
+            if (expected == null && actual != null)
+                return;
+            if (expected == null || expected.Equals(actual))
+                FailExpected(expected, actual);
         } 
+		
 		
 		   public void Less(dynamic smaller, dynamic larger)
         { 

@@ -109,6 +109,7 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\ActLikeCaster.cs" />
+    <Compile Include="src\Dynamic\DynamicLinq.cs" />
     <Compile Include="src\Dynamic\FluentStringLookup.cs" />
     <Compile Include="src\Dynamic\ImpromptuMatch.cs" />
     <Compile Include="src\Dynamic\FluentRegex.cs" />
@@ -138,6 +139,7 @@
     </Compile>
     <Compile Include="src\Dynamic\Invocation.cs" />
     <Compile Include="src\Dynamic\NonRecursiveInterfaceAttribute.cs" />
+    <Compile Include="src\Dynamic\PartialApplyInvocation.cs" />
     <Compile Include="src\Dynamic\ThisFunctions.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

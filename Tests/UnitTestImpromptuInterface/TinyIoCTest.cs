@@ -71,7 +71,7 @@ namespace UnitTestImpromptuInterface
             }
         }
 
-        [Test, ExpectedException(typeof(NotSupportedException))]
+        [Test]
         public void Get_Many_Dynamic()
         {
             var tinyContainer = new TinyIoCContainer();
@@ -79,10 +79,7 @@ namespace UnitTestImpromptuInterface
             tinyContainer.Register<object>(new TestClassD(), "Testing123");
             IContainer container = new Container(tinyContainer);
 
-            foreach (var item in container.GetMany("Testing123"))
-            {
-                Assert.IsInstanceOf<ITestInterface>(item);
-            }
+            Assert.Throws<NotSupportedException>(() => container.GetMany("Testing123"));
         }
 
         [Test]

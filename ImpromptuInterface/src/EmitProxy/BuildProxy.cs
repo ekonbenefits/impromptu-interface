@@ -406,11 +406,11 @@ namespace ImpromptuInterface.Build
             }
 
 
-            if(tStartType.IsGenericTypeDefinition)
+            if(tStartType.IsGenericType)
             {
                 var tArgs = tStartType.GetGenericArguments().Select(it=>ReplaceTypeWithGenericBuilder(it,dict));
 
-                var tNewType = tStartType.MakeGenericType(tArgs.ToArray());
+                var tNewType = tStartType.GetGenericTypeDefinition().MakeGenericType(tArgs.ToArray());
                 tReturnType = tNewType;
             }else if (dict.ContainsKey(tStartType))
                 {
@@ -582,7 +582,7 @@ namespace ImpromptuInterface.Build
 
                 tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
 
-                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams);
+                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams.SelectMany(FlattenGenericParameters).Distinct().ToArray());
                 if (tConvertFuncType != null)
                     tConvertFuncType = UpdateCallsiteFuncType(tConvertFuncType, tReturnType);
                 tInvokeFuncType = UpdateCallsiteFuncType(tInvokeFuncType, tReturnType != typeof(void) ? typeof(object) : typeof(void), tReducedParams);

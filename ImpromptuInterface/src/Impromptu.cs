@@ -124,6 +124,17 @@ namespace ImpromptuInterface
                                                   isEvent);
         }
 
+
+        public static dynamic DynamicLinq(dynamic enumerable)
+        {
+            return new DynamicLinq(enumerable);
+        }
+
+        public static ILinq<T> Linq<T>(IEnumerable<T> enumerable)
+        {
+            return new DynamicLinq(enumerable).ActLike<ILinq<T>>();
+        }
+
         /// <summary>
         /// Dynamically Invokes a member method using the DLR
         /// </summary>
@@ -689,10 +700,61 @@ namespace ImpromptuInterface
 
         }
 
+        internal static readonly IDictionary<Type, Delegate> CompiledExpressions = new Dictionary<Type, Delegate>();
+
+        public static dynamic CoerceToDelegate(object invokeableObject, Type delegateType)
+            {
+                if (!typeof(Delegate).IsAssignableFrom(delegateType.BaseType))
+                {
+                    return null;
+                }
+                var tDelMethodInfo = delegateType.GetMethod("Invoke");
+                var tReturnType = tDelMethodInfo.ReturnType;
+                var tAction = tReturnType == typeof(void);
+                var tParams = tDelMethodInfo.GetParameters();
+                var tLength = tDelMethodInfo.GetParameters().Length;
+                Delegate tBaseDelegate = tAction
+                                             ? InvokeHelper.WrapAction(invokeableObject, tLength)
+                                             : InvokeHelper.WrapFunc(tReturnType, invokeableObject, tLength);
+
+
+                if (!InvokeHelper.IsActionOrFunc(delegateType) || tParams.Any(it => it.ParameterType.IsValueType))
+                //Conditions that aren't contravariant;
+                {
+                    Delegate tGetResult;
+
+                    if (!CompiledExpressions.TryGetValue(delegateType, out tGetResult))
+                    {
+                        var tParamTypes = tParams.Select(it => it.ParameterType).ToArray();
+                        var tDelParam = Expression.Parameter(tBaseDelegate.GetType());
+                        var tInnerParams = tParamTypes.Select(Expression.Parameter).ToArray();
+
+                        var tI = Expression.Invoke(tDelParam,
+                                                   tInnerParams.Select(it => (Expression)Expression.Convert(it, typeof(object))));
+                        var tL = Expression.Lambda(delegateType, tI, tInnerParams);
+
+                        tGetResult =
+                            Expression.Lambda(Expression.GetFuncType(tBaseDelegate.GetType(), delegateType), tL,
+                                              tDelParam).Compile();
+                        CompiledExpressions[delegateType] = tGetResult;
+                    }
+
+                    return tGetResult.DynamicInvoke(tBaseDelegate);
+                }
+                return tBaseDelegate;
+
+            }
+
         public static dynamic CoerceConvert(object target, Type type)
         {
             if (target != null && !type.IsInstanceOfType(target) && DBNull.Value != target)
             {
+
+                var delegateConversion = CoerceToDelegate(target, type);
+
+                if (delegateConversion != null)
+                    return delegateConversion;
+
 
                 if (type.IsInterface)
                 {

@@ -31,7 +31,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>Bin\Debug</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT SILVERLIGHT5</DefineConstants>
     <NoStdLib>true</NoStdLib>
     <NoConfig>true</NoConfig>
     <ErrorReport>prompt</ErrorReport>
@@ -79,6 +79,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\CacheableInvocation.cs">
       <Link>src\Dynamic\CacheableInvocation.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\DynamicLinq.cs">
+      <Link>src\Dynamic\DynamicLinq.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\FluentRegex.cs">
       <Link>src\Dynamic\FluentRegex.cs</Link>
@@ -145,6 +148,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\NonRecursiveInterfaceAttribute.cs">
       <Link>src\Dynamic\NonRecursiveInterfaceAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\PartialApplyInvocation.cs">
+      <Link>src\Dynamic\PartialApplyInvocation.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\ThisFunctions.cs">
       <Link>src\Dynamic\ThisFunctions.cs</Link>

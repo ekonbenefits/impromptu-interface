@@ -270,5 +270,21 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(4, tResult.Four);
 
         }
+
+        [Test]
+        public void BasicCurryTest()
+        {
+             Func<int, double, float, double> adder = (x, y, z) => x + y + z;
+
+             var curried = Impromptu.Curry(adder);
+
+             Assert.AreEqual(6, curried(1, 2, 3)); 
+
+         Assert.AreEqual(6, curried(1, 2)(3));
+
+        Assert.AreEqual(6, curried(1)(2, 3));
+
+        Assert.AreEqual(6,curried(1)(2)(3));
+        }
     }
 }

@@ -63,6 +63,6 @@ using System.Runtime.InteropServices;
 
 #else
 
-[assembly: AssemblyVersion("6.0.6.*")]
+[assembly: AssemblyVersion("6.1.0.*")]
 
 #endif

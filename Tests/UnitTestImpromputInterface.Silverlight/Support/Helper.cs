@@ -38,6 +38,10 @@ namespace NUnit.Framework
         {
             MSTest.Assert.AreEqual(a,b);
         }
+        public static void AreNotEqual(dynamic a, dynamic b)
+        {
+            MSTest.Assert.AreNotEqual(a, b);
+        }
 
         public static void Fail()
         {

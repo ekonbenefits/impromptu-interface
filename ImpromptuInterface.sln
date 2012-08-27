@@ -64,17 +64,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface (Silverl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ImpromptuInterface.MVVM (Silverlight5)", "ImpromptuInterface.MVVM.Silverlight5\ImpromptuInterface.MVVM (Silverlight5).csproj", "{4D6515F6-A10B-4EA8-A9E3-7C621DEB0D73}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{5276D86F-212E-4F20-9346-B4E372D47044}"
-	ProjectSection(SolutionItems) = preProject
-		ImpromptuInterface.vsmdi = ImpromptuInterface.vsmdi
-		Local.testsettings = Local.testsettings
-		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
-	EndProjectSection
-EndProject
 Global
-	GlobalSection(TestCaseManagementSettings) = postSolution
-		CategoryFile = ImpromptuInterface.vsmdi
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|Mixed Platforms = Debug|Mixed Platforms

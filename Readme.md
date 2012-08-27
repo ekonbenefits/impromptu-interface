@@ -11,7 +11,7 @@ Jay Tuley jay+code@tuley.name
 
 Usage:
 
-   public interface ISimpeleClassProps
+    public interface ISimpeleClassProps
     {
         string Prop1 { get;  }
 

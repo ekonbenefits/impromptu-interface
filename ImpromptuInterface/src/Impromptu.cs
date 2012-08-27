@@ -125,14 +125,24 @@ namespace ImpromptuInterface
         }
 
 
-        public static dynamic DynamicLinq(dynamic enumerable)
+        public static dynamic DynamicLinq(object enumerable)
         {
-            return new DynamicLinq(enumerable);
+            if(!enumerable.GetType().GetInterfaces().Where(it=>it.IsGenericType)
+                .Any(it => it.GetGenericTypeDefinition() == typeof(IEnumerable<>)))
+            {
+                var tEnum = enumerable as System.Collections.IEnumerable;
+                if (tEnum !=null)
+                {
+                    enumerable = tEnum.Cast<object>();
+                }
+            }
+
+            return new LinqInstanceProxy(enumerable);
         }
 
         public static ILinq<T> Linq<T>(IEnumerable<T> enumerable)
         {
-            return new DynamicLinq(enumerable).ActLike<ILinq<T>>();
+            return new LinqInstanceProxy(enumerable).ActLike<ILinq<T>>();
         }
 
         /// <summary>

@@ -109,7 +109,8 @@
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="src\ActLikeCaster.cs" />
-    <Compile Include="src\Dynamic\DynamicLinq.cs" />
+    <Compile Include="src\Dynamic\LinqInstanceProxy.cs" />
+    <Compile Include="src\Dynamic\ExtensionToInstanceProxy.cs" />
     <Compile Include="src\Dynamic\FluentStringLookup.cs" />
     <Compile Include="src\Dynamic\ImpromptuMatch.cs" />
     <Compile Include="src\Dynamic\FluentRegex.cs" />

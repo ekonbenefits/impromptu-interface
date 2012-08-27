@@ -3,7 +3,7 @@
 <package> 
 <#@ include file="ImpromptuInterface.FSharp.MetaData.xml" #>
   <files>
-    <file src="..\..\..\..\docs\License.txt" />
+    <file src="..\..\..\..\License.txt" />
     <file src="..\..\..\..\docs\FSharp\Readme.txt" />
     <file src="..\..\..\..\ImpromptuInterface.FSharp\bin\Release\ImpromptuInterface.FSharp.xml" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.FSharp\bin\Release\ImpromptuInterface.FSharp.dll" target="lib\net40" />

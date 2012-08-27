@@ -3,8 +3,8 @@
 <package> 
 <#@ include file="ImpromptuInterface.MetaData.xml" #>
   <files>
-    <file src="..\..\..\..\docs\License.txt" />
-    <file src="..\..\..\..\docs\Core\Readme.txt" />
+    <file src="..\..\..\..\License.txt" />
+    <file src="..\..\..\..\Readme.md" />
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.xml" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface\bin\Release\Impromptu*.dll" target="lib\net40" />
     <file src="..\..\..\..\ImpromptuInterface.Silverlight\bin\Release\Impromptu*.xml" target="lib\SL40" />

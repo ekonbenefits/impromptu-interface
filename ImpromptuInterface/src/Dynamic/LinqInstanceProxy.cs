@@ -1,16 +1,48 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.Serialization;
 using System.Text;
 using ImpromptuInterface.Internal.Support;
-using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
-{
+{   
+    
+    [Serializable]
+    public class LinqInstanceProxy : ExtensionToInstanceProxy, IEnumerable<object>
+    {    
+        
+        public LinqInstanceProxy(dynamic target)
+            :base((object)target, typeof(IEnumerable<>), new[]{typeof(Enumerable)}, new[]{typeof(ILinq<>), typeof(IOrderedLinq<>)})
+        {
+
+        }
+
+        #if !SILVERLIGHT
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ImpromptuObject"/> class. when deserializing
+        /// </summary>
+        /// <param name="info">The info.</param>
+        /// <param name="context">The context.</param>
+        protected LinqInstanceProxy(SerializationInfo info,
+                                           StreamingContext context) : base(info, context)
+        {
+            
+        }
+
+        #endif
+        public IEnumerator<object> GetEnumerator()
+        {
+            return ((dynamic) CallTarget).GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
     public interface ILinq<TSource> : IEnumerable<TSource>
     {
         TSource Aggregate(Func<TSource, TSource, TSource> func);
@@ -149,243 +181,4 @@ namespace ImpromptuInterface.Dynamic
         IOrderedLinq<TSource> ThenByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer);
     }
 
-
-    [Serializable]
-    public class DynamicLinq: ImpromptuObject, IEnumerable<object>
-    {
-        private readonly dynamic _enumerable;
-        private readonly Type _staticType;
-
-#if !SILVERLIGHT
-        /// <summary>
-        /// Initializes a new instance of the <see cref="ImpromptuObject"/> class. when deserializing
-        /// </summary>
-        /// <param name="info">The info.</param>
-        /// <param name="context">The context.</param>
-        protected DynamicLinq(SerializationInfo info, 
-           StreamingContext context)
-        {
-            _enumerable = info.GetValue<Object>("_enumerable");
-            _staticType = info.GetValue<Type>("_staticType");
-        }
-
-        /// <summary>
-        /// Populates a <see cref="T:System.Runtime.Serialization.SerializationInfo"/> with the data needed to serialize the target object.
-        /// </summary>
-        /// <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> to populate with data.</param>
-        /// <param name="context">The destination (see <see cref="T:System.Runtime.Serialization.StreamingContext"/>) for this serialization.</param>
-        /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. </exception>
-        public virtual void GetObjectData(SerializationInfo info, StreamingContext context)
-        {
-            base.GetObjectData(info, context);
-            info.AddValue("_enumerable", (object)_enumerable);
-            info.AddValue("_staticType", _staticType);
-        }
-#endif
-
-        public DynamicLinq(dynamic enumerable, Type staticType= null)
-        {
-            _staticType = _staticType ?? typeof (Enumerable);
-
-
-            if(enumerable is DynamicLinq)
-                throw new ArgumentException("Don't Nest DynamicLinq Objects");
-
-            if (IsGenericEnumerable(enumerable))
-            {
-                _enumerable = enumerable;
-                return;
-            }
-
-            if (enumerable is IEnumerable)
-            {
-                _enumerable = (enumerable as IEnumerable).Cast<object>();
-                return;
-            }
-            
-            
-            throw new ArgumentException("Non a valid IEnumerable<> to be wrapped.");
-            
-        }
-
-        public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
-        {
-            result = new Invoker(binder.Name, ((object)_enumerable).GetType().GetInterface("IEnumerable`1", false).GetGenericArguments().Single(), this);
-            return true;
-        }
-
-        public class Invoker:ImpromptuObject
-        {
-            private string _name;
-            private DynamicLinq _parent;
-            private IDictionary<int,Type[]> _overloadTypes;
-            private Type _enumType;
-
-            internal Invoker(string name, Type enumType, DynamicLinq parent, Type[] overloadTypes = null)
-            {
-                _name = name;
-                _parent = parent;
-                _enumType = enumType;
-                _overloadTypes = new Dictionary<int,Type[]>();
-
-                if (overloadTypes == null)
-                {
-                    foreach (var tGenInterface in new Type[] {typeof (ILinq<>), typeof (IOrderedLinq<>)})
-                    {
-                        var members =
-                            tGenInterface.MakeGenericType(_enumType).GetMethods(BindingFlags.Instance |
-                                                                                   BindingFlags.Public).Where(
-                                                                                       it => it.Name == _name).ToList();
-                        foreach (var tMethodInfo in members)
-                        {
-                            var tParams = tMethodInfo.GetParameters().Select(it => it.ParameterType).ToArray();
-
-                            if (_overloadTypes.ContainsKey(tParams.Length))
-                            {
-                                _overloadTypes[tParams.Length] = new Type[] {};
-                            }
-                            else
-                            {
-                                _overloadTypes[tParams.Length] = tParams.Select(ReplaceGenericTypes).ToArray();
-                            }
-                        }
-
-                        foreach (var tOverloadType in _overloadTypes.ToList())
-                        {
-                            if (tOverloadType.Value.Length == 0)
-                            {
-                                _overloadTypes.Remove(tOverloadType);
-                            }
-                        }
-
-                    }
-                }else
-                    {
-                        _overloadTypes[overloadTypes.Length] = overloadTypes;
-                    }
-            }
-
-            private Type ReplaceGenericTypes(Type type)
-            {
-                if (type.IsGenericType && type.ContainsGenericParameters)
-                {
-                    var tArgs = type.GetGenericArguments();
-
-                    tArgs = tArgs.Select(ReplaceGenericTypes).ToArray();
-
-                    return type.GetGenericTypeDefinition().MakeGenericType(tArgs);
-                }
-
-                if (type.ContainsGenericParameters)
-                {
-                    return typeof (object);
-                }
-               
-                return type;
-            }
-
-            public override bool TryGetMember(System.Dynamic.GetMemberBinder binder, out object result)
-            {
-                if (binder.Name == "Overloads")
-                {
-                    result = this;
-                    return true;
-                }
-                return base.TryGetMember(binder, out result);
-            }
-
-            public override bool TryGetIndex(System.Dynamic.GetIndexBinder binder, object[] indexes, out object result)
-            {
-                result = new Invoker(_name, _enumType, _parent, indexes.Select(it=>Impromptu.InvokeConvert(it,typeof(Type),@explicit:true)).Cast<Type>().ToArray());
-                return true;
-            }
-
-            public override bool TryInvoke(System.Dynamic.InvokeBinder binder, object[] args, out object result)
-            {
-                object[] tArgs = args;
-                if (_overloadTypes.ContainsKey(args.Length))
-                {
-                    tArgs = _overloadTypes[args.Length].Zip(args, Tuple.Create)
-                        .Select(it => it.Item2 != null ? Impromptu.InvokeConvert(it.Item2, it.Item1, @explicit: true) : null).ToArray();
-                    
-                }
-                result = _parent.InvokeStaticMethod(_name, tArgs);
-                return true;
-            }
-        }
-
-
-
-        public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
-        {
-             result = InvokeStaticMethod(binder.Name,args);
-
-
-            return true;
-        }
-
-        protected object InvokeStaticMethod(string name, object[] args)
-        {
-            var staticType = InvokeContext.CreateStatic;
-
-
-            var tList = new List<object> {_enumerable};
-            tList.AddRange(args);
-
-            var result = Impromptu.InvokeMember(staticType(_staticType), name, tList.ToArray());
-            Type tOutType;
-            if (TryTypeForName(name, out tOutType))
-            {
-                if (tOutType.IsInterface)
-                {
-                    var tIsGeneric = tOutType.IsGenericType;
-                    if (tOutType.IsGenericType)
-                    {
-                        tOutType = tOutType.GetGenericTypeDefinition();
-                    }
-
-                    if (tOutType == typeof (ILinq<>)
-                        || tOutType == typeof (IOrderedLinq<>)
-                        ||
-                        KnownInterfaces.Select(it => tIsGeneric && it.IsGenericType ? it.GetGenericTypeDefinition() : it)
-                            .Contains(tOutType))
-                    {
-                        result = new DynamicLinq(result);
-                    }
-                }
-            }
-            else
-            {
-                if (IsGenericEnumerable(result))
-                {
-                    result = new DynamicLinq(result);
-                }
-            }
-
-            return result;
-        } 
-
-        private bool IsGenericEnumerable(object enumerable)
-        {
-
-            if (enumerable is DynamicLinq)
-            {
-                return false;
-            }
-
-            return enumerable.GetType().GetInterfaces().Where(it => it.IsGenericType).Any(
-                it => it.GetGenericTypeDefinition() == typeof (IEnumerable<>));
-
-        }
-
-        public IEnumerator<object> GetEnumerator()
-        {
-           return _enumerable.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
-    }
 }

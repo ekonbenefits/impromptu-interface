@@ -100,8 +100,8 @@
     <Compile Include="..\ImpromptuInterface\src\Dynamic\CacheableInvocation.cs">
       <Link>src\Dynamic\CacheableInvocation.cs</Link>
     </Compile>
-    <Compile Include="..\ImpromptuInterface\src\Dynamic\DynamicLinq.cs">
-      <Link>src\Dynamic\DynamicLinq.cs</Link>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\ExtensionToInstanceProxy.cs">
+      <Link>src\Dynamic\ExtensionToInstanceProxy.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\FluentRegex.cs">
       <Link>src\Dynamic\FluentRegex.cs</Link>
@@ -162,6 +162,9 @@
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\Invocation.cs">
       <Link>src\Dynamic\Invocation.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\LinqInstanceProxy.cs">
+      <Link>src\Dynamic\LinqInstanceProxy.cs</Link>
     </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\Mimic.cs">
       <Link>src\Dynamic\Mimic.cs</Link>

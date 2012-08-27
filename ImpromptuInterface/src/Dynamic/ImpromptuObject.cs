@@ -99,7 +99,13 @@ namespace ImpromptuInterface.Dynamic
             get
             {
                 if (PropertySpec != null)
-                    return new Type[] {};
+                    return Enumerable.Empty<Type>();
+
+                if (_hash == null)
+                {
+                    return Enumerable.Empty<Type>();
+                }
+
                 return _hash.Types.Cast<Type>();
             }
             set

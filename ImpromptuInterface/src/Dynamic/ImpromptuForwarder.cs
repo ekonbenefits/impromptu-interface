@@ -147,7 +147,15 @@ namespace ImpromptuInterface.Dynamic
                 return true;
             }
 
-            result = Impromptu.InvokeGet(CallTarget, binder.Name);
+            try
+            {
+                result = Impromptu.InvokeGet(CallTarget, binder.Name);
+            }
+            catch (RuntimeBinderException)
+            {
+                result = null;
+                return false;
+            }
 
             return true;
 
@@ -249,9 +257,16 @@ namespace ImpromptuInterface.Dynamic
                 return true;
             }
 
-            Impromptu.InvokeSet(CallTarget, binder.Name, value);
+            try
+            {
+                Impromptu.InvokeSet(CallTarget, binder.Name, value);
 
-            return true;
+                return true;
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
         }
 
         public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
@@ -264,8 +279,16 @@ namespace ImpromptuInterface.Dynamic
 
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, indexes);
 
-            result = Impromptu.InvokeGetIndex(CallTarget, tArgs);
-            return true;
+            try
+            {
+                result = Impromptu.InvokeGetIndex(CallTarget, tArgs);
+                return true;
+            }
+            catch (RuntimeBinderException)
+            {
+                result = null;
+                return false;
+            }
         }
 
         public override bool TrySetIndex(SetIndexBinder binder, object[] indexes, object value)
@@ -277,9 +300,17 @@ namespace ImpromptuInterface.Dynamic
 
             var tCombinedArgs = indexes.Concat(new[] { value }).ToArray();
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, tCombinedArgs);
+            try
+            {
 
-            Impromptu.InvokeSetIndex(CallTarget,tArgs);
-            return true;
+
+                Impromptu.InvokeSetIndex(CallTarget, tArgs);
+                return true;
+            }
+            catch (RuntimeBinderException)
+            {
+                return false;
+            }
         }
 
 

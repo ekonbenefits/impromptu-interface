@@ -59,10 +59,10 @@ using System.Runtime.InteropServices;
 
 #if SILVERLIGHT
 
-[assembly: AssemblyVersion("6.0.6.0")]
+[assembly: AssemblyVersion("6.1.1.0")]
 
 #else
 
-[assembly: AssemblyVersion("6.1.0.*")]
+[assembly: AssemblyVersion("6.1.1.*")]
 
 #endif

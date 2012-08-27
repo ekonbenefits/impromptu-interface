@@ -29,7 +29,7 @@ Or
     tNew.Prop2 = 42L;
     tNew.Prop3 = Guid.NewGuid();
 
-    ISimpeleClassProps tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
+    ISimpeleClassProps tActsLike = Impromptu.ActLike(tNew);
 
 Also Contains may primitive base classes such as:
 

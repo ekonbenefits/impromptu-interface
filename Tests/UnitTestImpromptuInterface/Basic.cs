@@ -545,6 +545,20 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
+        public void GenericMethodTest()
+        {
+            dynamic ot = new OtherThing();
+            IGenericTest test = Impromptu.ActLike(ot);
+
+            var tResult =test.GetThings<Thing>(Guid.Empty);
+
+            Assert.AreEqual(true, tResult is List<Thing>);
+
+        }
+
+
+
+        [Test]
         public void GenericOutMethodTest()
         {
             var tPoco = new GenericMethOutPoco();

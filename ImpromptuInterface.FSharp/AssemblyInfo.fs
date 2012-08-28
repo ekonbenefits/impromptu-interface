@@ -16,7 +16,7 @@ open System.Runtime.InteropServices;
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("Ekon Benefits")>]
 [<assembly: AssemblyProduct("ImpromptuInterface.FSharp")>]
-[<assembly: AssemblyCopyright("Copyright © Ekon Benefits 2011")>]
+[<assembly: AssemblyCopyright("Copyright © Ekon Benefits 2011-2012")>]
 [<assembly: AssemblyTrademark("")>]
 [<assembly: AssemblyCulture("")>]
  
@@ -40,5 +40,5 @@ open System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the ‘*’ as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[<assembly: AssemblyVersion("1.2.8.0")>]
+[<assembly: AssemblyVersion("1.2.9.0")>]
 ()

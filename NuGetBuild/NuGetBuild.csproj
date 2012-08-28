@@ -76,6 +76,7 @@
     <None Include="Core\ImpromptuInterface.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ImpromptuInterface.nuspec</LastGenOutput>
+      <SubType>Designer</SubType>
     </None>
     <None Include="FSharp\ImpromptuInterface.FSharp.nuspec">
       <DependentUpon>ImpromptuInterface.FSharp.tt</DependentUpon>

@@ -17,7 +17,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ekon Benefits")]
 [assembly: AssemblyProduct("ImpromptuInterface.MVVM")]
-[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2011")]
+[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2011-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -42,7 +42,7 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 #if SILVERLIGHT
-[assembly: AssemblyVersion("4.0.8.0")]
+[assembly: AssemblyVersion("4.0.9.0")]
 #else
-[assembly: AssemblyVersion("4.0.8.*")]
+[assembly: AssemblyVersion("4.0.9.*")]
 #endif

@@ -81,23 +81,25 @@ namespace ImpromptuInterface.Dynamic
 
                 var tInterface = CallTarget.GetType().GetInterface(_extendedType.Name, false);
                 result = new Invoker(binder.Name,
-                                     tInterface.IsGenericType ? tInterface.GetGenericArguments() : new Type[] {}, this);
+                                     tInterface.IsGenericType ? tInterface.GetGenericArguments() : new Type[] {},null, this);
             }
             return true;
         }
 
         public class Invoker:ImpromptuObject
         {
-            private string _name;
-            private ExtensionToInstanceProxy _parent;
-            private IDictionary<int,Type[]> _overloadTypes;
-            private Type[] _genericParams;
+            protected string _name;
+            protected ExtensionToInstanceProxy _parent;
+            protected IDictionary<int, Type[]> _overloadTypes;
+            protected Type[] _genericParams;
+            protected Type[] _genericMethodParameters;
 
-            internal Invoker(string name, Type[] genericParameters, ExtensionToInstanceProxy parent, Type[] overloadTypes = null)
+            internal Invoker(string name, Type[] genericParameters, Type[] genericMethodParameters, ExtensionToInstanceProxy parent, Type[] overloadTypes = null)
             {
                 _name = name;
                 _parent = parent;
                 _genericParams = genericParameters;
+                _genericMethodParameters = genericMethodParameters;
                 _overloadTypes = new Dictionary<int,Type[]>();
 
                 if (overloadTypes == null)
@@ -168,17 +170,13 @@ namespace ImpromptuInterface.Dynamic
             {
                 if (binder.Name == "Overloads")
                 {
-                    result = this;
+                    result = new OverloadInvoker(_name, _genericParams,_genericMethodParameters, _parent);
                     return true;
                 }
                 return base.TryGetMember(binder, out result);
             }
 
-            public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
-            {
-                result = new Invoker(_name, _genericParams, _parent, indexes.Select(it=>Impromptu.InvokeConvert(it,typeof(Type),@explicit:true)).Cast<Type>().ToArray());
-                return true;
-            }
+          
 
             public override bool TryInvoke(InvokeBinder binder, object[] args, out object result)
             {
@@ -189,26 +187,68 @@ namespace ImpromptuInterface.Dynamic
                         .Select(it => it.Item2 != null ? Impromptu.InvokeConvert(it.Item2, it.Item1, @explicit: true) : null).ToArray();
                     
                 }
-                result = _parent.InvokeStaticMethod(_name, tArgs);
+
+                var name = InvokeMemberName.Create(_name, _genericMethodParameters);
+
+                result = _parent.InvokeStaticMethod(name, tArgs);
+                return true;
+            }
+
+            public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+            {
+                result = new Invoker(_name, _genericParams, indexes.Select(it => Impromptu.InvokeConvert(it, typeof(Type), @explicit: true)).Cast<Type>().ToArray(), _parent);
                 return true;
             }
         }
 
+        public class OverloadInvoker:Invoker
+        {
+            internal OverloadInvoker(string name, Type[] genericParameters, Type[] genericMethodParameters, ExtensionToInstanceProxy parent)
+                : base(name, genericParameters,genericMethodParameters, parent)
+            {
+            }
+
+
+            public override bool TryGetIndex(GetIndexBinder binder, object[] indexes, out object result)
+            {
+                result = new Invoker(_name, _genericParams,_genericMethodParameters, _parent, indexes.Select(it => Impromptu.InvokeConvert(it, typeof(Type), @explicit: true)).Cast<Type>().ToArray());
+                return true;
+            }
+        }
 
 
         public override bool TryInvokeMember(System.Dynamic.InvokeMemberBinder binder, object[] args, out object result)
         {
             if (!base.TryInvokeMember(binder, args, out result))
             {
-                result = InvokeStaticMethod(binder.Name, args);
+
+                Type[] types = null;
+                try
+                {
+                    IList<Type> typeList =Impromptu.InvokeGet(binder,
+                                           "Microsoft.CSharp.RuntimeBinder.ICSharpInvokeOrInvokeMemberBinder.TypeArguments");
+                    if(typeList != null)
+                    {
+
+                        types = typeList.ToArray();
+                        
+                    }
+
+                }catch(RuntimeBinderException)
+                {
+                    types = null;
+                }
+
+                var name=InvokeMemberName.Create;
+                result = InvokeStaticMethod(name(binder.Name, types), args);
             }
             return true;
         }
 
-        protected object InvokeStaticMethod(string name, object[] args)
+        protected object InvokeStaticMethod(String_OR_InvokeMemberName name, object[] args)
         {
             var staticType = InvokeContext.CreateStatic;
-
+            var nameArgs = InvokeMemberName.Create;
 
             var tList = new List<object> { CallTarget };
             tList.AddRange(args);
@@ -216,17 +256,38 @@ namespace ImpromptuInterface.Dynamic
             object result =null;
             var sucess = false;
             var exceptionList = new List<Exception>();
+
+            var tGenericPossibles = new List<Type[]>();
+            if (name.GenericArgs != null && name.GenericArgs.Length > 0)
+            {
+                var tInterface = CallTarget.GetType().GetInterface(_extendedType.Name, false);
+                var tTypeGenerics = (tInterface.IsGenericType ? tInterface.GetGenericArguments()
+                                            : new Type[] { }).Concat(name.GenericArgs).ToArray();
+
+                tGenericPossibles.Add(tTypeGenerics);
+                tGenericPossibles.Add(name.GenericArgs);
+            }
+            else
+            {
+                tGenericPossibles.Add(null);
+            }
+                      
+
+
             foreach (var sType in _staticTypes)
             {
-                try
+                foreach (var tGenericPossible in tGenericPossibles)
                 {
-                    result = Impromptu.InvokeMember(staticType(sType), name, tList.ToArray());
-                    sucess = true;
-                    break;
-                }
-                catch (RuntimeBinderException ex)
-                {
-                    exceptionList.Add(ex);
+                    try
+                    {
+                        result = Impromptu.InvokeMember(staticType(sType), nameArgs(name.Name,tGenericPossible), tList.ToArray());
+                        sucess = true;
+                        break;
+                    }
+                    catch (RuntimeBinderException ex)
+                    {
+                        exceptionList.Add(ex);
+                    }
                 }
             }
 
@@ -242,7 +303,7 @@ namespace ImpromptuInterface.Dynamic
 
 
             Type tOutType;
-            if (TryTypeForName(name, out tOutType))
+            if (TryTypeForName(name.Name, out tOutType))
             {
                 if (tOutType.IsInterface)
                 {
@@ -255,7 +316,7 @@ namespace ImpromptuInterface.Dynamic
                     if (InstanceHints.Select(it => tIsGeneric && it.IsGenericType ? it.GetGenericTypeDefinition() : it)
                             .Contains(tOutType))
                     {
-                        result = new ExtensionToInstanceProxy(result,_extendedType, _staticTypes, _instanceHints);
+                        result = CreateSelf(result, _extendedType, _staticTypes, _instanceHints);
                     }
                 }
             }
@@ -263,12 +324,17 @@ namespace ImpromptuInterface.Dynamic
             {
                 if (IsExtendedType(result))
                 {
-                    result = new ExtensionToInstanceProxy(result, _extendedType, _staticTypes, _instanceHints);
+                    result = CreateSelf(result, _extendedType, _staticTypes, _instanceHints);
                 }
             }
 
             return result;
-        } 
+        }
+
+        protected virtual ExtensionToInstanceProxy CreateSelf(object target, Type extendedType, Type[] staticTypes, Type[] instanceHints)
+        {
+            return  new ExtensionToInstanceProxy(target,extendedType,staticTypes, instanceHints);
+        }
 
         private bool IsExtendedType(object target)
         {

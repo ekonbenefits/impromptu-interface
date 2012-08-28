@@ -345,11 +345,21 @@ namespace ImpromptuInterface.Build
         /// <param name="context">The context.</param>
         /// <param name="argInfo">The arg info.</param>
         /// <param name="argNames">The arg names.</param>
-        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, Type context, ParameterInfo[] argInfo, IEnumerable<string> argNames)
+        public static void EmitDynamicMethodInvokeBinder(this ILGenerator generator, CSharpBinderFlags flag, string name, IEnumerable<Type> genericParms, Type context, ParameterInfo[] argInfo, IEnumerable<string> argNames)
         {
+            if (genericParms != null && !genericParms.Any())
+                genericParms = null;
+
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
             generator.Emit(OpCodes.Ldstr, name);
-            generator.Emit(OpCodes.Ldnull);
+            if (genericParms == null)
+            {
+                generator.Emit(OpCodes.Ldnull);
+            }
+            else
+            {
+                generator.EmitArray(typeof(Type), genericParms.Select(arg => (Action<ILGenerator>)(gen => gen.EmitTypeOf(arg))).ToList());
+            }
             generator.EmitTypeOf(context);
             var tList = new List<Action<ILGenerator>> { gen => gen.EmitCreateCSharpArgumentInfo(CSharpArgumentInfoFlags.None) };
 

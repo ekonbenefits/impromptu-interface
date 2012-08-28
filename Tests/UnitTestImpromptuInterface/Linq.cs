@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -61,50 +62,75 @@ namespace UnitTestImpromptuInterface
 
         }
 
+        private dynamic RunPythonHelper( object linq, string code)
+        {
+
+            var tEngine = Python.CreateEngine();
+            var tScope = tEngine.CreateScope();
+
+            tScope.SetVariable("linq", linq);
+
+            var tSource = tEngine.CreateScriptSourceFromString(code.Trim(), SourceCodeKind.Statements);
+            var tCompiled = tSource.Compile();
+
+            tCompiled.Execute(tScope);
+            return tScope.GetVariable("result");
+        }
+
+
           [Test]
         public void PythonLinq()
           {
 
               var expected = Enumerable.Range(1, 10).Where(x=> x < 5).OrderBy(x => 10 - x).First();
 
-
-            var tEngine = Python.CreateEngine();
-            var tScope = tEngine.CreateScope();
-
-            tScope.SetVariable("linq", Impromptu.Linq(Enumerable.Range(1, 10)));
-
-            var tSource = tEngine.CreateScriptSourceFromString(@"
+              var actual = RunPythonHelper(Impromptu.Linq(Enumerable.Range(1, 10)),@"
 import System
 result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
 
-".Trim(), SourceCodeKind.Statements);
-            var tCompiled = tSource.Compile();
-
-            tCompiled.Execute(tScope);
-              var actual = tScope.GetVariable("result");
-
+");
               Assert.AreEqual( expected,actual);
         }
+
+          [Test]
+          public void PythonLinqGenericArgs()
+          {
+              var start = new Object[] {1, "string", 4, Guid.Empty, 6};
+              var expected = start.OfType<int>().Skip(1).First();
+              var actual = RunPythonHelper(Impromptu.Linq(start), @"
+import System
+result = linq.OfType[System.Int32]().Skip(1).First()
+
+");
+              Assert.AreEqual(expected,actual);
+          }
+
+          [Test]
+          public void PythonDynamicLinqGenericArgs()
+          {
+              var start = new Object[] { 1, "string", 4, Guid.Empty, 6 };
+              var expected = start.OfType<int>().Skip(1).First();
+              var actual = RunPythonHelper(Impromptu.DynamicLinq(start), @"
+import System
+result = linq.OfType[System.Int32]().Skip(1).First()
+
+");
+              Assert.AreEqual(expected, actual);
+          }
+
 
           [Test]
           public void PythonDynamicLinq()
           {
               var expected = Enumerable.Range(1, 10).Where(x => x < 5).OrderBy(x => 10 - x).First();
 
-              var tEngine = Python.CreateEngine();
-              var tScope = tEngine.CreateScope();
 
-              tScope.SetVariable("linq", Impromptu.DynamicLinq(Enumerable.Range(1, 10)));
-
-              var tSource = tEngine.CreateScriptSourceFromString(@"
+              var actual = RunPythonHelper(Impromptu.DynamicLinq(Enumerable.Range(1, 10)),
+                                           @"
 import System
 result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
 
-".Trim(), SourceCodeKind.Statements);
-              var tCompiled = tSource.Compile();
-
-              tCompiled.Execute(tScope);
-              var actual = tScope.GetVariable("result");
+");
 
               Assert.AreEqual(expected, actual);
           }
@@ -121,9 +147,8 @@ result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(l
             Console.WriteLine("{");
             foreach (var line in tList
             .Where(it => it.GetParameters().Any()
-            && it.GetParameters().First().ParameterType.IsGenericType
-            && it.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IEnumerable<>)
-            && HelperSignleGenericArgMatch(it.GetParameters().First().ParameterType.GetGenericArguments().Single())
+            && (HelperIsGenericExtension(it,typeof(IEnumerable<>)) 
+                || it.GetParameters().First().ParameterType == typeof(IEnumerable))
             )
             .Select(HelperMakeName))
             {
@@ -136,9 +161,7 @@ result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(l
             Console.WriteLine("{");
             foreach (var line in tList
             .Where(it => it.GetParameters().Any()
-            && it.GetParameters().First().ParameterType.IsGenericType
-            && it.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IOrderedEnumerable<>)
-            && HelperSignleGenericArgMatch(it.GetParameters().First().ParameterType.GetGenericArguments().Single())
+            && HelperIsGenericExtension(it,typeof(IOrderedEnumerable<>))
             )
             .Select(HelperMakeName))
             {
@@ -150,18 +173,22 @@ result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(l
             Console.WriteLine("//Skipped Methods");
             foreach (var line in tList
             .Where(it => it.GetParameters().Any()
-            && !(it.GetParameters().First().ParameterType.IsGenericType
-            && it.GetParameters().First().ParameterType.GetGenericTypeDefinition() != typeof(IOrderedEnumerable<>)
-            && HelperSignleGenericArgMatch(it.GetParameters().First().ParameterType.GetGenericArguments().Single()))
-            && !(it.GetParameters().First().ParameterType.IsGenericType
-            && it.GetParameters().First().ParameterType.GetGenericTypeDefinition() == typeof(IOrderedEnumerable<>)
-            && HelperSignleGenericArgMatch(it.GetParameters().First().ParameterType.GetGenericArguments().Single()))
-            ).Select(HelperMakeNameDebug))
+            && !(HelperIsGenericExtension(it, typeof(IEnumerable<>)))
+            && !(HelperIsGenericExtension(it, typeof(IOrderedEnumerable<>)))
+            && !(it.GetParameters().First().ParameterType == typeof(IEnumerable)))
+            .Select(HelperMakeNameDebug))
             {
                 Console.WriteLine("//" + line);
             }
 
 
+        }
+
+        private bool HelperIsGenericExtension(MethodInfo it, Type genericType)
+        {
+            return it.GetParameters().First().ParameterType.IsGenericType
+                   && it.GetParameters().First().ParameterType.GetGenericTypeDefinition() == genericType
+                   && HelperSignleGenericArgMatch(it.GetParameters().First().ParameterType.GetGenericArguments().Single());
         }
 
         bool HelperSignleGenericArgMatch(Type info)

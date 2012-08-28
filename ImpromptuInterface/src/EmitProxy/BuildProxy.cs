@@ -581,8 +581,8 @@ namespace ImpromptuInterface.Build
                 tParamTypes = tReplacedTypes.Item2;
 
                 tReducedParams = tParamTypes.Select(ReduceToElementType).ToArray();
-
-                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tReducedParams.SelectMany(FlattenGenericParameters).Distinct().ToArray());
+                var tGenericParams = tMethodBuilder.GetGenericArguments();
+                tCallSite = tCallSite.GetGenericTypeDefinition().MakeGenericType(tGenericParams);
                 if (tConvertFuncType != null)
                     tConvertFuncType = UpdateCallsiteFuncType(tConvertFuncType, tReturnType);
                 tInvokeFuncType = UpdateCallsiteFuncType(tInvokeFuncType, tReturnType != typeof(void) ? typeof(object) : typeof(void), tReducedParams);
@@ -713,6 +713,7 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     emitInfo.ResolveReturnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None,
                     emitInfo.Name, 
+                    methodBuilder.GetGenericArguments(),
                     emitInfo.ContextType,
                     paramInfo, 
                     emitInfo.ArgNames);
@@ -1035,6 +1036,7 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
                     tRemoveMethod.Name,
+                    Enumerable.Empty<Type>(),
                     tEmitInfo.ContextType,
                     tRemoveMethod.GetParameters(),
                     Enumerable.Repeat(default(string),
@@ -1145,7 +1147,8 @@ namespace ImpromptuInterface.Build
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
-                    tAddMethod.Name,
+                    tAddMethod.Name, 
+                    Enumerable.Empty<Type>(),
                     tEmitInfo.ContextType,
                     tAddMethod.GetParameters(),
                     Enumerable.Repeat(default(string),

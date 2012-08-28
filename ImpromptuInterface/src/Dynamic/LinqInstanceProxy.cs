@@ -31,6 +31,11 @@ namespace ImpromptuInterface.Dynamic
             
         }
 
+        protected override ExtensionToInstanceProxy CreateSelf(object target, Type extendedType, Type[] staticTypes, Type[] instanceHints)
+        {
+            return new LinqInstanceProxy(target);
+        }
+
         #endif
         public IEnumerator<object> GetEnumerator()
         {
@@ -62,6 +67,7 @@ namespace ImpromptuInterface.Dynamic
         Nullable<Double> Average(Func<TSource, Nullable<Double>> selector);
         Decimal Average(Func<TSource, Decimal> selector);
         Nullable<Decimal> Average(Func<TSource, Nullable<Decimal>> selector);
+        ILinq<TResult> Cast<TResult>();
         ILinq<TSource> Concat(IEnumerable<TSource> second);
         Boolean Contains(TSource value);
         Boolean Contains(TSource value, IEqualityComparer<TSource> comparer);
@@ -123,6 +129,7 @@ namespace ImpromptuInterface.Dynamic
         Decimal Min(Func<TSource, Decimal> selector);
         Nullable<Decimal> Min(Func<TSource, Nullable<Decimal>> selector);
         TResult Min<TResult>(Func<TSource, TResult> selector);
+        ILinq<TResult> OfType<TResult>();
         IOrderedLinq<TSource> OrderBy<TKey>(Func<TSource, TKey> keySelector);
         IOrderedLinq<TSource> OrderBy<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer);
         IOrderedLinq<TSource> OrderByDescending<TKey>(Func<TSource, TKey> keySelector);
@@ -180,5 +187,6 @@ namespace ImpromptuInterface.Dynamic
         IOrderedLinq<TSource> ThenByDescending<TKey>(Func<TSource, TKey> keySelector);
         IOrderedLinq<TSource> ThenByDescending<TKey>(Func<TSource, TKey> keySelector, IComparer<TKey> comparer);
     }
+
 
 }

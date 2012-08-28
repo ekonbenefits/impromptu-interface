@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
@@ -343,10 +344,27 @@ namespace UnitTestImpromptuInterface
             result = "success";
             return true;
         }
-
-
-    
     }
+
+
+    public class Thing { }
+
+    public interface IGenericTest
+    {
+        List<T> GetThings<T>(Guid test) where T : Thing;
+    }
+    public class OtherThing 
+    {
+
+
+        List<T> GetThings<T>(Guid test) where T : Thing
+        {
+            return new List<T>();
+        }
+
+    }
+
+
     public class GenericMethOutPoco
     {
         public bool Func<T>(out T result)

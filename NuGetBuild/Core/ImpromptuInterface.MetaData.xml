@@ -1,6 +1,6 @@
 ﻿<metadata>
   <id>ImpromptuInterface</id>
-  <version>6.1.1</version>
+  <version>6.1.2</version>
   <authors>Jay Tuley</authors>
   <owners>Jay Tuley</owners>
   <description>A Lightweight Duck Casting Framework for dynamic C# 4.0 (.net4 &amp; silverlight4 &amp; silveright5 ). Includes helper methods for dynamic invocation via method and property names known only at runtime (runs faster than reflection).</description>

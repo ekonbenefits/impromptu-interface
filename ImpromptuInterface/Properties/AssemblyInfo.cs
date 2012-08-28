@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ekon Benefits")]
 [assembly: AssemblyProduct("ImpromptuInterface")]
-[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2010-2011")]
+[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2010-2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -59,10 +59,10 @@ using System.Runtime.InteropServices;
 
 #if SILVERLIGHT
 
-[assembly: AssemblyVersion("6.1.1.0")]
+[assembly: AssemblyVersion("6.1.2.0")]
 
 #else
 
-[assembly: AssemblyVersion("6.1.1.*")]
+[assembly: AssemblyVersion("6.1.2.*")]
 
 #endif

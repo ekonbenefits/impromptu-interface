@@ -78,7 +78,7 @@ namespace ImpromptuInterface
                                               bool isEvent = false)
         {
 
-            return InvokeHelper.CreateCallSite(delegateType, binder.GetType(), () => binder, name, context, argNames,
+            return InvokeHelper.CreateCallSite(delegateType, binder.GetType(), InvokeHelper.Unknown, () => binder, name, context, argNames,
                                                staticContext,
                                                isEvent);
         }
@@ -120,7 +120,7 @@ namespace ImpromptuInterface
                                                     string[] argNames = null, bool staticContext = false,
                                                     bool isEvent = false) where T : class
         {
-            return InvokeHelper.CreateCallSite<T>(binder.GetType(), () => binder, name, context, argNames, staticContext,
+            return InvokeHelper.CreateCallSite<T>(binder.GetType(), InvokeHelper.Unknown, () => binder, name, context, argNames, staticContext,
                                                   isEvent);
         }
 

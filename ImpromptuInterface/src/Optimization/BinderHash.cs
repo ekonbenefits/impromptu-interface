@@ -22,9 +22,11 @@ namespace ImpromptuInterface.Optimization
 {
     internal class BinderHash
     {
+   
 
-        protected BinderHash(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent)
+        protected BinderHash(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent, bool knownBinder)
         {
+            KnownBinder = knownBinder;
             BinderType = binderType;
             StaticContext = staticContext;
             DelegateType = delegateType;
@@ -35,12 +37,14 @@ namespace ImpromptuInterface.Optimization
 
         }
 
-        public static BinderHash Create(Type delType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent)
+     
+
+        public static BinderHash Create(Type delType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent, bool knownBinder)
         {
-            return new BinderHash(delType, name, context, argNames, binderType, staticContext, isEvent);
+            return new BinderHash(delType, name, context, argNames, binderType, staticContext, isEvent, knownBinder);
         }
 
-
+        public bool KnownBinder { get; protected set; }
         public Type BinderType { get; protected set; }
         public bool StaticContext { get; protected set; }
         public bool IsEvent { get; protected set; }
@@ -62,7 +66,7 @@ namespace ImpromptuInterface.Optimization
                 && other.IsEvent == IsEvent
                 && other.StaticContext == StaticContext
                 && Equals(other.Context, Context)
-                && Equals(other.BinderType, BinderType)
+                && (KnownBinder || Equals(other.BinderType, BinderType))
                 && Equals(other.DelegateType, DelegateType)
                 && Equals(other.Name, Name)
                 && (tArgNames == null
@@ -100,8 +104,8 @@ namespace ImpromptuInterface.Optimization
 
     internal class GenericBinderHashBase : BinderHash
     {
-        protected GenericBinderHashBase(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent)
-            : base(delegateType, name, context, argNames, binderType, staticContext, isEvent)
+        protected GenericBinderHashBase(Type delegateType, String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent, bool knownBinder)
+            : base(delegateType, name, context, argNames, binderType, staticContext, isEvent, knownBinder)
         {
         }
     }
@@ -109,13 +113,13 @@ namespace ImpromptuInterface.Optimization
     internal class BinderHash<T> : GenericBinderHashBase where T : class
     {
 
-        public static BinderHash<T> Create(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent)
+        public static BinderHash<T> Create(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent, bool knownBinder)
         {
-            return new BinderHash<T>(name, context, argNames, binderType, staticContext, isEvent );
+            return new BinderHash<T>(name, context, argNames, binderType, staticContext, isEvent, knownBinder);
         }
 
-        protected BinderHash(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent)
-            : base(typeof(T), name, context, argNames, binderType, staticContext, isEvent)
+        protected BinderHash(String_OR_InvokeMemberName name, Type context, string[] argNames, Type binderType, bool staticContext, bool isEvent,bool knownBinder)
+            : base(typeof(T), name, context, argNames, binderType, staticContext, isEvent,knownBinder)
         {
         }
 
@@ -130,7 +134,7 @@ namespace ImpromptuInterface.Optimization
                            !(other.ArgNames == null ^ ArgNames == null)
                            && other.IsEvent == IsEvent
                            && other.StaticContext == StaticContext
-                           && Equals(other.BinderType, BinderType)
+                           && (KnownBinder || Equals(other.BinderType, BinderType))
                            && Equals(other.Context, Context)
                            && Equals(other.Name, Name)
                            && (ArgNames == null

@@ -21,6 +21,81 @@ namespace ImpromptuInterface.Optimization
     internal static partial class InvokeHelper
     {
 
+
+        private static readonly IDictionary<BinderHash, CallSite> _unknownBinderCache = new Dictionary<BinderHash, CallSite>(20);
+        private static readonly IDictionary<BinderHash, CallSite> _getBinderCache = new Dictionary<BinderHash, CallSite>(20);
+        private static readonly IDictionary<BinderHash, CallSite> _setBinderCache = new Dictionary<BinderHash, CallSite>(20);
+        private static readonly IDictionary<BinderHash, CallSite> _memberBinderCache = new Dictionary<BinderHash, CallSite>(20);
+        private static readonly IDictionary<BinderHash, CallSite> _directBinderCache = new Dictionary<BinderHash, CallSite>(20);
+        private static readonly IDictionary<BinderHash, CallSite> _constructorBinderCache = new Dictionary<BinderHash, CallSite>(20);
+
+        internal const int Unknown =0;
+        internal const int KnownGet = 1;
+        internal const int KnownSet = 2;
+        internal const int KnownMember = 3;
+        internal const int KnownDirect = 4;
+        internal const int KnownConstructor = 5;
+
+        private static bool TryDynamicCachedCallSite(BinderHash hash, int knownBinderType, out CallSite callSite)
+        {
+            switch(knownBinderType)
+            {
+                default:
+                    return _unknownBinderCache.TryGetValue(hash, out callSite);
+
+                case KnownGet:
+                    return _getBinderCache.TryGetValue(hash, out callSite);
+
+                case KnownSet:
+                    return _setBinderCache.TryGetValue(hash, out callSite);
+
+                case KnownMember:
+                    return _memberBinderCache.TryGetValue(hash, out callSite);
+
+                case KnownDirect:
+                    return _directBinderCache.TryGetValue(hash, out callSite);
+
+                case KnownConstructor:
+                    return _constructorBinderCache.TryGetValue(hash, out callSite);
+                            
+            }
+
+        }
+
+        private static void SetDynamicCachedCallSite(BinderHash hash, int knownBinderType, CallSite callSite)
+        {
+            switch (knownBinderType)
+            {
+                default:
+                    _unknownBinderCache[hash] = callSite;
+                    break;
+                case KnownGet:
+                    _getBinderCache[hash] = callSite;
+                    break;
+                case KnownSet:
+                    _setBinderCache[hash] = callSite;
+                    break;
+                case KnownMember:
+                    _memberBinderCache[hash] = callSite;
+                    break;
+                case KnownDirect:
+                    _directBinderCache[hash] = callSite;
+                    break;
+                case KnownConstructor:
+                    _constructorBinderCache[hash] = callSite;
+                    break;
+            }
+        }
+
+        private static readonly object _binderCacheLock = new object();
+
+        /// <summary>
+        /// LazyBinderType
+        /// </summary>
+        internal delegate CallSiteBinder LazyBinder();
+
+
+
         public static bool IsActionOrFunc(object target)
         {
             if (target == null)
@@ -57,17 +132,6 @@ namespace ImpromptuInterface.Optimization
             return result;
         }
 
-        private static readonly IDictionary<BinderHash, CallSite> _binderCache = new Dictionary<BinderHash, CallSite>();
-
-
-        
-
-        private static readonly object _binderCacheLock = new object();
-
-        /// <summary>
-        /// LazyBinderType
-        /// </summary>
-        internal delegate CallSiteBinder LazyBinder();
 
 
         internal static IEnumerable<CSharpArgumentInfo> GetBindingArgumentList(object[] args, string[] argNames, bool staticContext)
@@ -114,23 +178,25 @@ namespace ImpromptuInterface.Optimization
         internal static CallSite CreateCallSite(
             Type delegateType,
             Type specificBinderType,
+             int knownType,
             LazyBinder binder,
             String_OR_InvokeMemberName name,
             Type context,
             string[] argNames = null,
             bool staticContext = false,
             bool isEvent = false
+           
             )
         {
             
-            var tHash = BinderHash.Create(delegateType, name, context, argNames, specificBinderType, staticContext, isEvent);
+            var tHash = BinderHash.Create(delegateType, name, context, argNames, specificBinderType, staticContext, isEvent, knownType != Unknown);
             lock (_binderCacheLock)
             {
                 CallSite tOut;
-                if (!_binderCache.TryGetValue(tHash, out tOut))
+                if (!TryDynamicCachedCallSite(tHash,knownType, out tOut))
                 {
                     tOut = CallSite.Create(delegateType, binder());
-                    _binderCache[tHash] = tOut;
+                    SetDynamicCachedCallSite(tHash, knownType, tOut);
                 }
                 return tOut;
             }
@@ -139,6 +205,7 @@ namespace ImpromptuInterface.Optimization
 
         internal static CallSite<T> CreateCallSite<T>(
         Type specificBinderType,
+        int knownType,
         LazyBinder binder,
         String_OR_InvokeMemberName name,
         Type context,
@@ -148,14 +215,14 @@ namespace ImpromptuInterface.Optimization
         )
         where T : class
         {
-            var tHash = BinderHash<T>.Create(name, context, argNames, specificBinderType, staticContext, isEvent);
+            var tHash = BinderHash<T>.Create(name, context, argNames, specificBinderType, staticContext, isEvent, knownType != Unknown);
             lock (_binderCacheLock)
             {
                 CallSite tOut;
-                if (!_binderCache.TryGetValue(tHash, out tOut))
+                if (!TryDynamicCachedCallSite(tHash, knownType, out tOut))
                 {
                     tOut = CallSite<T>.Create(binder());
-                    _binderCache[tHash] = tOut;
+                    SetDynamicCachedCallSite(tHash, knownType, tOut);
                 }
                 return (CallSite<T>)tOut;
             }
@@ -167,6 +234,7 @@ namespace ImpromptuInterface.Optimization
             Type funcTarget,
             ref CallSite callsite,
             Type binderType,
+            int knownType,
             LazyBinder binder,
             String_OR_InvokeMemberName name,
             bool staticContext,
@@ -177,7 +245,7 @@ namespace ImpromptuInterface.Optimization
 
         internal static readonly IDictionary<Type, CallSite<DynamicInvokeMemberConstructorValueType>> _dynamicInvokeMemberSite = new Dictionary<Type, CallSite<DynamicInvokeMemberConstructorValueType>>();
 
-        internal static dynamic DynamicInvokeStaticMember(Type tReturn, ref CallSite callsite, Type binderType, LazyBinder binder,
+        internal static dynamic DynamicInvokeStaticMember(Type tReturn, ref CallSite callsite, Type binderType, int knownType, LazyBinder binder,
                                        string name,
                                      bool staticContext,
                                      Type context,
@@ -207,24 +275,25 @@ namespace ImpromptuInterface.Optimization
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
                                     CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
+                                    CSharpArgumentInfo.Create(CSharpArgumentInfoFlags.UseCompileTimeType, null),
                                 }
                             )
                     );
                 _dynamicInvokeMemberSite[tReturn] = tSite;
             }
 
-            return tSite.Target(tSite, typeof(InvokeHelper), ref callsite, binderType, binder, name, staticContext, context, argNames, target, args);
+            return tSite.Target(tSite, typeof(InvokeHelper), ref callsite, binderType, knownType, binder, name, staticContext, context, argNames, target, args);
         }
 
 
-        internal static TReturn InvokeMember<TReturn>(ref CallSite callsite, Type binderType, LazyBinder binder,
+        internal static TReturn InvokeMember<TReturn>(ref CallSite callsite, Type binderType,int knownType, LazyBinder binder,
                                        String_OR_InvokeMemberName name,
                                      bool staticContext,
                                      Type context,
                                      string[] argNames,
                                      object target, params object[] args)
         {
-            return InvokeMemberTargetType<object, TReturn>(ref callsite, binderType, binder, name, staticContext, context, argNames, target, args);
+            return InvokeMemberTargetType<object, TReturn>(ref callsite, binderType, knownType, binder, name, staticContext, context, argNames, target, args);
         }
 
         internal static object InvokeGetCallSite(object target, string name, Type context, bool staticContext, ref CallSite callsite)
@@ -234,6 +303,7 @@ namespace ImpromptuInterface.Optimization
                 var tTargetFlag = CSharpArgumentInfoFlags.None;
                 LazyBinder tBinder;
                 Type tBinderType;
+                int tKnownType;
                 if (staticContext) //CSharp Binder won't call Static properties, grrr.
                 {
                     var tStaticFlag = CSharpBinderFlags.None;
@@ -252,6 +322,7 @@ namespace ImpromptuInterface.Optimization
                                                              });
 
                     tBinderType = typeof(InvokeMemberBinder);
+                    tKnownType = KnownMember;
                 }
                 else
                 {
@@ -264,11 +335,12 @@ namespace ImpromptuInterface.Optimization
                                                                   tTargetFlag, null)
                                                           });
                     tBinderType = typeof(GetMemberBinder);
-
+                    tKnownType = KnownGet;
                 }
 
 
-                callsite = CreateCallSite<Func<CallSite, object, object>>(tBinderType, tBinder, name, context);
+                callsite = CreateCallSite<Func<CallSite, object, object>>(tBinderType,tKnownType, tBinder, name, context,
+                                staticContext: staticContext);
             }
             var tCallSite = (CallSite<Func<CallSite, object, object>>) callsite;
             return tCallSite.Target(tCallSite, target);
@@ -306,7 +378,7 @@ namespace ImpromptuInterface.Optimization
                                   };
 
                     tBinderType = typeof(InvokeMemberBinder);
-                    callSite = CreateCallSite<Action<CallSite, object, object>>(tBinderType, tBinder, name, context);
+                    callSite = CreateCallSite<Action<CallSite, object, object>>(tBinderType,KnownMember, tBinder, name, context, staticContext:true);
                 }
                 else
                 {
@@ -327,7 +399,7 @@ namespace ImpromptuInterface.Optimization
 
 
                     tBinderType = typeof(SetMemberBinder);
-                    callSite = CreateCallSite<Func<CallSite, object, object, object>>(tBinderType, tBinder, name, context);
+                    callSite = CreateCallSite<Func<CallSite, object, object, object>>(tBinderType,KnownSet, tBinder, name, context, staticContext: false);
                 }
             }
 
@@ -367,7 +439,7 @@ namespace ImpromptuInterface.Optimization
             }
 
 
-            return InvokeMember<object>(ref callSite, tBinderType, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
+            return InvokeMember<object>(ref callSite, tBinderType, KnownMember, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
         }
 
         internal static object InvokeDirectCallSite(object target, object[] args, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite callSite)
@@ -388,7 +460,7 @@ namespace ImpromptuInterface.Optimization
             }
 
 
-            return InvokeMember<object>(ref callSite, tBinderType, tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
+            return InvokeMember<object>(ref callSite, tBinderType, KnownDirect,tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
         }
 
         internal static object InvokeGetIndexCallSite(object target, object[] indexes, string[] argNames, Type context, bool tStaticContext,ref CallSite callSite)
@@ -408,7 +480,7 @@ namespace ImpromptuInterface.Optimization
 
             }
 
-            return InvokeMember<object>(ref callSite,tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, context, argNames, target, indexes);
+            return InvokeMember<object>(ref callSite,tBinderType, Unknown, tBinder, Invocation.IndexBinderName, tStaticContext, context, argNames, target, indexes);
         }
 
         internal static object InvokeSetIndexCallSite(object target, object[] indexesThenValue, string[] tArgNames, Type tContext, bool tStaticContext, ref CallSite tCallSite)
@@ -428,7 +500,7 @@ namespace ImpromptuInterface.Optimization
                 tBinderType = typeof (SetIndexBinder);
             }
 
-            return InvokeMember<object>(ref tCallSite, tBinderType, tBinder, Invocation.IndexBinderName, tStaticContext, tContext, tArgNames, target, indexesThenValue);
+            return InvokeMember<object>(ref tCallSite, tBinderType, Unknown, tBinder, Invocation.IndexBinderName, tStaticContext, tContext, tArgNames, target, indexesThenValue);
         }
 
         internal static void InvokeMemberActionCallSite(object target,String_OR_InvokeMemberName name, object[] args, string[] tArgNames, Type tContext, bool tStaticContext,ref CallSite callSite)
@@ -456,7 +528,7 @@ namespace ImpromptuInterface.Optimization
             }
 
 
-            InvokeMemberAction(ref callSite,tBinderType, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
+            InvokeMemberAction(ref callSite,tBinderType, KnownMember, tBinder, name, tStaticContext, tContext, tArgNames, target, args);
         }
 
 
@@ -482,7 +554,7 @@ namespace ImpromptuInterface.Optimization
             }
 
 
-            InvokeMemberAction(ref callSite, tBinderType, tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
+            InvokeMemberAction(ref callSite, tBinderType, KnownDirect, tBinder, String.Empty, tStaticContext, tContext, tArgNames, target, args);
         }
 
         internal class IsEventBinderDummy{
@@ -494,7 +566,7 @@ namespace ImpromptuInterface.Optimization
             {
                 LazyBinder tBinder = ()=> Binder.IsEvent(CSharpBinderFlags.None, name, tContext);
                 var tBinderType = typeof (IsEventBinderDummy);
-                callSite = CreateCallSite<Func<CallSite, object, bool>>(tBinderType, tBinder, name, tContext, isEvent: true);
+                callSite = CreateCallSite<Func<CallSite, object, bool>>(tBinderType, Unknown, tBinder, name, tContext, isEvent: true);
             }
             var tCallSite = (CallSite<Func<CallSite, object, bool>>)callSite;
 
@@ -548,7 +620,7 @@ namespace ImpromptuInterface.Optimization
                 var tFunc = BuildProxy.GenerateCallSiteFuncType(new Type[] {}, type);
 
 
-                callSite = CreateCallSite(tFunc, tBinderType, tBinder,
+                callSite = CreateCallSite(tFunc, tBinderType,Unknown, tBinder,
                                           explict
                                               ? Invocation.ExplicitConvertBinderName
                                               : Invocation.ImplicitConvertBinderName, context);
@@ -583,11 +655,11 @@ namespace ImpromptuInterface.Optimization
             if (isValueType || Util.IsMono)
             {
                 CallSite tDummy =null;
-                return DynamicInvokeStaticMember(type, ref tDummy,tBinderType, tBinder, Invocation.ConstructorBinderName, true, type,
+                return DynamicInvokeStaticMember(type, ref tDummy,tBinderType,KnownConstructor, tBinder, Invocation.ConstructorBinderName, true, type,
                                                               argNames, type, args);
             }
 
-            return InvokeMemberTargetType<Type, object>(ref callSite,tBinderType, tBinder, Invocation.ConstructorBinderName, true, type, argNames,
+            return InvokeMemberTargetType<Type, object>(ref callSite, tBinderType, KnownConstructor, tBinder, Invocation.ConstructorBinderName, true, type, argNames,
                                                                      type, args);
         }
 

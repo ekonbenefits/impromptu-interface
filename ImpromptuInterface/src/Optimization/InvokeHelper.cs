@@ -89,6 +89,7 @@ namespace ImpromptuInterface.Optimization
 
         internal static void InvokeMemberAction(ref CallSite callsite,
 		                                            Type binderType,
+													int knownType,
 													LazyBinder binder,
                                                     String_OR_InvokeMemberName name,
 													bool staticContext,
@@ -106,7 +107,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target);
@@ -116,7 +117,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0]);
@@ -126,7 +127,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1]);
@@ -136,7 +137,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2]);
@@ -146,7 +147,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3]);
@@ -156,7 +157,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4]);
@@ -166,7 +167,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5]);
@@ -176,7 +177,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
@@ -186,7 +187,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
@@ -196,7 +197,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
@@ -206,7 +207,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
@@ -216,7 +217,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
@@ -226,7 +227,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
@@ -236,7 +237,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
@@ -246,7 +247,7 @@ namespace ImpromptuInterface.Optimization
                     {
 						var tCallSite = (CallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>)callsite;
 						if(tCallSite == null){
-							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType, binder, name, context, argNames, staticContext);
+							tCallSite = CreateCallSite<Action<CallSite,  object, object, object, object, object, object, object, object, object, object, object, object, object, object, object>>(binderType,knownType, binder, name, context, argNames, staticContext);
 						    callsite=tCallSite;
 						}
                         tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
@@ -256,7 +257,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(void));
-                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType,knownType, binder, name, context, argNames), target, args);
                     break;
 
             }
@@ -274,6 +275,7 @@ namespace ImpromptuInterface.Optimization
         internal static TReturn InvokeMemberTargetType<TTarget,TReturn>(
 										ref CallSite callsite,
 										Type binderType,
+										int knownType,
 										LazyBinder binder,
                                        String_OR_InvokeMemberName name,
 									 bool staticContext,
@@ -293,7 +295,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget, TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget, TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget, TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target);
@@ -302,7 +304,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0]);
@@ -311,7 +313,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1]);
@@ -320,7 +322,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2]);
@@ -329,7 +331,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3]);
@@ -338,7 +340,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4]);
@@ -347,7 +349,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5]);
@@ -356,7 +358,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6]);
@@ -365,7 +367,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7]);
@@ -374,7 +376,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8]);
@@ -383,7 +385,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9]);
@@ -392,7 +394,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10]);
@@ -401,7 +403,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11]);
@@ -410,7 +412,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12]);
@@ -419,7 +421,7 @@ namespace ImpromptuInterface.Optimization
                     {
 					    var tCallSite = (CallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>)callsite;
 					    if(tCallSite==null){
-							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,binder, name, context, argNames, staticContext);
+							 tCallSite = CreateCallSite<Func<CallSite, TTarget,  object, object, object, object, object, object, object, object, object, object, object, object, object, object,TReturn>>(binderType,knownType,binder, name, context, argNames, staticContext);
 							 callsite =tCallSite;
 						}
                         return tCallSite.Target(tCallSite, target, args[0], args[1], args[2], args[3], args[4], args[5], args[6], args[7], args[8], args[9], args[10], args[11], args[12], args[13]);
@@ -428,7 +430,7 @@ namespace ImpromptuInterface.Optimization
                 default:
                     var tArgTypes = Enumerable.Repeat(typeof(object), tSwitch);
                     var tDelagateType = BuildProxy.GenerateCallSiteFuncType(tArgTypes, typeof(TTarget));
-                    return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType, binder, name, context, argNames), target, args);
+                    return Impromptu.InvokeCallSite(CreateCallSite(tDelagateType, binderType,knownType, binder, name, context, argNames), target, args);
 
             }
         }

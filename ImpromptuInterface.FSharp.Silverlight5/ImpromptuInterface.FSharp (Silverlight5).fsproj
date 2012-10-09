@@ -1,34 +1,33 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{c6f699c3-c2c7-4393-b8c2-b5c234ed23d7}</ProjectGuid>
+    <ProjectGuid>cc8c5bed-efa3-4db3-a57b-6427a86af501</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>ImpromptuInterface.FSharp</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <AssemblyName>ImpromptuInterface.FSharp.Silverlight5</AssemblyName>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <FileAlignment>512</FileAlignment>
     <AllowCrossTargeting>true</AllowCrossTargeting>
     <ProjectTypeGuids>{A1591282-1198-4647-A2B1-27E5FF5F6F3B};{f2a71f9b-5d33-465a-a702-920d77279786}</ProjectTypeGuids>
-    <Name>ImpromptuInterface.FSharp (Silverlight)</Name>
+    <Name>ImpromptuInterface.FSharp (Silverlight5)</Name>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
     <ThrowErrorsInValidation>false</ThrowErrorsInValidation>
-    <RootNamespace>ImpromptuInterface.FSharp.Silverlight</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE;SILVERLIGHT</DefineConstants>
+    <DefineConstants>TRACE;DEBUG;SILVERLIGHT SILVERLIGHT5</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Debug\ImpromptuInterface.FSharp.Silverlight.XML</DocumentationFile>
+    <DocumentationFile>bin\Debug\ImpromptuInterface.FSharp.Silverlight5.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -37,14 +36,12 @@
     <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\ImpromptuInterface.FSharp.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ImpromptuInterface.FSharp.Silverlight5.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>
   </PropertyGroup>
-  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition="Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
-  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets" Condition="(!Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')) And (Exists('$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets'))" />
-  <Import Project="$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets" Condition="(!Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')) And (!Exists('$(MSBuildExtensionsPath32)\..\Microsoft F#\v4.0\Microsoft.FSharp.Targets')) And (Exists('$(MSBuildExtensionsPath32)\FSharp\1.0\Microsoft.FSharp.Targets'))" />
+  <Import Project="$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets" Condition=" Exists('$(MSBuildExtensionsPath32)\..\Microsoft SDKs\F#\3.0\Framework\v4.0\Microsoft.FSharp.Targets')" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.Common.targets" />
   <ItemGroup>
     <Compile Include="..\ImpromptuInterface.FSharp\AssemblyInfo.fs">
@@ -61,29 +58,30 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.CSharp">
-      <HintPath>c:\Program Files\Microsoft SDKs\Silverlight\v4.0\Libraries\Client\Microsoft.CSharp.dll</HintPath>
-    </Reference>
+    <Reference Include="Microsoft.CSharp, Version=5.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35" />
     <Reference Include="mscorlib" />
     <Reference Include="FSharp.Core">
-      <HintPath>$(ProgramFiles)\Microsoft F#\Silverlight\Libraries\Client\$(SilverlightVersion)\FSharp.Core.dll</HintPath>
+      <Name>FSharp.Core</Name>
+      <AssemblyName>FSharp.Core.dll</AssemblyName>
+      <HintPath>$(MSBuildExtensionsPath32)\..\Reference Assemblies\Microsoft\FSharp\3.0\Runtime\.NETPortable\FSharp.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Windows.Browser" />
-    <ProjectReference Include="..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
-      <Name>ImpromptuInterface (Silverlight)</Name>
-      <Project>{9181a92f-9a17-45a3-bbdb-eac085a901a0}</Project>
+    <Reference Include="System.Xml" />
+    <ProjectReference Include="..\ImpromptuInterface.Silverlight5\ImpromptuInterface %28Silverlight5%29.csproj">
+      <Name>ImpromptuInterface (Silverlight5)</Name>
+      <Project>{ec1b3513-cb1e-4796-899f-125fc05b2f41}</Project>
       <Private>True</Private>
     </ProjectReference>
   </ItemGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-	     Other similar extension points exist, see Microsoft.Common.targets.
-	<Target Name="BeforeBuild">
-	</Target>
-	<Target Name="AfterBuild">
-	</Target>
-	-->
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
 </Project>

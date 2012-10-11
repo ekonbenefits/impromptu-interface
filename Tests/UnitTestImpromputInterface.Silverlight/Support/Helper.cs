@@ -99,6 +99,11 @@ namespace NUnit.Framework
     {
 
     }
+
+    public class CategoryAttribute:Attribute
+    {
+        public CategoryAttribute(string label){}
+    }
 }
 
 

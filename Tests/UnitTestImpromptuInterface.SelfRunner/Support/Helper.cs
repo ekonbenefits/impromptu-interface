@@ -36,6 +36,11 @@ namespace UnitTestImpromptuInterface
 
     }
 
+    public class CategoryAttribute : Attribute
+    {
+        public CategoryAttribute(string label) { }
+    }
+
     public class AssertionException: Exception
     {
         public AssertionException()

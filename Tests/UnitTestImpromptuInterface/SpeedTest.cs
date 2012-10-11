@@ -20,7 +20,7 @@ namespace UnitTestImpromptuInterface.Silverlight
 namespace UnitTestImpromptuInterface
 #endif
 {
-    [TestFixture]
+    [TestFixture][Category("performance")]
     public class SpeedTest : Helper
     {
         [TestFixtureSetUp]

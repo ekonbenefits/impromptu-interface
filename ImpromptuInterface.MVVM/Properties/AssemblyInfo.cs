@@ -41,8 +41,5 @@ using System.Runtime.InteropServices;
 // You can specify all the values or you can default the Build and Revision Numbers 
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-#if SILVERLIGHT
-[assembly: AssemblyVersion("4.0.9.0")]
-#else
-[assembly: AssemblyVersion("4.0.9.*")]
-#endif
+
+[assembly: AssemblyVersion("4.0.10.0")]

@@ -24,7 +24,9 @@ namespace ImpromptuInterface.Dynamic
     /// Attribute for Methods and Parameters on Custom Interfaces designed to be used with a dynamic implementation
     /// </summary>
     [AttributeUsage(System.AttributeTargets.Method |
-                       System.AttributeTargets.Parameter)]
+                    System.AttributeTargets.Parameter |
+                    System.AttributeTargets.Interface |
+                    System.AttributeTargets.Class)]
     public sealed class UseNamedArgumentAttribute : Attribute
     {
 

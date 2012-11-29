@@ -511,7 +511,9 @@ namespace ImpromptuInterface.Build
 
 
             IEnumerable<string> tArgNames;
-            if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any())
+            if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any() ||
+                info.DeclaringType.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any() )
+
             {
                 tArgNames = tParamAttri.Select(it => it.Name).ToList();
             }

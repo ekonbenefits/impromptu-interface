@@ -7,7 +7,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>cc8c5bed-efa3-4db3-a57b-6427a86af501</ProjectGuid>
     <OutputType>Library</OutputType>
-    <AssemblyName>ImpromptuInterface.FSharp.Silverlight5</AssemblyName>
+    <AssemblyName>ImpromptuInterface.FSharp</AssemblyName>
     <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <FileAlignment>512</FileAlignment>
@@ -36,7 +36,7 @@
     <DefineConstants>TRACE;SILVERLIGHT</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>3</WarningLevel>
-    <DocumentationFile>bin\Release\ImpromptuInterface.FSharp.Silverlight5.XML</DocumentationFile>
+    <DocumentationFile>bin\Release\ImpromptuInterface.FSharp.XML</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <MinimumVisualStudioVersion Condition="'$(MinimumVisualStudioVersion)' == ''">11</MinimumVisualStudioVersion>

@@ -42,4 +42,4 @@ using System.Runtime.InteropServices;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[assembly: AssemblyVersion("4.0.10.0")]
+[assembly: AssemblyVersion("4.0.11.0")]

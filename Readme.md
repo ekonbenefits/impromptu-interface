@@ -4,7 +4,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ###Quick Usage:
 
-```
+```csharp
     using ImpromptuInterface;
     using ImpromptuInterface.Dynamic;
 
@@ -21,7 +21,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ```
 
-```
+```csharp
    //Anonymous Class
     var anon = new {
              Prop1 = "Test",
@@ -35,7 +35,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ##OR##
 
-```
+```csharp
    //Dynamic Expando object
     dynamic expando = Build<ExpandoObject>.NewObject(
              Prop1: "Test",
@@ -49,7 +49,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ##ALSO##
 
-```
+```csharp
     //In F#
     let expando:obj = !?Build<ExpandoObject>.NewObject (
     			dynArg("Test")         ? Prop1,

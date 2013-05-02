@@ -49,7 +49,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ##ALSO##
 
-```csharp
+```fsharp
     //In F#
     let expando:obj = !?Build<ExpandoObject>.NewObject (
     			dynArg("Test")         ? Prop1,

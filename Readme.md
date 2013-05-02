@@ -1,66 +1,73 @@
-impromptu-interface http://code.google.com/p/impromptu-interface/
+C# 4.0 (.net & silverlight) framework to allow you to wrap any object (static or dynamic) with a static interface even though it didn't inherit from it. It does this by emitting cached dynamic binding code inside a proxy. By expanding on the DLR plumbing used to implement this library, it has grown to support more general dynamic implementations.
 
-C# 4.0 framework to allow you to wrap any object with a static Duck Typing Interface, emits cached dynamic binding code inside a proxy.
+See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full examples of all features. Other features include Really Late Binding, Inline Syntaxes, Currying, some dynamic extensions for FSharp, and unsealed Dynamic Objects including a fully dynamic MVVM ViewModel
 
-Copyright 2010-2012 Ekon Benefits
-Apache Licensed: http://www.apache.org/licenses/LICENSE-2.0
+###Quick Usage:
 
-Author:
-Jay Tuley jay+code@tuley.name
+```
+    using ImpromptuInterface;
+    using ImpromptuInterface.Dynamic;
 
+    public interface IMyInterface{
 
-Usage:
-
-    public interface ISimpeleClassProps
-    {
-        string Prop1 { get;  }
+       string Prop1 { get;  }
 
         long Prop2 { get; }
 
         Guid Prop3 { get; }
+
+        bool Meth1(int x);
+   }
+
+```
+
+```
+   //Anonymous Class
+    var anon = new {
+             Prop1 = "Test",
+             Prop2 = 42L,
+             Prop3 = Guid.NewGuid(),
+             Meth1 = Return<bool>.Arguments<int>(it => it > 5)
     }
-    var tAnon = new {Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid()};
 
-    ISimpeleClassProps tActsLike = tAnon.ActLike<ISimpeleClassProps>();
-Or
+    var myInterface = anon.ActLike<IMyInterface>();
+```
 
-    dynamic tNew = new ExpandoObject();
-    tNew.Prop1 = "Test";
-    tNew.Prop2 = 42L;
-    tNew.Prop3 = Guid.NewGuid();
+##OR##
 
-    ISimpeleClassProps tActsLike = Impromptu.ActLike(tNew);
+```
+   //Dynamic Expando object
+    dynamic expando = Build<ExpandoObject>.NewObject(
+             Prop1: "Test",
+             Prop2: 42L,
+             Prop3: Guid.NewGuid(),
+             Meth1: Return<bool>.Arguments<int>(it => it > 5)
+    );
 
-Also Contains may primitive base classes such as:
+    IMyInterface myInterface = Impromptu.ActLike(expando);
+```
 
-ImpromptuObject --Similar to DynamicObject but the expected static return type from the wrapped interface can be queried.
-ImpromptuFactory -- Functional base class, used to create fluent factories with less boilerplate
-ImpromptuDictionary -- Similar to ExpandoObject but returns default of the static return type if the property has never been set.
-Mimic -- Accepts any call you make
-ImpromptuLateLibraryType -- Allows you to use a type loaded at runtime using the dynamic keyword.
+##ALSO##
 
-Includes Fluent syntaxes for buiding object graphs & Regexes & Currying
+```
+    //In F#
+    let expando:obj = !?Build<ExpandoObject>.NewObject (
+    			dynArg("Test")         ? Prop1,
+				dynArg(42L)            ? Prop2,
+				dynArg(Guid.NewGuid()) ? Prop3,
+				dynArg(Return<bool>.Arguments<int>(fun x -> x > 5))
+                                                       ? Meth1
+		        )
 
-And has a full suite of helper invocation methods:
+    let myInterface = expando.ActLike<IMyInterface>()
+```
 
-    dynamic InvokeConvert(object target, Type type, bool explict =false)
-    dynamic InvokeConstructor(Type type, params object[] args)
-    dynamic Impromptu.InvokeGet(object target, String_Or_InvokeMemberName name)
-    dynamic Impromptu.InvokeSet(object target, String_Or_InvokeMemberName name, object value)
-    dynamic InvokeGetIndex(object target, params object[] indexes)
-    dynamic InvokeSetIndex(object target, params object[] indexesThenValue)
-    dynamic Impromptu.InvokeMember(object target, String_Or_InvokeMemberName name, params object[] args)
-    dynamic Impromptu.InvokeMemberAction(object target, String_Or_InvokeMemberName name, params object[] args)
-    dynamic Impromptu.Invoke(object target, params object[] args)
-    dynamic Impromptu.InvokeAction(object target, params object[] args)
-    dynamic Impromptu.InvokeGetChain(object target, string propertyChain)
-    dynamic Impromptu.InvokeSetChain(object target, string propertyChain)
-    dynamic Impromputu.InvokeSetAll(object target, ...)
-    IEnumerable<string> GetMemberNames(object target, bool dynamicOnly = false)
-    void Impromputu.InvokeAddAssign(object target, string name, object value)
-    void Impromputu.InvokeSubtractAssign(object target, string name, object value)
-    bool Impromputu.InvokeIsEvent(object target, string name)
-    dynamic Impromputu.InvokeBinaryOperator(dynamic leftArg, ExpressionType op, dynamic rightArg)
-    dynamic Impromputu.InvokeUnaryOpartor(ExpressionType op, dynamic arg)
-    dynamic Impromputu.CoerceConvert(object target, Type type)  //uses every runtime conversion available to convert.
+###Get The Code###
+Project can be checked out from git repository, works with .net 4.0, Silverlight 4.0 & 5.0  and mono 2.10
 
+###Get The Binaries###
+use [NuGet](http://nuget.org ) Visual Studio Extension "Add Libary Package Refrence... from Visual Studio
+or download the zip file.  Source Code for debugging the binaries can be provided automatically from [SymbolSource.org](http://www.symbolsource.org/Public/Home/VisualStudio)
+
+###Get The Samples###
+There is a Sample mercurial repository for code samples. Currently it has an ImpromptuInterface.MVVM based calculator implemented in WPF or Silverlight or F#. [sample repository](https://code.google.com/p/impromptu-interface/source/checkout?repo=sample).

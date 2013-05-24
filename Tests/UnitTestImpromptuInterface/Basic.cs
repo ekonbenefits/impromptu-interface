@@ -1,4 +1,4 @@
-// 
+﻿// 
 //  Copyright 2010  Ekon Benefits
 // 
 //    Licensed under the Apache License, Version 2.0 (the "License");
@@ -130,6 +130,24 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.Prop3, tActsLike.Prop3);
         }
 
+        #if !SELFRUNNER
+        [Test]
+        public void AliasTest()
+        {
+           IDictionary<string,object> expando = new ExpandoObject();
+
+           expando.Add("手伝ってくれますか？", new Func<string,string>(it=> "Of Course!!!"));
+
+           expando.Add("★✪The Best Named Property in World!!☮", "yes");
+
+
+            var mapped = expando.ActLike<ITestAlias>();
+
+
+            Assert.AreEqual("Of Course!!!", mapped.CanYouHelpMe("hmmm"));
+            Assert.AreEqual("yes", mapped.URTrippin);
+        }
+#endif
 
         [Test]
         public void DoubleInterfacetest()

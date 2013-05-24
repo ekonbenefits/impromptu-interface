@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImpromptuInterface.Dynamic
+namespace ImpromptuInterface
 {
     /// <summary>
     /// Attribute on Inteface to stop proxy from recursively
@@ -11,8 +11,7 @@ namespace ImpromptuInterface.Dynamic
     /// </summary>
     [AttributeUsage(System.AttributeTargets.Method |
                           System.AttributeTargets.Interface | AttributeTargets.Class | AttributeTargets.Property)]
-    [Obsolete("Use ImpromptuInterface.NonRecursiveInterfaceAttribute")]
-    public sealed class NonRecursiveInterfaceAttribute : ImpromptuInterface.NonRecursiveInterfaceAttribute
+    public class NonRecursiveInterfaceAttribute : Attribute
     {
     }
 }

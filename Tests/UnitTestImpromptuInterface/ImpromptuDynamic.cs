@@ -8,8 +8,9 @@ using System.Text;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
-
 #if !SELFRUNNER
+using DynObj = Dynamitey.DynamicObjects;
+
 using NUnit.Framework;
 #endif
 
@@ -277,7 +278,21 @@ namespace UnitTestImpromptuInterface
  
 
         }
+        #if !SELFRUNNER
+        [Test]
+        public void DynamiteyDictionaryNullMethodsTest()
+        {
 
+            dynamic tNew = new DynObj.Dictionary();
+
+            ISimpleStringMethod tActsLike = Impromptu.ActLike<ISimpleStringMethod>(tNew);
+
+            Assert.AreEqual(false, tActsLike.StartsWith("Te"));
+
+
+
+        }
+    #endif
 
         [Test]
         public void DynamicDictionaryWrappedTest()

@@ -74,6 +74,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Castle.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Dynamitey">
+      <HintPath>..\..\packages\Dynamitey.0.8.0.5\lib\portable-win+net45+sl40\Dynamitey.dll</HintPath>
+    </Reference>
     <Reference Include="IronPython">
       <HintPath>..\..\packages\IronPython.2.7.3\lib\Sl4\IronPython.dll</HintPath>
     </Reference>

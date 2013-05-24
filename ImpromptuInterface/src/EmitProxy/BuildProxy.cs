@@ -49,11 +49,13 @@ namespace ImpromptuInterface.Build
         private static readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
         private static readonly object DelegateCacheLock = new object();
 
-        private static readonly MethodInfo ActLike = typeof(BuildProxy).GetMethod("SimpleActLike",
+        private static readonly MethodInfo ActLike = typeof(BuildProxy).GetMethod("RecursiveActLike",
                                                                                   new[] {typeof(object)});
 
-        public static TInterface SimpleActLike<TInterface>(object target) where TInterface:class 
+        public static TInterface RecursiveActLike<TInterface>(object target) where TInterface:class
         {
+          
+
             return target.ActLike<TInterface>();
         }
 
@@ -502,17 +504,22 @@ namespace ImpromptuInterface.Build
         private static void MakeMethod(ModuleBuilder builder,MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool nonRecursive= false, bool defaultImp =true)
         {
 
+
             var tEmitInfo = new MethodEmitInfo {Name = info.Name, DefaultInterfaceImplementation = defaultImp, NonRecursive = nonRecursive};
 
-         
+            var alias = info.GetCustomAttributes(typeof(AliasAttribute), false).FirstOrDefault() as AliasAttribute;
+            if (alias != null)
+            {
+                tEmitInfo.Alias = alias.Name;
+            }
 
             var tParamAttri = info.GetParameters();
             Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
 
 
             IEnumerable<string> tArgNames;
-            if (info.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any() ||
-                info.DeclaringType.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any() )
+            if (info.GetCustomAttributes(typeof(UseNamedArgumentAttribute), false).Any() ||
+                info.DeclaringType.GetCustomAttributes(typeof(UseNamedArgumentAttribute), false).Any() )
 
             {
                 tArgNames = tParamAttri.Select(it => it.Name).ToList();
@@ -520,7 +527,7 @@ namespace ImpromptuInterface.Build
             else
             {
                 var tParam = tParamAttri.Zip(Enumerable.Range(0, tParamTypes.Count()), (p, i) => new { i, p })
-                    .FirstOrDefault(it => it.p.GetCustomAttributes(typeof(Dynamic.UseNamedArgumentAttribute), false).Any());
+                    .FirstOrDefault(it => it.p.GetCustomAttributes(typeof(UseNamedArgumentAttribute), false).Any());
 
                 tArgNames = tParam == null
                     ? Enumerable.Repeat(default(string), tParamTypes.Length)
@@ -714,7 +721,7 @@ namespace ImpromptuInterface.Build
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     emitInfo.ResolveReturnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None,
-                    emitInfo.Name, 
+                    emitInfo.Alias ?? emitInfo.Name, 
                     methodBuilder.GetGenericArguments(),
                     emitInfo.ContextType,
                     paramInfo, 
@@ -792,7 +799,11 @@ namespace ImpromptuInterface.Build
                 NonRecursive = nonRecursive
             };
 
-
+            var alias = info.GetCustomAttributes(typeof(AliasAttribute), false).FirstOrDefault() as AliasAttribute;
+            if (alias != null)
+            {
+                tEmitInfo.Alias = alias.Name;
+            }
 
             MakePropertyHelper(builder, typeBuilder,tEmitInfo, info, tGetMethod, tSetMethod );
         }
@@ -854,6 +865,11 @@ namespace ImpromptuInterface.Build
                                     ContextType = contextType,
                                     DefaultInterfaceImplementation = defaultImp
                                 };
+            var alias = info.GetCustomAttributes(typeof (AliasAttribute), false).FirstOrDefault() as AliasAttribute;
+            if (alias != null)
+            {
+                tEmitInfo.Alias = alias.Name;
+            }
 
              var tAddMethod = info.GetAddMethod();
             var tRemoveMethod = info.GetRemoveMethod();
@@ -958,7 +974,7 @@ namespace ImpromptuInterface.Build
 
             using (tIlGen.EmitBranchTrue(load => load.Emit(OpCodes.Ldsfld, tIsEventField)))
             {
-                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, tEmitInfo.Alias ?? tEmitInfo.Name, tEmitInfo.ContextType);
                 tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteIsEventFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tIsEventField);
             }
@@ -981,7 +997,7 @@ namespace ImpromptuInterface.Build
             {
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tSetField)))
                 {
-                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, info.Name,
+                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, tEmitInfo.Alias ?? tEmitInfo.Name,
                                                              tEmitInfo.ContextType, tEmitInfo.ResolveReturnType);
                     tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeSetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSetField);
@@ -1000,7 +1016,7 @@ namespace ImpromptuInterface.Build
 
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tGetField)))
                 {
-                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, tEmitInfo.Alias ?? tEmitInfo.Name, tEmitInfo.ContextType);
                     tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeGetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tGetField);
                 }
@@ -1037,7 +1053,7 @@ namespace ImpromptuInterface.Build
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
-                    tRemoveMethod.Name,
+                    tEmitInfo.Alias == null ? tRemoveMethod.Name : "remove_" +tEmitInfo.Alias,
                     Enumerable.Empty<Type>(),
                     tEmitInfo.ContextType,
                     tRemoveMethod.GetParameters(),
@@ -1068,7 +1084,7 @@ namespace ImpromptuInterface.Build
 
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tIsEventField)))
             {
-                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                tIlGen.EmitDynamicIsEventBinder(CSharpBinderFlags.None, tEmitInfo.Alias ?? tEmitInfo.Name, tEmitInfo.ContextType);
                 tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteIsEventFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tIsEventField);
             }
@@ -1093,7 +1109,7 @@ namespace ImpromptuInterface.Build
             {
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tSetField)))
                 {
-                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, info.Name,
+                    tIlGen.EmitDynamicSetBinderDynamicParams(CSharpBinderFlags.ValueFromCompoundAssignment, tEmitInfo.Alias ?? tEmitInfo.Name,
                                                              tEmitInfo.ContextType, typeof (Object));
                     tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeSetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSetField);
@@ -1111,7 +1127,7 @@ namespace ImpromptuInterface.Build
 
                 using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tGetField)))
                 {
-                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, info.Name, tEmitInfo.ContextType);
+                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, tEmitInfo.Alias ?? tEmitInfo.Name, tEmitInfo.ContextType);
                     tIlGen.EmitCallsiteCreate(tEmitInfo.CallSiteInvokeGetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tGetField);
                 }
@@ -1149,7 +1165,7 @@ namespace ImpromptuInterface.Build
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     CSharpBinderFlags.InvokeSpecialName | CSharpBinderFlags.ResultDiscarded,
-                    tAddMethod.Name, 
+                    tEmitInfo.Alias == null ? tAddMethod.Name : "add_" +tEmitInfo.Alias,
                     Enumerable.Empty<Type>(),
                     tEmitInfo.ContextType,
                     tAddMethod.GetParameters(),
@@ -1280,6 +1296,7 @@ namespace ImpromptuInterface.Build
         private abstract class EmitInfo
         {
             public string Name { get; set; }
+            public string Alias { get; set; }
 
             protected EmitInfo()
             {
@@ -1354,7 +1371,7 @@ namespace ImpromptuInterface.Build
 
             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField)))
             {
-                tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedIndexParamTypes);
+                tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, emitInfo.Alias ?? emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedIndexParamTypes);
                 tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeGetFuncType);
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeGetCallsiteField);
             }
@@ -1456,7 +1473,7 @@ namespace ImpromptuInterface.Build
 
                 using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tSetCallsiteField)))
                 {
-                    tIlGen.EmitDynamicSetBinder(CSharpBinderFlags.None, emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedParamTypes);
+                    tIlGen.EmitDynamicSetBinder(CSharpBinderFlags.None, emitInfo.Alias ?? emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedParamTypes);
                     tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeSetFuncType);
                     tIlGen.Emit(OpCodes.Stsfld, tSetCallsiteField);
                 }
@@ -1526,8 +1543,17 @@ namespace ImpromptuInterface.Build
             
         }
 
-     
 
+        /// <summary>
+        /// Emits new delegate type of the call site func.
+        /// </summary>
+        /// <param name="argTypes">The arg types.</param>
+        /// <param name="returnType">Type of the return.</param>
+        /// <returns></returns>
+        public static Type EmitCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType)
+        {
+            return GenerateCallSiteFuncType(argTypes, returnType);
+        }
 
         /// <summary>
         /// Generates the delegate type of the call site function.

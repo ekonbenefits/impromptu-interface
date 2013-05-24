@@ -15,6 +15,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using ImpromptuInterface;
@@ -73,6 +74,10 @@ namespace ImpromptuInterface.Build
                 throw new MethodAccessException("Initialize should not be called twice!");
             _init = true;
             ActLikeProxyOriginal = original;
+
+
+            //Let IDynamicKnowLike know about interfaces
+            /* will be deprecated in the future */
             var tKnowOriginal = ActLikeProxyOriginal as IDynamicKnowLike;
             if (tKnowOriginal != null)
             {
@@ -81,7 +86,21 @@ namespace ImpromptuInterface.Build
                 if (informalInterface != null)
                     tKnowOriginal.KnownPropertySpec = informalInterface;
             }
+            
 
+            //Uses standard lib component types to notify proxied object of interfaces.
+            var serviceProvider = ActLikeProxyOriginal as IServiceProvider;
+            if (serviceProvider != null)
+            {
+                try
+                {
+                    serviceProvider.GetService(GetType());
+                }
+                catch
+                {
+                    
+                }
+            }
         }
 
 

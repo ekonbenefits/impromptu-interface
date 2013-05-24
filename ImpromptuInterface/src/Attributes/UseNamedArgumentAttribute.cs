@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ImpromptuInterface.Dynamic
+namespace ImpromptuInterface
 {
     /// <summary>
     /// Attribute for Methods and Parameters on Custom Interfaces designed to be used with a dynamic implementation
@@ -27,8 +27,7 @@ namespace ImpromptuInterface.Dynamic
         | System.AttributeTargets.Parameter
         | System.AttributeTargets.Interface 
         | System.AttributeTargets.Class)]
-    [Obsolete("Use ImpromptuInterface.UseNamedArgumentAttribute")]
-    public sealed class UseNamedArgumentAttribute : ImpromptuInterface.UseNamedArgumentAttribute
+    public class UseNamedArgumentAttribute : Attribute
     {
 
     }

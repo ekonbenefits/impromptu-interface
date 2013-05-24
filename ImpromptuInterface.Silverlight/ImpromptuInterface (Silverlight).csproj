@@ -94,6 +94,18 @@
     <Compile Include="..\ImpromptuInterface\src\ActLikeCaster.cs">
       <Link>src\ActLikeCaster.cs</Link>
     </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Attributes\AliasAttribute.cs">
+      <Link>src\Attributes\AliasAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Attributes\NonRecursiveInterfaceAttribute.cs">
+      <Link>src\Attributes\NonRecursiveInterfaceAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Attributes\UseNamedArgumentAttribute.cs">
+      <Link>src\Attributes\UseNamedArgumentAttribute.cs</Link>
+    </Compile>
+    <Compile Include="..\ImpromptuInterface\src\Dynamic\AliasAttribute.cs">
+      <Link>src\Dynamic\AliasAttribute.cs</Link>
+    </Compile>
     <Compile Include="..\ImpromptuInterface\src\Dynamic\Builder.cs">
       <Link>src\Dynamic\Builder.cs</Link>
     </Compile>

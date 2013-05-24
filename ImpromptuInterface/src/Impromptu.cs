@@ -1030,7 +1030,6 @@ namespace ImpromptuInterface
             originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
             tContext = tContext.FixContext();
 
-
             var tProxy = BuildProxy.BuildType(tContext, typeof(TInterface), otherInterfaces);
 
 
@@ -1040,6 +1039,22 @@ namespace ImpromptuInterface
                 InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
 
+
+        /// <summary>
+        /// Unwraps the act like proxy (if wrapped).
+        /// </summary>
+        /// <param name="proxiedObject">The proxied object.</param>
+        /// <returns></returns>
+        public static dynamic UndoActLike(this object proxiedObject)
+        {
+
+            var actLikeProxy = proxiedObject as IActLikeProxy;
+            if (actLikeProxy != null)
+            {
+                return actLikeProxy.Original;
+            }
+            return proxiedObject;
+        }
 
 
         /// <summary>

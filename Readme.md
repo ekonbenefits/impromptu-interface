@@ -2,6 +2,15 @@ C# 4.0 (.net & silverlight) framework to allow you to wrap any object (static or
 
 See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full examples of all features. Other features include Really Late Binding, Inline Syntaxes, Currying, some dynamic extensions for FSharp, and unsealed Dynamic Objects including a fully dynamic MVVM ViewModel
 
+###Roadmap: 
+ - 6.5 
+   - When [Dynamitey](https://github.com/ekonbenefits/dynamitey) is no longer WIP, obsolete duplicate functionality
+   - Remove ImpromptuInterface.FSharp replaced by [FSharp.Dynamic](https://github.com/ekonbenefits/FSharp.Dynamic)
+ - 7.0
+   - Strip out Obsolete Code
+   - Full PCL port of Interface Wrapping
+   - Tool to pregenerate proxies for WinRT
+
 ###Quick Usage:
 
 ```csharp

@@ -4,7 +4,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
 
 ###Roadmap: 
  - 6.5 
-   - When [Dynamitey](https://github.com/ekonbenefits/dynamitey) is no longer WIP, obsolete duplicate functionality
+   - obsolete duplicate functionality with  [Dynamitey](https://github.com/ekonbenefits/dynamitey) 
    - Remove ImpromptuInterface.FSharp replaced by [FSharp.Dynamic](https://github.com/ekonbenefits/FSharp.Dynamic)
  - 7.0
    - Strip out Obsolete Code

@@ -786,15 +786,12 @@ namespace ImpromptuInterface.Build
 
         private static void MakeProperty(ModuleBuilder builder,PropertyInfo info, TypeBuilder typeBuilder, Type contextType, bool nonRecursive=false, bool defaultImp =true)
         {
-
-            var tGetMethod = info.GetGetMethod();
-            var tSetMethod = info.GetSetMethod();
-
             var tEmitInfo = new PropertyEmitInfo() { 
                 Name = info.Name,
-                ResolveReturnType = tGetMethod.ReturnType,
-                GetName = tGetMethod.Name,
-                ContextType =  contextType,
+                ResolveReturnType = info.PropertyType,
+                GetName = info.CanRead ? info.GetGetMethod().Name : null, // q: getter may be missing!
+                SetName = info.CanWrite ? info.GetSetMethod().Name : null, // q: setter may be missing!
+                ContextType = contextType,
                 DefaultInterfaceImplementation = defaultImp,
                 NonRecursive = nonRecursive
             };
@@ -805,7 +802,7 @@ namespace ImpromptuInterface.Build
                 tEmitInfo.Alias = alias.Name;
             }
 
-            MakePropertyHelper(builder, typeBuilder,tEmitInfo, info, tGetMethod, tSetMethod );
+            MakePropertyHelper(builder, typeBuilder,tEmitInfo, info);
         }
 
         private class PropertyEmitInfo : EmitInfo
@@ -1198,90 +1195,117 @@ namespace ImpromptuInterface.Build
         /// <param name="builder">The builder.</param>
         /// <param name="typeBuilder">The type builder.</param>
         /// <param name="info">The info.</param>
-        /// <param name="getMethod">The get method.</param>
-        /// <param name="setMethod">The set method.</param>
         /// <param name="emitInfo">The emit info.</param>
-        private static void MakePropertyHelper(ModuleBuilder builder, TypeBuilder typeBuilder, PropertyEmitInfo emitInfo, PropertyInfo info = null, MethodInfo getMethod = null, MethodInfo setMethod = null)
+        private static void MakePropertyHelper(ModuleBuilder builder, TypeBuilder typeBuilder, PropertyEmitInfo emitInfo, PropertyInfo info = null)
         {
-      
 
-            emitInfo.ResolvedIndexParamTypes = new Type[]{};
-            if(info!=null)
+
+            emitInfo.ResolvedIndexParamTypes = new Type[] { };
+            if (info != null)
                 emitInfo.ResolvedIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
 
-            
 
-      
+
+
 
             var tCallSiteInvokeName = emitInfo.CallSiteName;
             var tCStp = DefineBuilderForCallSite(builder, tCallSiteInvokeName);
 
 
             var tConvertGet = emitInfo.CallSiteConvertName;
-           
+
             emitInfo.CallSiteConvertFuncType = tCStp.DefineCallsiteField(tConvertGet, emitInfo.ResolveReturnType);
 
             var tInvokeGet = emitInfo.CallSiteInvokeGetName;
-            emitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object), emitInfo.ResolvedIndexParamTypes);
-            
-            var tInvokeSet = emitInfo.CallSiteInvokeSetName;
-            if (setMethod != null)
+            if (info == null || info.CanRead)
             {
-                emitInfo.ResolvedParamTypes = setMethod.GetParameters().Select(it => it.ParameterType).ToArray();
-                
-                emitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof (object), emitInfo.ResolvedParamTypes);
+                emitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(tInvokeGet, typeof(object), emitInfo.ResolvedIndexParamTypes);
+            }
+
+            var tInvokeSet = emitInfo.CallSiteInvokeSetName;
+            if (info != null && info.CanWrite)
+            {
+                emitInfo.ResolvedParamTypes = info.GetSetMethod().GetParameters().Select(it => it.ParameterType).ToArray();
+
+                emitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof(object), emitInfo.ResolvedParamTypes);
             }
 
             emitInfo.CallSiteType = tCStp.CreateType();
 
 
-         
+
             var tPublicPrivate = MethodAttributes.Public;
             var tPrefixedGet = emitInfo.GetName;
+            var tPrefixedSet = emitInfo.SetName;
             var tPrefixedName = emitInfo.Name;
             if (!emitInfo.DefaultInterfaceImplementation)
             {
                 tPublicPrivate = MethodAttributes.Private;
                 tPrefixedGet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedGet);
-
+                tPrefixedSet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedSet);
                 tPrefixedName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedName);
             }
 
-           
-            var tMp = typeBuilder.DefineProperty(tPrefixedName, PropertyAttributes.None, 
+
+            var tMp = typeBuilder.DefineProperty(tPrefixedName, PropertyAttributes.None,
 #if !SILVERLIGHT
                 CallingConventions.HasThis,
 #endif
  emitInfo.ResolveReturnType, emitInfo.ResolvedIndexParamTypes);
 
 
-    
-
-            //GetMethod
-            var tGetMethodBuilder = typeBuilder.DefineMethod(tPrefixedGet,
-                                                             tPublicPrivate
-                                                             | MethodAttributes.SpecialName 
-                                                             | MethodAttributes.HideBySig
-                                                             | MethodAttributes.Virtual
-                                                             | MethodAttributes.Final 
-                                                             | MethodAttributes.NewSlot,
-                                                             emitInfo.ResolveReturnType,
-                                                             emitInfo.ResolvedIndexParamTypes);
-
-
-            if (!emitInfo.DefaultInterfaceImplementation)
+            MethodBuilder tGetMethodBuilder = null;
+            if (info == null || info.CanRead) // q: some props just don't have GET
             {
-                typeBuilder.DefineMethodOverride(tGetMethodBuilder, info.GetGetMethod());
+                //GetMethod
+                tGetMethodBuilder = typeBuilder.DefineMethod(tPrefixedGet,
+                                                                 tPublicPrivate
+                                                                 | MethodAttributes.SpecialName
+                                                                 | MethodAttributes.HideBySig
+                                                                 | MethodAttributes.Virtual
+                                                                 | MethodAttributes.Final
+                                                                 | MethodAttributes.NewSlot,
+                                                                 emitInfo.ResolveReturnType,
+                                                                 emitInfo.ResolvedIndexParamTypes);
+
+
+                if (!emitInfo.DefaultInterfaceImplementation)
+                {
+                    typeBuilder.DefineMethodOverride(tGetMethodBuilder, info.GetGetMethod());
+                }
+
+
+                if (info != null && info.GetGetMethod() != null)
+                {
+                    foreach (var tParam in info.GetGetMethod().GetParameters())
+                    {
+                        tGetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+                    }
+                }
             }
 
-
-            if (info != null)
+            MethodBuilder tSetMethodBuilder = null;
+            if (info != null && info.CanWrite) // q: some props just don't have SET
             {
-                foreach (var tParam in info.GetGetMethod().GetParameters())
+                //SetMethod
+                tSetMethodBuilder = typeBuilder.DefineMethod(tPrefixedSet,
+                                                                tPublicPrivate
+                                                                | MethodAttributes.SpecialName
+                                                                | MethodAttributes.HideBySig
+                                                                | MethodAttributes.Virtual
+                                                                | MethodAttributes.Final
+                                                                | MethodAttributes.NewSlot,
+                                                             null,
+                                                             emitInfo.ResolvedParamTypes);
+
+                if (!emitInfo.DefaultInterfaceImplementation)
                 {
+                    typeBuilder.DefineMethodOverride(tSetMethodBuilder, info.GetSetMethod());
+                }
 
-
-                    tGetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
+                foreach (var tParam in info.GetSetMethod().GetParameters())
+                {
+                    tSetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
                 }
             }
 
@@ -1290,8 +1314,8 @@ namespace ImpromptuInterface.Build
                 tGetMethodBuilder,
                 tMp,
                 info,
-                setMethod,
-                emitInfo );
+                tSetMethodBuilder,
+                emitInfo);
         }
         private abstract class EmitInfo
         {
@@ -1342,133 +1366,108 @@ namespace ImpromptuInterface.Build
             TypeBuilder typeBuilder,
             MethodBuilder getMethodBuilder,
             PropertyBuilder tMp,
-            PropertyInfo info, 
-            MethodInfo setMethod,
+            PropertyInfo info,
+            MethodBuilder setMethodBuilder,
             PropertyEmitInfo emitInfo
             )
         {
            
             if (emitInfo.ResolvedIndexParamTypes == null) throw new ArgumentNullException("emitInfo","ResolvedIndexParams can't be null");
-            var tIlGen = getMethodBuilder.GetILGenerator();
 
-            var tConvertCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
-
-            //If it's an interface and not nonrecursive this will be true
-            var tRecurse = emitInfo.ResolveReturnType.IsInterface && !emitInfo.NonRecursive;
-
-            //If we want to do recursive Interfaces we need to test the interface before we dynamically cast
-            var tReturnLocal = tIlGen.DeclareLocal(tRecurse ? typeof(object) : emitInfo.ResolveReturnType);
-        
-            
-            using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tConvertCallsiteField)))
+            if (getMethodBuilder != null)
             {
-                tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, emitInfo.ResolveReturnType, emitInfo.ContextType);
-                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteConvertFuncType);
-                tIlGen.Emit(OpCodes.Stsfld, tConvertCallsiteField);
-            }
+                var tIlGen = getMethodBuilder.GetILGenerator();
+                var tConvertCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
 
-            var tInvokeGetCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeGetName);
+                //If it's an interface and not nonrecursive this will be true
+                var tRecurse = emitInfo.ResolveReturnType.IsInterface && !emitInfo.NonRecursive;
 
-            using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField)))
-            {
-                tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, emitInfo.Alias ?? emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedIndexParamTypes);
-                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeGetFuncType);
-                tIlGen.Emit(OpCodes.Stsfld, tInvokeGetCallsiteField);
-            }
+                //If we want to do recursive Interfaces we need to test the interface before we dynamically cast
+                var tReturnLocal = tIlGen.DeclareLocal(tRecurse ? typeof(object) : emitInfo.ResolveReturnType);
 
 
-    
-
-            if (!tRecurse)
-            {
-                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
-                tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
-                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
-            }
-            tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
-            tIlGen.Emit(OpCodes.Ldfld, tInvokeGetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
-            tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
-            tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
-            for (var i = 1; i <= emitInfo.ResolvedIndexParamTypes.Length; i++)
-            {
-                tIlGen.EmitLoadArgument(i);
-            }
-            tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeGetFuncType);
-            
-            //If we are are recursing than do it later
-            if (!tRecurse)
-            {
-                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
-            }
-
-            tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
-
-
-            //If return type is interface and instance is not interface, try actlike
-            if (tRecurse)
-            {
-                using (tIlGen.EmitBranchFalse(gen => gen.EmitLoadLocation(tReturnLocal.LocalIndex)))
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tConvertCallsiteField)))
                 {
-                    tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-                    using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
+                    tIlGen.EmitDynamicConvertBinder(CSharpBinderFlags.None, emitInfo.ResolveReturnType, emitInfo.ContextType);
+                    tIlGen.EmitCallsiteCreate(emitInfo.CallSiteConvertFuncType);
+                    tIlGen.Emit(OpCodes.Stsfld, tConvertCallsiteField);
+                }
+
+                var tInvokeGetCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeGetName);
+
+                using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField)))
+                {
+                    tIlGen.EmitDynamicGetBinder(CSharpBinderFlags.None, emitInfo.Alias ?? emitInfo.Name, emitInfo.ContextType, emitInfo.ResolvedIndexParamTypes);
+                    tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeGetFuncType);
+                    tIlGen.Emit(OpCodes.Stsfld, tInvokeGetCallsiteField);
+                }
+
+
+
+
+                if (!tRecurse)
+                {
+                    tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                    tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+                    tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                }
+                tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
+                tIlGen.Emit(OpCodes.Ldfld, tInvokeGetCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+                tIlGen.Emit(OpCodes.Ldsfld, tInvokeGetCallsiteField);
+                tIlGen.Emit(OpCodes.Ldarg_0);
+                tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+                for (var i = 1; i <= emitInfo.ResolvedIndexParamTypes.Length; i++)
+                {
+                    tIlGen.EmitLoadArgument(i);
+                }
+                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeGetFuncType);
+
+                //If we are are recursing than do it later
+                if (!tRecurse)
+                {
+                    tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
+                }
+
+                tIlGen.EmitStoreLocation(tReturnLocal.LocalIndex);
+
+
+                //If return type is interface and instance is not interface, try actlike
+                if (tRecurse)
+                {
+                    using (tIlGen.EmitBranchFalse(gen => gen.EmitLoadLocation(tReturnLocal.LocalIndex)))
                     {
                         tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-                        tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
-                        tIlGen.Emit(OpCodes.Ret);
+                        using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
+                        {
+                            tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                            tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
+                            tIlGen.Emit(OpCodes.Ret);
+                        }
                     }
                 }
-            }
 
-            var tReturnLabel =tIlGen.DefineLabel();
-            tIlGen.Emit(OpCodes.Br_S, tReturnLabel);
-            tIlGen.MarkLabel(tReturnLabel);
-            if (tRecurse)
-            {
-                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
-                tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
-                tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
-            }
-            tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-            if (tRecurse)
-            {
-                tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
-            }
-
-            tIlGen.Emit(OpCodes.Ret);
-            tMp.SetGetMethod(getMethodBuilder);
-
-            if (setMethod != null)
-            {
-
-             
-                MethodAttributes tPublicPrivate = MethodAttributes.Public;
-                var tPrefixedSet = setMethod.Name;
-                if (!emitInfo.DefaultInterfaceImplementation)
+                var tReturnLabel = tIlGen.DefineLabel();
+                tIlGen.Emit(OpCodes.Br_S, tReturnLabel);
+                tIlGen.MarkLabel(tReturnLabel);
+                if (tRecurse)
                 {
-                    tPublicPrivate = MethodAttributes.Private;
-                    tPrefixedSet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedSet);
+                    tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                    tIlGen.Emit(OpCodes.Ldfld, tConvertCallsiteField.FieldType.GetFieldEvenIfGeneric("Target"));
+                    tIlGen.Emit(OpCodes.Ldsfld, tConvertCallsiteField);
+                }
+                tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
+                if (tRecurse)
+                {
+                    tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
                 }
 
+                tIlGen.Emit(OpCodes.Ret);
+                tMp.SetGetMethod(getMethodBuilder);
+            }
 
-                var tSetMethodBuilder = typeBuilder.DefineMethod(tPrefixedSet,
-                                                                 tPublicPrivate | MethodAttributes.SpecialName |
-                                                                 MethodAttributes.HideBySig | MethodAttributes.Virtual |
-                                                                 MethodAttributes.Final | MethodAttributes.NewSlot,
-                                                                 null,
-                                                                 emitInfo.ResolvedParamTypes);
-
-                if (!emitInfo.DefaultInterfaceImplementation)
-                {
-                    typeBuilder.DefineMethodOverride(tSetMethodBuilder, info.GetSetMethod());
-                }
-
-                foreach (var tParam in info.GetSetMethod().GetParameters())
-                {
-                    tSetMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
-                }
-
-                tIlGen = tSetMethodBuilder.GetILGenerator();
+            if (setMethodBuilder != null)
+            {
+                var tIlGen = setMethodBuilder.GetILGenerator();
                 var tSetCallsiteField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteInvokeSetName);
 
                 using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tSetCallsiteField)))
@@ -1489,7 +1488,7 @@ namespace ImpromptuInterface.Build
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeSetFuncType);
                 tIlGen.Emit(OpCodes.Pop);
                 tIlGen.Emit(OpCodes.Ret);
-                tMp.SetSetMethod(tSetMethodBuilder);
+                tMp.SetSetMethod(setMethodBuilder);
             }
         }
 

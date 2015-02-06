@@ -14,6 +14,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Building block to use Method calls as dynamic lookups
     /// </summary>
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class FluentStringLookup:DynamicObject,ICustomTypeProvider
     {
         private readonly Func<string, dynamic> _lookup;

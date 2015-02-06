@@ -12,6 +12,7 @@ namespace ImpromptuInterface.Dynamic
     /// Dummy that just returns null of default for everything.
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuDummy:ImpromptuObject
     {
 

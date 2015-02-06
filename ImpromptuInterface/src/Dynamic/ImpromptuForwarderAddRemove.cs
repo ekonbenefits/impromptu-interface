@@ -5,6 +5,7 @@ using System.Text;
 
 namespace ImpromptuInterface.Dynamic
 {
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     class ImpromptuForwarderAddRemove
     {
         /// <summary>

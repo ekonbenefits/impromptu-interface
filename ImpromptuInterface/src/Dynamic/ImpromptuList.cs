@@ -31,6 +31,7 @@ namespace ImpromptuInterface.Dynamic
     /// Expando-Type List for dynamic objects
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuList : ImpromptuDictionaryBase, IList<object>, IDictionary<string, object>, INotifyCollectionChanged, ITypedList, IList
 
     {

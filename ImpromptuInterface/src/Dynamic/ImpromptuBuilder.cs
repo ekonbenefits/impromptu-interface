@@ -28,6 +28,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Interface for simplistic builder options
     /// </summary>
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public interface IImpromptuBuilder
     {  
         
@@ -120,6 +121,7 @@ namespace ImpromptuInterface.Dynamic
     /// Builds Expando-Like Objects with an inline Syntax
     /// </summary>
     /// <typeparam name="TObjectProtoType">The type of the object proto type.</typeparam>
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuBuilder<TObjectProtoType>: ImpromptuObject, IImpromptuBuilder
     {
         /// <summary>
@@ -293,6 +295,7 @@ namespace ImpromptuInterface.Dynamic
         /// <summary>
         /// Trampoline for setup builder
         /// </summary>
+         [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public class SetupTrampoline : DynamicObject, ICustomTypeProvider
         {
 			ImpromptuBuilder<TObjectProtoType> _buider;

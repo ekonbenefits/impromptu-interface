@@ -8,6 +8,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Class for TDD, used for mocking any dynamic object
     /// </summary>
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class Mimic : DynamicObject,ICustomTypeProvider
     {
         /// <summary>

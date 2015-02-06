@@ -28,8 +28,9 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Similar to Expando Objects but handles null values when the property is defined with an impromptu interface
     /// </summary>
-      
+
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
      public class ImpromptuDictionary:ImpromptuDictionaryBase,IDictionary<string,object>
     {
 
@@ -133,7 +134,8 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Adds extra synatx to intialize properties to match up with clay
     /// </summary>
-        [Serializable]
+    [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 		public class ImpromptuChainableDictionary:ImpromptuDictionary{
 
 

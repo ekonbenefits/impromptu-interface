@@ -25,6 +25,7 @@ namespace ImpromptuInterface.Dynamic
     /// Type of Invocation
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public enum InvocationKind
     {
         /// <summary>
@@ -99,6 +100,7 @@ namespace ImpromptuInterface.Dynamic
     /// Storable representation of an invocation without the target
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class Invocation
     {
 

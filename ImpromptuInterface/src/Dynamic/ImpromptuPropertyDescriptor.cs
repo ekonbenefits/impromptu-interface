@@ -6,7 +6,8 @@ namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Property Descriptor for Dynamic Objects
-    /// </summary>
+    /// </summary> 
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuPropertyDescriptor:PropertyDescriptor
     {
 

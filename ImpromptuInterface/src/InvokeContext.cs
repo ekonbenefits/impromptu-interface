@@ -28,7 +28,8 @@ namespace ImpromptuInterface
 
     /// <summary>
     /// Specific version of InvokeContext which declares a type to be used to invoke static methods.
-    /// </summary>
+    /// </summary> 
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class StaticContext:InvokeContext
     {
         /// <summary>
@@ -54,6 +55,7 @@ namespace ImpromptuInterface
     /// Object that stores a context with a target for dynamic invocation
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class InvokeContext
     {
 

@@ -22,6 +22,7 @@ namespace ImpromptuInterface.Dynamic
     /// Fluent Class for writing inline lambdass
     /// </summary>
     /// <typeparam name="TR">The type of the R.</typeparam>
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public static class Return<TR>
     {
 		
@@ -691,7 +692,8 @@ namespace ImpromptuInterface.Dynamic
 
 	/// <summary>
     /// Fluent class for writing inline lambdas that return void
-    /// </summary>
+    /// </summary> 
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public static class ReturnVoid
     { 
 	    /// <summary>

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -7,6 +8,8 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Extension Methods for fluent Regex
     /// </summary>
+       
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public static class FluentRegex
     {
   

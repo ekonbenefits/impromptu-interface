@@ -31,6 +31,7 @@ namespace ImpromptuInterface.Dynamic
     /// Base class of Expando-Type objects
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public abstract class ImpromptuDictionaryBase : ImpromptuObject, INotifyPropertyChanged
     {
         /// <summary>

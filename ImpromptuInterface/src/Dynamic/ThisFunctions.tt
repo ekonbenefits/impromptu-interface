@@ -24,7 +24,8 @@ namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Special Delegate used to make impromptu object methods first parameter is this.
-    /// </summary>
+    /// </summary> 
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public delegate void ThisAction(dynamic @this);
 <# for(int i=1; i<=16; i++){
 	var tArgs = String.Concat(Enumerable.Range(2,i-1).Select(it=>String.Format(",in T{0}",it)));
@@ -32,12 +33,14 @@ namespace ImpromptuInterface.Dynamic
 #>
     /// <summary>
     /// Special Delegate used to make impromptu object methods first parameter is this.
-    /// </summary>
+    /// </summary> 
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public delegate void ThisAction<in T1<#=tArgs#>>(dynamic @this<#=tParms#>);
 <# } #>
     /// <summary>
     /// Special Delegate used to make impromptu object methods first parameter is this.
     /// </summary>
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public delegate TResult ThisFunc<out TResult>(dynamic @this);
 <# for(int i=1; i<=16; i++){
 	var tArgs = String.Concat(Enumerable.Range(2,i-1).Select(it=>String.Format(",in T{0}",it)));
@@ -46,12 +49,14 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Special Delegate used to make impromptu object methods first parameter is this.
     /// </summary>
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public delegate TResult ThisFunc<in T1<#=tArgs#>, out TResult>(dynamic @this<#=tParms#>);
 <# } #>
 	
 	/// <summary>
     /// Extension method for Dealing with Special Delegate Type
     /// </summary>
+	[Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
 	public static class ThisDelegate{
 		private static readonly HashSet<Type> _specialThisDels = new HashSet<Type>(){
 				typeof(ThisAction),

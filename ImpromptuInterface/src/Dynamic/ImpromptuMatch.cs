@@ -9,13 +9,14 @@ using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Dynamic
 {
-
+     [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public interface IFluentMatch
     {
         string Value { get;}
     }
 
-    [Serializable]
+     [Serializable]
+     [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuMatch : ImpromptuObject, IFluentMatch
     {
         private readonly Match _match;

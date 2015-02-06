@@ -26,6 +26,7 @@ namespace ImpromptuInterface
     /// Use for Named arguments passed to InvokeMethods
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class InvokeArg
     {
         /// <summary>
@@ -74,6 +75,7 @@ namespace ImpromptuInterface
     /// </summary>
     /// <typeparam name="T"></typeparam>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class InvokeArg<T> : InvokeArg
     {
         /// <summary>

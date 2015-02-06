@@ -32,6 +32,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Get access to target of original proxy
     /// </summary>
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public interface IForwarder
     {
         /// <summary>

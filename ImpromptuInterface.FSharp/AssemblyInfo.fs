@@ -12,7 +12,7 @@ open System.Runtime.InteropServices;
 #else
 [<assembly: AssemblyTitle("ImpromptuInterface.FSharp")>]
 #endif
-[<assembly: AssemblyDescription("")>]
+[<assembly: AssemblyDescription("This Framework has been deprecated in favor of FSharp.Dynamic http://goo.gl/X0QK4")>]
 [<assembly: AssemblyConfiguration("")>]
 [<assembly: AssemblyCompany("Ekon Benefits")>]
 [<assembly: AssemblyProduct("ImpromptuInterface.FSharp")>]
@@ -41,4 +41,6 @@ open System.Runtime.InteropServices;
 // by using the ‘*’ as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 [<assembly: AssemblyVersion("1.2.13.0")>]
+()
+[<assembly: AssemblyFileVersion("1.2.14.0")>]
 ()

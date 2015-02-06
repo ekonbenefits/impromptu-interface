@@ -7,9 +7,10 @@ using System.Text;
 using ImpromptuInterface.Internal.Support;
 
 namespace ImpromptuInterface.Dynamic
-{   
-    
+{
+
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class LinqInstanceProxy : ExtensionToInstanceProxy, IEnumerable<object>
     {    
         

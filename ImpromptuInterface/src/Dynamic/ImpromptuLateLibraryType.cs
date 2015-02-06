@@ -14,6 +14,7 @@ namespace ImpromptuInterface.Dynamic
     /// Late bind types from libraries not not at compile type
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuLateLibraryType:ImpromptuForwarder
     {
         /// <summary>

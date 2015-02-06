@@ -29,6 +29,7 @@ namespace ImpromptuInterface.Dynamic
     /// Proxy that Records Dynamic Invocations on an object
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuRecorder:ImpromptuForwarder
     {
 

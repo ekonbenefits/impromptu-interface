@@ -21,8 +21,8 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Base Class for making a fluent factory using an Impromptu Interface return type.
     /// </summary>
-   
-    
+
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuFactory:ImpromptuObject
     {
         /// <summary>
@@ -93,7 +93,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Base Class for making a singleton fluent factory using an Impromptu Interface return type.
     /// </summary>
-    
+     [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuSingleInstancesFactory : ImpromptuFactory
     { 
         

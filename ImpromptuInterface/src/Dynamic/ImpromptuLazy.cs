@@ -11,6 +11,7 @@ namespace ImpromptuInterface.Dynamic
     /// Abstract base for the Generic class <see cref="ImpromptuLazy{T}"/> with <see cref="Create{T}(System.Func{T})"/> fatory methods
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public abstract class ImpromptuLazy:ImpromptuForwarder
     {
         /// <summary>

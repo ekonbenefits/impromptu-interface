@@ -73,6 +73,7 @@ namespace ImpromptuInterface
         /// Advanced usage only for serious custom dynamic invocation.
         /// </remarks>
         /// <seealso cref="CreateCallSite{T}"/>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static CallSite CreateCallSite(Type delegateType, CallSiteBinder binder, String_OR_InvokeMemberName name,
                                               Type context, string[] argNames = null, bool staticContext = false,
                                               bool isEvent = false)
@@ -116,6 +117,7 @@ namespace ImpromptuInterface
         /// ]]></code>
         /// </example>
         /// <seealso cref="CreateCallSite"/>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static CallSite<T> CreateCallSite<T>(CallSiteBinder binder, String_OR_InvokeMemberName name, Type context,
                                                     string[] argNames = null, bool staticContext = false,
                                                     bool isEvent = false) where T : class
@@ -125,6 +127,7 @@ namespace ImpromptuInterface
         }
 
 
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic DynamicLinq(object enumerable)
         {
             if(!enumerable.GetType().GetInterfaces().Where(it=>it.IsGenericType)
@@ -140,6 +143,7 @@ namespace ImpromptuInterface
             return new LinqInstanceProxy(enumerable);
         }
 
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static ILinq<T> Linq<T>(IEnumerable<T> enumerable)
         {
             return new LinqInstanceProxy(enumerable).ActLike<ILinq<T>>();
@@ -166,6 +170,7 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeMember(object target, String_OR_InvokeMemberName name, params object[] args)
         {
             string[] tArgNames;
@@ -187,6 +192,7 @@ namespace ImpromptuInterface
         /// <param name="op">The op.</param>
         /// <param name="rightArg">The right Arg.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeBinaryOperator(dynamic leftArg, ExpressionType op, dynamic rightArg)
         {
             switch (op)
@@ -264,6 +270,7 @@ namespace ImpromptuInterface
         /// <param name="arg">The arg.</param>
         /// <param name="op">The op.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeUnaryOpartor(ExpressionType op, dynamic arg)
         {
             switch (op)
@@ -289,6 +296,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic Invoke(object target, params object[] args)
         {
             string[] tArgNames;
@@ -308,6 +316,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="indexes">The indexes.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeGetIndex(object target, params object[] indexes)
         {
             string[] tArgNames;
@@ -329,6 +338,7 @@ namespace ImpromptuInterface
         /// <param name="value">The value</param>
         /// <param name="indexes">The indexes </param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static object InvokeSetValueOnIndexes(object target, object value, params object[] indexes)
         {
             var tList = new List<object>(indexes) {value};
@@ -340,6 +350,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="indexesThenValue">The indexes then value.</param>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static object InvokeSetIndex(object target, params object[] indexesThenValue)
         {
             if (indexesThenValue.Length < 2)
@@ -380,6 +391,7 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static void InvokeMemberAction(object target, String_OR_InvokeMemberName name, params object[] args)
         {
             string[] tArgNames;
@@ -399,6 +411,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="target">The target.</param>
         /// <param name="args">The args.</param>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static void InvokeAction(object target, params object[] args)
         {
             string[] tArgNames;
@@ -436,6 +449,7 @@ namespace ImpromptuInterface
         /// <remarks>
         /// if you call a static property off a type with a static context the csharp dlr binder won't do it, so this method reverts to reflection
         /// </remarks>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static object InvokeSet(object target, string name, object value)
         {
             Type tContext;
@@ -454,6 +468,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="propertyChain">The property chain.</param>
         /// <param name="value">The value.</param>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static object InvokeSetChain(object target, string propertyChain, object value)
         {
             var tProperties = _chainRegex.FluentMatches(propertyChain).ToList();
@@ -506,6 +521,7 @@ namespace ImpromptuInterface
         /// Call Like method invokes set on target and a list of property/value. Invoke with dictionary, anonymous type or named arguments.
         /// </summary>
         /// <value>The invoke set all.</value>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeSetAll
         {
             get { return _invokeSetAll; }
@@ -517,6 +533,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="totalArgCount">The total arg count.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic Curry(object target, int? totalArgCount = null)
         {
             if (target is Delegate && !totalArgCount.HasValue)
@@ -529,6 +546,7 @@ namespace ImpromptuInterface
         /// </summary>
         /// <param name="target">The target.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic Curry(Delegate target)
         {
             return new Curry(target, target.Method.GetParameters().Length);
@@ -553,6 +571,7 @@ namespace ImpromptuInterface
         /// ]]>
         /// </code>
         /// </example>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeGet(object target, string name)
         {
             Type tContext;
@@ -576,7 +595,8 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="propertyChain">The property chain.</param>
         /// <returns></returns>
-        public static dynamic InvokeGetChain(object target, string propertyChain)
+  [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
+  public static dynamic InvokeGetChain(object target, string propertyChain)
         {
             var tProperties = _chainRegex.FluentMatches(propertyChain);
             var tTarget = target;
@@ -610,7 +630,8 @@ namespace ImpromptuInterface
         /// <returns>
         /// 	<c>true</c> if the specified target is event; otherwise, <c>false</c>.
         /// </returns>
-        public static bool InvokeIsEvent(object target, string name)
+  [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
+  public static bool InvokeIsEvent(object target, string name)
         {
             Type tContext;
             bool tStaticContext;
@@ -637,6 +658,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static void InvokeAddAssignMember(object target, string name, object value)
         {
             CallSite callSiteAdd =null;
@@ -671,7 +693,8 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="name">The name.</param>
         /// <param name="value">The value.</param>
-        public static void InvokeSubtractAssignMember(object target, string name, object value)
+               [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
+               public static void InvokeSubtractAssignMember(object target, string name, object value)
         {
             Type context;
             bool staticContext;
@@ -699,7 +722,8 @@ namespace ImpromptuInterface
         /// <param name="type">The type.</param>
         /// <param name="explicit">if set to <c>true</c> [explicit].</param>
         /// <returns></returns>
-        public static dynamic InvokeConvert(object target, Type type, bool @explicit =false)
+               [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
+               public static dynamic InvokeConvert(object target, Type type, bool @explicit = false)
         {
             Type tContext;
             bool tDummy;
@@ -712,6 +736,7 @@ namespace ImpromptuInterface
 
         internal static readonly IDictionary<Type, Delegate> CompiledExpressions = new Dictionary<Type, Delegate>();
 
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic CoerceToDelegate(object invokeableObject, Type delegateType)
             {
                 if (!typeof(Delegate).IsAssignableFrom(delegateType.BaseType))
@@ -755,6 +780,7 @@ namespace ImpromptuInterface
 
             }
 
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic CoerceConvert(object target, Type type)
         {
             if (target != null && !type.IsInstanceOfType(target) && DBNull.Value != target)
@@ -886,6 +912,7 @@ namespace ImpromptuInterface
         /// <param name="type">The type.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeConstructor(Type type, params object[] args)
         {
             string[] tArgNames;
@@ -909,7 +936,8 @@ namespace ImpromptuInterface
         /// <param name="del">The del.</param>
         /// <param name="args">The args.</param>
         /// <returns></returns>
-		public static object FastDynamicInvoke(this Delegate del, params object[] args)
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
+        public static object FastDynamicInvoke(this Delegate del, params object[] args)
 		{
 		    if(del.Method.ReturnType == typeof(void)){
 				
@@ -925,6 +953,7 @@ namespace ImpromptuInterface
         /// <param name="paramCount">The param count.</param>
         /// <param name="returnVoid">if set to <c>true</c> [return void].</param>
         /// <returns>Type of Action or Func</returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static Type GenericDelegateType(int paramCount, bool returnVoid = false)
         {
             var tParamCount = returnVoid ? paramCount : paramCount - 1;
@@ -945,6 +974,7 @@ namespace ImpromptuInterface
         /// <param name="target">The target.</param>
         /// <param name="dynamicOnly">if set to <c>true</c> [dynamic only]. Won't add reflected properties</param>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static IEnumerable<string> GetMemberNames(object target, bool dynamicOnly = false)
         {
             var tList = new List<string>();
@@ -979,6 +1009,7 @@ namespace ImpromptuInterface
         /// Advanced use only. Use this method for serious custom invocation, otherwise there are other convenience methods such as
         /// <see cref="InvokeMember"></see>, <see cref="InvokeGet"></see>, <see cref="InvokeSet"></see> and <see cref="InvokeMemberAction"></see>
         /// </remarks>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static dynamic InvokeCallSite(CallSite callSite, object target, params object[] args)
         {
          
@@ -1201,6 +1232,7 @@ namespace ImpromptuInterface
         /// Gets the custom Type.
         /// </summary>
         /// <returns></returns>
+        [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
         public static Type GetDynamicCustomType(this object target)
         {
             return new ImpromptuRuntimeType(target.GetType(), target);

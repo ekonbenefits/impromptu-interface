@@ -32,7 +32,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Ekon Benefits")]
 [assembly: AssemblyProduct("ImpromptuInterface")]
-[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2010-2012")]
+[assembly: AssemblyCopyright("Copyright © Ekon Benefits 2010-2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -58,5 +58,5 @@ using System.Runtime.InteropServices;
 // [assembly: AssemblyVersion("1.0.*")]
 
 
-[assembly: AssemblyVersion("6.2.2.0")]
-
+[assembly: AssemblyVersion("6.5.0.0")]
+[assembly: AssemblyFileVersion("6.5.0.1")]

@@ -12,6 +12,7 @@ namespace ImpromptuInterface.Dynamic
     /// Cacheable representation of an invocation without the target or arguments  also by default only does public methods to make it easier to cache.
     ///  /// </summary>
     [Serializable]
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class CacheableInvocation:Invocation
     {
         /// <summary>

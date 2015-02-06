@@ -11,6 +11,7 @@ namespace ImpromptuInterface
     /// <summary>
     /// String or InvokeMemberName
     /// </summary>
+     [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public abstract class String_OR_InvokeMemberName
     {
         /// <summary>
@@ -46,7 +47,8 @@ namespace ImpromptuInterface
 
     /// <summary>
     /// Name of Member with associated Generic parameterss
-    /// </summary>
+    /// </summary> 
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public sealed class InvokeMemberName:String_OR_InvokeMemberName
     {
         /// <summary>

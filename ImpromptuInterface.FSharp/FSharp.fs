@@ -25,18 +25,23 @@ module FSharp=
     open FSharpUtil
 
    
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     type dynAddAssign = PropertySetCallsAddAssign
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     type dynSubtractAssign = PropertySetCallsSubtractAssign
-    type dynArg = PropertyGetCallsNamedArgument
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
+     type dynArg = PropertyGetCallsNamedArgument
     
     ///Wrap type to dynamically call static methods
     let inline dynStaticContext (target:Type) = InvokeContext.CreateStatic.Invoke(target)
-
+    
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     ///dynamic implict convert to type
     let (>?>) (target:obj) (convertType: Type) : 'TResult =
         Impromptu.InvokeConvert(target, convertType, explicit = false) :?> 'TResult
      
     ///dynamic explicit convert to type dynamically
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     let (>>?>>) (target:obj) (convertType: Type) : 'TResult =
         Impromptu.InvokeConvert(target, convertType, explicit = true) :?> 'TResult
 
@@ -49,6 +54,7 @@ module FSharp=
         target >>?>> typeof<'TResult>
 
     ///Dynamic get property or method invocation
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     let (?)  (target : obj) (name:string)  : 'TResult = 
         let resultType = typeof<'TResult>
         let (|NoConversion| Conversion|) t = if t = typeof<obj> then NoConversion else Conversion
@@ -114,9 +120,11 @@ module FSharp=
             FSharpValue.MakeFunction(resultType,lambda) |> unbox<'TResult>
 
     ///Dynamic set property
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     let (?<-) (target : obj) (name : string) (value : 'TValue) : unit =
         Impromptu.InvokeSet(target, name, value) |> ignore
 
     ///Prefix operator that allows direct dynamic invocation of the object
+    [<Obsolete("ImpromptuInterface.FSharp is deprecated, plese use FSharp.Dynamic http://goo.gl/X0QK4")>]
     let (!?) (target:obj) : 'TResult =
         target?``_``

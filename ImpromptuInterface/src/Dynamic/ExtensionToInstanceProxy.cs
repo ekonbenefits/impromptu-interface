@@ -15,6 +15,7 @@ namespace ImpromptuInterface.Dynamic
 
 
     [Serializable]
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ExtensionToInstanceProxy: ImpromptuForwarder
     {
         private readonly Type _extendedType;
@@ -85,7 +86,8 @@ namespace ImpromptuInterface.Dynamic
             }
             return true;
         }
-
+           
+        [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
         public class Invoker:ImpromptuObject
         {
             protected string _name;
@@ -200,7 +202,8 @@ namespace ImpromptuInterface.Dynamic
                 return true;
             }
         }
-
+          
+        [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
         public class OverloadInvoker:Invoker
         {
             internal OverloadInvoker(string name, Type[] genericParameters, Type[] genericMethodParameters, ExtensionToInstanceProxy parent)

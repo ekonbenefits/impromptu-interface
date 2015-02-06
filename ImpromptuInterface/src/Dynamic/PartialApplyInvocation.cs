@@ -11,7 +11,8 @@ namespace ImpromptuInterface.Dynamic
 {
     /// <summary>
     /// Internal method for subsequent invocations of <see cref="Impromptu.Curry(object,System.Nullable{int})"/>
-    /// </summary>
+    /// </summary> 
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class PartialApplyInvocation : DynamicObject, ICustomTypeProvider
     {
 

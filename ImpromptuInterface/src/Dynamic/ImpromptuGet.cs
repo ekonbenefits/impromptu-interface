@@ -28,6 +28,7 @@ namespace ImpromptuInterface.Dynamic
     /// Dynamic Proxy that exposes any properties of objects, and can massage results based on interface
     /// </summary>
     [Serializable]
+    [Obsolete("Functionality moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class ImpromptuGet:ImpromptuForwarder
     {
      

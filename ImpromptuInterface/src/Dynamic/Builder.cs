@@ -22,6 +22,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Builds Objects with a Fluent Syntax
     /// </summary>
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public static class Builder
     {
         /// <summary>
@@ -50,7 +51,8 @@ namespace ImpromptuInterface.Dynamic
 
     /// <summary>
     /// Syntax for a quick new inline prototype object
-    /// </summary>
+    /// </summary>    
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public static class Build
     {
         private static readonly dynamic _objectBuilder = new ImpromptuBuilder<ImpromptuChainableDictionary>().Object;
@@ -88,6 +90,8 @@ namespace ImpromptuInterface.Dynamic
     /// Syntax for a quick inline object property setup
     /// </summary>
     /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+       
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public static class Build<TObjectPrototype> where TObjectPrototype : new()
     {
 // ReSharper disable StaticFieldInGenericType
@@ -123,6 +127,7 @@ namespace ImpromptuInterface.Dynamic
     /// <summary>
     /// Encapsulates an Activator
     /// </summary>
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class Activate
     {
         /// <summary>
@@ -183,6 +188,7 @@ namespace ImpromptuInterface.Dynamic
     /// Encapsulates an Activator
     /// </summary>
     /// <typeparam name="TObjectPrototype">The type of the object prototype.</typeparam>
+    [Obsolete("Functionality of this class moved to Dynamitey Project http://goo.gl/hlYp5")]
     public class Activate<TObjectPrototype> : Activate
     {
         /// <summary>

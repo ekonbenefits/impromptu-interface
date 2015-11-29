@@ -98,8 +98,8 @@ namespace ImpromptuInterface.Dynamic
         {
             if (!KnownInterfaces.Any())
             {
-                var tDyanmic = Impromptu.GetMemberNames(CallTarget, dynamicOnly: true);
-                if (!tDyanmic.Any())
+                var tDynamic = Impromptu.GetMemberNames(CallTarget, dynamicOnly: true);
+                if (!tDynamic.Any())
                 {
                     return Impromptu.GetMemberNames(CallTarget);
                 }

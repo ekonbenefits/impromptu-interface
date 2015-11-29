@@ -64,7 +64,7 @@ Namespace VBNET
         End Sub
 
         <Test()> _
-        Public Sub TestCacheableDyanmicSetAndPocoSetAndSetNull()
+        Public Sub TestCacheableDynamicSetAndPocoSetAndSetNull()
             Dim tExpando As Object = New ExpandoObject()
             Dim tSetValueD = "4"
 
@@ -828,37 +828,37 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestDynamicAddAssign()
-            Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
+            Dim tDynamic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
             Dim tTest As Boolean = False
 
-            Impromptu.InvokeAddAssign(tDyanmic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
+            Impromptu.InvokeAddAssign(tDynamic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
                                                                                             tTest = True
 
                                                                                         End Function))
 
-            tDyanmic.OnEvent(Nothing, Nothing)
+            tDynamic.OnEvent(Nothing, Nothing)
 
             Assert.AreEqual(True, tTest)
 
-            Impromptu.InvokeAddAssign(tDyanmic, "Prop2", 4)
+            Impromptu.InvokeAddAssign(tDynamic, "Prop2", 4)
 
-            Assert.AreEqual(7L, tDyanmic.Prop2)
+            Assert.AreEqual(7L, tDynamic.Prop2)
         End Sub
 
         <Test()> _
         Public Sub TestCacheableDynamicAddAssign()
-            Dim tDyanmic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
+            Dim tDynamic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
             Dim tDynamic2 = Build.NewObject([Event]:=3)
             Dim tTest As Boolean = False
 
             Dim tCachedInvoke = New CacheableInvocation(InvocationKind.AddAssign, "Event")
 
-            tCachedInvoke.Invoke(DirectCast(tDyanmic, Object), New EventHandler(Of EventArgs)(Function([object], args)
+            tCachedInvoke.Invoke(DirectCast(tDynamic, Object), New EventHandler(Of EventArgs)(Function([object], args)
                                                                                                   tTest = True
 
                                                                                               End Function))
 
-            tDyanmic.OnEvent(Nothing, Nothing)
+            tDynamic.OnEvent(Nothing, Nothing)
 
             Assert.AreEqual(True, tTest)
 

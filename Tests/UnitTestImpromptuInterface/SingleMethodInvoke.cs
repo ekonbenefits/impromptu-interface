@@ -88,7 +88,7 @@ namespace UnitTestImpromptuInterface
              }
 
              [Test]
-             public void TestCacheableDyanmicSetAndPocoSetAndSetNull()
+             public void TestCacheableDynamicSetAndPocoSetAndSetNull()
              {
                  dynamic tExpando = new ExpandoObject();
                  var tSetValueD = "4";
@@ -1232,32 +1232,32 @@ namespace UnitTestImpromptuInterface
          [Test]
          public void TestDynamicAddAssign()
          {
-             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              bool tTest = false;
 
-             Impromptu.InvokeAddAssignMember(tDyanmic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             Impromptu.InvokeAddAssignMember(tDynamic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
-             tDyanmic.OnEvent(null, null);
+             tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(true, tTest);
 
-             Impromptu.InvokeAddAssignMember(tDyanmic, "Prop2", 4);
+             Impromptu.InvokeAddAssignMember(tDynamic, "Prop2", 4);
 
-             Assert.AreEqual(7L, tDyanmic.Prop2);
+             Assert.AreEqual(7L, tDynamic.Prop2);
          }
 
          [Test]
          public void TestCacheableDynamicAddAssign()
          {
-             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              var tDynamic2 = Build.NewObject(Event: 3);
              bool tTest = false;
 
              var tCachedInvoke = new CacheableInvocation(InvocationKind.AddAssign, "Event");
 
-             tCachedInvoke.Invoke((object) tDyanmic, new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             tCachedInvoke.Invoke((object) tDynamic, new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
-             tDyanmic.OnEvent(null, null);
+             tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(true, tTest);
 
@@ -1269,29 +1269,29 @@ namespace UnitTestImpromptuInterface
          [Test]
          public void TestDynamicSubtractAssign()
          {
-             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              bool tTest = false;
              var tEvent = new EventHandler<EventArgs>((@object, args) => { tTest = true; });
 
-             tDyanmic.Event += tEvent;
+             tDynamic.Event += tEvent;
 
-             Impromptu.InvokeSubtractAssignMember(tDyanmic, "Event", tEvent);
+             Impromptu.InvokeSubtractAssignMember(tDynamic, "Event", tEvent);
 
-             tDyanmic.OnEvent(null, null);
+             tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 
 
-             Impromptu.InvokeSubtractAssignMember(tDyanmic, "Prop2", 4);
+             Impromptu.InvokeSubtractAssignMember(tDynamic, "Prop2", 4);
 
-             Assert.AreEqual(-1L, tDyanmic.Prop2);
+             Assert.AreEqual(-1L, tDynamic.Prop2);
          }
 
 
          [Test]
          public void TestCacheableDynamicSubtractAssign()
          {
-             var tDyanmic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
+             var tDynamic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              var tDynamic2 = Build.NewObject(Event: 3);
 
              bool tTest = false;
@@ -1299,11 +1299,11 @@ namespace UnitTestImpromptuInterface
            
              var tCachedInvoke = new CacheableInvocation(InvocationKind.SubtractAssign, "Event");
 
-             tDyanmic.Event += tEvent;
+             tDynamic.Event += tEvent;
 
-             tCachedInvoke.Invoke((object) tDyanmic, tEvent);
+             tCachedInvoke.Invoke((object) tDynamic, tEvent);
 
-             tDyanmic.OnEvent(null, null);
+             tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 

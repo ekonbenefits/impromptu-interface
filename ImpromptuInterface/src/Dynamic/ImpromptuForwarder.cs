@@ -201,6 +201,14 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
+        private static IList<Type> GetGenericTypes(InvokeMemberBinder binder)
+        {
+            var csharpBinder =
+                binder.GetType().GetInterface("Microsoft.CSharp.RuntimeBinder.ICSharpInvokeOrInvokeMemberBinder");
+            var typeArgs = csharpBinder.GetProperty("TypeArguments").GetValue(binder, null) as IList<Type>;
+            return typeArgs;
+        }
+
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
         {
             if (CallTarget == null)
@@ -209,11 +217,12 @@ namespace ImpromptuInterface.Dynamic
                 return false;
             }
 
+            var name = new InvokeMemberName(binder.Name, GetGenericTypes(binder).ToArray());
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, args);
 
             try
             {
-                result = Impromptu.InvokeMember(CallTarget, binder.Name, tArgs);
+                result = Impromptu.InvokeMember(CallTarget, name, tArgs);
                
             }
             catch (RuntimeBinderException)
@@ -221,7 +230,7 @@ namespace ImpromptuInterface.Dynamic
                 result = null;
                 try
                 {
-                    Impromptu.InvokeMemberAction(CallTarget, binder.Name, tArgs);
+                    Impromptu.InvokeMemberAction(CallTarget, name, tArgs);
                 }
                 catch (RuntimeBinderException)
                 {

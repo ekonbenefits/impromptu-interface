@@ -218,6 +218,26 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual("test4", tFwd.Action4(4));
         }
 
+        private class ForwardGenericMethodsTestClass
+        {
+            public string Value { get; set; }
+
+            public T Create<T>(int arg) where T : ForwardGenericMethodsTestClass, new()
+            {
+                return new T { Value = "test" + arg };
+            } 
+        }
+
+        [Test]
+        public void ForwardGenericMethodsTest()
+        {
+            dynamic tNew = new ForwardGenericMethodsTestClass();
+
+            dynamic tFwd = new TestForwarder(tNew);
+
+            Assert.AreEqual("test99", tFwd.Create<ForwardGenericMethodsTestClass>(99).Value);
+        }
+
         [Test]
         public void DictionaryMethodsOutTest()
         {

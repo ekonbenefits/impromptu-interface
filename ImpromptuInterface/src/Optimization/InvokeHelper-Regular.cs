@@ -562,13 +562,13 @@ namespace ImpromptuInterface.Optimization
         internal class IsEventBinderDummy{
             
         }
-        internal static bool InvokeIsEventCallSite(object target, string name, Type tContext, ref CallSite callSite)
+        internal static bool InvokeIsEventCallSite(object target, string name, Type tContext, ref CallSite callSite, bool staticContext)
         {
             if (callSite == null)
             {
                 LazyBinder tBinder = ()=> Binder.IsEvent(CSharpBinderFlags.None, name, tContext);
                 var tBinderType = typeof (IsEventBinderDummy);
-                callSite = CreateCallSite<Func<CallSite, object, bool>>(tBinderType, Unknown, tBinder, name, tContext, isEvent: true);
+                callSite = CreateCallSite<Func<CallSite, object, bool>>(tBinderType, Unknown, tBinder, name, tContext, staticContext:staticContext, isEvent: true);
             }
             var tCallSite = (CallSite<Func<CallSite, object, bool>>)callSite;
 
@@ -578,7 +578,7 @@ namespace ImpromptuInterface.Optimization
         internal static void InvokeAddAssignCallSite(object target, string name, object[] args, string[] argNames, Type context, bool staticContext, ref CallSite callSiteIsEvent, ref CallSite callSiteAdd, ref CallSite callSiteGet, ref CallSite callSiteSet)
         {
 
-            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent))
+            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent, staticContext))
             {
                 InvokeMemberActionCallSite(target, InvokeMemberName.CreateSpecialName("add_" + name), args, argNames, context, staticContext, ref callSiteAdd);
             }
@@ -592,7 +592,7 @@ namespace ImpromptuInterface.Optimization
 
         internal static void InvokeSubtractAssignCallSite(object target, string name, object[] args, string[] argNames, Type context, bool staticContext, ref CallSite callSiteIsEvent, ref CallSite callSiteRemove, ref CallSite callSiteGet, ref CallSite callSiteSet)
         {
-            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent))
+            if (InvokeIsEventCallSite(target, name, context, ref callSiteIsEvent, staticContext))
             {
                 InvokeMemberActionCallSite(target, InvokeMemberName.CreateSpecialName("remove_" + name), args, argNames, context, staticContext, ref callSiteRemove);
             }

@@ -667,7 +667,7 @@ namespace ImpromptuInterface.Build
             if (info.ReturnParameter != null)
                 returnType = info.ReturnParameter.ParameterType;
 
-            var tGenericParams = paramTypes
+            var tGenericParams = info.GetGenericArguments()
                 .SelectMany(FlattenGenericParameters)
                 .Distinct().ToDictionary(it => it.GenericParameterPosition, it => new { Type = it, Gen = default(GenericTypeParameterBuilder) });
             var tParams = tGenericParams;

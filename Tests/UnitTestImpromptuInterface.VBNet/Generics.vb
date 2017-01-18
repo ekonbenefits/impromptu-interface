@@ -15,17 +15,27 @@ Namespace VBNET
     <TestFixture()> _
     Public Class Generics
         Inherits Helper
-        <Test()> _
-        Public Sub TestGenericMeth()
 
+        Delegate Function Test(Of T)() As String
+        
+        <Test()> _
+        Public Sub TestFunctionWithGenericParameter()
             GenericMethHelper(3, "3")
             GenericMethHelper(4, "4")
             GenericMethHelper(True, "True")
-
+        End Sub
+        
+        <Test()> _
+        Public Sub TestFunctionWithGenericParameterAndReturnValue()
             GenericMethHelper2(3)
             GenericMethHelper2(4)
             GenericMethHelper2(True)
             GenericMethHelper2("test'")
+        End Sub
+
+        <Test()> _
+        Public Sub TestFunctionWithGenericArgument()
+            GenericMethHelper3(Of String)(GetType(String).Name)
         End Sub
 
         Private Sub GenericMethHelper(Of T)(param As T, expected As String)
@@ -44,6 +54,17 @@ Namespace VBNET
             Assert.AreEqual(param, tActsLike.Action2(param))
         End Sub
 
+        Private Sub GenericMethHelper3(Of T)(expected As String)
+            Dim tNew As Object = New ExpandoObject()
+            tNew.Action3 = CType(AddressOf Action3Stub(Of T), Test(Of T))
+            Dim tActsLike As IGenericMeth = Impromptu.ActLike(Of IGenericMeth)(tNew)
+
+            Assert.AreEqual(expected, tActsLike.Action3(Of T))
+        End Sub
+
+        Private Function Action3Stub(Of T)() As String
+            Return GetType(T).Name
+        End Function
 
         <Test()> _
         Public Sub TestGenericType()

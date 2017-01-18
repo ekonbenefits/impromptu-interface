@@ -203,6 +203,8 @@ Namespace VBNET
         Function Action(Of T)(arg As T) As String
 
         Function Action2(Of T)(arg As T) As T
+
+        Function Action3(Of T)() As String
     End Interface
 
     Public Interface IStringIntIndexer

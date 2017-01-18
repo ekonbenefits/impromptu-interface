@@ -100,6 +100,8 @@ namespace ImpromptuInterface.Build
             {
                 var tGenDef = type.GetGenericTypeDefinition();
                 var tField = tGenDef.GetField(fieldName);
+                if (tField == null)
+                    return null;
                 return TypeBuilder.GetField(type, tField);
             }
             return type.GetField(fieldName);

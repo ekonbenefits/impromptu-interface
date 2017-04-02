@@ -2,7 +2,7 @@ C# 4.0 (.net & silverlight) framework to allow you to wrap any object (static or
 
 See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full examples of all features. Other features include Really Late Binding, Inline Syntaxes, Currying, some dynamic extensions for FSharp, and unsealed Dynamic Objects including a fully dynamic MVVM ViewModel
 
-###Roadmap: 
+### Roadmap: 
  - 6.5 
    - obsolete duplicate functionality with  [Dynamitey](https://github.com/ekonbenefits/dynamitey) 
    - Remove ImpromptuInterface.FSharp replaced by [FSharp.Dynamic](https://github.com/ekonbenefits/FSharp.Dynamic)
@@ -11,7 +11,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
    - Full PCL port of Interface Wrapping
    - Tool to pregenerate proxies for WinRT
 
-###Quick Usage:
+### Quick Usage:
 
 ```csharp
     using ImpromptuInterface;
@@ -42,7 +42,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
     var myInterface = anon.ActLike<IMyInterface>();
 ```
 
-##OR##
+## OR
 
 ```csharp
    //Dynamic Expando object
@@ -56,7 +56,7 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
     IMyInterface myInterface = Impromptu.ActLike(expando);
 ```
 
-##ALSO##
+## ALSO
 
 ```fsharp
     //In F#
@@ -71,12 +71,12 @@ See [Wiki](http://github.com/ekonbenefits/impromptu-interface/wiki) for full exa
     let myInterface = expando.ActLike<IMyInterface>()
 ```
 
-###Get The Code###
+### Get The Code
 Project can be checked out from git repository, works with .net 4.0, Silverlight 4.0 & 5.0  and mono 2.10
 
-###Get The Binaries###
+### Get The Binaries
 use [NuGet](http://nuget.org ) Visual Studio Extension "Add Libary Package Refrence... from Visual Studio
 or download the zip file.  Source Code for debugging the binaries can be provided automatically from [SymbolSource.org](http://www.symbolsource.org/Public/Home/VisualStudio)
 
-###Get The Samples###
+### Get The Samples
 There is a Sample mercurial repository for code samples. Currently it has an ImpromptuInterface.MVVM based calculator implemented in WPF or Silverlight or F#. [sample repository](https://code.google.com/p/impromptu-interface/source/checkout?repo=sample).

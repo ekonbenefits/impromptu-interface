@@ -112,6 +112,30 @@ namespace UnitTestImpromptuInterface
 
 
         [Test]
+        public void ExpandoSEtPropertyTest()
+        {
+
+            var prop1 = "Test";
+            var prop2 = 42L;
+            var prop3 = Guid.NewGuid();
+
+            dynamic tNew = new ExpandoObject();
+
+
+            ISimpeleSetClassProps tActsLike = Impromptu.ActLike<ISimpeleSetClassProps>(tNew);
+            tActsLike.Prop1 = prop1;
+            tActsLike.Prop2 = prop2;
+            tActsLike.Prop3 = prop3;
+
+
+
+            Assert.AreEqual(tNew.Prop1, prop1);
+            Assert.AreEqual(tNew.Prop2, prop2);
+            Assert.AreEqual(tNew.Prop3, prop3);
+        }
+
+
+        [Test]
         public void ImpromptuConversionPropertyTest()
         {
 

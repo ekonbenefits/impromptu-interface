@@ -108,6 +108,16 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public interface ISimpeleSetClassProps
+    {
+        string Prop1 { set ; }
+
+        long Prop2 { set; }
+
+        Guid Prop3 { set; }
+    }
+
+
     public interface IInheritProp:ISimpeleClassProps
     {
         PropPoco ReturnProp { get; set; }

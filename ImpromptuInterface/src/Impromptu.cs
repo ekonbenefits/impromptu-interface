@@ -1177,7 +1177,7 @@ namespace ImpromptuInterface
         }
 
         /// <summary>
-        /// Static Method that wraps an existing dyanmic object with a explicit interface type
+        /// Static Method that wraps an existing dynamic object with a explicit interface type
         /// </summary>
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>

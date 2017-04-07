@@ -202,7 +202,7 @@ namespace ImpromptuInterface.Dynamic
 
 
         /// <summary>
-        /// Allows ActLike to be called via dyanmic invocation
+        /// Allows ActLike to be called via dynamic invocation
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <param name="otherInterfaces">The other interfaces.</param>

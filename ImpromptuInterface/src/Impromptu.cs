@@ -638,7 +638,7 @@ namespace ImpromptuInterface
             target = target.GetTargetContext(out tContext, out tStaticContext);
             tContext = tContext.FixContext();
             CallSite tCallSite = null;
-            return InvokeHelper.InvokeIsEventCallSite(target, name, tContext, ref tCallSite);
+            return InvokeHelper.InvokeIsEventCallSite(target, name, tContext, ref tCallSite, tStaticContext);
         }
         /// <summary>
         /// Invokes add assign with correct behavior for events.

@@ -202,12 +202,26 @@ namespace ImpromptuInterface.Dynamic
             return true;
         }
 
-        private static IList<Type> GetGenericTypes(InvokeMemberBinder binder)
+        private static Type[] GetGenericTypes(InvokeMemberBinder binder)
         {
-            var csharpBinder =
-                binder.GetType().GetInterface("Microsoft.CSharp.RuntimeBinder.ICSharpInvokeOrInvokeMemberBinder");
-            var typeArgs = csharpBinder.GetProperty("TypeArguments").GetValue(binder, null) as IList<Type>;
-            return typeArgs;
+            Type[] types = null;
+            try
+            { // Try and pull generic arguments from binder
+                IList<Type> typeList = Impromptu.InvokeGet(binder,
+                    "Microsoft.CSharp.RuntimeBinder.ICSharpInvokeOrInvokeMemberBinder.TypeArguments");
+                if (typeList != null)
+                {
+
+                    types = typeList.ToArray();
+
+                }
+
+            }
+            catch (RuntimeBinderException)
+            {
+                types = null;
+            }
+            return types;
         }
 
         public override bool TryInvokeMember(InvokeMemberBinder binder, object[] args, out object result)
@@ -218,7 +232,7 @@ namespace ImpromptuInterface.Dynamic
                 return false;
             }
 
-            var name = new InvokeMemberName(binder.Name, GetGenericTypes(binder).ToArray());
+            var name = new InvokeMemberName(binder.Name, GetGenericTypes(binder));
             object[] tArgs = Util.NameArgsIfNecessary(binder.CallInfo, args);
 
             try

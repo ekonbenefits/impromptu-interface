@@ -15,7 +15,7 @@
     <RootNamespace>UnitTestImpromptuInterface.Silverlight</RootNamespace>
     <AssemblyName>UnitTestImpromptuInterface.Silverlight</AssemblyName>
     <TargetFrameworkIdentifier>Silverlight</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v5.0</TargetFrameworkVersion>
     <SilverlightVersion>$(TargetFrameworkVersion)</SilverlightVersion>
     <SilverlightApplication>false</SilverlightApplication>
     <ValidateXaml>true</ValidateXaml>
@@ -23,7 +23,8 @@
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>4.0</OldToolsVersion>
-    <UpgradeBackupLocation />
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
     <TargetFrameworkProfile />
     <PublishUrl>http://localhost/UnitTestImpromptuInterface.Silverlight/</PublishUrl>
     <Install>true</Install>
@@ -74,8 +75,9 @@
     <Reference Include="Castle.Core">
       <HintPath>..\..\packages\Moq.4.0.10827\lib\Silverlight4\Castle.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Dynamitey">
-      <HintPath>..\..\packages\Dynamitey.0.8.0.5\lib\portable-win+net45+sl40\Dynamitey.dll</HintPath>
+    <Reference Include="Dynamitey, Version=1.0.2.0, Culture=neutral, PublicKeyToken=cbf53ea3aeb972c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dynamitey.1.0.2.0\lib\portable-win+net45+sl40+wp80\Dynamitey.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="IronPython">
       <HintPath>..\..\packages\IronPython.2.7.3\lib\Sl4\IronPython.dll</HintPath>
@@ -214,13 +216,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ImpromptuInterface.MVVM.Silverlight\ImpromptuInterface.MVVM %28Silverlight%29.csproj">
-      <Project>{56215C8D-85AE-4FCB-BD33-89E6ABBA407B}</Project>
-      <Name>ImpromptuInterface.MVVM %28Silverlight%29</Name>
+    <ProjectReference Include="..\..\ImpromptuInterface.MVVM.Silverlight5\ImpromptuInterface.MVVM %28Silverlight5%29.csproj">
+      <Project>{4d6515f6-a10b-4ea8-a9e3-7c621deb0d73}</Project>
+      <Name>ImpromptuInterface.MVVM %28Silverlight5%29</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\ImpromptuInterface.Silverlight\ImpromptuInterface %28Silverlight%29.csproj">
-      <Project>{9181A92F-9A17-45A3-BBDB-EAC085A901A0}</Project>
-      <Name>ImpromptuInterface %28Silverlight%29</Name>
+    <ProjectReference Include="..\..\ImpromptuInterface.Silverlight5\ImpromptuInterface %28Silverlight5%29.csproj">
+      <Project>{ec1b3513-cb1e-4796-899f-125fc05b2f41}</Project>
+      <Name>ImpromptuInterface %28Silverlight5%29</Name>
     </ProjectReference>
     <ProjectReference Include="..\UnitTestSupportLibrary.Silverlight\UnitTestSupportLibrary.Silverlight.csproj">
       <Project>{EE860CF5-6707-42F2-8091-3D4DC3ED1D30}</Project>
@@ -228,6 +230,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\Silverlight\$(SilverlightVersion)\Microsoft.Silverlight.CSharp.targets" />

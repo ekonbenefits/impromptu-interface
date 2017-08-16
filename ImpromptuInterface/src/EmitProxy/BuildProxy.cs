@@ -16,8 +16,6 @@
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using ImpromptuInterface.Dynamic;
-using ImpromptuInterface.Internal.Support;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build
@@ -1593,8 +1591,8 @@ namespace ImpromptuInterface.Build
                 }
 
                 if (tList.Any(it => it.IsByRef)
-                    || (tIsFunc && tList.Count >= InvokeHelper.FuncKinds.Length)
-                    || (!tIsFunc && tList.Count >= InvokeHelper.ActionKinds.Length))
+                    || (tIsFunc && tList.Count >= 16)
+                    || (!tIsFunc && tList.Count >= 16))
                 {
                     tType = GenerateFullDelegate(builder, returnType,tList, methodInfo);
 
@@ -1608,7 +1606,7 @@ namespace ImpromptuInterface.Build
                 if (tIsFunc)
                     tList.Add(returnType);
 
-                var tFuncGeneric = Impromptu.GenericDelegateType(tList.Count, !tIsFunc);
+                var tFuncGeneric = Dynamitey.Dynamic.GenericDelegateType(tList.Count, !tIsFunc);
 
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());

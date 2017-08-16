@@ -15,11 +15,7 @@
 
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using ImpromptuInterface.Dynamic;
-using ImpromptuInterface.Internal.Support;
+
 
 namespace ImpromptuInterface
 {
@@ -62,21 +58,18 @@ namespace ImpromptuInterface
         /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
-        public static readonly Func<object, object, InvokeContext> CreateContext =
-            Return<InvokeContext>.Arguments<object, object>((t, c) => new InvokeContext(t, c));
+        public static readonly Func<object, object, InvokeContext> CreateContext =(t, c) => new InvokeContext(t, c);
 
         /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
-        public static readonly Func<Type, InvokeContext> CreateStatic =
-            Return<InvokeContext>.Arguments<Type>((t) => new InvokeContext(t, true, null));
+        public static readonly Func<Type, InvokeContext> CreateStatic =(t) => new InvokeContext(t, true, null);
 
 
     /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
-        public static readonly Func<Type, object, InvokeContext> CreateStaticWithContext =
-   Return<InvokeContext>.Arguments<Type, object>((t, c) => new InvokeContext(t, true, c));
+        public static readonly Func<Type, object, InvokeContext> CreateStaticWithContext =(t, c) => new InvokeContext(t, true, c);
 
 
         /// <summary>

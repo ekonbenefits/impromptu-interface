@@ -54,14 +54,12 @@ namespace ImpromptuInterface
         /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
-        public static readonly Func<string, Type[], InvokeMemberName> Create =
-            Return<InvokeMemberName>.Arguments<string, Type[]>((n, a) => new InvokeMemberName(n, a));
+        public static readonly Func<string, Type[], InvokeMemberName> Create = (n, a) => new InvokeMemberName(n, a);
 
         /// <summary>
         /// Create Function can set to variable to make cleaner syntax;
         /// </summary>
-        public static readonly Func<string, InvokeMemberName> CreateSpecialName =
-          Return<InvokeMemberName>.Arguments<string>(n => new InvokeMemberName(n, true));
+        public static readonly Func<string, InvokeMemberName> CreateSpecialName =(n => new InvokeMemberName(n, true));
 
         /// <summary>
         /// Performs an implicit conversion from <see cref="System.String"/> to <see cref="ImpromptuInterface.InvokeMemberName"/>.

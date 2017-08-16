@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -8,8 +9,9 @@ using ImpromptuInterface.Dynamic;
 namespace ImpromptuInterface
 {
 
-    public class ActLikeCaster: ImpromptuForwarder
+    public class ActLikeCaster: DynamicObject
     {
+        public object Target { get; }
         private List<Type> _interfaceTypes;
 
         public override bool TryConvert(System.Dynamic.ConvertBinder binder, out object result)
@@ -32,18 +34,11 @@ namespace ImpromptuInterface
         }
 
 
-        public ActLikeCaster(object target, IEnumerable<Type> types) : base(target)
+        public ActLikeCaster(object target, IEnumerable<Type> types)
         {
+            Target = target;
             _interfaceTypes = types.ToList();
         }
 
-        #if !SILVERLIGHT
-
-        public ActLikeCaster(SerializationInfo info, StreamingContext context)
-            : base(info, context)
-        {
-        }
-
-        #endif
     }
 }

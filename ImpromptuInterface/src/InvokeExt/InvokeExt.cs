@@ -66,16 +66,5 @@ namespace ImpromptuInterface.InvokeExt
             return new InvokeMemberName(name, genericArgs);
         }
 
-        /// <summary>
-        /// attaches name of the argument.
-        /// </summary>
-        /// <param name="argument">The argument.</param>
-        /// <param name="name">The name.</param>
-        /// <returns></returns>
-        public static InvokeArg WithArgumentName(this object argument, string name)
-        {
-            return new InvokeArg(name, argument);
-        }
-
     }
 }

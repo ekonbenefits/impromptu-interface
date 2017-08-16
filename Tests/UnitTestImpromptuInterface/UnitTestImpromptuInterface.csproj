@@ -134,10 +134,6 @@
     <Compile Include="Linq.cs" />
     <Compile Include="MimicTest.cs" />
     <Compile Include="Curry.cs" />
-    <Compile Include="MEFTest.cs" />
-    <Compile Include="MVVM.cs" />
-    <Compile Include="NinjectTest.cs" />
-    <Compile Include="RuntimeTest.cs" />
     <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
     <Compile Include="Generics.cs" />
@@ -149,15 +145,8 @@
     <Compile Include="PrivateTest.cs" />
     <Compile Include="SingleMethodInvoke.cs" />
     <Compile Include="Support\TestTypes.cs" />
-    <Compile Include="TinyIoC.cs" />
-    <Compile Include="TinyIoCTest.cs" />
-    <Compile Include="UnityTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\ImpromptuInterface.MVVM\ImpromptuInterface.MVVM.csproj">
-      <Project>{D6AFD960-23A5-4EB0-9EEE-33AEC422B1CB}</Project>
-      <Name>ImpromptuInterface.MVVM</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj">
       <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
       <Name>ImpromptuInterface</Name>

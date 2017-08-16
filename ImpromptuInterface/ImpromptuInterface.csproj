@@ -176,12 +176,6 @@
     </Compile>
     <Compile Include="src\Optimization\Util.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="..\NuGetBuild\Core\ImpromptuInterface.MetaData.xml">
-      <Link>Properties\ImpromptuInterface.MetaData.xml</Link>
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

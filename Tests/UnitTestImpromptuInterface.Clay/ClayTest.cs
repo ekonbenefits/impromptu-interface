@@ -5,8 +5,9 @@ using System.Linq;
 using System.Text;
 using ClaySharp;
 using ClaySharp.Behaviors;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 #if !SELFRUNNER
 using NUnit.Framework;
@@ -41,7 +42,7 @@ namespace UnitTestImpromptuInterface
         public void InvokeMemberContainsNameWithImpromptuInvoke()
         {
             var clay = new Clay(new TestBehavior());
-            var result = Impromptu.InvokeMember(clay, "Help", "Test");
+            var result = Dynamic.InvokeMember(clay, "Help", "Test");
             Assert.IsTrue(result.Contains("[name:Help]"), "Does Not Match Argument Name");
             Assert.IsTrue(result.Contains("[count:1]"), "Does Not Match Argument Count");
 
@@ -50,9 +51,9 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestRecorder()
         {
-            dynamic New = Builder.New<ImpromptuRecorder>();
+            dynamic New = Builder.New<Recorder>();
 
-            ImpromptuRecorder tRecording = New.Watson(Test: "One", Test2: 2, NameLast: "Watson");
+            Recorder tRecording = New.Watson(Test: "One", Test2: 2, NameLast: "Watson");
 
             
             dynamic tVar =tRecording.ReplayOn(new ExpandoObject());
@@ -129,7 +130,7 @@ namespace UnitTestImpromptuInterface
          /// Impromptu's Interface Proxy is about the same Speed as Clay's
          /// </summary>
         [Test]
-        [Category("performance")]
+        [Category("Performance")]
         public void SpeedTestInterface()
         {   
             dynamic New = new ClayFactory();
@@ -167,7 +168,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
-        [Category("performance")]
+        [Category("Performance")]
         public void SpeedTestPrototype()
         {
             dynamic NewI = Builder.New();

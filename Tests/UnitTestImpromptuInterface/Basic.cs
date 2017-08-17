@@ -15,10 +15,11 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Optimization;
 
 #if !SELFRUNNER
@@ -112,10 +113,34 @@ namespace UnitTestImpromptuInterface
 
 
         [Test]
+        public void ExpandoSEtPropertyTest()
+        {
+
+            var prop1 = "Test";
+            var prop2 = 42L;
+            var prop3 = Guid.NewGuid();
+
+            dynamic tNew = new ExpandoObject();
+
+
+            ISimpeleSetClassProps tActsLike = Impromptu.ActLike<ISimpeleSetClassProps>(tNew);
+            tActsLike.Prop1 = prop1;
+            tActsLike.Prop2 = prop2;
+            tActsLike.Prop3 = prop3;
+
+
+
+            Assert.AreEqual(tNew.Prop1, prop1);
+            Assert.AreEqual(tNew.Prop2, prop2);
+            Assert.AreEqual(tNew.Prop3, prop3);
+        }
+
+
+        [Test]
         public void ImpromptuConversionPropertyTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
             tNew.Prop3 = Guid.NewGuid();
@@ -312,7 +337,7 @@ namespace UnitTestImpromptuInterface
         {
 
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
             tNew.Prop3 = Guid.NewGuid();

@@ -1,33 +1,10 @@
 ﻿using System;
 using System.ComponentModel.Composition;
-using ImpromptuInterface.Dynamic;
-using ImpromptuInterface.MVVM;
+using ImpromptuInterface;
 
 namespace UnitTestImpromptuInterface
 {
-    /// <summary>
-    /// Eventually should have the same for Silverlight and WPF here
-    /// - WPF fails with STA issue with Control
-    /// - Silverlight fails with Mimic b/c it requires a cast to UIElement
-    /// </summary>
-    [View("Test")]
-#if SILVERLIGHT
-    public sealed class TestView : System.Windows.Controls.Control
-#else
-    public sealed class TestView : Mimic
-#endif
-    {
-        public void Show()
-        {
-            //Do nothing
-        }
-    }
 
-    [ViewModel("Test")]
-    public sealed class TestViewModel : ImpromptuViewModel
-    {
-        
-    }
 
     public interface ITestAlias
     {

@@ -16,17 +16,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
 using System.Runtime.CompilerServices;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Diagnostics;
-using ImpromptuInterface.Dynamic;
-
-#if !SELFRUNNER
-using System.Windows.Media;
-#endif
+using Dynamitey.DynamicObjects;
+using ImpromptuInterface;
 
 namespace UnitTestImpromptuInterface
 {
@@ -46,7 +39,7 @@ namespace UnitTestImpromptuInterface
         }
     }
 
-    public class TestForwarder:ImpromptuForwarder
+    public class TestForwarder:BaseForwarder
     {
         public TestForwarder(object target) : base(target)
         {
@@ -107,6 +100,16 @@ namespace UnitTestImpromptuInterface
 
         Guid Prop3 { get; }
     }
+
+    public interface ISimpeleSetClassProps
+    {
+        string Prop1 { set ; }
+
+        long Prop2 { set; }
+
+        Guid Prop3 { set; }
+    }
+
 
     public interface IInheritProp:ISimpeleClassProps
     {
@@ -572,10 +575,4 @@ namespace UnitTestImpromptuInterface
         }
     }
 
-#if !SELFRUNNER
-    public interface IColor
-    {
-        Color ColorViaString { get; }
-    }
-#endif
 }

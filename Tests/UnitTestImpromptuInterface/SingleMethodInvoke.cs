@@ -21,13 +21,13 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;
 using InfoFlags = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfoFlags;
-using ImpromptuInterface.InvokeExt;
 using ImpromptuInterface.Optimization;
 using Moq;
 
@@ -52,7 +52,7 @@ namespace UnitTestImpromptuInterface
 
             var tSetValue = "1";
 
-            Impromptu.InvokeSet(tExpando, "Test", tSetValue);
+            Dynamic.InvokeSet(tExpando, "Test", tSetValue);
 
             Assert.AreEqual(tSetValue, tExpando.Test);
 
@@ -67,7 +67,7 @@ namespace UnitTestImpromptuInterface
 
             var tSetValue = "1";
 
-            Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
+            Dynamic.InvokeSet(tPoco, "Prop1", tSetValue);
 
             Assert.AreEqual(tSetValue, tPoco.Prop1);
 
@@ -81,7 +81,7 @@ namespace UnitTestImpromptuInterface
 
                  var tSetValue = "1";
 
-                 Impromptu.InvokeSet(tPoco, "Prop1", tSetValue);
+                 Dynamic.InvokeSet(tPoco, "Prop1", tSetValue);
 
                  Assert.AreEqual(tSetValue, ((PropStruct)tPoco).Prop1);
 
@@ -122,7 +122,7 @@ namespace UnitTestImpromptuInterface
         {
             var tEl = new XElement("Test","45");
 
-            var tCast = Impromptu.InvokeConvert(tEl, typeof (int), @explicit:true);
+            var tCast = Dynamic.InvokeConvert(tEl, typeof (int), @explicit:true);
            
             Assert.AreEqual(typeof(int), tCast.GetType());
             Assert.AreEqual(45,tCast);
@@ -144,7 +144,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstruct()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof (List<object>), new object[]
+            var tCast = Dynamic.InvokeConstructor(typeof (List<object>), new object[]
                                                                               {
                                                                                   new string[] {"one", "two", "three"}
                                                                               });
@@ -170,7 +170,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructOptional()
         {
-            PocoOptConstructor tCast = Impromptu.InvokeConstructor(typeof(PocoOptConstructor), "3".WithArgumentName("three"));
+            PocoOptConstructor tCast = Dynamic.InvokeConstructor(typeof(PocoOptConstructor), new InvokeArg("three", "3"));
 
             Assert.AreEqual("-1", tCast.One);
             Assert.AreEqual("-2", tCast.Two);
@@ -192,19 +192,19 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestOptionalArgumentActivationNoneAndCacheable()
             {
-                AssertException<MissingMethodException>(() => Activator.CreateInstance<ImpromptuList>());
+                AssertException<MissingMethodException>(() => Activator.CreateInstance<Dynamitey.DynamicObjects.List>());
 
-               var tList= Impromptu.InvokeConstructor(typeof (ImpromptuList));
+               var tList= Dynamic.InvokeConstructor(typeof (Dynamitey.DynamicObjects.List));
 
 
-               Assert.AreEqual(typeof(ImpromptuList),tList.GetType());
+               Assert.AreEqual(typeof(Dynamitey.DynamicObjects.List),tList.GetType());
 
                var tCachedInvoke = new CacheableInvocation(InvocationKind.Constructor);
 
-               var tList1 = tCachedInvoke.Invoke(typeof(ImpromptuList));
+               var tList1 = tCachedInvoke.Invoke(typeof(Dynamitey.DynamicObjects.List));
 
 
-               Assert.AreEqual(typeof(ImpromptuList), tList1.GetType());
+               Assert.AreEqual(typeof(Dynamitey.DynamicObjects.List), tList1.GetType());
           }
 
    
@@ -212,7 +212,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructValueType()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(DateTime), 2009,1,20);
+            var tCast = Dynamic.InvokeConstructor(typeof(DateTime), 2009,1,20);
 
             Assert.AreEqual(20, tCast.Day);
 
@@ -242,7 +242,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructprimativetype()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(Int32));
+            var tCast = Dynamic.InvokeConstructor(typeof(Int32));
 
             Assert.AreEqual(default(Int32), tCast);
         }
@@ -251,7 +251,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructDateTimeNoParams()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(DateTime));
+            var tCast = Dynamic.InvokeConstructor(typeof(DateTime));
 
             Assert.AreEqual(default(DateTime), tCast);
         }
@@ -259,7 +259,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructOBjectNoParams()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(object));
+            var tCast = Dynamic.InvokeConstructor(typeof(object));
 
             Assert.AreEqual(typeof(object), tCast.GetType());
         }
@@ -267,7 +267,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructNullableprimativetype()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(Nullable<Int32>));
+            var tCast = Dynamic.InvokeConstructor(typeof(Nullable<Int32>));
 
             Assert.AreEqual(null, tCast);
         }
@@ -275,7 +275,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructGuid()
         {
-            var tCast = Impromptu.InvokeConstructor(typeof(Guid));
+            var tCast = Dynamic.InvokeConstructor(typeof(Guid));
 
             Assert.AreEqual(default(Guid), tCast);
         }
@@ -315,8 +315,8 @@ namespace UnitTestImpromptuInterface
         public void TestStaticCall()
         {
             
-            var tOut = Impromptu.InvokeMember(typeof (StaticType).WithStaticContext(),
-                                              "Create".WithGenericArgs(typeof(bool)), 1);
+            var tOut = Dynamic.InvokeMember (new StaticContext(typeof (StaticType)),
+                                              new InvokeMemberName("Create",typeof(bool)), 1);
             Assert.AreEqual(false,tOut);
         }
 
@@ -324,8 +324,8 @@ namespace UnitTestImpromptuInterface
         public void TestCacheableStaticCall()
         {
 
-            var tCached = new CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(typeof (bool)), argCount: 1,
-                                    context: typeof (StaticType).WithStaticContext());
+            var tCached = new CacheableInvocation(InvocationKind.InvokeMember, new InvokeMemberName("Create", typeof(bool)), argCount: 1,
+                                    context: new StaticContext(typeof(StaticType)));
 
             var tOut = tCached.Invoke(typeof(StaticType), 1);
             Assert.AreEqual(false, tOut);
@@ -336,7 +336,7 @@ namespace UnitTestImpromptuInterface
         {
             var tEl = 45;
 
-            var tCast = Impromptu.InvokeConvert(tEl, typeof(long));
+            var tCast = Dynamic.InvokeConvert(tEl, typeof(long));
 
             Assert.AreEqual(typeof(long), tCast.GetType());
         }
@@ -347,11 +347,11 @@ namespace UnitTestImpromptuInterface
         {
             var tEl = DBNull.Value;
 
-            var tCast = Impromptu.CoerceConvert(tEl, typeof(long));
+            var tCast = Dynamic.CoerceConvert(tEl, typeof(long));
 
             Assert.AreEqual(typeof(long), tCast.GetType());
 
-            var tCast2 = Impromptu.CoerceConvert(tEl, typeof(string));
+            var tCast2 = Dynamic.CoerceConvert(tEl, typeof(string));
             Assert.AreEqual(null, tCast2);
 
             Assert.AreNotEqual(null, tEl);
@@ -402,7 +402,7 @@ namespace UnitTestImpromptuInterface
             var tAnon = new [] { tSetValue, "2" };
 
 
-            string tOut = Impromptu.InvokeGetIndex(tAnon,0);
+            string tOut = Dynamic.InvokeGetIndex(tAnon,0);
 
             Assert.AreEqual(tSetValue, tOut);
 
@@ -417,7 +417,7 @@ namespace UnitTestImpromptuInterface
             var tAnon = new int[] { 1, 2};
 
 
-            int tOut = Impromptu.InvokeGetIndex(tAnon, 1);
+            int tOut = Dynamic.InvokeGetIndex(tAnon, 1);
 
             Assert.AreEqual(tAnon[1], tOut);
 
@@ -430,7 +430,7 @@ namespace UnitTestImpromptuInterface
             var tAnon = new []  { "1", "2" };
 
 
-            int tOut = Impromptu.InvokeGet(tAnon, "Length");
+            int tOut = Dynamic.InvokeGet(tAnon, "Length");
 
             Assert.AreEqual(2, tOut);
 
@@ -443,7 +443,7 @@ namespace UnitTestImpromptuInterface
             var tAnon = new List<string> { tSetValue, "2" };
      
 
-            string tOut = Impromptu.InvokeGetIndex(tAnon, 0);
+            string tOut = Dynamic.InvokeGetIndex(tAnon, 0);
 
             Assert.AreEqual(tSetValue, tOut);
 
@@ -494,7 +494,7 @@ namespace UnitTestImpromptuInterface
             dynamic tSetValue = "3";
             var tAnon =  new List<string> { "1", "2" };
 
-            Impromptu.InvokeSetIndex(tAnon, 0, tSetValue);
+            Dynamic.InvokeSetIndex(tAnon, 0, tSetValue);
 
             Assert.AreEqual(tSetValue, tAnon[0]);
 
@@ -526,7 +526,7 @@ namespace UnitTestImpromptuInterface
 
             var tValue = 1;
 
-            var tOut = Impromptu.InvokeMember(tExpando, "Func", tValue);
+            var tOut = Dynamic.InvokeMember(tExpando, "Func", tValue);
 
             Assert.AreEqual(tValue.ToString(), tOut);
         }
@@ -555,18 +555,18 @@ namespace UnitTestImpromptuInterface
 
             var tValue = 1;
 
-            var tOut = Impromptu.InvokeMember(tPoco, "Func", tValue);
+            var tOut = Dynamic.InvokeMember(tPoco, "Func", tValue);
 
             Assert.AreEqual("int", tOut);
 
             Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
 
 
-            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+            var tOut2 = Dynamic.InvokeMember(tPoco, "Func", 1m);
 
             Assert.AreEqual("object", tOut2);
 
-            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", new{Anon =1});
+            var tOut3 = Dynamic.InvokeMember(tPoco, "Func", new{Anon =1});
 
             Assert.AreEqual("object", tOut3);
         }
@@ -604,18 +604,18 @@ namespace UnitTestImpromptuInterface
 
             var tValue = 1;
 
-            var tOut = Impromptu.InvokeMember(tPoco, "Func", new InvokeArg("arg", tValue));
+            var tOut = Dynamic.InvokeMember(tPoco, "Func", new InvokeArg("arg", tValue));
 
             Assert.AreEqual("int", tOut);
 
             Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
 
 
-            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+            var tOut2 = Dynamic.InvokeMember(tPoco, "Func", 1m);
 
             Assert.AreEqual("object", tOut2);
 
-            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", new { Anon = 1 });
+            var tOut3 = Dynamic.InvokeMember(tPoco, "Func", new { Anon = 1 });
 
             Assert.AreEqual("object", tOut3);
         }
@@ -629,7 +629,7 @@ namespace UnitTestImpromptuInterface
 
             var arg = InvokeArg.Create;
 
-            var tOut = Impromptu.InvokeMember(tPoco, "Func",  arg("two", tValue));
+            var tOut = Dynamic.InvokeMember(tPoco, "Func",  arg("two", tValue));
 
             Assert.AreEqual("object named", tOut);
 
@@ -663,7 +663,7 @@ namespace UnitTestImpromptuInterface
 
             var arg = InvokeArg.Create;
 
-            var tOut = Impromptu.InvokeMember(tPoco, "Func", arg("two", tValue), arg("one", tValue));
+            var tOut = Dynamic.InvokeMember(tPoco, "Func", arg("two", tValue), arg("one", tValue));
 
             Assert.AreEqual("object named", tOut);
 
@@ -677,26 +677,26 @@ namespace UnitTestImpromptuInterface
 
             var tValue = 1;
 
-            var tOut = Impromptu.InvokeMember(tPoco, "Func", tValue);
+            var tOut = Dynamic.InvokeMember(tPoco, "Func", tValue);
 
             Assert.AreEqual("int", tOut);
 
             Assert.AreEqual("int", (object)tOut); //should still be int because this uses runtime type
 
 
-            var tOut2 = Impromptu.InvokeMember(tPoco, "Func", 1m);
+            var tOut2 = Dynamic.InvokeMember(tPoco, "Func", 1m);
 
             Assert.AreEqual("object", tOut2);
 
-            var tOut3 = Impromptu.InvokeMember(tPoco, "Func", null);
+            var tOut3 = Dynamic.InvokeMember(tPoco, "Func", null);
 
             Assert.AreEqual("object", tOut3);
 
-            var tOut4 = Impromptu.InvokeMember(tPoco, "Func", null, null, "test", null, null, null);
+            var tOut4 = Dynamic.InvokeMember(tPoco, "Func", null, null, "test", null, null, null);
 
             Assert.AreEqual("object 6", tOut4);
 
-            var tOut5 = Impromptu.InvokeMember(tPoco, "Func", null, null, null, null, null, null);
+            var tOut5 = Dynamic.InvokeMember(tPoco, "Func", null, null, null, null, null, null);
 
             Assert.AreEqual("object 6", tOut5);
         }
@@ -729,7 +729,7 @@ namespace UnitTestImpromptuInterface
                                                 });
 
 
-            var tSite = Impromptu.CreateCallSite<DynamicTryString>(tBinder, tName, tContext);
+            var tSite = Dynamic.CreateCallSite<DynamicTryString>(tBinder, tName, tContext);
 
           
             tSite.Target.Invoke(tSite, tPoco, out tResult);
@@ -751,7 +751,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            Impromptu.InvokeMemberAction(tExpando, "Action", tValue);
+            Dynamic.InvokeMemberAction(tExpando, "Action", tValue);
 
             Assert.AreEqual(tValue, tTest);
         }
@@ -806,7 +806,7 @@ namespace UnitTestImpromptuInterface
 
             var tValue = 1;
 
-            var tOut = Impromptu.InvokeMember(tValue, "ToString");
+            var tOut = Dynamic.InvokeMember(tValue, "ToString");
 
             Assert.AreEqual(tValue.ToString(), tOut);
         }
@@ -828,7 +828,7 @@ namespace UnitTestImpromptuInterface
         {
             var tExpected = tValue.StartsWith(tParam);
 
-            var tOut = Impromptu.InvokeMember(tValue, "StartsWith", tParam);
+            var tOut = Dynamic.InvokeMember(tValue, "StartsWith", tParam);
 
             Assert.AreEqual(tExpected, tOut);
         }
@@ -844,7 +844,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tOut = Impromptu.InvokeGet(tExpando, "Test");
+            var tOut = Dynamic.InvokeGet(tExpando, "Test");
 
             Assert.AreEqual(tSetValue, tOut);
         }
@@ -860,7 +860,7 @@ namespace UnitTestImpromptuInterface
             tExpando.Test.Test2.Test3 = tSetValue;
 
 
-            var tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2.Test3");
+            var tOut = Dynamic.InvokeGetChain(tExpando, "Test.Test2.Test3");
 
             Assert.AreEqual(tSetValue, tOut);
         }
@@ -880,7 +880,7 @@ namespace UnitTestImpromptuInterface
   
 
 
-            var tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2[0].Test3['Test4']");
+            var tOut = Dynamic.InvokeGetChain(tExpando, "Test.Test2[0].Test3['Test4']");
 
             Assert.AreEqual(tSetValue, tOut);
         }
@@ -896,7 +896,7 @@ namespace UnitTestImpromptuInterface
             tExpando.Test.Test2 = new ExpandoObject();
 
 
-           Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
+            Dynamic.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
 
             Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
         }
@@ -914,7 +914,7 @@ namespace UnitTestImpromptuInterface
                 );
 
 
-            var tOut = Impromptu.InvokeSetChain(tExpando, "Test.Test2[0].Test3['Test4']", tSetValue);
+            var tOut = Dynamic.InvokeSetChain(tExpando, "Test.Test2[0].Test3['Test4']", tSetValue);
 
             Assert.AreEqual(tSetValue, tExpando.Test.Test2[0].Test3["Test4"]);
 
@@ -931,9 +931,9 @@ namespace UnitTestImpromptuInterface
             tExpando.Test.Test2 = new ExpandoObject();
 
 
-            Impromptu.InvokeSetAll(tExpando, new Dictionary<string, object> {{"Test.Test2.Test3", tSetValue},{"One",1},{"Two",2}});
+            Dynamic.InvokeSetAll(tExpando, new Dictionary<string, object> {{"Test.Test2.Test3", tSetValue},{"One",1},{"Two",2}});
 
-            Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
+            Dynamic.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue);
 
             Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3);
             Assert.AreEqual(1, tExpando.One);
@@ -945,7 +945,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic tExpando = new ExpandoObject();
 
-            Impromptu.InvokeSetAll(tExpando, new{One=1,Two=2,Three=3});
+            Dynamic.InvokeSetAll(tExpando, new{One=1,Two=2,Three=3});
 
         
             Assert.AreEqual(1, tExpando.One);
@@ -958,7 +958,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic tExpando = new ExpandoObject();
 
-            Impromptu.InvokeSetAll(tExpando,  One:1, Two:2, Three:3);
+            Dynamic.InvokeSetAll(tExpando,  One:1, Two:2, Three:3);
 
 
             Assert.AreEqual(1, tExpando.One);
@@ -974,7 +974,7 @@ namespace UnitTestImpromptuInterface
             dynamic tExpando = new ExpandoObject();
 
 
-            Impromptu.InvokeSetChain(tExpando, "Test", tSetValue);
+            Dynamic.InvokeSetChain(tExpando, "Test", tSetValue);
 
             Assert.AreEqual(tSetValue, tExpando.Test);
         }
@@ -989,7 +989,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tOut = Impromptu.InvokeGetChain(tExpando, "Test");
+            var tOut = Dynamic.InvokeGetChain(tExpando, "Test");
 
             Assert.AreEqual(tSetValue, tOut);
         }
@@ -1012,14 +1012,14 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestStaticGet()
         {
-            var tDate = Impromptu.InvokeGet(typeof(DateTime).WithStaticContext(), "Today");
+            var tDate = Dynamic.InvokeGet(new StaticContext(typeof(DateTime)), "Today");
             Assert.AreEqual(DateTime.Today, tDate);
         }
 
         [Test]
         public void TestCacheableStaticGet()
         {
-            var tCached = new CacheableInvocation(InvocationKind.Get, "Today", context: typeof(DateTime).WithStaticContext());
+            var tCached = new CacheableInvocation(InvocationKind.Get, "Today", context: new StaticContext(typeof(DateTime)));
 
             var tDate = tCached.Invoke(typeof(DateTime));
             Assert.AreEqual(DateTime.Today, tDate);
@@ -1029,21 +1029,21 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestStaticGet2()
         {
-            var tVal = Impromptu.InvokeGet(typeof(StaticType).WithStaticContext(), "Test");
+            var tVal = Dynamic.InvokeGet(new StaticContext(typeof(StaticType)), "Test");
             Assert.AreEqual(true, tVal);
         }
 
         [Test]
         public void TestStaticGet3()
         {
-            var tVal = Impromptu.InvokeGet((StaticContext)typeof(StaticType), "Test");
+            var tVal = Dynamic.InvokeGet((StaticContext)typeof(StaticType), "Test");
             Assert.AreEqual(true, tVal);
         }
         [Test]
         public void TestStaticSet()
         {
             int tValue = 12;
-            Impromptu.InvokeSet(typeof(StaticType).WithStaticContext(), "TestSet", tValue);
+            Dynamic.InvokeSet(new StaticContext(typeof(StaticType)), "TestSet", tValue);
             Assert.AreEqual(tValue, StaticType.TestSet);
         }
 
@@ -1053,7 +1053,7 @@ namespace UnitTestImpromptuInterface
             int tValue = 12;
 
             var tCachedInvoke = new CacheableInvocation(InvocationKind.Set, "TestSet",
-                                                        context: typeof (StaticType).WithStaticContext());
+                                                        context: new StaticContext(typeof (StaticType)));
             tCachedInvoke.Invoke(typeof(StaticType), tValue);
             Assert.AreEqual(tValue, StaticType.TestSet);
         }
@@ -1062,7 +1062,7 @@ namespace UnitTestImpromptuInterface
         public void TestStaticDateTimeMethod()
         {
             object tDateDyn = "01/20/2009";
-            var tDate = Impromptu.InvokeMember(typeof(DateTime).WithStaticContext(), "Parse", tDateDyn);
+            var tDate = Dynamic.InvokeMember(new StaticContext(typeof(DateTime)), "Parse", tDateDyn);
             Assert.AreEqual(new DateTime(2009,1,20), tDate);
         }
 
@@ -1071,7 +1071,7 @@ namespace UnitTestImpromptuInterface
         {
             object tDateDyn = "01/20/2009";
             var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1,
-                                                        context: typeof (DateTime).WithStaticContext());
+                                                        context: new StaticContext(typeof (DateTime)));
             var tDate = tCachedInvoke.Invoke(typeof(DateTime), tDateDyn);
             Assert.AreEqual(new DateTime(2009, 1, 20), tDate);
         }
@@ -1083,7 +1083,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic tPoco = new PocoEvent();
 
-            var tResult = Impromptu.InvokeIsEvent(tPoco, "Event");
+            var tResult = Dynamic.InvokeIsEvent(tPoco, "Event");
 
             Assert.AreEqual(true, tResult);
         }
@@ -1099,7 +1099,7 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual(true, tResult);
 
-            dynamic tDynamic = new ImpromptuDictionary();
+            dynamic tDynamic = new Dictionary();
 
             tDynamic.Event = null;
 
@@ -1111,11 +1111,11 @@ namespace UnitTestImpromptuInterface
          [Test]
         public void TestIsNotEvent()
         {
-            dynamic tDynamic = new ImpromptuDictionary();
+            dynamic tDynamic = new Dictionary();
 
             tDynamic.Event = null;
         
-            var tResult = Impromptu.InvokeIsEvent(tDynamic, "Event");
+            var tResult = Dynamic.InvokeIsEvent(tDynamic, "Event");
 
             Assert.AreEqual(false, tResult);
 
@@ -1145,7 +1145,7 @@ namespace UnitTestImpromptuInterface
              var tPoco = new PocoEvent();
              bool tTest = false;
 
-             Impromptu.InvokeAddAssignMember(tPoco, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             Dynamic.InvokeAddAssignMember(tPoco, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
              tPoco.OnEvent(null, null);
 
@@ -1153,7 +1153,7 @@ namespace UnitTestImpromptuInterface
 
              var tPoco2 = new PropPoco() { Prop2 = 3 };
 
-             Impromptu.InvokeAddAssignMember(tPoco2, "Prop2", 4);
+             Dynamic.InvokeAddAssignMember(tPoco2, "Prop2", 4);
 
              Assert.AreEqual(7L, tPoco2.Prop2);
          }
@@ -1188,17 +1188,17 @@ namespace UnitTestImpromptuInterface
 
              tPoco.Event += tEvent;
 
-             Impromptu.InvokeSubtractAssignMember(tPoco, "Event", tEvent);
+             Dynamic.InvokeSubtractAssignMember(tPoco, "Event", tEvent);
 
              tPoco.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 
-             Impromptu.InvokeSubtractAssignMember(tPoco, "Event", tEvent);//Test Second Time
+             Dynamic.InvokeSubtractAssignMember(tPoco, "Event", tEvent);//Test Second Time
 
              var tPoco2 = new PropPoco() {Prop2 = 3};
 
-             Impromptu.InvokeSubtractAssignMember(tPoco2, "Prop2", 4);
+             Dynamic.InvokeSubtractAssignMember(tPoco2, "Prop2", 4);
 
              Assert.AreEqual( -1L,tPoco2.Prop2);
          }
@@ -1235,13 +1235,13 @@ namespace UnitTestImpromptuInterface
              var tDynamic = Build.NewObject(Prop2: 3, Event: null, OnEvent: new ThisAction<object, EventArgs>((@this, obj, args) => @this.Event(obj, args)));
              bool tTest = false;
 
-             Impromptu.InvokeAddAssignMember(tDynamic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
+             Dynamic.InvokeAddAssignMember(tDynamic, "Event", new EventHandler<EventArgs>((@object, args) => { tTest = true; }));
 
              tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(true, tTest);
 
-             Impromptu.InvokeAddAssignMember(tDynamic, "Prop2", 4);
+             Dynamic.InvokeAddAssignMember(tDynamic, "Prop2", 4);
 
              Assert.AreEqual(7L, tDynamic.Prop2);
          }
@@ -1275,14 +1275,14 @@ namespace UnitTestImpromptuInterface
 
              tDynamic.Event += tEvent;
 
-             Impromptu.InvokeSubtractAssignMember(tDynamic, "Event", tEvent);
+             Dynamic.InvokeSubtractAssignMember(tDynamic, "Event", tEvent);
 
              tDynamic.OnEvent(null, null);
 
              Assert.AreEqual(false, tTest);
 
 
-             Impromptu.InvokeSubtractAssignMember(tDynamic, "Prop2", 4);
+             Dynamic.InvokeSubtractAssignMember(tDynamic, "Prop2", 4);
 
              Assert.AreEqual(-1L, tDynamic.Prop2);
          }
@@ -1318,15 +1318,15 @@ namespace UnitTestImpromptuInterface
         {
             ExpandoObject tExpando = Build<ExpandoObject>.NewObject(One: 1);
 
-            Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando,dynamicOnly:true).Single());
+            Assert.AreEqual("One", Dynamic.GetMemberNames(tExpando,dynamicOnly:true).Single());
         }
 
         [Test]
         public void TestDynamicMemberNamesImpromput()
         {
-            ImpromptuDictionary tDict = Build.NewObject(Two: 2);
+            Dictionary tDict = Build.NewObject(Two: 2);
 
-            Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly: true).Single());
+            Assert.AreEqual("Two", Dynamic.GetMemberNames(tDict, dynamicOnly: true).Single());
         }
 
 
@@ -1345,21 +1345,21 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestInvokeAdd()
         {
-            Assert.AreEqual(Impromptu.InvokeBinaryOperator(1, ExpressionType.Add, 2), 3);
+            Assert.AreEqual(Dynamic.InvokeBinaryOperator(1, ExpressionType.Add, 2), 3);
         }
 
         [Test]
         public void TestInvokeAddDynamic()
         {
             var tMock = CreateMock(ExpressionType.Add);
-            Impromptu.InvokeBinaryOperator(tMock, ExpressionType.Add, 4);
+            Dynamic.InvokeBinaryOperator(tMock, ExpressionType.Add, 4);
         }
              
         
         [Test]
         public  void TestInvokeSubtract()
         {
-            Assert.AreEqual(Impromptu.InvokeBinaryOperator(1, ExpressionType.Subtract, 2), -1);
+            Assert.AreEqual(Dynamic.InvokeBinaryOperator(1, ExpressionType.Subtract, 2), -1);
         }
 
 
@@ -1368,7 +1368,7 @@ namespace UnitTestImpromptuInterface
         {
             var tType = ExpressionType.Subtract;
             var tMock = CreateMock(tType);
-            Impromptu.InvokeBinaryOperator(tMock, tType, 4);
+            Dynamic.InvokeBinaryOperator(tMock, tType, 4);
         }
 
     

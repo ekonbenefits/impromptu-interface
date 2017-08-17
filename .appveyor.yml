@@ -1,0 +1,49 @@
+image: Visual Studio 2017
+
+install:
+  - cmd: git submodule update --init --recursive
+
+configuration: Debug
+
+build: off
+
+skip_branch_with_pr: true
+
+environment:
+  vsuffix: alpha$(APPVEYOR_BUILD_NUMBER)
+  is_prerelease: true
+
+before_build:
+  - cmd: msbuild /t:restore /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+build_script:
+  - cmd: msbuild /p:Configuration=%configuration% /p:VersionSuffix="%vsuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+test:
+  categories:
+    except:
+      - Performance
+
+artifacts:
+  - path: ImpromptuInterface\bin\$(configuration)\*.nupkg
+    name: ImpromptuInterface
+
+for:
+  - branches:
+        except:
+          - /v.*/
+  - branches:
+        only:
+          - /v.*-beta/
+    environment:
+      vsuffix: beta$(APPVEYOR_BUILD_NUMBER)
+      is_prerelease: true
+  - branches:
+        only:
+          - /v[\d,.]*/
+    configuration: Release
+    environment:
+      vsuffix: $(APPVEYOR_BUILD_NUMBER)
+      is_prerelease: false
+
+

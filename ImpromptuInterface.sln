@@ -11,8 +11,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestSupportLibrary", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface", "Tests\UnitTestImpromptuInterface\UnitTestImpromptuInterface.csproj", "{A559B4F8-8D9D-4761-B2D2-BB4104760450}"
 EndProject
-Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "UnitTestImpromptuInterface.VBNET", "Tests\UnitTestImpromptuInterface.VBNet\UnitTestImpromptuInterface.VBNET.vbproj", "{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitTestImpromptuInterface.Clay", "Tests\UnitTestImpromptuInterface.Clay\UnitTestImpromptuInterface.Clay.csproj", "{15A061C0-A102-460E-A70A-0AFFE49B364E}"
 EndProject
 Global
@@ -55,16 +53,6 @@ Global
 		{A559B4F8-8D9D-4761-B2D2-BB4104760450}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A559B4F8-8D9D-4761-B2D2-BB4104760450}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A559B4F8-8D9D-4761-B2D2-BB4104760450}.Release|x86.ActiveCfg = Release|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9}.Release|x86.ActiveCfg = Release|Any CPU
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{15A061C0-A102-460E-A70A-0AFFE49B364E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -82,12 +70,11 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{0EC76091-958A-4020-BA6B-39B00EE55659} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{A559B4F8-8D9D-4761-B2D2-BB4104760450} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
-		{9D5436B9-5A2E-49BC-A99A-FB355F099AA9} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 		{15A061C0-A102-460E-A70A-0AFFE49B364E} = {983B9C01-EB2E-49E3-BB3E-A3FD41858F8C}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
-		SolutionGuid = {D1E8E4C0-DCFC-45E7-9A4F-8E2B079E49B4}
 		EnterpriseLibraryConfigurationToolBinariesPath = packages\Unity.2.1.505.0\lib\NET35
+		SolutionGuid = {D1E8E4C0-DCFC-45E7-9A4F-8E2B079E49B4}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = Test\Test.csproj

@@ -25,10 +25,6 @@ using System.Diagnostics;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
 
-#if !SELFRUNNER
-using System.Windows.Media;
-#endif
-
 namespace UnitTestImpromptuInterface
 {
 
@@ -583,10 +579,4 @@ namespace UnitTestImpromptuInterface
         }
     }
 
-#if !SELFRUNNER
-    public interface IColor
-    {
-        Color ColorViaString { get; }
-    }
-#endif
 }

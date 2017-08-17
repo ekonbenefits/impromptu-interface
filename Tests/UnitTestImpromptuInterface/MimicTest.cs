@@ -1,5 +1,5 @@
 ﻿using System;
-
+using Dynamitey.DynamicObjects;
 #if !SELFRUNNER
 using NUnit.Framework;
 #endif

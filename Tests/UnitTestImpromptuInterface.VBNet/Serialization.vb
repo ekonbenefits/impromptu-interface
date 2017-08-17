@@ -5,6 +5,8 @@ Imports System.IO
 Imports System.Linq
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Text
+Imports Dynamitey
+Imports Dynamitey.DynamicObjects
 Imports NUnit.Framework
 Imports ImpromptuInterface
 Imports ImpromptuInterface.Dynamic
@@ -32,7 +34,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestSerializeDictionary()
-            Dim [New] = Builder.[New](Of ImpromptuDictionary)()
+            Dim [New] = Builder.[New](Of Dictionary)()
 
             Dim tObj = [New].Test(Test:="One", Second:="Two")
             Dim tDeObj = SerialAndDeSerialize(tObj)
@@ -43,7 +45,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestSerializeDictionaryWithInterface()
-            Dim [New] = Builder.[New](Of ImpromptuDictionary)()
+            Dim [New] = Builder.[New](Of Dictionary)()
 
             Dim value As ISimpeleClassProps = [New].Test(Prop1:="POne", Prop2:=45L, Prop3:=Guid.NewGuid()).ActLike(Of ISimpeleClassProps)()
 

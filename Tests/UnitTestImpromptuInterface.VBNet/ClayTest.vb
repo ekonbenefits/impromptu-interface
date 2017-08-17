@@ -6,6 +6,8 @@ Imports System.Linq
 Imports System.Text
 Imports ClaySharp
 Imports ClaySharp.Behaviors
+Imports Dynamitey
+Imports Dynamitey.DynamicObjects
 Imports NUnit.Framework
 Imports ImpromptuInterface
 Imports ImpromptuInterface.Dynamic
@@ -34,7 +36,7 @@ Namespace VBNET
         <Test()> _
         Public Sub InvokeMemberContainsNameWithImpromptuInvoke()
             Dim clay = New Clay(New TestBehavior())
-            Dim result = Impromptu.InvokeMember(clay, "Help", "Test")
+            Dim result = Dynamic.InvokeMember(clay, "Help", "Test")
             Assert.IsTrue(result.Contains("[name:Help]"), "Does Not Match Argument Name")
             Assert.IsTrue(result.Contains("[count:1]"), "Does Not Match Argument Count")
 
@@ -42,9 +44,9 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestRecorder()
-            Dim [New] As Object = Builder.[New](Of ImpromptuRecorder)()
+            Dim [New] As Object = Builder.[New](Of Recorder)()
 
-            Dim tRecording As ImpromptuRecorder = [New].Watson(Test:="One", Test2:=2, NameLast:="Watson")
+            Dim tRecording As Recorder = [New].Watson(Test:="One", Test2:=2, NameLast:="Watson")
 
 
             Dim tVar As Object = tRecording.ReplayOn(New ExpandoObject())

@@ -15,9 +15,10 @@
 
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using ImpromptuInterface.Build;
 using ImpromptuInterface.Optimization;
-
+using Dynamitey;
 namespace ImpromptuInterface
 {
     using System;
@@ -79,6 +80,17 @@ namespace ImpromptuInterface
         public static dynamic ActLike(this object originalDynamic, params Type[] otherInterfaces)
         {
             return new ActLikeCaster(originalDynamic, otherInterfaces);
+        }
+
+
+        public static TInterface Create<TTarget, TInterface>() where TTarget : new() where TInterface : class
+        {
+            return new TTarget().ActLike<TInterface>();
+        }
+
+        public static TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class
+        {
+            return  Dynamitey.Dynamic.InvokeConstructor(typeof(TTarget), args) .ActLike<TInterface>();
         }
 
 

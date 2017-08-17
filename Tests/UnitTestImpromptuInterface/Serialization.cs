@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
@@ -37,7 +39,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestSerializeDictionary()
         {
-            var New = Builder.New<ImpromptuDictionary>();
+            var New = Builder.New<Dictionary>();
 
             var tObj =New.Object(Test: "One", Second: "Two");
             var tDeObj =SerialAndDeSerialize(tObj);
@@ -49,7 +51,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestSerializeDictionaryWithInterface()
         {
-            var New = Builder.New<ImpromptuDictionary>();
+            var New = Builder.New<Dictionary>();
 
             ISimpeleClassProps value = New.Object(Prop1: "POne", Prop2: 45L, Prop3: Guid.NewGuid()).ActLike<ISimpeleClassProps>(); ;
             var tDeValue = SerialAndDeSerialize(value);

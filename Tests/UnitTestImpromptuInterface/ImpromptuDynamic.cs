@@ -5,11 +5,11 @@ using System.Dynamic;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Dynamitey;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
+using Dynamitey.DynamicObjects;
 
 #if !SELFRUNNER
-using DynObj = Dynamitey.DynamicObjects;
 
 using NUnit.Framework;
 #endif
@@ -29,7 +29,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryPropertyTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
@@ -45,7 +45,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryNullPropertyTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
 
 
             ISimpeleClassProps tActsLike = Impromptu.ActLike<ISimpeleClassProps>(tNew);
@@ -60,7 +60,7 @@ namespace UnitTestImpromptuInterface
         {
             var tAnon = new { Prop1 = "Test", Prop2 = 42L, Prop3 = Guid.NewGuid() };
 
-            dynamic tTest =new ImpromptuGet(tAnon);
+            dynamic tTest =new Get(tAnon);
 
             Assert.AreEqual(tAnon.Prop1, tTest.Prop1);
             Assert.AreEqual(tAnon.Prop2, tTest.Prop2);
@@ -72,7 +72,7 @@ namespace UnitTestImpromptuInterface
         {
             var tPoco = new VoidMethodPoco();
 
-            dynamic tTest = new ImpromptuGet(tPoco);
+            dynamic tTest = new Get(tPoco);
 
             tTest.Action();
         }
@@ -84,7 +84,7 @@ namespace UnitTestImpromptuInterface
 			
             var tArray = new int[]{1,2,3};
 
-            IStringIntIndexer tTest =  ImpromptuGet.Create<IStringIntIndexer>(tArray);
+            IStringIntIndexer tTest =  Impromptu.Create<Get,IStringIntIndexer>(tArray);
 
             Assert.AreEqual(tArray[2].ToString(), tTest[2]);
         }
@@ -92,7 +92,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void GetterEventTest()
         {
-            var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
+            var tActsLike = Impromptu.Create<Get,IEvent>(new PocoEvent());
             var tSet = false;
             tActsLike.Event += (obj, args) => tSet = true;
 
@@ -105,7 +105,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void GetterEventTest2()
         {
-            var tActsLike = ImpromptuGet.Create<IEvent>(new PocoEvent());
+            var tActsLike = Impromptu.Create<Get,IEvent>(new PocoEvent());
             var tSet = false;
             EventHandler<EventArgs> tActsLikeOnEvent = (obj, args) => tSet = true;
             tActsLike.Event += tActsLikeOnEvent;
@@ -124,7 +124,7 @@ namespace UnitTestImpromptuInterface
             tNew.Prop2 = 42L;
             tNew.Prop3 = Guid.NewGuid();
 
-            dynamic tTest = new ImpromptuGet(tNew);
+            dynamic tTest = new Get(tNew);
 
 
             Assert.AreEqual(tNew.Prop1, tTest.Prop1);
@@ -176,7 +176,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryMethodsTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Action1 = new Action(Assert.Fail);
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
             tNew.Action3 = new Func<string>(() => "test");
@@ -199,7 +199,7 @@ namespace UnitTestImpromptuInterface
         public void ForwardMethodsTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Action1 = new Action(Assert.Fail);
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
             tNew.Action3 = new Func<string>(() => "test");
@@ -242,7 +242,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryMethodsOutTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Func = new DynamicTryString(TestOut);
 
             String tOut;
@@ -267,7 +267,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryMethodsTestWithPropertyAccess()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.PropCat = "Cat-";
             tNew.Action1 = new Action(Assert.Fail);
             tNew.Action2 = new Action<bool>(Assert.IsFalse);
@@ -289,7 +289,7 @@ namespace UnitTestImpromptuInterface
         public void DictionaryNullMethodsTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
 
             ISimpleStringMethod tActsLike = Impromptu.ActLike<ISimpleStringMethod>(tNew);
 
@@ -303,7 +303,7 @@ namespace UnitTestImpromptuInterface
         public void DynamiteyDictionaryNullMethodsTest()
         {
 
-            dynamic tNew = new DynObj.Dictionary();
+            dynamic tNew = new Dictionary();
 
             ISimpleStringMethod tActsLike = Impromptu.ActLike<ISimpleStringMethod>(tNew);
 
@@ -330,7 +330,7 @@ namespace UnitTestImpromptuInterface
                                       }
                                   };
 
-            dynamic tNew = new ImpromptuDictionary(tDictionary);
+            dynamic tNew = new Dictionary(tDictionary);
 
             Assert.AreEqual(1, tNew.Test1);
             Assert.AreEqual(2, tNew.Test2);
@@ -356,8 +356,8 @@ namespace UnitTestImpromptuInterface
                                       }
                                   };
 
-            dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
-            dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
+            dynamic tDynamic = Impromptu.Create<Dictionary,IDynamicDict>(tDictionary);
+            dynamic tNotDynamic = Impromptu.Create<Dictionary,INonDynamicDict>(tDictionary);
 
             Assert.AreEqual(tDynamic, tNotDynamic);
 
@@ -375,7 +375,7 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(TestEnum.Two, tNotDynamic.Test4);
 
             Assert.AreEqual(typeof(Dictionary<string, object>), tNotDynamic.TestD.GetType());
-            Assert.AreEqual(typeof(ImpromptuDictionary), tDynamic.TestD.GetType());
+            Assert.AreEqual(typeof(Dictionary), tDynamic.TestD.GetType());
         }
 
         [Test]
@@ -393,8 +393,8 @@ namespace UnitTestImpromptuInterface
                                       }
                                   };
 
-            dynamic tDynamic = ImpromptuDictionary.Create<IDynamicDict>(tDictionary);
-            dynamic tNotDynamic = ImpromptuDictionary.Create<INonDynamicDict>(tDictionary);
+            dynamic tDynamic = Impromptu.Create<Dictionary,IDynamicDict>(tDictionary);
+            dynamic tNotDynamic = Impromptu.Create<Dictionary,INonDynamicDict>(tDictionary);
 
             Assert.AreEqual(tDynamic, tNotDynamic);
 
@@ -407,7 +407,7 @@ namespace UnitTestImpromptuInterface
         public void DynamicAnnonymousWrapper()
         {
             var tData = new Dictionary<int, string> {{1, "test"}};
-            var tDyn = ImpromptuGet.Create(new
+            dynamic tDyn = new Get(new
                                                {
                                                    Test1 = 1,
                                                    Test2 = "2",
@@ -429,7 +429,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestAnonInterface()
         {
-            var tInterface = ImpromptuGet.Create<ICollection>(new
+            var tInterface = Impromptu.Create<Get,ICollection>(new
                                                                   {
                                                                      CopyArray = ReturnVoid.Arguments<Array,int>((ar,i) => Enumerable.Range(1,10)),
                                                                      Count =  10,
@@ -455,7 +455,7 @@ namespace UnitTestImpromptuInterface
 		   Assert.AreEqual("test1",tExpando.Test );
 		   Assert.AreEqual("Test 2nd",tExpando.Test2);
 			
-		    dynamic NewD = new ImpromptuBuilder<ExpandoObject>();
+		    dynamic NewD = new Builder<ExpandoObject>();
 
 			
 			var tExpandoNamedTest =NewD.Robot(
@@ -471,7 +471,7 @@ namespace UnitTestImpromptuInterface
 		public void TestSetupOtherTypes(){
 			var New = Builder.New().Setup(
 					Expando: typeof(ExpandoObject),
-					Dict: typeof(ImpromptuDictionary)
+					Dict: typeof(Dictionary)
 				);
 			
 			var tExpando =New.Expando(
@@ -490,7 +490,7 @@ namespace UnitTestImpromptuInterface
 			
 			 Assert.AreEqual("RiseD",tDict.LeftArm);
 			 Assert.AreEqual("ClampD",tDict.RightArm);
-			Assert.AreEqual(typeof(ImpromptuDictionary),tDict.GetType());
+			Assert.AreEqual(typeof(Dictionary),tDict.GetType());
 
 		}
 		
@@ -595,7 +595,7 @@ namespace UnitTestImpromptuInterface
 			Assert.AreEqual("Dejardin",people[0].LastName);
 		  	Assert.AreEqual("Le Roy",people[1].LastName);
 			
-			var people2 =  new ImpromptuList(){
+			var people2 =  new Dynamitey.DynamicObjects.List { 
 							New.Robot(Name:"Bender"),
 							New.Robot(Name:"RobotDevil")
 						   };	
@@ -621,7 +621,7 @@ namespace UnitTestImpromptuInterface
         public void TestLateLibrarybind()
         {
 
-            dynamic tBigIntType = new ImpromptuLateLibraryType("System.Numerics.BigInteger, System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
+            dynamic tBigIntType = new LateType("System.Numerics.BigInteger, System.Numerics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089");
 
             if (tBigIntType.IsAvailable)
             {

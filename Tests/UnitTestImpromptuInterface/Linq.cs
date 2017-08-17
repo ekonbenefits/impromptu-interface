@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
 
 #if !SELFRUNNER
@@ -27,7 +29,8 @@ namespace UnitTestImpromptuInterface
         {
 
             var expected = Enumerable.Range(1, 10).Where(i => i > 5).Skip(1).Take(2).Max();
-            var actual = Impromptu.Linq(Enumerable.Range(1, 10)).Where(i => i > 5).Skip(1).Take(2).Max();
+            ILinq<int> linq = Dynamic.Linq(Enumerable.Range(1, 10)).ActLike();
+            var actual = linq.Where(i => i > 5).Skip(1).Take(2).Max();
 
             Assert.AreEqual(expected,actual);
         }
@@ -35,7 +38,8 @@ namespace UnitTestImpromptuInterface
         public void MoreGenericsLinq()
         {
             var expected = Enumerable.Range(1, 10).Select(i=> Tuple.Create(1,i)).Aggregate(0,(accum,each)=> each.Item2);
-            var actual = Impromptu.Linq(Enumerable.Range(1, 10)).Select(i => Tuple.Create(1, i)).Aggregate(0, (accum, each) => each.Item2);
+            ILinq<int> linq = Dynamic.Linq(Enumerable.Range(1, 10)).ActLike();
+            var actual = linq.Select(i => Tuple.Create(1, i)).Aggregate(0, (accum, each) => each.Item2);
 
             Assert.AreEqual(expected, actual);
 
@@ -46,7 +50,7 @@ namespace UnitTestImpromptuInterface
         {
 
             var expected = Enumerable.Range(1, 10).Where(i => i > 5).Skip(1).Take(2).Max();
-            var actual = Impromptu.DynamicLinq(Enumerable.Range(1, 10)).Where(new Func<int,bool>(i => i > 5)).Skip(1).Take(2).Max();
+            var actual = Dynamic.Linq(Enumerable.Range(1, 10)).Where(new Func<int,bool>(i => i > 5)).Skip(1).Take(2).Max();
 
             Assert.AreEqual(expected, actual);
         }
@@ -54,7 +58,7 @@ namespace UnitTestImpromptuInterface
         public void MoreGenericsDynamicLinq()
         {
             var expected = Enumerable.Range(1, 10).Select(i => Tuple.Create(1, i)).Aggregate(0, (accum, each) => each.Item2);
-            var actual = Impromptu.DynamicLinq(Enumerable.Range(1, 10))
+            var actual = Dynamic.Linq(Enumerable.Range(1, 10))
                 .Select(new Func<int,Tuple<int,int>>(i => Tuple.Create(1, i)))
                 .Aggregate(0, new Func<int,Tuple<int,int>,int>((accum, each) => each.Item2));
 
@@ -83,8 +87,8 @@ namespace UnitTestImpromptuInterface
           {
 
               var expected = Enumerable.Range(1, 10).Where(x=> x < 5).OrderBy(x => 10 - x).First();
-
-              var actual = RunPythonHelper(Impromptu.Linq(Enumerable.Range(1, 10)),@"
+              ILinq<int> linq = Dynamic.Linq(Enumerable.Range(1, 10)).ActLike();
+              var actual = RunPythonHelper(linq,@"
 import System
 result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
 
@@ -96,8 +100,9 @@ result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(l
           public void PythonLinqGenericArgs()
           {
               var start = new Object[] {1, "string", 4, Guid.Empty, 6};
+              ILinq<object> linq = Dynamic.Linq(start).ActLike();
               var expected = start.OfType<int>().Skip(1).First();
-              var actual = RunPythonHelper(Impromptu.Linq(start), @"
+              var actual = RunPythonHelper(linq, @"
 import System
 result = linq.OfType[System.Int32]().Skip(1).First()
 
@@ -110,7 +115,7 @@ result = linq.OfType[System.Int32]().Skip(1).First()
           {
               var start = new Object[] { 1, "string", 4, Guid.Empty, 6 };
               var expected = start.OfType<int>().Skip(1).First();
-              var actual = RunPythonHelper(Impromptu.DynamicLinq(start), @"
+              var actual = RunPythonHelper(Dynamic.Linq(start), @"
 import System
 result = linq.OfType[System.Int32]().Skip(1).First()
 
@@ -125,7 +130,7 @@ result = linq.OfType[System.Int32]().Skip(1).First()
               var expected = Enumerable.Range(1, 10).Where(x => x < 5).OrderBy(x => 10 - x).First();
 
 
-              var actual = RunPythonHelper(Impromptu.DynamicLinq(Enumerable.Range(1, 10)),
+              var actual = RunPythonHelper(Dynamic.Linq(Enumerable.Range(1, 10)),
                                            @"
 import System
 result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()

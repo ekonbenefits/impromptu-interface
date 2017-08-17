@@ -21,6 +21,8 @@ Imports System.Linq
 Imports System.Runtime.CompilerServices
 Imports System.Text
 Imports System.Xml.Linq
+Imports Dynamitey
+Imports Dynamitey.DynamicObjects
 Imports NUnit.Framework
 Imports ImpromptuInterface
 Imports ImpromptuInterface.Dynamic
@@ -43,7 +45,7 @@ Namespace VBNET
 
             Dim tSetValue = "1"
 
-            Impromptu.InvokeSet(tExpando, "Test", tSetValue)
+            Dynamic.InvokeSet(tExpando, "Test", tSetValue)
 
             Assert.AreEqual(tSetValue, tExpando.Test)
 
@@ -57,7 +59,7 @@ Namespace VBNET
 
             Dim tSetValue = "1"
 
-            Impromptu.InvokeSet(tPoco, "Prop1", tSetValue)
+            Dynamic.InvokeSet(tPoco, "Prop1", tSetValue)
 
             Assert.AreEqual(tSetValue, tPoco.Prop1)
 
@@ -96,7 +98,7 @@ Namespace VBNET
         Public Sub TestConvert()
             Dim tEl = New XElement("Test", "45")
 
-            Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Integer), explicit:=True)
+            Dim tCast = Dynamic.InvokeConvert(tEl, GetType(Integer), explicit:=True)
 
             Assert.AreEqual(GetType(Integer), tCast.[GetType]())
             Assert.AreEqual(45, tCast)
@@ -115,7 +117,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestConstruct()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
+            Dim tCast = Dynamic.InvokeConstructor(GetType(List(Of Object)), New Object() {New String() {"one", "two", "three"}})
 
             Assert.AreEqual("two", tCast(1))
         End Sub
@@ -133,7 +135,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestConstructOptional()
-            Dim tCast As PocoOptConstructor = Impromptu.InvokeConstructor(GetType(PocoOptConstructor), "3".WithArgumentName("three__3"))
+            Dim tCast As PocoOptConstructor = Dynamic.InvokeConstructor(GetType(PocoOptConstructor), new InvokeArg("three__3", "3"))
 
             Assert.AreEqual("-1", tCast.One)
             Assert.AreEqual("-2", tCast.Two)
@@ -153,26 +155,26 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestOptionalArgumentActivationNoneAndCacheable()
-            AssertException(Of MissingMethodException)(Function() Activator.CreateInstance(Of ImpromptuList)())
+            AssertException(Of MissingMethodException)(Function() Activator.CreateInstance(Of DynamicObjects.List)())
 
-            Dim tList = Impromptu.InvokeConstructor(GetType(ImpromptuList))
+            Dim tList = Dynamic.InvokeConstructor(GetType(DynamicObjects.List))
 
 
-            Assert.AreEqual(GetType(ImpromptuList), tList.[GetType]())
+            Assert.AreEqual(GetType(DynamicObjects.List), tList.[GetType]())
 
             Dim tCachedInvoke = New CacheableInvocation(InvocationKind.Constructor)
 
-            Dim tList1 = tCachedInvoke.Invoke(GetType(ImpromptuList))
+            Dim tList1 = tCachedInvoke.Invoke(GetType(DynamicObjects.List))
 
 
-            Assert.AreEqual(GetType(ImpromptuList), tList1.[GetType]())
+            Assert.AreEqual(GetType(DynamicObjects.List), tList1.[GetType]())
         End Sub
 
 
 
         <Test()> _
         Public Sub TestConstructValueType()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime), 2009, 1, 20)
+            Dim tCast = Dynamic.InvokeConstructor(GetType(DateTime), 2009, 1, 20)
 
             Assert.AreEqual(20, tCast.Day)
 
@@ -199,7 +201,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestConstructprimativetype()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(Int32))
+            Dim tCast = Dynamic.InvokeConstructor(GetType(Int32))
 
             Assert.AreEqual(New Int32(), tCast)
         End Sub
@@ -207,28 +209,28 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestConstructDateTimeNoParams()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(DateTime))
+            Dim tCast = Dynamic.InvokeConstructor(GetType(DateTime))
 
             Assert.AreEqual(New DateTime(), tCast)
         End Sub
 
         <Test()> _
         Public Sub TestConstructOBjectNoParams()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(Object))
+            Dim tCast = Dynamic.InvokeConstructor(GetType(Object))
 
             Assert.AreEqual(GetType(Object), tCast.[GetType]())
         End Sub
 
         <Test()> _
         Public Sub TestConstructNullableprimativetype()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(Nullable(Of Int32)))
+            Dim tCast = Dynamic.InvokeConstructor(GetType(Nullable(Of Int32)))
 
             Assert.AreEqual(Nothing, tCast)
         End Sub
 
         <Test()> _
         Public Sub TestConstructGuid()
-            Dim tCast = Impromptu.InvokeConstructor(GetType(Guid))
+            Dim tCast = Dynamic.InvokeConstructor(GetType(Guid))
 
             Assert.AreEqual(New Guid(), tCast)
         End Sub
@@ -266,14 +268,14 @@ Namespace VBNET
         <Test()> _
         Public Sub TestStaticCall()
 
-            Dim tOut = Impromptu.InvokeMember(GetType(StaticType).WithStaticContext(), "Create".WithGenericArgs(GetType(Boolean)), 1)
+            Dim tOut = Dynamic.InvokeMember( New StaticContext(GetType(StaticType)), new Dynamitey.InvokeMemberName("Create", GetType(Boolean)), 1)
             Assert.AreEqual(False, tOut)
         End Sub
 
         <Test()> _
         Public Sub TestCacheableStaticCall()
 
-            Dim tCached = New CacheableInvocation(InvocationKind.InvokeMember, "Create".WithGenericArgs(GetType(Boolean)), argCount:=1, context:=GetType(StaticType).WithStaticContext())
+            Dim tCached = New CacheableInvocation(InvocationKind.InvokeMember, new Dynamitey.InvokeMemberName("Create", GetType(Boolean)), argCount:=1, context:=New StaticContext(GetType(StaticType)))
 
             Dim tOut = tCached.Invoke(GetType(StaticType), 1)
             Assert.AreEqual(False, tOut)
@@ -283,7 +285,7 @@ Namespace VBNET
         Public Sub TestImplicitConvert()
             Dim tEl = 45
 
-            Dim tCast = Impromptu.InvokeConvert(tEl, GetType(Long))
+            Dim tCast = Dynamic.InvokeConvert(tEl, GetType(Long))
 
             Assert.AreEqual(GetType(Long), tCast.[GetType]())
         End Sub
@@ -332,7 +334,7 @@ Namespace VBNET
             Dim tAnon = New String() {tSetValue, "2"}
 
 
-            Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
+            Dim tOut As String = Dynamic.InvokeGetIndex(tAnon, 0)
 
             Assert.AreEqual(tSetValue, tOut)
 
@@ -346,7 +348,7 @@ Namespace VBNET
             Dim tAnon = New Integer() {1, 2}
 
 
-            Dim tOut As Integer = Impromptu.InvokeGetIndex(tAnon, 1)
+            Dim tOut As Integer = Dynamic.InvokeGetIndex(tAnon, 1)
 
             Assert.AreEqual(tAnon(1), tOut)
 
@@ -358,7 +360,7 @@ Namespace VBNET
             Dim tAnon = New String() {"1", "2"}
 
 
-            Dim tOut As Integer = Impromptu.InvokeGet(tAnon, "Length")
+            Dim tOut As Integer = Dynamic.InvokeGet(tAnon, "Length")
 
             Assert.AreEqual(2, tOut)
 
@@ -373,7 +375,7 @@ Namespace VBNET
             }
 
 
-            Dim tOut As String = Impromptu.InvokeGetIndex(tAnon, 0)
+            Dim tOut As String = Dynamic.InvokeGetIndex(tAnon, 0)
 
             Assert.AreEqual(tSetValue, tOut)
 
@@ -428,7 +430,7 @@ Namespace VBNET
              "2" _
             }
 
-            Impromptu.InvokeSetIndex(tAnon, 0, tSetValue)
+            Dynamic.InvokeSetIndex(tAnon, 0, tSetValue)
 
             Assert.AreEqual(tSetValue, tAnon(0))
 
@@ -461,7 +463,7 @@ Namespace VBNET
 
             Dim tValue = 1
 
-            Dim tOut = Impromptu.InvokeMember(tExpando, "Func", tValue)
+            Dim tOut = Dynamic.InvokeMember(tExpando, "Func", tValue)
 
             Assert.AreEqual(tValue.ToString(), tOut)
         End Sub
@@ -505,8 +507,7 @@ Namespace VBNET
             Dim tContext As Type = [GetType]()
             Dim tBinder = Binder.InvokeMember(BinderFlags.None, tName, Nothing, tContext, New Info() {Info.Create(InfoFlags.None, Nothing), Info.Create(InfoFlags.IsRef Or InfoFlags.UseCompileTimeType, Nothing)})
 
-
-            Dim tSite = Impromptu.CreateCallSite(Of DynamicTryString)(tBinder, tName, tContext)
+            Dim tSite = Dynamic.CreateCallSite(Of DynamicTryString)(tBinder, tName, tContext)
 
 
             tSite.Target.Invoke(tSite, tPoco, tResult)
@@ -527,7 +528,7 @@ Namespace VBNET
 
 
 
-            Impromptu.InvokeMemberAction(tExpando, "Action", tValue)
+            Dynamic.InvokeMemberAction(tExpando, "Action", tValue)
 
             Assert.AreEqual(tValue, tTest)
         End Sub
@@ -579,7 +580,7 @@ Namespace VBNET
 
             Dim tValue = 1
 
-            Dim tOut = Impromptu.InvokeMember(tValue, "ToString")
+            Dim tOut = Dynamic.InvokeMember(tValue, "ToString")
 
             Assert.AreEqual(tValue.ToString(), tOut)
         End Sub
@@ -599,7 +600,7 @@ Namespace VBNET
         Private Sub HelpTestPocoPassAndGetValue(tValue As String, tParam As String)
             Dim tExpected = tValue.StartsWith(tParam)
 
-            Dim tOut = Impromptu.InvokeMember(tValue, "StartsWith", tParam)
+            Dim tOut = Dynamic.InvokeMember(tValue, "StartsWith", tParam)
 
             Assert.AreEqual(tExpected, tOut)
         End Sub
@@ -614,7 +615,7 @@ Namespace VBNET
 
 
 
-            Dim tOut = Impromptu.InvokeGet(tExpando, "Test")
+            Dim tOut = Dynamic.InvokeGet(tExpando, "Test")
 
             Assert.AreEqual(tSetValue, tOut)
         End Sub
@@ -629,7 +630,7 @@ Namespace VBNET
             tExpando.Test.Test2.Test3 = tSetValue
 
 
-            Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test.Test2.Test3")
+            Dim tOut = Dynamic.InvokeGetChain(tExpando, "Test.Test2.Test3")
 
             Assert.AreEqual(tSetValue, tOut)
         End Sub
@@ -645,7 +646,7 @@ Namespace VBNET
             tExpando.Test.Test2 = New ExpandoObject()
 
 
-            Impromptu.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue)
+            Dynamic.InvokeSetChain(tExpando, "Test.Test2.Test3", tSetValue)
 
             Assert.AreEqual(tSetValue, tExpando.Test.Test2.Test3)
         End Sub
@@ -657,7 +658,7 @@ Namespace VBNET
             Dim tExpando As Object = New ExpandoObject()
 
 
-            Impromptu.InvokeSetChain(tExpando, "Test", tSetValue)
+            Dynamic.InvokeSetChain(tExpando, "Test", tSetValue)
 
             Assert.AreEqual(tSetValue, tExpando.Test)
         End Sub
@@ -671,7 +672,7 @@ Namespace VBNET
 
 
 
-            Dim tOut = Impromptu.InvokeGetChain(tExpando, "Test")
+            Dim tOut = Dynamic.InvokeGetChain(tExpando, "Test")
 
             Assert.AreEqual(tSetValue, tOut)
         End Sub
@@ -692,13 +693,13 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestStaticGet()
-            Dim tDate = Impromptu.InvokeGet(GetType(DateTime).WithStaticContext(), "Today")
+            Dim tDate = Dynamic.InvokeGet(new StaticContext(GetType(DateTime)), "Today")
             Assert.AreEqual(DateTime.Today, tDate)
         End Sub
 
         <Test()> _
         Public Sub TestCacheableStaticGet()
-            Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Today", context:=GetType(DateTime).WithStaticContext())
+            Dim tCached = New CacheableInvocation(InvocationKind.[Get], "Today", context:=new StaticContext(GetType(DateTime)))
 
             Dim tDate = tCached.Invoke(GetType(DateTime))
             Assert.AreEqual(DateTime.Today, tDate)
@@ -707,14 +708,14 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestStaticGet2()
-            Dim tVal = Impromptu.InvokeGet(GetType(StaticType).WithStaticContext(), "Test")
+            Dim tVal = Dynamic.InvokeGet(new StaticContext(GetType(StaticType)), "Test")
             Assert.AreEqual(True, tVal)
         End Sub
 
         <Test()> _
         Public Sub TestStaticSet()
             Dim tValue As Integer = 12
-            Impromptu.InvokeSet(GetType(StaticType).WithStaticContext(), "TestSet", tValue)
+            Dynamic.InvokeSet(new StaticContext(GetType(StaticType)), "TestSet", tValue)
             Assert.AreEqual(tValue, StaticType.TestSet)
         End Sub
 
@@ -722,7 +723,7 @@ Namespace VBNET
         Public Sub TestCacheableStaticSet()
             Dim tValue As Integer = 12
 
-            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "TestSet", context:=GetType(StaticType).WithStaticContext())
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.[Set], "TestSet", context:=new StaticContext(GetType(StaticType)))
             tCachedInvoke.Invoke(GetType(StaticType), tValue)
             Assert.AreEqual(tValue, StaticType.TestSet)
         End Sub
@@ -730,14 +731,14 @@ Namespace VBNET
         <Test()> _
         Public Sub TestStaticDateTimeMethod()
             Dim tDateDyn As Object = "01/20/2009"
-            Dim tDate = Impromptu.InvokeMember(GetType(DateTime).WithStaticContext(), "Parse", tDateDyn)
+            Dim tDate = Dynamic.InvokeMember(new StaticContext(GetType(DateTime)), "Parse", tDateDyn)
             Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
         End Sub
 
         <Test()> _
         Public Sub TestCacheableStaticDateTimeMethod()
             Dim tDateDyn As Object = "01/20/2009"
-            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1, context:=GetType(DateTime).WithStaticContext())
+            Dim tCachedInvoke = New CacheableInvocation(InvocationKind.InvokeMember, "Parse", 1, context:=new StaticContext(GetType(DateTime)))
             Dim tDate = tCachedInvoke.Invoke(GetType(DateTime), tDateDyn)
             Assert.AreEqual(New DateTime(2009, 1, 20), tDate)
         End Sub
@@ -748,7 +749,7 @@ Namespace VBNET
         Public Sub TestIsEvent()
             Dim tPoco As Object = New PocoEvent()
 
-            Dim tResult = Impromptu.InvokeIsEvent(tPoco, "Event")
+            Dim tResult = Dynamic.InvokeIsEvent(tPoco, "Event")
 
             Assert.AreEqual(True, tResult)
         End Sub
@@ -763,7 +764,7 @@ Namespace VBNET
 
             Assert.AreEqual(True, tResult)
 
-            Dim tDynamic As Object = New ImpromptuDictionary()
+            Dim tDynamic As Object = New Dictionary()
 
             tDynamic.[Event] = Nothing
 
@@ -779,7 +780,7 @@ Namespace VBNET
             Dim tPoco = New PocoEvent()
             Dim tTest As Boolean = False
 
-            Impromptu.InvokeAddAssign(tPoco, "Event", New EventHandler(Of EventArgs)(Function([object], args)
+            Dynamic.InvokeAddAssignMember(tPoco, "Event", New EventHandler(Of EventArgs)(Function([object], args)
                                                                                          tTest = True
 
                                                                                      End Function))
@@ -792,7 +793,7 @@ Namespace VBNET
               .Prop2 = 3 _
             }
 
-            Impromptu.InvokeAddAssign(tPoco2, "Prop2", 4)
+            Dynamic.InvokeAddAssignMember(tPoco2, "Prop2", 4)
 
             Assert.AreEqual(7L, tPoco2.Prop2)
         End Sub
@@ -831,7 +832,7 @@ Namespace VBNET
             Dim tDynamic = Build.NewObject(Prop2:=3, [Event]:=Nothing, OnEvent:=New ThisAction(Of Object, EventArgs)(Function(this, obj, args) this.[Event](obj, args)))
             Dim tTest As Boolean = False
 
-            Impromptu.InvokeAddAssign(tDynamic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
+            Dynamic.InvokeAddAssignMember(tDynamic, "Event", New EventHandler(Of EventArgs)(Function([object], args)
                                                                                             tTest = True
 
                                                                                         End Function))
@@ -840,7 +841,7 @@ Namespace VBNET
 
             Assert.AreEqual(True, tTest)
 
-            Impromptu.InvokeAddAssign(tDynamic, "Prop2", 4)
+            Dynamic.InvokeAddAssignMember(tDynamic, "Prop2", 4)
 
             Assert.AreEqual(7L, tDynamic.Prop2)
         End Sub
@@ -875,14 +876,14 @@ Namespace VBNET
         Public Sub TestDynamicMemberNamesExpando()
             Dim tExpando As ExpandoObject = Build(Of ExpandoObject).NewObject(One:=1)
 
-            Assert.AreEqual("One", Impromptu.GetMemberNames(tExpando, dynamicOnly:=True).[Single]())
+            Assert.AreEqual("One", Dynamic.GetMemberNames(tExpando, dynamicOnly:=True).[Single]())
         End Sub
 
         <Test()> _
         Public Sub TestDynamicMemberNamesImpromput()
-            Dim tDict As ImpromptuDictionary = Build.NewObject(Two:=2)
+            Dim tDict As Dictionary = Build.NewObject(Two:=2)
 
-            Assert.AreEqual("Two", Impromptu.GetMemberNames(tDict, dynamicOnly:=True).[Single]())
+            Assert.AreEqual("Two", Dynamic.GetMemberNames(tDict, dynamicOnly:=True).[Single]())
         End Sub
         Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
             target = value

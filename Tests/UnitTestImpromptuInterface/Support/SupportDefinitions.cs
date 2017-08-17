@@ -22,6 +22,8 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Diagnostics;
+using Dynamitey.DynamicObjects;
+using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
 #if !SELFRUNNER
@@ -46,7 +48,7 @@ namespace UnitTestImpromptuInterface
         }
     }
 
-    public class TestForwarder:ImpromptuForwarder
+    public class TestForwarder:BaseForwarder
     {
         public TestForwarder(object target) : base(target)
         {

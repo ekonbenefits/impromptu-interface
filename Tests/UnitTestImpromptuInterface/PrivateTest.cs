@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamitey;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
-using ImpromptuInterface.InvokeExt;
 using Microsoft.CSharp.RuntimeBinder;
 using UnitTestSupportLibrary;
 
@@ -34,7 +34,7 @@ namespace UnitTestImpromptuInterface
         public void TestDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
-            var tNonExposed = tTest.WithContext(this).ActLike<IExposePrivateMethod>();
+            var tNonExposed =  new InvokeContext(tTest, this).ActLike<IExposePrivateMethod>();
             AssertException<RuntimeBinderException>(() => tNonExposed.Test());
         }
 
@@ -42,28 +42,28 @@ namespace UnitTestImpromptuInterface
         public void TestInvokePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
-            Assert.AreEqual(3, Impromptu.InvokeMember(tTest,"Test"));
+            Assert.AreEqual(3, Dynamic.InvokeMember(tTest,"Test"));
         }
 
         [Test]
         public void TestInvokePrivateMethodAcrossAssemblyBoundries()
         {
             var tTest = new PublicType();
-            Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "PrivateMethod", 3));
+            Assert.AreEqual(true, Dynamic.InvokeMember(tTest, "PrivateMethod", 3));
         }
 
         [Test]
         public void TestInvokeInternalTypeMethodAcrossAssemblyBoundries()
         {
             var tTest = PublicType.InternalInstance;
-            Assert.AreEqual(true, Impromptu.InvokeMember(tTest, "InternalMethod", 3));
+            Assert.AreEqual(true, Dynamic.InvokeMember(tTest, "InternalMethod", 3));
         }
 
         [Test]
         public void TestInvokeDoNotExposePrivateMethod()
         {
             var tTest = new TestWithPrivateMethod();
-            AssertException<RuntimeBinderException>(() => Impromptu.InvokeMember(tTest.WithContext(this), "Test"));
+            AssertException<RuntimeBinderException>(() => Dynamic.InvokeMember(new InvokeContext(tTest, this), "Test"));
         }
 
         [Test]

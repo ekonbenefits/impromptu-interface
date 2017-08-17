@@ -6,6 +6,8 @@ Imports System.Dynamic
 Imports System.Linq
 Imports System.Runtime.CompilerServices
 Imports System.Text
+Imports Dynamitey
+Imports Dynamitey.DynamicObjects
 Imports NUnit.Framework
 Imports ImpromptuInterface
 Imports ImpromptuInterface.Dynamic
@@ -19,7 +21,7 @@ Namespace VBNET
         <Test()> _
         Public Sub DictionaryPropertyTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.Prop1 = "Test"
             tNew.Prop2 = 42L
             tNew.Prop3 = Guid.NewGuid()
@@ -34,7 +36,7 @@ Namespace VBNET
         <Test()> _
         Public Sub DictionaryNullPropertyTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
 
 
             Dim tActsLike As ISimpeleClassProps = Impromptu.ActLike(Of ISimpeleClassProps)(tNew)
@@ -52,7 +54,7 @@ Namespace VBNET
              Key .Prop3 = Guid.NewGuid() _
             }
 
-            Dim tTest As Object = New ImpromptuGet(tAnon)
+            Dim tTest As Object = New DynamicObjects.Get(tAnon)
 
             Assert.AreEqual(tAnon.Prop1, tTest.Prop1)
             Assert.AreEqual(tAnon.Prop2, tTest.Prop2)
@@ -63,7 +65,7 @@ Namespace VBNET
         Public Sub GetterVoidTest()
             Dim tPoco = New VoidMethodPoco()
 
-            Dim tTest As Object = New ImpromptuGet(tPoco)
+            Dim tTest As Object = New DynamicObjects.Get(tPoco)
 
             tTest.Action()
         End Sub
@@ -74,7 +76,7 @@ Namespace VBNET
 
             Dim tArray = New Integer() {1, 2, 3}
 
-            Dim tTest As IStringIntIndexer = ImpromptuGet.Create(Of IStringIntIndexer)(tArray)
+            Dim tTest As IStringIntIndexer = new DynamicObjects.Get(tArray).ActLike(Of IStringIntIndexer)
 
             Assert.AreEqual(tArray(2).ToString(), tTest(2))
         End Sub
@@ -91,7 +93,7 @@ Namespace VBNET
             tNew.Prop2 = 42L
             tNew.Prop3 = Guid.NewGuid()
 
-            Dim tTest As Object = New ImpromptuGet(tNew)
+            Dim tTest As Object = New DynamicObjects.Get(tNew)
 
 
             Assert.AreEqual(tNew.Prop1, tTest.Prop1)
@@ -143,7 +145,7 @@ Namespace VBNET
         <Test()> _
         Public Sub DictionaryMethodsTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.Action1 = New Action(AddressOf Assert.Fail)
             tNew.Action2 = New Action(Of Boolean)(AddressOf Assert.IsFalse)
             tNew.Action3 = New Func(Of String)(Function() "test")
@@ -164,7 +166,7 @@ Namespace VBNET
         <Test()> _
         Public Sub ForwardMethodsTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.Action1 = New Action(AddressOf Assert.Fail)
             tNew.Action2 = New Action(Of Boolean)(AddressOf Assert.IsFalse)
             tNew.Action3 = New Func(Of String)(Function() "test")
@@ -195,7 +197,7 @@ Namespace VBNET
         <Test()> _
         Public Sub DictionaryMethodsTestWithPropertyAccess()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.PropCat = "Cat-"
             tNew.Action1 = New Action(AddressOf Assert.Fail)
             tNew.Action2 = New Action(Of Boolean)(AddressOf Assert.IsFalse)
@@ -215,7 +217,7 @@ Namespace VBNET
         <Test()> _
         Public Sub DictionaryNullMethodsTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
 
             Dim tActsLike As ISimpleStringMethod = Impromptu.ActLike(Of ISimpleStringMethod)(tNew)
 
@@ -238,7 +240,7 @@ Namespace VBNET
              }} _
             }
 
-            Dim tNew As Object = New ImpromptuDictionary(tDictionary)
+            Dim tNew As Object = New Dictionary(tDictionary)
 
             Assert.AreEqual(1, tNew.Test1)
             Assert.AreEqual(2, tNew.Test2)
@@ -258,8 +260,8 @@ Namespace VBNET
              }} _
             }
 
-            Dim tObject As Object = ImpromptuDictionary.Create(Of IDynamicDict)(tDictionary)
-            Dim tNotObject As Object = ImpromptuDictionary.Create(Of INonDynamicDict)(tDictionary)
+            Dim tObject As Object = New Dictionary(tDictionary).ActLike(of IDynamicDict)
+            Dim tNotObject As Object = New Dictionary(tDictionary).ActLike(of INonDynamicDict)
 
             Assert.AreEqual(tObject, tNotObject)
 
@@ -273,7 +275,7 @@ Namespace VBNET
 
 
             Assert.AreEqual(GetType(Dictionary(Of String, Object)), tNotObject.TestD.[GetType]())
-            Assert.AreEqual(GetType(ImpromptuDictionary), tObject.TestD.[GetType]())
+            Assert.AreEqual(GetType(Dictionary), tObject.TestD.[GetType]())
         End Sub
 
         <Test()> _
@@ -287,8 +289,8 @@ Namespace VBNET
              }} _
             }
 
-            Dim tObject As Object = ImpromptuDictionary.Create(Of IDynamicDict)(tDictionary)
-            Dim tNotObject As Object = ImpromptuDictionary.Create(Of INonDynamicDict)(tDictionary)
+            Dim tObject As Object = new Dictionary(tDictionary).ActLike(Of IDynamicDict)
+            Dim tNotObject As Object = new Dictionary(tDictionary).ActLike(Of INonDynamicDict)
 
             Assert.AreEqual(tObject, tNotObject)
 
@@ -302,7 +304,7 @@ Namespace VBNET
             Dim tData = New Dictionary(Of Integer, String)() From { _
              {1, "test"} _
             }
-            Dim tDyn = ImpromptuGet.Create(New With { _
+            Dim tDyn = New DynamicObjects.Get(New With { _
              Key .Test1 = 1, _
              Key .Test2 = "2", _
              Key .IsGreaterThan5 = [Return](Of Boolean).Arguments(Of Integer)(Function(it) it > 5), _
@@ -322,13 +324,13 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestAnonInterface()
-            Dim tInterface As ICollection = ImpromptuGet.Create(Of ICollection)(New With { _
+            Dim tInterface As ICollection = New DynamicObjects.Get(New With { _
              .CopyArray = ReturnVoid.Arguments(Of Array, Integer)(Function(ar, i) Enumerable.Range(1, 10)), _
              .Count = 10, _
              .IsSynchronized = False, _
              .SyncRoot = Me, _
              .GetEnumerator = [Return](Of IEnumerator).Arguments(Function() Enumerable.Range(1, 10).GetEnumerator()) _
-            })
+            }).ActLike(Of ICollection)
 
             Assert.AreEqual(10, tInterface.Count)
             Assert.AreEqual(False, tInterface.IsSynchronized)
@@ -339,7 +341,7 @@ Namespace VBNET
         <Test()> _
         Public Sub TestBuilder()
 
-            Dim NewD As Object = New ImpromptuBuilder(Of ExpandoObject)()
+            Dim NewD As Object = New Builder(Of ExpandoObject)()
 
 
             Dim tExpandoNamedTest = NewD.Robot(LeftArm:="Rise", RightArm:="Clamp")
@@ -350,7 +352,7 @@ Namespace VBNET
 
         <Test()> _
         Public Sub TestSetupOtherTypes()
-            Dim [New] = Builder.[New]().Setup(Expando:=GetType(ExpandoObject), Dict:=GetType(ImpromptuDictionary))
+            Dim [New] = Builder.[New]().Setup(Expando:=GetType(ExpandoObject), Dict:=GetType(Dictionary))
 
             Dim tExpando = [New].Expando(LeftArm:="Rise", RightArm:="Clamp")
 
@@ -362,7 +364,7 @@ Namespace VBNET
 
             Assert.AreEqual("RiseD", tDict.LeftArm)
             Assert.AreEqual("ClampD", tDict.RightArm)
-            Assert.AreEqual(GetType(ImpromptuDictionary), tDict.[GetType]())
+            Assert.AreEqual(GetType(Dictionary), tDict.[GetType]())
 
         End Sub
 
@@ -391,14 +393,14 @@ Namespace VBNET
 
                 Assert.AreEqual("Bertrand", person.FirstName)
                 Assert.AreEqual("Le Roy", person.LastName)
-                Assert.AreEqual("boudin", Impromptu.InvokeGetIndex(person.Aliases, 1))
+                Assert.AreEqual("boudin", Dynamic.InvokeGetIndex(person.Aliases, 1))
             End If
 
             If True Then
                 Dim person = [New].Person().FirstName("Louis").LastName("Dejardin").Aliases(New String() {"Lou"})
 
                 Assert.AreEqual("Louis", person.FirstName)
-                Assert.AreEqual("Lou", Impromptu.InvokeGetIndex(person.Aliases, 0))
+                Assert.AreEqual("Lou", Dynamic.InvokeGetIndex(person.Aliases, 0))
             End If
 
             If True Then
@@ -449,7 +451,7 @@ Namespace VBNET
             Assert.AreEqual("Dejardin", people(0).LastName)
             Assert.AreEqual("Le Roy", people(1).LastName)
 
-            Dim people2 = New ImpromptuList() From { _
+            Dim people2 = New Dynamitey.DynamicObjects.List() From { _
              [New].Robot(Name:="Bender"), _
              [New].Robot(Name:="RobotDevil") _
             }

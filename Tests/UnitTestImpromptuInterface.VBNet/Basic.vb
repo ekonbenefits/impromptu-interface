@@ -20,6 +20,7 @@ Imports ImpromptuInterface.Dynamic
 Imports Microsoft.CSharp.RuntimeBinder
 Imports ImpromptuInterface
 Imports System.Dynamic
+Imports Dynamitey.DynamicObjects
 
 Namespace VBNET
 
@@ -116,7 +117,7 @@ Namespace VBNET
         <Test()> _
         Public Sub ImpromptuConversionPropertyTest()
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.Prop1 = "Test"
             tNew.Prop2 = "42"
             tNew.Prop3 = Guid.NewGuid()
@@ -136,7 +137,7 @@ Namespace VBNET
         Public Sub DictIndexTest()
 
 
-            Dim tNew As Object = New ImpromptuDictionary()
+            Dim tNew As Object = New Dictionary()
             tNew.Prop1 = "Test"
             tNew.Prop2 = "42"
             tNew.Prop3 = Guid.NewGuid()

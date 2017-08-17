@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using Dynamitey;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
-using ImpromptuInterface.InvokeExt;
 
 
 #if !SELFRUNNER
@@ -38,7 +38,7 @@ namespace UnitTestImpromptuInterface
 
             var tSetValue = "1";
 
-            var tWatch = TimeIt.Go(() => Impromptu.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
+            var tWatch = TimeIt.Go(() => Dynamic.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
             var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
             var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
@@ -78,7 +78,7 @@ namespace UnitTestImpromptuInterface
 
             String tSetValue = null;
 
-            var tWatch = TimeIt.Go(() => Impromptu.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
+            var tWatch = TimeIt.Go(() => Dynamic.InvokeSet(tPoco, "Prop1", tSetValue), 500000);
             var tPropertyInfo = tPoco.GetType().GetProperty("Prop1");
             var tWatch2 = TimeIt.Go(() => tPropertyInfo.SetValue(tPoco, tSetValue, new object[] { }), 500000);
 
@@ -118,7 +118,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeGet(tAnon, "Test"); }, 500000);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeGet(tAnon, "Test"); }, 500000);
 
             var tPropertyInfo = tAnon.GetType().GetProperty("Test");
             var tWatch2 = TimeIt.Go(() =>
@@ -167,7 +167,7 @@ namespace UnitTestImpromptuInterface
            
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(Tuple<string>), "Test" ); });
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeConstructor(typeof(Tuple<string>), "Test" ); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(Tuple<string>),"Test");
@@ -203,7 +203,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void TestConstructorNoARgTimed()
         {
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(List<string>)); });
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeConstructor(typeof(List<string>)); });
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(List<string>));
@@ -252,7 +252,7 @@ namespace UnitTestImpromptuInterface
 
             var tIter = 1000000;
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeConstructor(typeof(DateTime), 2010, 1, 20); }, tIter);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeConstructor(typeof(DateTime), 2010, 1, 20); }, tIter);
             var tWatch2 = TimeIt.Go(() =>
             {
                 var tOut = Activator.CreateInstance(typeof(DateTime), 2010, 1, 20);
@@ -293,7 +293,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "ToString"); }, 500000);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeMember(tValue, "ToString"); }, 500000);
             var tMethodInfo = tValue.GetType().GetMethod("ToString", new Type[] { });
             var tWatch2 = TimeIt.Go(() =>
                                         {
@@ -336,8 +336,8 @@ namespace UnitTestImpromptuInterface
 
 
             var tStaticType = typeof(DateTime);
-            var tTarget = tStaticType.WithStaticContext();
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeGet(tTarget, "Today"); }, 500000);
+            var tTarget = new StaticContext(tStaticType);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeGet(tTarget, "Today"); }, 500000);
             var tMethodInfo = typeof (DateTime).GetProperty("Today").GetGetMethod();
             var tWatch2 = TimeIt.Go(() =>
             {
@@ -355,7 +355,7 @@ namespace UnitTestImpromptuInterface
         {
 
             var tStaticType = typeof(DateTime);
-            var tContext = tStaticType.WithStaticContext();
+            var tContext = new StaticContext(tStaticType);
             var tCachedInvoke = new CacheableInvocation(InvocationKind.Get, "Today", context: tContext);
 
             var tWatch = TimeIt.Go(() =>
@@ -380,9 +380,9 @@ namespace UnitTestImpromptuInterface
         {
 
             var tStaticType = typeof (DateTime);
-            var tTarget = tStaticType.WithStaticContext();
+            var tTarget = new StaticContext(tStaticType);
             string tDate = "01/20/2009";
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tTarget, "Parse", tDate); }, 500000);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeMember(tTarget, "Parse", tDate); }, 500000);
             var tMethodInfo = typeof(DateTime).GetMethod("Parse",new[]{typeof(string)});
             var tWatch2 = TimeIt.Go(() =>
             {
@@ -400,7 +400,7 @@ namespace UnitTestImpromptuInterface
         {
 
             var tStaticType = typeof(DateTime);
-            var tContext = tStaticType.WithStaticContext();
+            var tContext = new StaticContext(tStaticType);
             string tDate = "01/20/2009";
 
             var tCachedInvoke = new CacheableInvocation(InvocationKind.InvokeMember, "Parse", argCount: 1,
@@ -429,7 +429,7 @@ namespace UnitTestImpromptuInterface
 
 
             var tInteration = 1000000;
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "Func", null); }, tInteration);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeMember(tValue, "Func", null); }, tInteration);
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object)});
             var tWatch2 = TimeIt.Go(() =>
             {
@@ -481,8 +481,8 @@ namespace UnitTestImpromptuInterface
 
             var tInteration = 500000;
             var tWatch = TimeIt.Go(() => { 
-                var tOut = Impromptu.InvokeMember(tValue, "Func", null); 
-                var tOut2 = Impromptu.InvokeMember(tValue, "Func", 2); }, tInteration);
+                var tOut = Dynamic.InvokeMember(tValue, "Func", null); 
+                var tOut2 = Dynamic.InvokeMember(tValue, "Func", 2); }, tInteration);
 
             var tMethodInfo = tValue.GetType().GetMethod("Func", new Type[] { typeof(object) });
             var tMethodInfo2 = tValue.GetType().GetMethod("Func", new Type[] { typeof(int) });
@@ -534,7 +534,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tWatch = TimeIt.Go(() => { var tOut = Impromptu.InvokeMember(tValue, "IndexOf", "45", 0, 14, StringComparison.InvariantCulture); }, 500000);
+            var tWatch = TimeIt.Go(() => { var tOut = Dynamic.InvokeMember(tValue, "IndexOf", "45", 0, 14, StringComparison.InvariantCulture); }, 500000);
             var tMethodInfo = tValue.GetType().GetMethod("IndexOf", new Type[] { typeof(string), typeof(int), typeof(int), typeof(StringComparison) });
             var tWatch2 = TimeIt.Go(() =>
                                         {
@@ -582,7 +582,7 @@ namespace UnitTestImpromptuInterface
 
 
 
-            var tWatch = TimeIt.Go(() => Impromptu.InvokeMemberAction(tValue, "Clear"), 500000);
+            var tWatch = TimeIt.Go(() => Dynamic.InvokeMemberAction(tValue, "Clear"), 500000);
             var tMethodInfo = tValue.GetType().GetMethod("Clear", new Type[] { });
             var tWatch2 = TimeIt.Go(() => tMethodInfo.Invoke(tValue, new object[] { }), 500000);
 

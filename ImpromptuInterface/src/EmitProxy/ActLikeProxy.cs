@@ -17,6 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 
@@ -73,29 +74,24 @@ namespace ImpromptuInterface.Build
             ActLikeProxyOriginal = original;
 
 
-            //Let IDynamicKnowLike know about interfaces
-            /* will be deprecated in the future */
-            var tKnowOriginal = ActLikeProxyOriginal as IDynamicKnowLike;
-            if (tKnowOriginal != null)
-            {
-                if(interfaces !=null)
-                    tKnowOriginal.KnownInterfaces = interfaces;
-                if (informalInterface != null)
-                    tKnowOriginal.KnownPropertySpec = informalInterface;
-            }
-            
 
-            //Uses standard lib component types to notify proxied object of interfaces.
-            var serviceProvider = ActLikeProxyOriginal as IServiceProvider;
-            if (serviceProvider != null)
+            var dynamicObj = ActLikeProxyOriginal as IEquivalentType;
+            if (dynamicObj != null)
             {
-                try
+                if (interfaces != null)
                 {
-                    serviceProvider.GetService(GetType());
+                    var aggreType = AggreType.MakeTypeAppendable(dynamicObj);
+
+                    foreach (var type in interfaces)
+                    {
+                        aggreType.AddType(type);
+
+                    }
                 }
-                catch
+                if (informalInterface != null)
                 {
-                    
+                    var aggreType = AggreType.MakeTypeAppendable(dynamicObj);
+                    aggreType.AddType(new PropretySpecType(informalInterface));
                 }
             }
         }

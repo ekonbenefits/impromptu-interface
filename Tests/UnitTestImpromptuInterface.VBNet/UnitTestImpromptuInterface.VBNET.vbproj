@@ -60,6 +60,9 @@
     <Reference Include="ClaySharp">
       <HintPath>..\..\packages\Clay.1.0\lib\ClaySharp.dll</HintPath>
     </Reference>
+    <Reference Include="Dynamitey, Version=2.0.2.0, Culture=neutral, PublicKeyToken=cbf53ea3aeb972c6, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Dynamitey.2.0.2-alpha\lib\net40\Dynamitey.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
     </Reference>
@@ -127,5 +130,4 @@
     <Folder Include="My Project\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.Targets" />
-  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
 </Project>

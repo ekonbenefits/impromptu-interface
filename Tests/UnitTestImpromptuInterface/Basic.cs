@@ -19,6 +19,8 @@ using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
+using Dynamitey;
+using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Optimization;
 
 #if !SELFRUNNER
@@ -139,7 +141,7 @@ namespace UnitTestImpromptuInterface
         public void ImpromptuConversionPropertyTest()
         {
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
             tNew.Prop3 = Guid.NewGuid();
@@ -336,7 +338,7 @@ namespace UnitTestImpromptuInterface
         {
 
 
-            dynamic tNew = new ImpromptuDictionary();
+            dynamic tNew = new Dictionary();
             tNew.Prop1 = "Test";
             tNew.Prop2 = "42";
             tNew.Prop3 = Guid.NewGuid();

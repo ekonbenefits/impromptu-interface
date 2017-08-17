@@ -22,6 +22,8 @@ Imports System.Text
 Imports System.Diagnostics
 Imports ImpromptuInterface.Dynamic
 Imports System.Windows.Media
+Imports ImpromptuInterface
+Imports Dynamitey.DynamicObjects
 
 Namespace VBNET
 
@@ -29,7 +31,7 @@ Namespace VBNET
 
 
     Public Class TestForwarder
-        Inherits ImpromptuForwarder
+        Inherits BaseForwarder 
         Public Sub New(target As Object)
             MyBase.New(target)
         End Sub

@@ -9,7 +9,7 @@ Imports ImpromptuInterface.Dynamic
 Imports ImpromptuInterface.InvokeExt
 Imports Microsoft.CSharp.RuntimeBinder
 Imports UnitTestSupportLibrary
-
+Imports Dynamitey
 
 Namespace VBNET
 
@@ -26,32 +26,32 @@ Namespace VBNET
         <Test()> _
         Public Sub TestDoNotExposePrivateMethod()
             Dim tTest As TestWithPrivateMethod = New TestWithPrivateMethod()
-            Dim tNonExposed = tTest.WithContext(Me).ActLike(Of IExposePrivateMethod)()
+            Dim tNonExposed = New InvokeContext(tTest, Me).ActLike(Of IExposePrivateMethod)()
             AssertException(Of RuntimeBinderException)(Function() tNonExposed.Test())
         End Sub
 
         <Test()> _
         Public Sub TestInvokePrivateMethod()
             Dim tTest = New TestWithPrivateMethod()
-            Assert.AreEqual(3, Impromptu.InvokeMember(tTest, "Test"))
+            Assert.AreEqual(3, Dynamic.InvokeMember(tTest, "Test"))
         End Sub
 
         <Test()> _
         Public Sub TestInvokePrivateMethodAcrossAssemblyBoundries()
             Dim tTest = New PublicType()
-            Assert.AreEqual(True, Impromptu.InvokeMember(tTest, "PrivateMethod", 3))
+            Assert.AreEqual(True, Dynamic.InvokeMember(tTest, "PrivateMethod", 3))
         End Sub
 
         <Test()> _
         Public Sub TestInvokeInternalTypeMethodAcrossAssemblyBoundries()
             Dim tTest = PublicType.InternalInstance
-            Assert.AreEqual(True, Impromptu.InvokeMember(tTest, "InternalMethod", 3))
+            Assert.AreEqual(True, Dynamic.InvokeMember(tTest, "InternalMethod", 3))
         End Sub
 
         <Test()> _
         Public Sub TestInvokeDoNotExposePrivateMethod()
             Dim tTest As TestWithPrivateMethod = New TestWithPrivateMethod()
-            AssertException(Of RuntimeBinderException)(Function() Impromptu.InvokeMember(tTest.WithContext(Me), "Test"))
+            AssertException(Of RuntimeBinderException)(Function() Dynamic.InvokeMember(New InvokeContext(tTest, Me), "Test"))
         End Sub
 
         <Test()> _

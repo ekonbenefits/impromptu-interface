@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Dynamitey;
 using ImpromptuInterface;
 using ImpromptuInterface.Dynamic;
 
@@ -24,7 +25,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicDelegateCurry()
         {
             Func<int, int, int> tAdd = (x, y) => x + y;
-            var tCurriedAdd4 = Impromptu.Curry(tAdd)(4);
+            var tCurriedAdd4 = Dynamic.Curry(tAdd)(4);
             var tResult = tCurriedAdd4(6);
 
 
@@ -38,7 +39,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicNamedCurry()
         {
             Func<int, int, int> tSub = (x, y) => x - y;
-            var tCurriedSub7 = Impromptu.Curry(tSub)(arg2: 7);
+            var tCurriedSub7 = Dynamic.Curry(tSub)(arg2: 7);
             var tResult = tCurriedSub7(arg1: 10);
 
 
@@ -50,7 +51,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertDelegateCurry()
         {
             Func<string, string, string> tAdd = (x, y) => x + y;
-            var tCurriedAdd4 = Impromptu.Curry(tAdd)("4");
+            var tCurriedAdd4 = Dynamic.Curry(tAdd)("4");
             var tCastToFunc = (Func<string, string>)tCurriedAdd4;
             var tResult2 = tCastToFunc("10");
 
@@ -60,7 +61,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertDelegateCurryReturnValueType()
         {
             Func<string, string, int> tAdd = (x, y) => Int32.Parse(x) + Int32.Parse(y);
-            var tCurriedAdd4 = Impromptu.Curry(tAdd)("4");
+            var tCurriedAdd4 = Dynamic.Curry(tAdd)("4");
             Func<string, int> tCastToFunc = tCurriedAdd4;
             var tResult2 = tCastToFunc("10");
 
@@ -72,7 +73,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertNonGenericDelegate()
         {
             Func<string, string, bool> tContains = (x, y) => y.Contains(x);
-            var tCurriedContains = Impromptu.Curry(tContains)("it");
+            var tCurriedContains = Dynamic.Curry(tContains)("it");
             TestDeclaredDelagate tCastToDel = tCurriedContains;
             var tResult = tCastToDel("bait");
             Assert.AreEqual(true, tResult);
@@ -83,7 +84,7 @@ namespace UnitTestImpromptuInterface
         {
             var tBool = false;
             Action<string, string> tContains = (x, y) => tBool = y.Contains(x);
-            var tCurriedContains = Impromptu.Curry(tContains)("it");
+            var tCurriedContains = Dynamic.Curry(tContains)("it");
             TestRunDelagate tCastToDel = tCurriedContains;
             tCastToDel("bait");
             Assert.AreEqual(true, tBool);
@@ -93,7 +94,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertDelegateCurryParamValueType()
         {
             Func<int, int, int> tAdd = (x, y) => x + y;
-            var tCurriedAdd4 = Impromptu.Curry(tAdd)(4);
+            var tCurriedAdd4 = Dynamic.Curry(tAdd)(4);
             Func<int, int> tCastToFunc = tCurriedAdd4;
             var tResult2 = tCastToFunc(10);
 
@@ -104,7 +105,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertMoreCurryParamValueType()
         {
             Func<int, int, int, int> tAdd = (x, y, z) => x + y + z;
-            Func<int, Func<int, int>> Curry1 = Impromptu.Curry(tAdd)(4);
+            Func<int, Func<int, int>> Curry1 = Dynamic.Curry(tAdd)(4);
             Func<int, int> Curry2 = Curry1(6);
             int tResult = Curry2(10);
 
@@ -115,7 +116,7 @@ namespace UnitTestImpromptuInterface
         public void TestBasicConvertMoreMoreCurryParamValueType()
         {
             Func<int, int, int, int, int> tAdd = (x, y, z, bbq) => x + y + z + bbq;
-            Func<int, Func<int, Func<int, Func<int, int>>>> Curry0 = Impromptu.Curry(tAdd);
+            Func<int, Func<int, Func<int, Func<int, int>>>> Curry0 = Dynamic.Curry(tAdd);
             var Curry1 = Curry0(4);
             var Curry2 = Curry1(5);
             var Curry3 = Curry2(6);
@@ -131,7 +132,7 @@ namespace UnitTestImpromptuInterface
         {
             var tNewObj = new PocoAdder();
 
-            var tCurry = Impromptu.Curry(tNewObj).Add(4);
+            var tCurry = Dynamic.Curry(tNewObj).Add(4);
             var tResult = tCurry(10);
             Assert.AreEqual(14, tResult);
             //Test cached invocation;
@@ -143,7 +144,7 @@ namespace UnitTestImpromptuInterface
         public void TestStaticMethodCurry()
         {
 
-            var curry = Impromptu.Curry((StaticContext)typeof(string), 5).Format(); // curry method target include argument count
+            var curry = Dynamic.Curry((StaticContext)typeof(string), 5).Format(); // curry method target include argument count
             curry = curry("Test {0}, {1}, {2}, {3}");
             curry = curry("A");
             curry = curry("B");
@@ -156,7 +157,7 @@ namespace UnitTestImpromptuInterface
         public void TestStaticMethodCurry2()
         {
 
-            object curriedJoin = Impromptu.Curry((StaticContext)typeof(string), 51).Join(",");
+            object curriedJoin = Dynamic.Curry((StaticContext)typeof(string), 51).Join(",");
 
             Func<dynamic, int, dynamic> applyFunc = (result, each) => result(each.ToString());
 
@@ -175,7 +176,7 @@ namespace UnitTestImpromptuInterface
             var tFormat = Enumerable.Range(0, 100).Aggregate(new StringBuilder(), (result, each) => result.Append("{" + each + "}")).ToString();
 
 
-            dynamic curriedWrite = Impromptu.Curry(Console.Out, 101).WriteLine(tFormat);
+            dynamic curriedWrite = Dynamic.Curry(Console.Out, 101).WriteLine(tFormat);
 
             Func<dynamic, int, dynamic> applyArgs = (result, each) => result(each.ToString());
 
@@ -189,7 +190,7 @@ namespace UnitTestImpromptuInterface
         {
             var tNewObj = Build.NewObject(Add: Return<int>.Arguments<int, int>((x, y) => x + y));
 
-            var tCurry = Impromptu.Curry(tNewObj).Add(4);
+            var tCurry = Dynamic.Curry(tNewObj).Add(4);
             var tResult = tCurry(10);
             Assert.AreEqual(14, tResult);
             //Test cached invocation;
@@ -200,7 +201,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void UnboundedCurry()
         {
-            var tNewObject = Impromptu.Curry(Build.NewObject);
+            var tNewObject = Dynamic.Curry(Build.NewObject);
             var tCurriedNewObject = tNewObject(One: 1);
             var tResult = tCurriedNewObject(Two: 2);
             Assert.AreEqual(1, tResult.One);
@@ -210,9 +211,9 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void UnboundedCurryCont()
         {
-            var tNewObject = Impromptu.Curry(Build.NewObject);
+            var tNewObject = Dynamic.Curry(Build.NewObject);
             tNewObject = tNewObject(One: 1);
-            tNewObject = Impromptu.Curry(tNewObject)(Two: 2);
+            tNewObject = Dynamic.Curry(tNewObject)(Two: 2);
             var tResult = tNewObject(Three: 3);
             Assert.AreEqual(1, tResult.One);
             Assert.AreEqual(2, tResult.Two);
@@ -222,7 +223,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void BoundedCurryCont()
         {
-            var tNewObject = Impromptu.Curry(Build.NewObject, 3);
+            var tNewObject = Dynamic.Curry(Build.NewObject, 3);
             tNewObject = tNewObject(One: 1);
             tNewObject = tNewObject(Two: 2);
             var tResult = tNewObject(Three: 3);
@@ -235,7 +236,7 @@ namespace UnitTestImpromptuInterface
         public void TestCurryNamedMethods()
         {
             Person adam = new Person();
-            dynamic jump = Impromptu.Curry(adam).Jump();
+            dynamic jump = Dynamic.Curry(adam).Jump();
 
             Assert.Throws<NotImplementedException>(() => jump(cheer: "yay", height: (uint)3));
         }
@@ -253,7 +254,7 @@ namespace UnitTestImpromptuInterface
         public void TestPococMethodPartialApply()
         {
             var tNewObj = new PocoAdder();
-            var tCurry = Impromptu.Curry(tNewObj).Add(4, 6);
+            var tCurry = Dynamic.Curry(tNewObj).Add(4, 6);
             var tResult = tCurry();
             Assert.AreEqual(10, tResult);
         }
@@ -261,7 +262,7 @@ namespace UnitTestImpromptuInterface
         [Test]
         public void UnboundedPartialApply()
         {
-            var tNewObject = Impromptu.Curry(Build.NewObject);
+            var tNewObject = Dynamic.Curry(Build.NewObject);
             tNewObject = tNewObject(One: 1, Two: 2);
             var tResult = tNewObject(Three: 3, Four: 4);
             Assert.AreEqual(1, tResult.One);
@@ -276,7 +277,7 @@ namespace UnitTestImpromptuInterface
         {
              Func<int, double, float, double> adder = (x, y, z) => x + y + z;
 
-             var curried = Impromptu.Curry(adder);
+             var curried = Dynamic.Curry(adder);
 
              Assert.AreEqual(6, curried(1, 2, 3)); 
 

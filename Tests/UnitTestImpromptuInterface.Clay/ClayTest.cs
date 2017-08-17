@@ -129,7 +129,8 @@ namespace UnitTestImpromptuInterface
          /// <summary>
          /// Impromptu's Interface Proxy is about the same Speed as Clay's
          /// </summary>
-        [Test(Category="Performance")]
+        [Test]
+        [Category("Performance")]
         public void SpeedTestInterface()
         {   
             dynamic New = new ClayFactory();
@@ -166,8 +167,8 @@ namespace UnitTestImpromptuInterface
              Assert.Less(tWatch.Elapsed, tWatch2.Elapsed);
         }
 
-        [Test(Category="Performance")]
-
+        [Test]
+        [Category("Performance")]
         public void SpeedTestPrototype()
         {
             dynamic NewI = Builder.New();

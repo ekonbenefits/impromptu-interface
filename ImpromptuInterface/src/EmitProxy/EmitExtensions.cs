@@ -558,17 +558,6 @@ namespace ImpromptuInterface.Build
         }
 
 
-        /// <summary>
-        /// Emits the typeof(Type)
-        /// </summary>
-        /// <param name="generator">The generator.</param>
-        /// <param name="type">The type.</param>
-        public static void EmitTypeOf(this ILGenerator generator, TypeToken type)
-        {
-
-            generator.Emit(OpCodes.Ldtoken, type.Token);
-            var tTypeMeth = typeof(Type).GetMethod("GetTypeFromHandle", new[] { typeof(RuntimeTypeHandle) });
-            generator.Emit(OpCodes.Call, tTypeMeth);
-        }
+      
     }
 }

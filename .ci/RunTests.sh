@@ -10,6 +10,5 @@ runTest(){
 
 runTest Tests/UnitTestImpromptuInterface/bin/Debug/UnitTestImpromptuInterface.dll -exclude=Performance
 runTest Tests/UnitTestImpromptuInterface.Clay/bin/Debug/UnitTestImpromptuInterface.Clay.dll -exclude=Performance
-runTest Tests/UnitTestImpromptuInterface.VBNeT/bin/Debug/UnitTestImpromptuInterface.VBNeT.dll -exclude=Performance
 
 exit $?

@@ -51,7 +51,7 @@
   </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Castle.Core" Version="1.2.*"/>
+      <PackageReference Include="Castle.Core" Version="1.1.*"/>
       <PackageReference Include="Castle.DynamicProxy" Version="2.2.*"/>
       <PackageReference Include="Moq" Version="4.0.*"/>
       <PackageReference Include="NLog" Version="1.0.*"/>

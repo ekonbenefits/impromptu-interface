@@ -51,7 +51,7 @@
     <Import Include="System" />
   </ItemGroup>
      <ItemGroup>
-      <PackageReference Include="Castle.Core" Version="1.2.*"/>
+      <PackageReference Include="Castle.Core" Version="1.1.*"/>
       <PackageReference Include="Castle.DynamicProxy" Version="2.2.*"/>
       <PackageReference Include="log4net" Version="1.2.10"/>
       <PackageReference Include="NUnit" Version="2.6.1"/>

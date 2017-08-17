@@ -6,7 +6,6 @@ using System.Linq;
 using System.Text;
 using Dynamitey;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 
 
 #if !SELFRUNNER

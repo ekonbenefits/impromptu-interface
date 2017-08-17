@@ -49,15 +49,14 @@
     <ConsolePause>false</ConsolePause>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
-
-    <ItemGroup>
-      <PackageReference Include="Castle.Core" Version="1.1.*"/>
-      <PackageReference Include="Castle.DynamicProxy" Version="2.2.*"/>
-      <PackageReference Include="Moq" Version="4.0.*"/>
-      <PackageReference Include="NLog" Version="1.0.*"/>
-      <PackageReference Include="IronPython" Version="2.7.*"/>
-      <PackageReference Include="log4net" Version="1.2.10"/>
-      <PackageReference Include="NUnit" Version="2.6.1"/>
+  <ItemGroup>
+    <PackageReference Include="Castle.Core" Version="1.1.*" />
+    <PackageReference Include="Castle.DynamicProxy" Version="2.2.*" />
+    <PackageReference Include="Moq" Version="4.0.*" />
+    <PackageReference Include="NLog" Version="1.0.*" />
+    <PackageReference Include="IronPython" Version="2.7.*" />
+    <PackageReference Include="log4net" Version="1.2.10" />
+    <PackageReference Include="NUnit" Version="2.6.1" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="PresentationCore" />
@@ -119,9 +118,6 @@
       <ProductName>Windows Installer 3.1</ProductName>
       <Install>true</Install>
     </BootstrapperPackage>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

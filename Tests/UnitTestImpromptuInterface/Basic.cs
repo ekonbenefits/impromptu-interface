@@ -15,7 +15,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
-using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;

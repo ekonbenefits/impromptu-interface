@@ -4,7 +4,6 @@ using Dynamitey.DynamicObjects;
 using NUnit.Framework;
 #endif
 
-using ImpromptuInterface.Dynamic;
 
 #if SILVERLIGHT
 namespace UnitTestImpromptuInterface.Silverlight

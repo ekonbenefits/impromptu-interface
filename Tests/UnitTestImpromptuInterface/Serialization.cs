@@ -7,7 +7,6 @@ using System.Text;
 using Dynamitey;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 
 
 #if !SELFRUNNER

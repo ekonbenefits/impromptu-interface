@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel.Composition;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 
 namespace UnitTestImpromptuInterface
 {

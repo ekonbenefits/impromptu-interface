@@ -24,7 +24,6 @@ using System.Xml.Linq;
 using Dynamitey;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using Binder = Microsoft.CSharp.RuntimeBinder.Binder;
 using BinderFlags = Microsoft.CSharp.RuntimeBinder.CSharpBinderFlags;
 using Info = Microsoft.CSharp.RuntimeBinder.CSharpArgumentInfo;

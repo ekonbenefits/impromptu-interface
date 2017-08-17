@@ -24,7 +24,6 @@ using System.Text;
 using System.Diagnostics;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 
 #if !SELFRUNNER
 using System.Windows.Media;

@@ -18,7 +18,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using Dynamitey.DynamicObjects;
-using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 
 namespace ImpromptuInterface.Build

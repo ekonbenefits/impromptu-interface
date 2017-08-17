@@ -24,7 +24,6 @@ using System.Runtime.CompilerServices;
 using System.Runtime.Serialization;
 using System.Threading;
 using Dynamitey;
-using ImpromptuInterface.Dynamic;
 using Microsoft.CSharp.RuntimeBinder;
 
 

@@ -8,7 +8,6 @@ using ClaySharp.Behaviors;
 using Dynamitey;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
-using ImpromptuInterface.Dynamic;
 using ImpromptuInterface.Optimization;
 #if !SELFRUNNER
 using NUnit.Framework;

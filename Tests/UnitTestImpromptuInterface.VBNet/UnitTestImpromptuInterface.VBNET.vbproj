@@ -50,26 +50,16 @@
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
   </ItemGroup>
+     <ItemGroup>
+      <PackageReference Include="Castle.Core" Version="1.2.*"/>
+      <PackageReference Include="Castle.DynamicProxy" Version="2.2.*"/>
+      <PackageReference Include="log4net" Version="1.2.10"/>
+      <PackageReference Include="NUnit" Version="2.6.1"/>
+      <PackageReference Include="Clay" Version="1.0"/>
+  </ItemGroup>
   <ItemGroup>
-    <Reference Include="Castle.Core">
-      <HintPath>..\..\packages\Castle.Core.1.1.0\lib\Castle.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Castle.DynamicProxy2">
-      <HintPath>..\..\packages\Castle.DynamicProxy.2.1.0\lib\Castle.DynamicProxy2.dll</HintPath>
-    </Reference>
-    <Reference Include="ClaySharp">
-      <HintPath>..\..\packages\Clay.1.0\lib\ClaySharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Dynamitey, Version=2.0.2.0, Culture=neutral, PublicKeyToken=cbf53ea3aeb972c6, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Dynamitey.2.0.2-alpha\lib\net40\Dynamitey.dll</HintPath>
-    </Reference>
-    <Reference Include="log4net">
-      <HintPath>..\..\packages\log4net.1.2.10\lib\2.0\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="nunit.framework">
-      <HintPath>..\..\packages\NUnit.2.6.1\lib\nunit.framework.dll</HintPath>
-    </Reference>
+
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />

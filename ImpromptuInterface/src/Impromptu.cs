@@ -90,7 +90,7 @@ namespace ImpromptuInterface
 
         public static TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class
         {
-            return  Dynamitey.Dynamic.InvokeConstructor(typeof(TTarget), args) .ActLike<TInterface>();
+            return  Impromptu.ActLike(Dynamic.InvokeConstructor(typeof(TTarget), args));
         }
 
 

@@ -74,7 +74,6 @@
     <Compile Include="Generics.vb" />
     <Compile Include="ImpromptuDynamic.vb" />
     <Compile Include="PrivateTest.vb" />
-    <Compile Include="Serialization.vb" />
     <Compile Include="SingleMethodInvoke.vb" />
     <Compile Include="Support\Helper.vb" />
     <Compile Include="Support\SupportDefinitions.vb" />

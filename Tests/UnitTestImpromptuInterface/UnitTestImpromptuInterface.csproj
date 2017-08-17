@@ -75,7 +75,6 @@
     <Compile Include="Linq.cs" />
     <Compile Include="MimicTest.cs" />
     <Compile Include="Curry.cs" />
-    <Compile Include="Serialization.cs" />
     <Compile Include="Support\FixtureSetup.cs" />
     <Compile Include="Generics.cs" />
     <Compile Include="Support\Helper.cs" />

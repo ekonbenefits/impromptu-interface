@@ -18,7 +18,7 @@
 </PropertyGroup>
 <Import Project="..\Version.props" />
 <ItemGroup>
-<PackageReference Include="Dynamitey" Version="2.0.4-alpha82" />
+<PackageReference Include="Dynamitey" Version="2.0.5-alpha87" />
 </ItemGroup>
 <ItemGroup>
 <Reference Include="Microsoft.CSharp" />

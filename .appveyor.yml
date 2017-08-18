@@ -25,7 +25,7 @@ test:
       - Performance
 
 after_test:
-  - ps: dotnet test Tests/Tests.csproj -f netcoreapp2.0 --no-build --no-restore --filter=TestCategory!=Performance --logger=trx;LogFileName=testresults.trx --configuration=$env:configuration  
+  - ps: dotnet test Tests/Tests.csproj -f netcoreapp2.0 --no-build --no-restore --filter=TestCategory!=Performance --logger="trx;LogFileName=testresults.trx" --configuration=$env:configuration  
   - ps: $wc = New-Object 'System.Net.WebClient'
   - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Tests\UnitTestsImpromptuInterface\TestResults\testresults.trx))
 

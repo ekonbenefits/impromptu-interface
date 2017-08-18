@@ -11,8 +11,8 @@ matrix:
 
 solution: ImpromptuInterface.sln
 
-mono:
-  - beta
+mono: latest
+dotnet: 2.0.0
 
 install:
   - msbuild /t:restore

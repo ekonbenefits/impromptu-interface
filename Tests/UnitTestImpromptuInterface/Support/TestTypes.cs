@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.Composition;
 using ImpromptuInterface;
 
 namespace UnitTestImpromptuInterface
@@ -22,44 +21,5 @@ namespace UnitTestImpromptuInterface
         }
     }
 
-    public interface ITestInterface
-    {
-        void Test();
-    }
 
-    [Export(typeof(ITestInterface))]
-    public sealed class TestClassA : ITestInterface
-    {
-        public void Test()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    [Export(typeof(ITestInterface))]
-    public sealed class TestClassB : ITestInterface
-    {
-        public void Test()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    [Export("Testing123")]
-    public sealed class TestClassC : ITestInterface
-    {
-        public void Test()
-        {
-            throw new NotImplementedException();
-        }
-    }
-
-    [Export("Testing123")]
-    public sealed class TestClassD : ITestInterface
-    {
-        public void Test()
-        {
-            throw new NotImplementedException();
-        }
-    }
 }

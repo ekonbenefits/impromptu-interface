@@ -18,7 +18,7 @@
 </PropertyGroup>
 <Import Project="..\Version.props" />
 <ItemGroup>
-<PackageReference Include="Dynamitey" Version="2.0.5-alpha87" />
+<PackageReference Include="Dynamitey" Version="2.0.6-alpha105" />
 </ItemGroup>
  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <Reference Include="Microsoft.CSharp" />

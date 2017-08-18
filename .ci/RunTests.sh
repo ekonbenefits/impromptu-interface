@@ -8,7 +8,7 @@ runTest(){
    fi
 }
 
-runTest Tests/UnitTestImpromptuInterface/bin/Debug/UnitTestImpromptuInterface.exe --where="cat != Performance"
+runTest Tests/UnitTestImpromptuInterface/bin/Debug/net462/UnitTestImpromptuInterface.exe --where="cat != Performance"
 runTest Tests/UnitTestImpromptuInterface.Clay/bin/Debug/UnitTestImpromptuInterface.Clay.dll --where="cat != Performance"
 dotnet test Tests/Tests.csproj -f netcoreapp2.0 --no-build --no-restore --filter=TestCategory!=Performance --logger=trx;LogFileName=testresults.trx --configuration=Debug  
 exit $?

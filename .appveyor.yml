@@ -46,7 +46,7 @@ deploy:
 
   - provider: GitHub
     artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
-    tag: v$(VersionPrefix)$(VersionSuffix)
+    tag: v$(VersionPrefix)$(vsuffix)
     description: 'Release description'
     auth_token:
       secure: JyJYSgeJYFmkaFy7Gro2dQyv/fqZwz1EzJmp2Nf99H6HUpxNR7ilA/OGPcQk0pA8
@@ -75,5 +75,3 @@ for:
     environment:
       vsuffix: $(APPVEYOR_BUILD_NUMBER)
       is_prerelease: false
-
-

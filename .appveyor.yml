@@ -16,6 +16,7 @@ before_deploy:
 environment:
   vsuffix: alpha$(APPVEYOR_BUILD_NUMBER)
   is_prerelease: true
+  githubdeploy: false
 
 before_build:
   - cmd: msbuild /t:restore /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
@@ -52,7 +53,8 @@ deploy:
       secure: JyJYSgeJYFmkaFy7Gro2dQyv/fqZwz1EzJmp2Nf99H6HUpxNR7ilA/OGPcQk0pA8
     draft: true
     prerelease: $(is_prerelease)
-
+    on:
+      githubdeploy: true
 
 artifacts:
   - path: ImpromptuInterface\bin\$(configuration)\*.nupkg
@@ -68,6 +70,7 @@ for:
     environment:
       vsuffix: beta$(APPVEYOR_BUILD_NUMBER)
       is_prerelease: true
+      githubdeploy: true
   - branches:
         only:
           - /deploy-v[\d,.]*/
@@ -75,3 +78,4 @@ for:
     environment:
       vsuffix: $(APPVEYOR_BUILD_NUMBER)
       is_prerelease: false
+      githubdeploy: true

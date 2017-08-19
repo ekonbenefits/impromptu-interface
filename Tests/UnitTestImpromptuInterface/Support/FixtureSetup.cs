@@ -8,7 +8,7 @@ using ImpromptuInterface.Build;
 
 namespace UnitTestImpromptuInterface
 {
-#if !SILVERLIGHT && !SELFRUNNER 
+#if !SILVERLIGHT && !SELFRUNNER && !NETCOREAPP2_0
 
     using NUnit.Framework;
     [SetUpFixture]
@@ -16,12 +16,12 @@ namespace UnitTestImpromptuInterface
     {
         private IDisposable Builder;
         
-        [SetUp]
+        [OneTimeSetUp]
         public void Setup()
         {
             Builder = BuildProxy.WriteOutDll("ImpromptuEmit");
         }
-        [TearDown]
+        [OneTimeTearDown]
         public void TearDown()
         {
             Builder.Dispose();

@@ -8,9 +8,14 @@ using Dynamitey;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
 
-#if !SELFRUNNER
+#if !NETCOREAPP2_0
 using IronPython.Hosting;
 using Microsoft.Scripting;
+#endif
+
+
+#if !SELFRUNNER
+
 using NUnit.Framework;
 #endif
 
@@ -68,6 +73,7 @@ namespace UnitTestImpromptuInterface
 
         private dynamic RunPythonHelper( object linq, string code)
         {
+#if !NETCOREAPP2_0
 
             var tEngine = Python.CreateEngine();
             var tScope = tEngine.CreateScope();
@@ -79,6 +85,10 @@ namespace UnitTestImpromptuInterface
 
             tCompiled.Execute(tScope);
             return tScope.GetVariable("result");
+#else
+            Assert.Ignore("Iron python doesn't support .net 2.0 core");
+            return new object();
+#endif
         }
 
 

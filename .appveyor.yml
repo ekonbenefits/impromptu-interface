@@ -8,6 +8,10 @@ configuration: Debug
 build: off
 
 skip_branch_with_pr: true
+skip_tags: true
+
+before_deploy:
+  - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
 
 environment:
   vsuffix: alpha$(APPVEYOR_BUILD_NUMBER)
@@ -24,6 +28,32 @@ test:
     except:
       - Performance
 
+after_test:
+  - ps: dotnet test .\Tests\UnitTestImpromptuInterface\UnitTestImpromptuInterface.csproj -f netcoreapp2.0 --no-build --no-restore --filter=TestCategory!=Performance --logger="trx;LogFileName=testresults.trx" --configuration=$env:configuration
+
+on_finish:
+  - ps: $wc = New-Object 'System.Net.WebClient'
+  - ps: $wc.UploadFile("https://ci.appveyor.com/api/testresults/mstest/$($env:APPVEYOR_JOB_ID)", (Resolve-Path .\Tests\UnitTestImpromptuInterface\TestResults\testresults.trx))
+
+
+deploy:
+  - provider: NuGet
+    server: https://www.myget.org/F/dynamitey-ci/api/v2/package
+    api_key:
+      secure: yKbBrG0QiTfXUvND1/cMMNHxH1Bgal5g7c0pWGwqvjCtKGTtWkpvE2KlZb6E2ZgB
+    skip_symbols: false
+    symbol_server: https://www.myget.org/F/dynamitey-ci/symbols/api/v2/package
+
+  - provider: GitHub
+    artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
+    tag: v$(VersionPrefix)$(vsuffix)
+    description: 'Release description'
+    auth_token:
+      secure: JyJYSgeJYFmkaFy7Gro2dQyv/fqZwz1EzJmp2Nf99H6HUpxNR7ilA/OGPcQk0pA8
+    draft: true
+    prerelease: $(is_prerelease)
+
+
 artifacts:
   - path: ImpromptuInterface\bin\$(configuration)\*.nupkg
     name: ImpromptuInterface
@@ -31,19 +61,17 @@ artifacts:
 for:
   - branches:
         except:
-          - /v.*/
+          - /deploy-v.*/
   - branches:
         only:
-          - /v.*-beta/
+          - /deploy-v.*-beta.*/
     environment:
       vsuffix: beta$(APPVEYOR_BUILD_NUMBER)
       is_prerelease: true
   - branches:
         only:
-          - /v[\d,.]*/
+          - /deploy-v[\d,.]*/
     configuration: Release
     environment:
       vsuffix: $(APPVEYOR_BUILD_NUMBER)
       is_prerelease: false
-
-

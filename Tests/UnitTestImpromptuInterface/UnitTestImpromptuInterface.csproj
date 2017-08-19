@@ -1,122 +1,29 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.0</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{A559B4F8-8D9D-4761-B2D2-BB4104760450}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <RootNamespace>UnitTestImpromptuInterface</RootNamespace>
-    <AssemblyName>UnitTestImpromptuInterface</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
-    <PublishUrl>http://localhost/UnitTestImpromptuInterface/</PublishUrl>
-    <Install>true</Install>
-    <InstallFrom>Web</InstallFrom>
-    <UpdateEnabled>true</UpdateEnabled>
-    <UpdateMode>Foreground</UpdateMode>
-    <UpdateInterval>7</UpdateInterval>
-    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
-    <UpdatePeriodically>false</UpdatePeriodically>
-    <UpdateRequired>false</UpdateRequired>
-    <MapFileExtensions>true</MapFileExtensions>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
-    <IsWebBootstrapper>true</IsWebBootstrapper>
-    <UseApplicationTrust>false</UseApplicationTrust>
-    <BootstrapperEnabled>true</BootstrapperEnabled>
-    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\..\impromptuinterface\</SolutionDir>
-    <RestorePackages>true</RestorePackages>
-    <TargetFrameworkProfile />
+    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
+    <OutputType Condition="'$(TargetFramework)'!='netcoreapp2.0'">Exe</OutputType>
+   <IsPackable>false</IsPackable>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug</OutputPath>
-    <DefineConstants>DEBUG</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>none</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <ConsolePause>false</ConsolePause>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
+
   <ItemGroup>
-    <PackageReference Include="Castle.Core" Version="1.1.*" />
-    <PackageReference Include="Castle.DynamicProxy" Version="2.1.*" />
-    <PackageReference Include="Moq" Version="4.0.*" />
-    <PackageReference Include="NLog" Version="1.0.*" />
-    <PackageReference Include="IronPython" Version="2.7.*" />
-    <PackageReference Include="log4net" Version="1.2.10" />
-    <PackageReference Include="NUnit" Version="2.6.1" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.*" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
+    <PackageReference Include="NUnit" Version="3.7.1" />
+    <PackageReference Include="NUnit.Console" Version="3.7.0" />
+    <PackageReference Include="Moq" Version="4.*" />
   </ItemGroup>
+
+
+  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp2.0'">
+    <PackageReference Include="IronPython" Version="2.7.7" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
+    <PackageReference Include="NUnit3TestAdapter" Version="3.8.*" />
+  </ItemGroup>
+
   <ItemGroup>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.Core" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Windows" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="WindowsBase" />
+    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />
+    <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj" />
   </ItemGroup>
-  <ItemGroup>
-    <Compile Include="Linq.cs" />
-    <Compile Include="MimicTest.cs" />
-    <Compile Include="Curry.cs" />
-    <Compile Include="Support\FixtureSetup.cs" />
-    <Compile Include="Generics.cs" />
-    <Compile Include="Support\Helper.cs" />
-    <Compile Include="ImpromptuDynamic.cs" />
-    <Compile Include="SpeedTest.cs" />
-    <Compile Include="Support\SupportDefinitions.cs" />
-    <Compile Include="Basic.cs" />
-    <Compile Include="PrivateTest.cs" />
-    <Compile Include="SingleMethodInvoke.cs" />
-    <Compile Include="Support\TestTypes.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj">
-      <Project>{DAB7C056-660A-4153-8FF2-B80A41310AD7}</Project>
-      <Name>ImpromptuInterface</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj">
-      <Project>{0EC76091-958A-4020-BA6B-39B00EE55659}</Project>
-      <Name>UnitTestSupportLibrary</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <BootstrapperPackage Include=".NETFramework,Version=v4.0">
-      <Visible>False</Visible>
-      <ProductName>Microsoft .NET Framework 4 %28x86 and x64%29</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
-      <Visible>False</Visible>
-      <ProductName>.NET Framework 3.5 SP1</ProductName>
-      <Install>false</Install>
-    </BootstrapperPackage>
-    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
-      <Visible>False</Visible>
-      <ProductName>Windows Installer 3.1</ProductName>
-      <Install>true</Install>
-    </BootstrapperPackage>
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

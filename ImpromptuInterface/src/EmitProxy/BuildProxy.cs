@@ -27,7 +27,27 @@ namespace ImpromptuInterface.Build
     using System.Reflection.Emit;
     using System.Runtime.CompilerServices;
     using Microsoft.CSharp.RuntimeBinder;
-  
+
+
+
+#if NET40
+    internal static class CompatHelper
+    {
+        public static Type GetTypeInfo(this Type type) => type;
+
+        public static Type CreateTypeInfo(this TypeBuilder builder) => builder.CreateType();
+
+        public static AssemblyBuilder DefineDynamicAssembly(AssemblyName name, AssemblyBuilderAccess access) => AppDomain.CurrentDomain.DefineDynamicAssembly(name, access);
+    }
+
+#else
+    internal static class CompatHelper
+    {
+        public static AssemblyBuilder DefineDynamicAssembly(AssemblyName name, AssemblyBuilderAccess access) => AssemblyBuilder.DefineDynamicAssembly(name, access);
+
+    }
+
+#endif
 
     ///<summary>
     /// Does most of the work buiding and caching proxies
@@ -58,7 +78,8 @@ namespace ImpromptuInterface.Build
         }
 
 
-#if !SILVERLIGHT
+#if NET40
+
         internal class TempBuilder : IDisposable
         {
             private readonly string _name;
@@ -104,8 +125,8 @@ namespace ImpromptuInterface.Build
               
               return new TempBuilder(name);
         }
-
 #endif
+    
 
 
         /// <summary>
@@ -240,7 +261,7 @@ namespace ImpromptuInterface.Build
                 MakePropertyDescribedProperty(builder, tB, contextType, tInterface.Key, tInterface.Value);
                
             }
-            var tType = tB.CreateType();
+            var tType = tB.CreateTypeInfo();
             return tType;
         }
 
@@ -375,7 +396,7 @@ namespace ImpromptuInterface.Build
                     MakeEvent(builder, tInfo, tB, contextType, defaultImp: tPropertyNameHash.Add(tInfo.Name));
                 }
             }
-            var tType = tB.CreateType();
+            var tType = tB.CreateTypeInfo();
             return tType;
         }
 
@@ -563,7 +584,7 @@ namespace ImpromptuInterface.Build
 
 
 
-            var tCallSite = tCStp.CreateType();
+            Type tCallSite = tCStp.CreateTypeInfo();
 
             var tPublicPrivate = MethodAttributes.Public;
             var tPrefixName = tEmitInfo.Name;
@@ -891,7 +912,7 @@ namespace ImpromptuInterface.Build
 
             tEmitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tEmitInfo.CallSiteInvokeSetName, typeof(object), typeof(object));
 
-            tEmitInfo.CallSiteType = tCStp.CreateType();
+            tEmitInfo.CallSiteType = tCStp.CreateTypeInfo();
 
             var tMp = typeBuilder.DefineEvent(info.Name, EventAttributes.None, tEmitInfo.ResolveReturnType);
            
@@ -1228,7 +1249,7 @@ namespace ImpromptuInterface.Build
                 emitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(tInvokeSet, typeof(object), emitInfo.ResolvedParamTypes);
             }
 
-            emitInfo.CallSiteType = tCStp.CreateType();
+            emitInfo.CallSiteType = tCStp.CreateTypeInfo();
 
 
 
@@ -1676,7 +1697,7 @@ namespace ImpromptuInterface.Build
 
 
 
-                return tBuilder.CreateType();
+                return tBuilder.CreateTypeInfo();
             
         }
 
@@ -1711,15 +1732,15 @@ namespace ImpromptuInterface.Build
             var tName = new AssemblyName(name);
 
             ab =
-                AppDomain.CurrentDomain.DefineDynamicAssembly(
+                CompatHelper.DefineDynamicAssembly(
                     tName,
                     access);
 
-            #if !SILVERLIGHT
+#if NET40
             if (access== AssemblyBuilderAccess.RunAndSave || access == AssemblyBuilderAccess.Save)
                 mb = ab.DefineDynamicModule("MainModule", string.Format("{0}.dll", tName.Name));
             else
-            #endif
+#endif
             mb = ab.DefineDynamicModule("MainModule");
         }
     }

@@ -12,7 +12,7 @@ matrix:
 
 solution: ImpromptuInterface.sln
 
-mono: latest
+mono: beta
 dotnet: 2.0.0
 
 install:

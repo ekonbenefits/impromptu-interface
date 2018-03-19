@@ -15,7 +15,7 @@ Some of the features of `ImpromptuInterface` have been moved into another librar
 
 `ImpromptuInterface.FSharp` has been spun off into [FSharp.Interop.Dynamic](https://github.com/fsprojects/FSharp.Interop.Dynamic) and also depends on `Dynamitey`.
 
-`ImpromptuInterface.MVVM` only exists for `ImpromptuInterface 6.X` and earlier.
+`ImpromptuInterface.MVVM` has been spun off into it's own repo [ImpromptuInterface.MVVM](https://github.com/ekonbenefits/impromptu-interface.mvvm) and only receives maitenance updates.
 
 ### Quick Usage:
 

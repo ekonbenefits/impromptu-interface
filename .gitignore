@@ -151,4 +151,6 @@ Icon
 .Spotlight-V100
 .Trashes
 
+#new ide folders
 .vs/
+.idea/

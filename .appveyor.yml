@@ -19,10 +19,10 @@ environment:
   VSuffix: "-alpha$(APPVEYOR_BUILD_NUMBER)"
 
 before_build:
-  - cmd: msbuild /t:restore /p:Configuration=%configuration% /p:Version="%VersionPrefix%%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /t:restore /p:Configuration=%configuration% /p:Version=%VersionPrefix%%VersionSuffix% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 build_script:
-  - cmd: msbuild /p:Configuration=%configuration% /p:Version="%VersionPrefix%%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /p:Configuration=%configuration% /p:Version=%VersionPrefix%%VersionSuffix% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test:
   categories:

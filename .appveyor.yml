@@ -16,13 +16,13 @@ before_deploy:
 environment:
   is_prerelease: true
   githubdeploy: false
-  VersionSuffix: "-alpha$(APPVEYOR_BUILD_NUMBER)"
+  VSuffix: "-alpha$(APPVEYOR_BUILD_NUMBER)"
 
 before_build:
-  - cmd: msbuild /t:restore /p:Configuration=%configuration% /p:VersionSuffix="%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /t:restore /p:Configuration=%configuration% /p:Version="%VersionPrefix%%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 build_script:
-  - cmd: msbuild /p:Configuration=%configuration% /p:VersionSuffix="%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /p:Configuration=%configuration% /p:Version="%VersionPrefix%%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test:
   categories:
@@ -68,7 +68,7 @@ for:
         only:
           - /deploy-v.*-beta.*/
     environment:
-      VersionSuffix: "-beta$(APPVEYOR_BUILD_NUMBER)"
+      VSuffix: "-beta$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: true
       githubdeploy: true
   - branches:
@@ -76,6 +76,6 @@ for:
           - /deploy-v[\d,.]*/
     configuration: Release
     environment:
-      VersionSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
+      VSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: false
       githubdeploy: true

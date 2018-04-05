@@ -2,6 +2,7 @@ image: Visual Studio 2017
 
 install:
   - cmd: git submodule update --init --recursive
+  - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
 
 configuration: Debug
 
@@ -10,19 +11,16 @@ build: off
 skip_branch_with_pr: true
 skip_tags: true
 
-before_deploy:
-  - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
-
 environment:
-  vsuffix: alpha$(APPVEYOR_BUILD_NUMBER)
   is_prerelease: true
   githubdeploy: false
+  VSuffix: "-alpha$(APPVEYOR_BUILD_NUMBER)"
 
 before_build:
-  - cmd: msbuild /t:restore /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /t:restore /p:Configuration=%configuration% /p:Version=%VersionPrefix%%VersionSuffix% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 build_script:
-  - cmd: msbuild /p:Configuration=%configuration% /p:VersionSuffix="%vsuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /p:Configuration=%configuration% /p:Version=%VersionPrefix%%VersionSuffix% /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test:
   categories:
@@ -47,7 +45,7 @@ deploy:
 
   - provider: GitHub
     artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
-    tag: v$(VersionPrefix)$(VersionSuffix)
+    tag: v$(VersionPrefix)$(VSuffix)
     description: 'Release description'
     auth_token:
       secure: JyJYSgeJYFmkaFy7Gro2dQyv/fqZwz1EzJmp2Nf99H6HUpxNR7ilA/OGPcQk0pA8
@@ -68,8 +66,7 @@ for:
         only:
           - /deploy-v.*-beta.*/
     environment:
-      vsuffix: beta$(APPVEYOR_BUILD_NUMBER)
-      VersionSuffix: "-beta$(APPVEYOR_BUILD_NUMBER)"
+      VSuffix: "-beta$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: true
       githubdeploy: true
   - branches:
@@ -77,7 +74,6 @@ for:
           - /deploy-v[\d,.]*/
     configuration: Release
     environment:
-      vsuffix: $(APPVEYOR_BUILD_NUMBER)
-      VersionSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
+      VSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: false
       githubdeploy: true

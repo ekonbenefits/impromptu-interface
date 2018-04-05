@@ -1,8 +1,5 @@
 <Project>
     <PropertyGroup>
         <VersionPrefix>7.0.1</VersionPrefix>
-        <Version Condition="'$(CONFIG)'=='RELEASE'">
-            $(VersionPrefix).$(VersionSuffix)
-        </Version>
     </PropertyGroup>
 </Project>

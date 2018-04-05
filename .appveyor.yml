@@ -14,15 +14,15 @@ before_deploy:
   - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
 
 environment:
-  vsuffix: alpha$(APPVEYOR_BUILD_NUMBER)
   is_prerelease: true
   githubdeploy: false
+  VersionSuffix: "-alpha$(APPVEYOR_BUILD_NUMBER)"
 
 before_build:
   - cmd: msbuild /t:restore /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 build_script:
-  - cmd: msbuild /p:Configuration=%configuration% /p:VersionSuffix="%vsuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - cmd: msbuild /p:Configuration=%configuration% /p:VersionSuffix="%VersionSuffix%" /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
 
 test:
   categories:
@@ -68,7 +68,6 @@ for:
         only:
           - /deploy-v.*-beta.*/
     environment:
-      vsuffix: beta$(APPVEYOR_BUILD_NUMBER)
       VersionSuffix: "-beta$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: true
       githubdeploy: true
@@ -77,7 +76,6 @@ for:
           - /deploy-v[\d,.]*/
     configuration: Release
     environment:
-      vsuffix: $(APPVEYOR_BUILD_NUMBER)
       VersionSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: false
       githubdeploy: true

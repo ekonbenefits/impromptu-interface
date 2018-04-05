@@ -1,33 +1,30 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-<PropertyGroup>
-<TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
-<SignAssembly>True</SignAssembly>
-<AssemblyOriginatorKeyFile>sn.snk</AssemblyOriginatorKeyFile>
-<Description>A Lightweight Duck Casting Framework for dynamic C#</Description>
-<Company>Ekon Benefits</Company>
-<Authors> jbtule </Authors>
-<Copyright>Copyright © Contributors 2010-2017</Copyright>
-<PackageProjectUrl>https://github.com/ekonbenefits/impromptu-interface</PackageProjectUrl>
-<PackageLicenseUrl>https://github.com/ekonbenefits/impromptu-interface/blob/master/License.txt</PackageLicenseUrl>
-<PackageIconUrl>https://raw.githubusercontent.com/ekonbenefits/impromptu-interface/master/graphics/ImpromptuInterface-Icon.png</PackageIconUrl>
-<PackageTags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr currying</PackageTags>
-<IncludeSymbols>True</IncludeSymbols>
-<IncludeSource>True</IncludeSource>
-<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-<PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-</PropertyGroup>
-<Import Project="..\Version.props" />
-<ItemGroup>
-<PackageReference Include="Dynamitey" Version="2.0.6-beta111" />
-</ItemGroup>
- <ItemGroup Condition="'$(TargetFramework)'=='net40'">
+  <PropertyGroup>
+    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>sn.snk</AssemblyOriginatorKeyFile>
+    <Description>A Lightweight Duck Casting Framework for dynamic C#</Description>
+    <Company>Ekon Benefits</Company>
+    <Authors> jbtule </Authors>
+    <Copyright>Copyright © Contributors 2010-2017</Copyright>
+    <PackageProjectUrl>https://github.com/ekonbenefits/impromptu-interface</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/ekonbenefits/impromptu-interface/blob/master/License.txt</PackageLicenseUrl>
+    <PackageIconUrl>https://raw.githubusercontent.com/ekonbenefits/impromptu-interface/master/graphics/ImpromptuInterface-Icon.png</PackageIconUrl>
+    <PackageTags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr currying</PackageTags>
+    <IncludeSymbols>True</IncludeSymbols>
+    <IncludeSource>True</IncludeSource>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+  <Import Project="..\Version.props" />
+  <ItemGroup>
+    <PackageReference Include="Dynamitey" Version="2.0.*" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.3.*" />
     <PackageReference Include="Microsoft.CSharp" Version="4.4.*" />
   </ItemGroup>
-<ItemGroup>
-  <Folder Include="Properties\" />
-</ItemGroup>
 </Project>

@@ -2,6 +2,7 @@ image: Visual Studio 2017
 
 install:
   - cmd: git submodule update --init --recursive
+  - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
 
 configuration: Debug
 
@@ -9,9 +10,6 @@ build: off
 
 skip_branch_with_pr: true
 skip_tags: true
-
-before_deploy:
-  - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
 
 environment:
   is_prerelease: true

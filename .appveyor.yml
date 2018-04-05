@@ -78,6 +78,6 @@ for:
     configuration: Release
     environment:
       vsuffix: $(APPVEYOR_BUILD_NUMBER)
-      VersionSuffix: $(APPVEYOR_BUILD_NUMBER)
+      VersionSuffix: ".$(APPVEYOR_BUILD_NUMBER)"
       is_prerelease: false
       githubdeploy: true

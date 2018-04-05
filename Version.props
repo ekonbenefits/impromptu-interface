@@ -2,7 +2,7 @@
     <PropertyGroup>
         <VersionPrefix>7.0.1</VersionPrefix>
         <Version Condition="'$(Configuration)'=='Release'">
-            $(VersionPrefix).$(VersionSuffix)
+            $(VersionPrefix)$(VersionSuffix)
         </Version>
     </PropertyGroup>
 </Project>

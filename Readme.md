@@ -4,7 +4,7 @@ ImpromptuInterface is available Nuget [![NuGet](https://img.shields.io/nuget/dt/
 
 You can find the latest bleed edge on MyGet [![MyGet Pre Release](https://img.shields.io/myget/dynamitey-ci/vpre/ImpromptuInterface.svg)](https://www.myget.org/feed/dynamitey-ci/package/nuget/ImpromptuInterface)
 
-Platofrm | Status
+Platform | Status
 -------- | ------
 Windows | [![Build status](https://ci.appveyor.com/api/projects/status/36mhw90u9d7gmohb/branch/master?svg=true)](https://ci.appveyor.com/project/jbtule/impromptu-interface/branch/master)
 Mac     | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/ekonbenefits/impromptu-interface/branches/master/2)](https://travis-ci.org/ekonbenefits/impromptu-interface)

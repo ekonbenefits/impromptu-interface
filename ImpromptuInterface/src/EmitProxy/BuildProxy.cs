@@ -250,7 +250,7 @@ namespace ImpromptuInterface.Build
 
 
             var tB = builder.DefineType(
-                $"ActLike_{"InformalInterface"}_{Guid.NewGuid().ToString("N")}", TypeAttributes.Public | TypeAttributes.Class,
+                $"ActLike_{"InformalInterface"}_{Guid.NewGuid():N}", TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActLikeProxy));
 
 
@@ -327,7 +327,7 @@ namespace ImpromptuInterface.Build
 
             var tInterfacesMainList = interfaces.Distinct().ToArray();
             var tB = builder.DefineType(
-                $"ActLike_{tInterfacesMainList.First().Name}_{Guid.NewGuid().ToString("N")}", TypeAttributes.Public | TypeAttributes.Class,
+                $"ActLike_{tInterfacesMainList.First().Name}_{Guid.NewGuid():N}", TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActLikeProxy), tInterfacesMainList);
 
             tB.SetCustomAttribute(

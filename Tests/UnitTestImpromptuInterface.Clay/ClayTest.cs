@@ -220,7 +220,7 @@ namespace UnitTestImpromptuInterface
         {
             public override object InvokeMember(Func<object> proceed, object self, string name, INamedEnumerable<object> args)
             {
-                return string.Format("[name:{0}] [count:{1}]", name ?? "<null>", args.Count());
+                return $"[name:{name ?? "<null>"}] [count:{args.Count()}]";
             }
         }
     }

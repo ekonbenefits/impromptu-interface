@@ -105,7 +105,7 @@ namespace ImpromptuInterface.Build
                 _disposed = true;
             
                  
-                   _tempSaveAssembly.Save(string.Format("{0}.dll", _name));
+                   _tempSaveAssembly.Save($"{_name}.dll");
                
                 _tempSaveAssembly = null;
                 _tempBuilder = null;
@@ -201,7 +201,7 @@ namespace ImpromptuInterface.Build
             {
                 if (!tIType.IsAssignableFrom(proxyType))
                 {
-                    throw new Exception(String.Format("Proxy Type {0} must implement declared interfaces {1}", proxyType, tIType));
+                    throw new Exception($"Proxy Type {proxyType} must implement declared interfaces {tIType}");
                 }
             }
 
@@ -250,7 +250,7 @@ namespace ImpromptuInterface.Build
 
 
             var tB = builder.DefineType(
-                string.Format("ActLike_{0}_{1}", "InformalInterface", Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
+                $"ActLike_{"InformalInterface"}_{Guid.NewGuid().ToString("N")}", TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActLikeProxy));
 
 
@@ -327,7 +327,7 @@ namespace ImpromptuInterface.Build
 
             var tInterfacesMainList = interfaces.Distinct().ToArray();
             var tB = builder.DefineType(
-                string.Format("ActLike_{0}_{1}", tInterfacesMainList.First().Name, Guid.NewGuid().ToString("N")), TypeAttributes.Public | TypeAttributes.Class,
+                $"ActLike_{tInterfacesMainList.First().Name}_{Guid.NewGuid().ToString("N")}", TypeAttributes.Public | TypeAttributes.Class,
                 typeof(ActLikeProxy), tInterfacesMainList);
 
             tB.SetCustomAttribute(
@@ -591,7 +591,7 @@ namespace ImpromptuInterface.Build
             var tPrefixName = tEmitInfo.Name;
             if (!tEmitInfo.DefaultInterfaceImplementation)
             {
-                tPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixName);
+                tPrefixName = $"{info.DeclaringType.FullName}.{tPrefixName}";
 
                 tPublicPrivate = MethodAttributes.Private;
             }
@@ -932,7 +932,7 @@ namespace ImpromptuInterface.Build
             var tAddPrefixName = tAddMethod.Name;
             if (!tEmitInfo.DefaultInterfaceImplementation)
             {
-                tAddPrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tAddPrefixName);
+                tAddPrefixName = $"{info.DeclaringType.FullName}.{tAddPrefixName}";
             }
 
             var tAddBuilder = typeBuilder.DefineMethod(tAddPrefixName,
@@ -956,7 +956,7 @@ namespace ImpromptuInterface.Build
             var tRemovePrefixName = tRemoveMethod.Name;
             if (!tEmitInfo.DefaultInterfaceImplementation)
             {
-                tRemovePrefixName = String.Format("{0}.{1}", info.DeclaringType.FullName, tRemovePrefixName);
+                tRemovePrefixName = $"{info.DeclaringType.FullName}.{tRemovePrefixName}";
 
             }
             var tRemoveBuilder = typeBuilder.DefineMethod(tRemovePrefixName,
@@ -1261,9 +1261,9 @@ namespace ImpromptuInterface.Build
             if (!emitInfo.DefaultInterfaceImplementation)
             {
                 tPublicPrivate = MethodAttributes.Private;
-                tPrefixedGet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedGet);
-                tPrefixedSet = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedSet);
-                tPrefixedName = String.Format("{0}.{1}", info.DeclaringType.FullName, tPrefixedName);
+                tPrefixedGet = $"{info.DeclaringType.FullName}.{tPrefixedGet}";
+                tPrefixedSet = $"{info.DeclaringType.FullName}.{tPrefixedSet}";
+                tPrefixedName = $"{info.DeclaringType.FullName}.{tPrefixedName}";
             }
 
 
@@ -1646,7 +1646,7 @@ namespace ImpromptuInterface.Build
 // ReSharper restore UnusedParameter.Local
         {
                 var tBuilder = Builder.DefineType(
-                    string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
+                    $"Impromptu_{"Delegate"}_{Guid.NewGuid().ToString("N")}",
                     TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
                     typeof (MulticastDelegate));
 
@@ -1736,7 +1736,7 @@ namespace ImpromptuInterface.Build
 
 #if NET40
             if (access== AssemblyBuilderAccess.RunAndSave || access == AssemblyBuilderAccess.Save)
-                mb = ab.DefineDynamicModule("MainModule", string.Format("{0}.dll", tName.Name));
+                mb = ab.DefineDynamicModule("MainModule", $"{tName.Name}.dll");
             else
 #endif
             mb = ab.DefineDynamicModule("MainModule");

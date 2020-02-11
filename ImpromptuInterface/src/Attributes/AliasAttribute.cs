@@ -27,10 +27,6 @@ namespace ImpromptuInterface
         /// <value>
         /// The name.
         /// </value>
-        public string Name
-        {
-            get { return _name; }
-
-        }
+        public string Name => _name;
     }
 }

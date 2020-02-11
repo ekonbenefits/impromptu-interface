@@ -16,21 +16,22 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 
 namespace ImpromptuInterface.Optimization
 {
     internal class BareBonesList<T>: ICollection<T>
     {
-        private T[] _list;
+        private readonly T[] _list;
         private int _addIndex;
    
-        private int _length;
+        private readonly int _length;
 
 
         /// <summary>
         /// Initializes a new instance of the <see cref="BareBonesList&lt;T&gt;"/> class.
         /// </summary>
-        /// <param name="length">The max length that the list cannot grow beyound</param>
+        /// <param name="length">The max length that the list cannot grow beyond</param>
         public BareBonesList(int length)
         {
             _list = new T[length];
@@ -62,15 +63,9 @@ namespace ImpromptuInterface.Optimization
             throw new NotSupportedException();
         }
 
-        public int Count
-        {
-            get { return _length; }
-        }
+        public int Count => _length;
 
-        public bool IsReadOnly
-        {
-            get { return false; }
-        }
+        public bool IsReadOnly => false;
 
         /// <summary>
         /// Gets the enumerator. with bare bones this is good only once
@@ -90,9 +85,9 @@ namespace ImpromptuInterface.Optimization
         internal class BareBonesEnumerator : IEnumerator<T>
 
         {
-            private T[] _list;
-            private int _enumerateInex = -1;
-            private int _length;
+            private readonly T[] _list;
+            private int _enumerateIndex = -1;
+            private readonly int _length;
 
             public BareBonesEnumerator(T[] list, int length)
             {
@@ -107,24 +102,19 @@ namespace ImpromptuInterface.Optimization
 
             public bool MoveNext()
             {
-                _enumerateInex++;
-                return _enumerateInex < _length;
+                _enumerateIndex++;
+                return _enumerateIndex < _length;
             }
 
             public void Reset()
             {
-                _enumerateInex = 0;
+                _enumerateIndex = 0;
             }
 
-            public T Current
-            {
-                get { return _list[_enumerateInex]; }
-            }
+            
+            public T Current => _list[_enumerateIndex];
 
-            object IEnumerator.Current
-            {
-                get { return Current; }
-            }
+            object IEnumerator.Current => Current!;
         }
     
     }

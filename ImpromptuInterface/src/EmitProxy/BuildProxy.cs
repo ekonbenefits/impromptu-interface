@@ -56,17 +56,20 @@ namespace ImpromptuInterface.Build
     {
         
 
-        private static ModuleBuilder _builder;
-        internal static ModuleBuilder _tempBuilder;
-        internal static AssemblyBuilder _tempSaveAssembly;
+        private static ModuleBuilder? _builder;
+        // ReSharper disable once InconsistentNaming
+        internal static ModuleBuilder? _tempBuilder;
+        // ReSharper disable once InconsistentNaming
+        internal static AssemblyBuilder? _tempSaveAssembly;
 
-        private static AssemblyBuilder _ab;
+        private static AssemblyBuilder? _ab;
         private static readonly IDictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
-        private static readonly object TypeCacheLock = new object();
+        private static readonly object _typeCacheLock = new object();
 
         private static readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
-        private static readonly object DelegateCacheLock = new object();
+        private static readonly object _delegateCacheLock = new object();
 
+        // ReSharper disable once InconsistentNaming
         private static readonly MethodInfo ActLike = typeof(BuildProxy).GetMethod("RecursiveActLike",
                                                                                   new[] {typeof(object)});
 
@@ -138,12 +141,11 @@ namespace ImpromptuInterface.Build
         /// <returns></returns>
         public static Type BuildType(Type contextType, Type mainInterface, params Type[] otherInterfaces)
         {
-            lock (TypeCacheLock)
+            lock (_typeCacheLock)
             {
                 contextType = contextType.FixContext();
                 var tNewHash = TypeHash.Create(contextType, new[]{mainInterface}.Concat(otherInterfaces).ToArray());
-                Type tType;
-                if (!_typeHash.TryGetValue(tNewHash, out tType))
+                if (!_typeHash.TryGetValue(tNewHash, out var tType))
                 {
                     tType = BuildTypeHelper(Builder,contextType,new[]{mainInterface}.Concat(otherInterfaces).ToArray());
                     _typeHash[tNewHash] = tType;
@@ -162,11 +164,10 @@ namespace ImpromptuInterface.Build
         /// <returns></returns>
         public static Type BuildType(Type contextType, IDictionary<string,Type> informalInterface)
         {
-            lock (TypeCacheLock)
+            lock (_typeCacheLock)
             {
                 var tNewHash = TypeHash.Create(contextType, informalInterface);
-                Type tType;
-                if (!_typeHash.TryGetValue(tNewHash, out tType))
+                if (!_typeHash.TryGetValue(tNewHash, out var tType))
                 {
                     tType = BuildTypeHelper(Builder, contextType, informalInterface);
 
@@ -204,7 +205,7 @@ namespace ImpromptuInterface.Build
                 }
             }
 
-            lock (TypeCacheLock)
+            lock (_typeCacheLock)
             {
                 var tNewHash = TypeHash.Create(attribute.Context, attribute.Interfaces);
 
@@ -235,7 +236,7 @@ namespace ImpromptuInterface.Build
              select new { Type = tType, Impromptu = tAttributes.Cast<ActLikeProxyAttribute>().Single() };
             foreach (var tTypeCombo in typesWithMyAttribute)
             {
-                lock (TypeCacheLock)
+                lock (_typeCacheLock)
                 {
                     if (!PreLoadProxy(tTypeCombo.Type, tTypeCombo.Impromptu))
                         tSuccess = false;
@@ -1349,10 +1350,7 @@ namespace ImpromptuInterface.Build
             }
 
             private readonly Lazy<string> _callSiteName;
-            public string CallSiteName
-            {
-                get { return _callSiteName.Value; }
-            }
+            public string CallSiteName => _callSiteName.Value;
             public bool NonRecursive { get; set; }
             public bool DefaultInterfaceImplementation { get; set; }
             public IEnumerable<string> ArgNames { get; set; }
@@ -1591,7 +1589,7 @@ namespace ImpromptuInterface.Build
 
             
 
-            lock (DelegateCacheLock)
+            lock (_delegateCacheLock)
             {
                
 

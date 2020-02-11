@@ -13,7 +13,7 @@ namespace ImpromptuInterface
         public object Target { get; }
         private List<Type> _interfaceTypes;
 
-        public override bool TryConvert(System.Dynamic.ConvertBinder binder, out object result)
+        public override bool TryConvert(System.Dynamic.ConvertBinder binder, out object? result)
         {
             result = null;
 

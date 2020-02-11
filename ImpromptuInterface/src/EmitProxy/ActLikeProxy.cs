@@ -52,7 +52,7 @@ namespace ImpromptuInterface.Build
         /// <value></value>
         private dynamic ActLikeProxyOriginal { get; set; }
 
-        dynamic IActLikeProxy.Original { get { return ActLikeProxyOriginal; } }
+        dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
 
         private bool _init = false;
 

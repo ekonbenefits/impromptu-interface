@@ -34,23 +34,23 @@ namespace ImpromptuInterface
         /// Extension Method that Wraps an existing object with an Explicit interface definition
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
-        /// <param name="originalDynamic">The original object can be annoymous type, System.DynamicObject as well as any others.</param>
+        /// <param name="originalDynamic">The original object can be anonymous type, System.DynamicObject as well as any others.</param>
         /// <param name="otherInterfaces">Optional other interfaces.</param>
         /// <returns></returns>
-        public static TInterface ActLike<TInterface>(this object originalDynamic, params Type[] otherInterfaces) where TInterface : class
+        public static TInterface ActLike<TInterface>(this object? originalDynamic, params Type[] otherInterfaces) where TInterface : class
         {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
+            if (originalDynamic is null)
+            {
+                throw new ArgumentException("Can't be null", nameof(originalDynamic));
+            }
+
+            originalDynamic = originalDynamic.GetTargetContext(out var tContext, out _);
 
             var tProxy = BuildProxy.BuildType(tContext, typeof(TInterface), otherInterfaces);
 
 
 
-            return
-                (TInterface)
-                InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
+            return (TInterface) InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
         }
 
 
@@ -100,19 +100,18 @@ namespace ImpromptuInterface
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="propertySpec">The property spec.</param>
         /// <returns></returns>
-        public static dynamic ActLikeProperties(this object originalDynamic, IDictionary<string, Type> propertySpec)
+        public static dynamic ActLikeProperties(this object? originalDynamic, IDictionary<string, Type> propertySpec)
         {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
+            if (originalDynamic is null)
+            {
+                throw new ArgumentException("Can't be null", nameof(originalDynamic));
+            }
+
+            originalDynamic = originalDynamic.GetTargetContext(out var tContext, out _);
 
             var tProxy = BuildProxy.BuildType(tContext, propertySpec);
 
-
-
-            return
-                InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
+            return InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
         }
 
         /// <summary>
@@ -149,12 +148,15 @@ namespace ImpromptuInterface
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
-        public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
+        public static dynamic DynamicActLike(object? originalDynamic, params Type[] otherInterfaces)
         {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
+            if (originalDynamic is null)
+            {
+                throw new ArgumentException("Can't be null", nameof(originalDynamic));
+            }
+
+
+            originalDynamic = originalDynamic.GetTargetContext(out var tContext, out _);
 
             var tProxy = BuildProxy.BuildType(tContext, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
 

@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <TargetFrameworks>net40;netstandard2.0;netstandard2.1</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sn.snk</AssemblyOriginatorKeyFile>
     <Description>A Lightweight Duck Casting Framework for dynamic C#</Description>
@@ -15,6 +15,8 @@
     <IncludeSource>True</IncludeSource>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Nullable>enable</Nullable>
+    <LangVersion>Latest</LangVersion>
   </PropertyGroup>
   <Import Project="..\Version.props" />
   <ItemGroup>
@@ -23,8 +25,8 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
-  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
-    <PackageReference Include="System.Reflection.Emit" Version="4.3.*" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.4.*" />
+  <ItemGroup Condition="'$(TargetFramework)'!='net40'">
+    <PackageReference Include="System.Reflection.Emit" Version="4.*" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.*" />
   </ItemGroup>
 </Project>

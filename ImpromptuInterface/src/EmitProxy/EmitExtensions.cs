@@ -91,7 +91,7 @@ namespace ImpromptuInterface.Build
         /// <param name="type">The type.</param>
         /// <param name="fieldName">Name of the field.</param>
         /// <returns></returns>
-        public static FieldInfo GetFieldEvenIfGeneric(this Type type, string fieldName)
+        public static FieldInfo? GetFieldEvenIfGeneric(this Type type, string fieldName)
         {
             if (type is TypeBuilder
 			    || type.GetType().Name.Contains("TypeBuilder")
@@ -101,7 +101,10 @@ namespace ImpromptuInterface.Build
                 var tGenDef = type.GetGenericTypeDefinition();
                 var tField = tGenDef.GetField(fieldName);
                 if (tField == null)
+                {
                     return null;
+                }
+
                 return TypeBuilder.GetField(type, tField);
             }
             return type.GetField(fieldName);
@@ -508,7 +511,7 @@ namespace ImpromptuInterface.Build
         /// <param name="generator">The generator.</param>
         /// <param name="flag">The flag.</param>
         /// <param name="name">The name.</param>
-        public static void EmitCreateCSharpArgumentInfo(this ILGenerator generator, CSharpArgumentInfoFlags flag, string name = null)
+        public static void EmitCreateCSharpArgumentInfo(this ILGenerator generator, CSharpArgumentInfoFlags flag, string? name = null)
         {
             generator.Emit(OpCodes.Ldc_I4, (int)flag);
             if (String.IsNullOrEmpty(name))

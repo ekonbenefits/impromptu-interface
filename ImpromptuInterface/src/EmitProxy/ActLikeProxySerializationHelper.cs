@@ -19,19 +19,23 @@ namespace ImpromptuInterface.Build
         /// <summary>
         /// Original Object
         /// </summary>
-        public object Original;
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public object Original;  //Serialization only not null
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
         /// <summary>
-        /// Intefaces
+        /// Interfaces
         /// </summary>
-		public Type[] Interfaces;
+        public Type[]? Interfaces;
         /// <summary>
         /// Interfaces by name for Mono workaround
         /// </summary>
-        public string[] MonoInterfaces;
+        public string[]? MonoInterfaces;
         /// <summary>
         /// Type Context
         /// </summary>
-		public Type Context;
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        public Type Context; //Serialization only not null
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
 
         /// <summary>
         /// Returns the real object that should be deserialized, rather than the object that the serialized stream specifies.
@@ -43,7 +47,7 @@ namespace ImpromptuInterface.Build
         /// <exception cref="T:System.Security.SecurityException">The caller does not have the required permission. The call will not work on a medium trusted server.</exception>
         public object GetRealObject(StreamingContext context)
         {
-		   var tInterfaces = Interfaces ?? MonoInterfaces.Select(it=>Type.GetType(it)).ToArray();
+		   var tInterfaces = Interfaces ?? MonoInterfaces.Select(Type.GetType).ToArray();
            var tType =BuildProxy.BuildType(Context, tInterfaces.First(), tInterfaces.Skip(1).ToArray());
            return Impromptu.InitializeProxy(tType, Original, tInterfaces);
         }

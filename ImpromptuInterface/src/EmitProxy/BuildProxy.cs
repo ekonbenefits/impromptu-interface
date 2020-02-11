@@ -185,7 +185,7 @@ namespace ImpromptuInterface.Build
         /// <param name="proxyType">Type of the proxy.</param>
         /// <param name="attribute">The ActLikeProxyAttribute, if not provide it will be looked up.</param>
         /// <returns>Returns false if there already is a proxy registered for the same type.</returns>
-        public static bool PreLoadProxy(Type proxyType, ActLikeProxyAttribute attribute = null)
+        public static bool PreLoadProxy(Type proxyType, ActLikeProxyAttribute? attribute = null)
         {
             var tSuccess = true;
             if (attribute == null)
@@ -537,7 +537,7 @@ namespace ImpromptuInterface.Build
             Type[] tParamTypes = tParamAttri.Select(it => it.ParameterType).ToArray();
 
 
-            IEnumerable<string> tArgNames;
+            IEnumerable<string?> tArgNames;
             if (info.GetCustomAttributes(typeof(UseNamedArgumentAttribute), false).Any() ||
                 info.DeclaringType.GetCustomAttributes(typeof(UseNamedArgumentAttribute), false).Any() )
 
@@ -573,7 +573,7 @@ namespace ImpromptuInterface.Build
             }
 
             var tConvert = tEmitInfo.CallSiteConvertName;
-            Type tConvertFuncType = null;
+            Type? tConvertFuncType = null;
             if (tReturnType != typeof(void))
             {
                 tConvertFuncType = tCStp.DefineCallsiteField(tConvert, tReturnType);
@@ -671,12 +671,12 @@ namespace ImpromptuInterface.Build
                                       TypeAttributes.NotPublic
                                       | TypeAttributes.Sealed
                                       | TypeAttributes.AutoClass
-                                      |TypeAttributes.BeforeFieldInit 
+                                      | TypeAttributes.BeforeFieldInit 
                                       | TypeAttributes.Abstract
                 );
         }
 
-        private static Tuple<Type, Type[]> GetParamTypes(dynamic builder, MethodInfo info)
+        private static Tuple<Type, Type[]>? GetParamTypes(dynamic builder, MethodInfo info)
         {
             if (info == null)
                 return null;
@@ -694,10 +694,10 @@ namespace ImpromptuInterface.Build
             var tReturnParameters = FlattenGenericParameters(returnType).Where(it => !tParams.ContainsKey(it.GenericParameterPosition));
             foreach(var tReParm in tReturnParameters)
                 tGenericParams.Add(tReParm.GenericParameterPosition, new { Type = tReParm, Gen = default(GenericTypeParameterBuilder) });
-            var tGenParams = tGenericParams.OrderBy(it => it.Key).Select(it => it.Value.Type.Name);
+            var tGenParams = tGenericParams.OrderBy(it => it.Key).Select(it => it.Value.Type.Name).ToArray();
             if (tGenParams.Any())
             {
-                GenericTypeParameterBuilder[] tBuilders = builder.DefineGenericParameters(tGenParams.ToArray());
+                GenericTypeParameterBuilder[] tBuilders = builder.DefineGenericParameters(tGenParams);
                 var tDict = tGenericParams.ToDictionary(param => param.Value.Type, param => tBuilders[param.Key]);
 
                 returnType = ReplaceTypeWithGenericBuilder(returnType, tDict);
@@ -725,7 +725,11 @@ namespace ImpromptuInterface.Build
             var tConvertField = emitInfo.CallSiteType.GetFieldEvenIfGeneric(emitInfo.CallSiteConvertName);
             if (emitInfo.ResolveReturnType != typeof(void))
             {
-
+                if (emitInfo.CallSiteConvertFuncType is null)
+                {
+                    throw new NullReferenceException(
+                        $"{nameof(emitInfo.CallSiteConvertFuncType)} cannot be null when {nameof(emitInfo.ResolveReturnType)} is not void");
+                }
               
                 using (tIlGen.EmitBranchTrue(gen=>gen.Emit(OpCodes.Ldsfld, tConvertField)))
                 {
@@ -741,16 +745,16 @@ namespace ImpromptuInterface.Build
             {
                 tIlGen.EmitDynamicMethodInvokeBinder(
                     emitInfo.ResolveReturnType == typeof(void) ? CSharpBinderFlags.ResultDiscarded : CSharpBinderFlags.None,
-                    emitInfo.Alias ?? emitInfo.Name, 
+                    emitInfo.Alias ?? emitInfo.Name ?? throw new System.ArgumentNullException(nameof(emitInfo.Name)), 
                     methodBuilder.GetGenericArguments(),
                     emitInfo.ContextType,
                     paramInfo, 
                     emitInfo.ArgNames);
-                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeFuncType);
+                tIlGen.EmitCallsiteCreate(emitInfo.CallSiteInvokeFuncType ?? throw new System.ArgumentNullException(nameof(emitInfo.CallSiteInvokeFuncType)));
                 tIlGen.Emit(OpCodes.Stsfld, tInvokeField);
             }
 
-            //If it's an interface and not nonrecursive this will be true
+            //If it's an interface and not non-recursive this will be true
             var tRecurse = emitInfo.ResolveReturnType.IsInterface && !emitInfo.NonRecursive;
 
             if (emitInfo.ResolveReturnType != typeof(void) && !tRecurse)
@@ -764,7 +768,7 @@ namespace ImpromptuInterface.Build
             tIlGen.Emit(OpCodes.Ldfld, typeof(CallSite<>).MakeGenericType(emitInfo.CallSiteInvokeFuncType).GetFieldEvenIfGeneric("Target"));
             tIlGen.Emit(OpCodes.Ldsfld, tInvokeField);
             tIlGen.Emit(OpCodes.Ldarg_0);
-            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty("Original").GetGetMethod());
+            tIlGen.Emit(OpCodes.Callvirt, typeof(IActLikeProxy).GetProperty(nameof(IActLikeProxy.Original))!.GetGetMethod());
             for (var i = 1; i <= emitInfo.ResolvedParamTypes.Length; i++)
             {
 
@@ -773,10 +777,16 @@ namespace ImpromptuInterface.Build
             tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteInvokeFuncType);
             if (emitInfo.ResolveReturnType != typeof(void) && !tRecurse)
             {
+                if (emitInfo.CallSiteConvertFuncType is null)
+                {
+                    throw new NullReferenceException(
+                        $"{nameof(emitInfo.CallSiteConvertFuncType)} cannot be null when {nameof(emitInfo.ResolveReturnType)} is not void");
+                }
+
                 tIlGen.EmitCallInvokeFunc(emitInfo.CallSiteConvertFuncType);
             }
 
-            //If we are recursing, try actlike
+            //If we are recurs-ing, try actlike
             if (tRecurse)
             {
                 var tReturnLocal = tIlGen.DeclareLocal(typeof(object));
@@ -834,35 +844,35 @@ namespace ImpromptuInterface.Build
                 CallSiteInvokeSetName = "Invoke_Set";
 
             }
-            public string GetName { get; set; }
-            public string SetName { get; set; }
+            public string? GetName { get; set; }
+            public string? SetName { get; set; }
 
-            public string CallSiteInvokeSetName { get; protected set; }
-            public string CallSiteInvokeGetName { get; protected set; }
-            public string CallSiteConvertName { get; protected set; }
+            public string CallSiteInvokeSetName { get;  }
+            public string CallSiteInvokeGetName { get;   }
+            public string CallSiteConvertName { get; }
 
-            public Type[] ResolvedIndexParamTypes { get; set; }
-            public Type CallSiteConvertFuncType { get; set; }
-            public Type CallSiteInvokeGetFuncType { get; set; }
-            public Type CallSiteInvokeSetFuncType { get; set; }
+            public Type[]? ResolvedIndexParamTypes { get; set; }
+            public Type? CallSiteConvertFuncType { get; set; }
+            public Type? CallSiteInvokeGetFuncType { get; set; }
+            public Type? CallSiteInvokeSetFuncType { get; set; }
         }
 
         private class EmitEventInfo : PropertyEmitInfo
         {
-            public string CallSiteIsEventName { get; protected set; }
-            public string CallSiteAddAssignName { get; protected set; }
-            public string CallSiteSubtractAssignName { get; protected set; }
-            public string CallSiteAddName { get; protected set; }
-            public string CallSiteRemoveName { get; protected set; }
+            public string CallSiteIsEventName { get; }
+            public string CallSiteAddAssignName { get; }
+            public string CallSiteSubtractAssignName { get; }
+            public string CallSiteAddName { get; }
+            public string CallSiteRemoveName { get; }
 
 
-            public Type CallSiteIsEventFuncType{ get;  set; }
-            public Type CallSiteAddAssignFuncType { get;  set; }
-            public Type CallSiteSubtractAssignFuncType { get;  set; }
-            public Type CallSiteAddFuncType { get;  set; }
-            public Type CallSiteRemoveFuncType { get;  set; }
-            public Type[] ResolvedAddParamTypes { get; set; }
-            public Type[] ResolvedRemoveParamTypes { get; set; }
+            public Type? CallSiteIsEventFuncType{ get;  set; }
+            public Type? CallSiteAddAssignFuncType { get;  set; }
+            public Type? CallSiteSubtractAssignFuncType { get;  set; }
+            public Type? CallSiteAddFuncType { get;  set; }
+            public Type? CallSiteRemoveFuncType { get;  set; }
+            public Type[]? ResolvedAddParamTypes { get; set; }
+            public Type[]? ResolvedRemoveParamTypes { get; set; }
 
             public EmitEventInfo()
             {
@@ -882,13 +892,12 @@ namespace ImpromptuInterface.Build
                                     ContextType = contextType,
                                     DefaultInterfaceImplementation = defaultImp
                                 };
-            var alias = info.GetCustomAttributes(typeof (AliasAttribute), false).FirstOrDefault() as AliasAttribute;
-            if (alias != null)
+            if (info.GetCustomAttributes(typeof (AliasAttribute), false).FirstOrDefault() is AliasAttribute alias)
             {
                 tEmitInfo.Alias = alias.Name;
             }
 
-             var tAddMethod = info.GetAddMethod();
+            var tAddMethod = info.GetAddMethod();
             var tRemoveMethod = info.GetRemoveMethod();
             tEmitInfo.ResolveReturnType = info.EventHandlerType;
 
@@ -1216,7 +1225,7 @@ namespace ImpromptuInterface.Build
         /// <param name="typeBuilder">The type builder.</param>
         /// <param name="info">The info.</param>
         /// <param name="emitInfo">The emit info.</param>
-        private static void MakePropertyHelper(ModuleBuilder builder, TypeBuilder typeBuilder, PropertyEmitInfo emitInfo, PropertyInfo info = null)
+        private static void MakePropertyHelper(ModuleBuilder builder, TypeBuilder typeBuilder, PropertyEmitInfo emitInfo, PropertyInfo? info = null)
         {
 
 
@@ -1339,21 +1348,21 @@ namespace ImpromptuInterface.Build
         }
         private abstract class EmitInfo
         {
-            public string Name { get; set; }
-            public string Alias { get; set; }
+            public string? Name { get; set; }
+            public string? Alias { get; set; }
 
             protected EmitInfo()
             {
                 _callSiteName =
                     new Lazy<string>(
-                        () => string.Format("Impromptu_Callsite_{1}_{0}", Guid.NewGuid().ToString("N"), Name));
+                        valueFactory: () => $"Impromptu_Callsite_{Name}_{Guid.NewGuid():N}");
             }
 
             private readonly Lazy<string> _callSiteName;
             public string CallSiteName => _callSiteName.Value;
             public bool NonRecursive { get; set; }
             public bool DefaultInterfaceImplementation { get; set; }
-            public IEnumerable<string> ArgNames { get; set; }
+            public IEnumerable<string?> ArgNames { get; set; }
             public Type[] ResolvedParamTypes { get; set; }
             public Type ResolveReturnType { get; set; }
             public Type CallSiteType { get; set; }
@@ -1371,11 +1380,11 @@ namespace ImpromptuInterface.Build
 
       
 
-            public string CallSiteInvokeName { get; protected set; }
-            public string CallSiteConvertName { get; protected set; }
+            public string CallSiteInvokeName { get; }
+            public string CallSiteConvertName { get; }
 
-            public Type CallSiteConvertFuncType { get; set; }
-            public Type CallSiteInvokeFuncType { get; set; }
+            public Type? CallSiteConvertFuncType { get; set; }
+            public Type? CallSiteInvokeFuncType { get; set; }
         }
    
 
@@ -1579,7 +1588,7 @@ namespace ImpromptuInterface.Build
         /// <param name="methodInfo">The method info. Required for reference types or delegates with more than 16 arguments.</param>
         /// <param name="builder">The Type Builder. Required for reference types or delegates with more than 16 arguments.</param>
         /// <returns></returns>
-        internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo methodInfo =null, TypeBuilder builder =null)
+        internal static Type GenerateCallSiteFuncType(IEnumerable<Type> argTypes, Type returnType, MethodInfo? methodInfo =null, TypeBuilder? builder =null)
         {
             bool tIsFunc = returnType != typeof(void);
 
@@ -1642,11 +1651,11 @@ namespace ImpromptuInterface.Build
 
 // ReSharper disable UnusedParameter.Local
 // May switch to nested types if i figure out how to do it, thus would need the typebuilder
-        private static Type GenerateFullDelegate(TypeBuilder builder, Type returnType,  IEnumerable<Type> types, MethodInfo info =null )
+        private static Type GenerateFullDelegate(TypeBuilder builder, Type returnType,  IEnumerable<Type> types, MethodInfo? info =null )
 // ReSharper restore UnusedParameter.Local
         {
                 var tBuilder = Builder.DefineType(
-                    $"Impromptu_{"Delegate"}_{Guid.NewGuid().ToString("N")}",
+                    $"Impromptu_{"Delegate"}_{Guid.NewGuid():N}",
                     TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
                     typeof (MulticastDelegate));
 

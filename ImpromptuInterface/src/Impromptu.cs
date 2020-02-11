@@ -122,7 +122,7 @@ namespace ImpromptuInterface
         /// <param name="interfaces">The interfaces.</param>
         /// <param name="propertySpec">The property spec.</param>
         /// <returns></returns>
-        internal static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
+        internal static object InitializeProxy(Type proxytype, object original, IEnumerable<Type>? interfaces =null, IDictionary<string, Type>? propertySpec =null)
         {
             var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
             tProxy.Initialize(original, interfaces, propertySpec);
@@ -131,7 +131,7 @@ namespace ImpromptuInterface
         
 
         /// <summary>
-        /// Chainable Linq to Objects Method, allows you to wrap a list of objects with an Explict interface defintion
+        /// Chainable Linq to Objects Method, allows you to wrap a list of objects with an Explicit interface definition
         /// </summary>
         /// <typeparam name="TInterface">The type of the interface.</typeparam>
         /// <param name="originalDynamic">The original dynamic.</param>

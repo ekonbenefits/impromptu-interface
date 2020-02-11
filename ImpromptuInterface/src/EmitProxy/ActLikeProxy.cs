@@ -36,22 +36,27 @@ namespace ImpromptuInterface.Build
         ///<param name="original"></param>
         ///<param name="interfaces"></param>
         ///<param name="informalInterface"></param>
-        void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null);
+        void Initialize(dynamic original, IEnumerable<Type>? interfaces =null, IDictionary<string, Type>? informalInterface = null);
     }
 
 
     /// <summary>
-    /// Base class of Emited ProxiesC:\Documents and Settings\jayt\My Documents\Visual Studio 2010\Projects\impromptuinterface\ImpromptuInterface\Optimization\
+    /// Base class of Emitted Proxies
     /// </summary>
     [Serializable]
     public abstract class ActLikeProxy : IActLikeProxyInitialize, ISerializable
     {
+    
+        //Always initialized;
+#pragma warning disable CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+        private dynamic ActLikeProxyOriginal { get; set; }
+#pragma warning restore CS8618 // Non-nullable field is uninitialized. Consider declaring as nullable.
+
+
         /// <summary>
         /// Returns the proxied object
         /// </summary>
         /// <value></value>
-        private dynamic ActLikeProxyOriginal { get; set; }
-
         dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
 
         private bool _init = false;
@@ -62,20 +67,24 @@ namespace ImpromptuInterface.Build
         /// <param name="original"></param>
         /// <param name="interfaces"></param>
         /// <param name="informalInterface"></param>
-        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface)
+        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type>? interfaces, IDictionary<string, Type>? informalInterface)
         {
-            if(((object)original) == null)
-                throw new ArgumentNullException("original", "Can't proxy a Null value");
+            // ReSharper disable once JoinNullCheckWithUsage
+            if (original is null)
+            {
+                throw new ArgumentNullException(nameof(original), "Can't proxy a Null value");
+            }
 
             if (_init)
+            {
                 throw new MethodAccessException("Initialize should not be called twice!");
+            }
+
             _init = true;
             ActLikeProxyOriginal = original;
 
 
-
-            var dynamicObj = ActLikeProxyOriginal as IEquivalentType;
-            if (dynamicObj != null)
+            if (ActLikeProxyOriginal is IEquivalentType dynamicObj)
             {
                 if (interfaces != null)
                 {
@@ -134,6 +143,7 @@ namespace ImpromptuInterface.Build
         /// </returns>
         public override int GetHashCode()
         {
+            // ReSharper disable once NonReadonlyMemberInGetHashCode
             return ActLikeProxyOriginal.GetHashCode();
         }
 
@@ -155,21 +165,15 @@ namespace ImpromptuInterface.Build
 			
 				
             info.AddValue("Context",
-                          tCustomAttr == null 
-                          ? null
-                          : tCustomAttr.Context,typeof(Type));
+                          tCustomAttr?.Context,typeof(Type));
 			
 			
 			if(Util.IsMono){
 				info.AddValue("MonoInterfaces",
-                          tCustomAttr == null 
-                          ? null
-                          : tCustomAttr.Interfaces.Select(it=>it.AssemblyQualifiedName).ToArray(),typeof(string[]));
+                          tCustomAttr?.Interfaces.Select(it=>it.AssemblyQualifiedName).ToArray(),typeof(string[]));
 			}else{
             	info.AddValue("Interfaces",
-                          tCustomAttr == null 
-                          ? null
-                          : tCustomAttr.Interfaces,typeof(Type[]));
+                          tCustomAttr?.Interfaces,typeof(Type[]));
 			}
 
 

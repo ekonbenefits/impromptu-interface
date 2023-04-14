@@ -78,7 +78,7 @@ namespace ImpromptuInterface.Build
         }
 
 
-#if NET40
+#if NET46
 
         internal class TempBuilder : IDisposable
         {

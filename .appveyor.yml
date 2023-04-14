@@ -3,7 +3,6 @@ image: Visual Studio 2017
 install:
   - cmd: git submodule update --init --recursive
   - ps: $env:VersionPrefix=(Select-Xml -Path ./Version.props -XPath "/Project/PropertyGroup/VersionPrefix").Node.'#text'
-  - ps: choco install dotnetcore-2.0-runtime -y
 
 configuration: Debug
 

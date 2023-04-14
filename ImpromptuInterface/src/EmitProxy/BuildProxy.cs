@@ -1379,7 +1379,17 @@ namespace ImpromptuInterface.Build
             public Type CallSiteConvertFuncType { get; set; }
             public Type CallSiteInvokeFuncType { get; set; }
         }
-   
+
+        public static CustomAttributeBuilder ToCustomAttributeBuilder(this CustomAttributeData customAttributeData)
+        {
+            return new CustomAttributeBuilder(
+                customAttributeData.Constructor,
+                customAttributeData.ConstructorArguments.Select(arg => arg.Value).ToArray(),
+                customAttributeData.NamedArguments.Where(arg => arg.MemberInfo.MemberType == MemberTypes.Property).Select(arg => arg.MemberInfo).Cast<PropertyInfo>().ToArray(),
+                customAttributeData.NamedArguments.Where(arg => arg.MemberInfo.MemberType == MemberTypes.Property).Select(arg => arg.TypedValue.Value).ToArray(),
+                customAttributeData.NamedArguments.Where(arg => arg.MemberInfo.MemberType == MemberTypes.Field).Select(arg => arg.MemberInfo).Cast<FieldInfo>().ToArray(),
+                customAttributeData.NamedArguments.Where(arg => arg.MemberInfo.MemberType == MemberTypes.Field).Select(arg => arg.TypedValue.Value).ToArray());
+        }
 
         private static void EmitProperty(
             TypeBuilder typeBuilder,
@@ -1508,6 +1518,11 @@ namespace ImpromptuInterface.Build
                 tIlGen.Emit(OpCodes.Pop);
                 tIlGen.Emit(OpCodes.Ret);
                 tMp.SetSetMethod(setMethodBuilder);
+            }
+
+            foreach (var attrData in info.GetCustomAttributesData())
+            {
+                tMp.SetCustomAttribute(attrData.ToCustomAttributeBuilder());
             }
         }
 

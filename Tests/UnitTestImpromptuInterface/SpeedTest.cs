@@ -22,7 +22,7 @@ namespace UnitTestImpromptuInterface
     [TestFixture(Category="Performance")]
     public class SpeedTest : Helper
     {
-        [TestFixtureSetUp]
+        [OneTimeSetUp]
         public void WarmUpDlr()
         {
             dynamic i = 1;

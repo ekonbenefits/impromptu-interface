@@ -70,10 +70,10 @@ namespace ImpromptuInterface.Build
             private readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
             private readonly object DelegateCacheLock = new object();
 
-            private readonly MethodInfo ActLike = typeof(BuildProxy).GetMethod("RecursiveActLike",
+            private readonly MethodInfo ActLike = typeof(AssemblyMaker).GetMethod("RecursiveActLike",
                                                                                       new[] { typeof(object) });
 
-            public TInterface RecursiveActLike<TInterface>(object target) where TInterface : class
+            public static TInterface RecursiveActLike<TInterface>(object target) where TInterface : class
             {
 
 

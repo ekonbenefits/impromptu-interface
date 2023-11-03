@@ -73,7 +73,6 @@ namespace UnitTestImpromptuInterface
 
         private dynamic RunPythonHelper( object linq, string code)
         {
-#if !NETCOREAPP2_0
 
             var tEngine = Python.CreateEngine();
             var tScope = tEngine.CreateScope();
@@ -85,10 +84,7 @@ namespace UnitTestImpromptuInterface
 
             tCompiled.Execute(tScope);
             return tScope.GetVariable("result");
-#else
-            Assert.Ignore("Iron python doesn't support .net 2.0 core");
-            return new object();
-#endif
+
         }
 
 
@@ -121,7 +117,6 @@ result = linq.OfType[System.Int32]().Skip(1).First()
           }
 
           [Test]
-          [Ignore("New mono broke this, it's pretty esoteric though")]
           public void PythonDynamicLinqGenericArgs()
           {
               var start = new Object[] { 1, "string", 4, Guid.Empty, 6 };

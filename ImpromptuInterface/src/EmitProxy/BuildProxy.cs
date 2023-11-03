@@ -59,6 +59,65 @@ namespace ImpromptuInterface.Build
         public class AssemblyMaker
         {
 
+            
+            /// <summary>
+            /// Private helper method that initializes the proxy.
+            /// </summary>
+            /// <param name="proxytype">The proxytype.</param>
+            /// <param name="original">The original.</param>
+            /// <param name="interfaces">The interfaces.</param>
+            /// <param name="propertySpec">The property spec.</param>
+            /// <returns></returns>
+            internal static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
+            {
+                var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
+                tProxy.Initialize(original, interfaces, propertySpec);
+                return tProxy;
+            }
+
+            public TInterface ActLike<TInterface>(object originalDynamic, params Type[] otherInterfaces) where TInterface : class
+            {
+                Type tContext;
+                bool tDummy;
+                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                tContext = tContext.FixContext();
+
+                var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, typeof(TInterface), otherInterfaces);
+
+
+
+                return
+                    (TInterface)
+                    InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
+            }
+
+            public dynamic ActLikeProperties(object originalDynamic, IDictionary<string, Type> propertySpec)
+            {
+                Type tContext;
+                bool tDummy;
+                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                tContext = tContext.FixContext();
+
+                var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, propertySpec);
+
+
+
+                return
+                    InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
+           }
+
+            public dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
+            {
+                Type tContext;
+                bool tDummy;
+                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                tContext = tContext.FixContext();
+
+                var tProxy = this.BuildType(tContext, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
+
+                return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
+
+            }
             private ModuleBuilder _builder;
             internal ModuleBuilder _tempBuilder;
             internal AssemblyBuilder _tempSaveAssembly;
@@ -70,7 +129,7 @@ namespace ImpromptuInterface.Build
             private readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
             private readonly object DelegateCacheLock = new object();
 
-            private readonly MethodInfo ActLike = typeof(AssemblyMaker).GetMethod("RecursiveActLike",
+            private readonly MethodInfo ActLikeRec = typeof(AssemblyMaker).GetMethod("RecursiveActLike",
                                                                                       new[] { typeof(object) });
 
             public static TInterface RecursiveActLike<TInterface>(object target) where TInterface : class
@@ -790,7 +849,7 @@ namespace ImpromptuInterface.Build
                         using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
                         {
                             tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-                            tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
+                            tIlGen.Emit(OpCodes.Call, ActLikeRec.MakeGenericMethod(emitInfo.ResolveReturnType));
                             tIlGen.Emit(OpCodes.Ret);
                         }
                     }
@@ -1464,7 +1523,7 @@ namespace ImpromptuInterface.Build
                             using (tIlGen.EmitBranchTrue(gen => gen.Emit(OpCodes.Isinst, emitInfo.ResolveReturnType)))
                             {
                                 tIlGen.EmitLoadLocation(tReturnLocal.LocalIndex);
-                                tIlGen.Emit(OpCodes.Call, ActLike.MakeGenericMethod(emitInfo.ResolveReturnType));
+                                tIlGen.Emit(OpCodes.Call, ActLikeRec.MakeGenericMethod(emitInfo.ResolveReturnType));
                                 tIlGen.Emit(OpCodes.Ret);
                             }
                         }

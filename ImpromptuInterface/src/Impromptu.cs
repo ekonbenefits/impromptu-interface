@@ -38,20 +38,7 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">Optional other interfaces.</param>
         /// <returns></returns>
         public static TInterface ActLike<TInterface>(this object originalDynamic, params Type[] otherInterfaces) where TInterface : class
-        {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
-
-            var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, typeof(TInterface), otherInterfaces);
-
-
-
-            return
-                (TInterface)
-                InitializeProxy(tProxy, originalDynamic, new[] {typeof (TInterface)}.Concat(otherInterfaces));
-        }
+         => BuildProxy.DefaultMaker.ActLike<TInterface>(originalDynamic, otherInterfaces);
 
 
         /// <summary>
@@ -101,35 +88,8 @@ namespace ImpromptuInterface
         /// <param name="propertySpec">The property spec.</param>
         /// <returns></returns>
         public static dynamic ActLikeProperties(this object originalDynamic, IDictionary<string, Type> propertySpec)
-        {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
+         => BuildProxy.DefaultMaker.ActLikeProperties(originalDynamic, propertySpec);
 
-            var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, propertySpec);
-
-
-
-            return
-                InitializeProxy(tProxy, originalDynamic, propertySpec: propertySpec);
-        }
-
-        /// <summary>
-        /// Private helper method that initializes the proxy.
-        /// </summary>
-        /// <param name="proxytype">The proxytype.</param>
-        /// <param name="original">The original.</param>
-        /// <param name="interfaces">The interfaces.</param>
-        /// <param name="propertySpec">The property spec.</param>
-        /// <returns></returns>
-        internal static object InitializeProxy(Type proxytype, object original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> propertySpec =null)
-        {
-            var tProxy = (IActLikeProxyInitialize)Activator.CreateInstance(proxytype);
-            tProxy.Initialize(original, interfaces, propertySpec);
-            return tProxy;
-        }
-        
 
         /// <summary>
         /// Chainable Linq to Objects Method, allows you to wrap a list of objects with an Explict interface defintion
@@ -150,18 +110,9 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
         public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
-        {
-            Type tContext;
-            bool tDummy;
-            originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
-            tContext = tContext.FixContext();
+            => BuildProxy.DefaultMaker.DynamicActLike(originalDynamic, otherInterfaces);
 
-            var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
 
-            return InitializeProxy(tProxy, originalDynamic, otherInterfaces);
-
-        }
-     
 
     }
 

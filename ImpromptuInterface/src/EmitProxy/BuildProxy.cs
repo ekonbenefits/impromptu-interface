@@ -103,7 +103,7 @@ namespace ImpromptuInterface.Build
                 originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
                 tContext = tContext.FixContext();
 
-                var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, typeof(TInterface), otherInterfaces);
+                var tProxy = this.BuildType(tContext, typeof(TInterface), otherInterfaces);
 
 
 
@@ -119,7 +119,7 @@ namespace ImpromptuInterface.Build
                 originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
                 tContext = tContext.FixContext();
 
-                var tProxy = BuildProxy.DefaultMaker.BuildType(tContext, propertySpec);
+                var tProxy = this.BuildType(tContext, propertySpec);
 
 
 

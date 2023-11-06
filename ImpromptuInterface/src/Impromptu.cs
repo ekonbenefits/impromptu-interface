@@ -14,11 +14,8 @@
 //    limitations under the License.
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using ImpromptuInterface.Build;
-using ImpromptuInterface.Optimization;
-using Dynamitey;
+
 namespace ImpromptuInterface
 {
     using System;
@@ -65,20 +62,14 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
         public static dynamic ActLike(this object originalDynamic, params Type[] otherInterfaces)
-        {
-            return new ActLikeCaster(originalDynamic, otherInterfaces);
-        }
+            => BuildProxy.DefaultMaker.ActLike(originalDynamic, otherInterfaces);
 
 
-        public static TInterface Create<TTarget, TInterface>() where TTarget : new() where TInterface : class
-        {
-            return new TTarget().ActLike<TInterface>();
-        }
+        public static TInterface Create<TTarget, TInterface>() where TTarget : new() where TInterface : class 
+            => BuildProxy.DefaultMaker.Create<TTarget, TInterface>();
 
-        public static TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class
-        {
-            return  Impromptu.ActLike(Dynamic.InvokeConstructor(typeof(TTarget), args));
-        }
+        public static TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class 
+            => BuildProxy.DefaultMaker.Create<TTarget, TInterface>(args);
 
 
         /// <summary>
@@ -98,12 +89,11 @@ namespace ImpromptuInterface
         /// <param name="originalDynamic">The original dynamic.</param>
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
-        public static IEnumerable<TInterface> AllActLike<TInterface>(this IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class
-        {
-            return originalDynamic.Select(it => it.ActLike<TInterface>(otherInterfaces));
-        }
+        public static IEnumerable<TInterface> AllActLike<TInterface>(this IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class 
+            => BuildProxy.DefaultMaker.AllActLike<TInterface>(originalDynamic, otherInterfaces);
 
         /// <summary>
+        /// 
         /// Static Method that wraps an existing dynamic object with a explicit interface type
         /// </summary>
         /// <param name="originalDynamic">The original dynamic.</param>

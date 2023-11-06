@@ -62,6 +62,7 @@ namespace ImpromptuInterface.Build
         /// <param name="original"></param>
         /// <param name="interfaces"></param>
         /// <param name="informalInterface"></param>
+        /// <param name="maker"></param>
         void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface, BuildProxy.AssemblyMaker maker)
         {
             if(((object)original) == null)
@@ -74,7 +75,7 @@ namespace ImpromptuInterface.Build
 
             if (maker == null)
             {
-
+                maker = BuildProxy.DefaultMaker;
             }
 
             ActLikeProxyAssemblyMaker = maker;

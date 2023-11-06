@@ -15,6 +15,7 @@
 
 using System.Collections;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq.Expressions;
 using ImpromptuInterface.Optimization;
 
@@ -55,7 +56,7 @@ namespace ImpromptuInterface.Build
     ///</summary>
     public static class BuildProxy
     {
-        public static AssemblyMaker DefaultMaker = new AssemblyMaker();
+        public static readonly AssemblyMaker DefaultMaker = new AssemblyMaker();
 
         public class AssemblyMaker
         {
@@ -98,9 +99,7 @@ namespace ImpromptuInterface.Build
 
             public TInterface ActLike<TInterface>(object originalDynamic, params Type[] otherInterfaces) where TInterface : class
             {
-                Type tContext;
-                bool tDummy;
-                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                originalDynamic = originalDynamic.GetTargetContext(out var tContext, out var tDummy);
                 tContext = tContext.FixContext();
 
                 var tProxy = this.BuildType(tContext, typeof(TInterface), otherInterfaces);
@@ -114,9 +113,7 @@ namespace ImpromptuInterface.Build
 
             public dynamic ActLikeProperties(object originalDynamic, IDictionary<string, Type> propertySpec)
             {
-                Type tContext;
-                bool tDummy;
-                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                originalDynamic = originalDynamic.GetTargetContext(out var tContext, out var tDummy);
                 tContext = tContext.FixContext();
 
                 var tProxy = this.BuildType(tContext, propertySpec);
@@ -129,9 +126,7 @@ namespace ImpromptuInterface.Build
 
             public dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
             {
-                Type tContext;
-                bool tDummy;
-                originalDynamic = originalDynamic.GetTargetContext(out tContext, out tDummy);
+                originalDynamic = originalDynamic.GetTargetContext(out var tContext, out var tDummy);
                 tContext = tContext.FixContext();
 
                 var tProxy = this.BuildType(tContext, otherInterfaces.First(), otherInterfaces.Skip(1).ToArray());
@@ -145,9 +140,7 @@ namespace ImpromptuInterface.Build
 
 
             private ModuleBuilder _builder;
-            internal ModuleBuilder _tempBuilder;
-            internal AssemblyBuilder _tempSaveAssembly;
-
+ 
             private AssemblyBuilder _ab;
             private readonly IDictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
             private readonly object TypeCacheLock = new object();
@@ -164,54 +157,50 @@ namespace ImpromptuInterface.Build
             }
 
 
-#if false
-
-            internal class TempBuilder : IDisposable
+            public AssemblyMaker()
             {
-                private readonly string _name;
-                private bool _disposed;
-                internal TempBuilder(string name)
-                {
-                    _name = name;
-                }
-
-                public void Close()
-                {
-                    Dispose();
-                }
-
-
-                public void Dispose()
-                {
-                    if (_disposed)
-                        throw new MethodAccessException("Can't Call Dispose Twice!!");
-                    _disposed = true;
-
-
-                    _tempSaveAssembly.Save(string.Format("{0}.dll", _name));
-
-                    _tempSaveAssembly = null;
-                    _tempBuilder = null;
-                }
-
+                AssemblyAccess = AssemblyBuilderAccess.Run;
+                AssemblyName = "ImpromptuInterfaceDynamicAssembly";
             }
 
-            /// <summary>
-            /// Writes the out DLL of types created between this call and being closed used for debugging of emitted IL code
-            /// </summary>
-            /// <param name="name">The name.</param>
-            /// <returns></returns>
-            /// <remarks>
-            ///     This may be used for generating an assembly for preloading proxies, however you must be very careful when doing so as 
-            ///     changes could make the emitted asssembly out of date very easily.
-            /// </remarks>
-            public IDisposable WriteOutDll(string name)
-            {
-                GenerateAssembly(name, AssemblyBuilderAccess.RunAndSave, ref _tempSaveAssembly, ref _tempBuilder);
+            public string AssemblyName { get; private set; }
 
-                return new TempBuilder(name);
+            public AssemblyMaker(AssemblyBuilderAccess access, string assemblyName = null)
+            {
+                AssemblyAccess = access;
+                if (assemblyName == null)
+                {
+                    assemblyName = $"II_{Guid.NewGuid():N}";
+                }
+
+                AssemblyName = assemblyName;
+            }
+
+            ///<summary>
+            /// Module Builder for building proxies
+            ///</summary>
+            private ModuleBuilder Builder
+            {
+                get
+                {
+                    if (_builder == null)
+                    {
+
+                        GenerateAssembly(AssemblyName, AssemblyAccess, ref _ab, ref _builder);
+                    }
+                    return _builder;
+                }
+            }
+#if NET40
+            public void Save(string dirPath)
+            {
+                if (AssemblyAccess.HasFlag(AssemblyBuilderAccess.Save))
+                {
+                    _ab.Save(Path.Combine(dirPath, $"{AssemblyName}.dll"));
+                }
             }
 #endif
+
 
 
 
@@ -431,8 +420,6 @@ namespace ImpromptuInterface.Build
                 foreach (var tInterface in tInterfaces.Distinct())
                 {
 
-#if !SILVERLIGHT
-
                     if (tInterface != null && tAttr == null)
                     {
                         var tCustomAttributes = tInterface.GetCustomAttributesData();
@@ -449,17 +436,7 @@ namespace ImpromptuInterface.Build
                         }
                     }
 
-#else
-                if (tInterface != null && tAttr ==null){
-                        var tAttrs =tInterface.GetCustomAttributes(typeof(DefaultMemberAttribute),true);
 
-                    tAttr = tAttrs.FirstOrDefault();
-                    if(tAttr !=null){
-                             tB.SetCustomAttribute(new CustomAttributeBuilder(typeof(DefaultMemberAttribute)
-                                 .GetConstructor(new[]{typeof(String)}),new object[]{"Item"}));
-                        }
-                }
-#endif
 
 
                     var tNonRecursive = tInterface.GetCustomAttributes(typeof(NonRecursiveInterfaceAttribute), true).Any();
@@ -556,7 +533,7 @@ namespace ImpromptuInterface.Build
 
                 return tReturnType;
             }
-#if !SILVERLIGHT
+
             private object CustomAttributeTypeArgument(CustomAttributeTypedArgument argument)
             {
                 if (argument.Value is ReadOnlyCollection<CustomAttributeTypedArgument>)
@@ -605,7 +582,7 @@ namespace ImpromptuInterface.Build
                   tFieldInfos.ToArray(),
                   tFieldValues.ToArray());
             }
-#endif
+
 
             private void MakeMethod(ModuleBuilder builder, MethodInfo info, TypeBuilder typeBuilder, Type contextType, bool nonRecursive = false, bool defaultImp = true)
             {
@@ -709,7 +686,6 @@ namespace ImpromptuInterface.Build
                 foreach (var tParam in info.GetParameters())
                 {
                     var tParamBuilder = tMethodBuilder.DefineParameter(tParam.Position + 1, AttributesForParam(tParam), tParam.Name);
-#if !SILVERLIGHT
 
 
                     var tCustomAttributes = tParam.GetCustomAttributesData();
@@ -722,17 +698,7 @@ namespace ImpromptuInterface.Build
                         catch { }//For most proxies not having the same attributes won't really matter,
                                  //but just incase we don't want to stop for some unknown attribute that we can't initialize
                     }
-#else
-               var tAny =tParam.GetCustomAttributes(typeof(ParamArrayAttribute), true).Any();
-               if(tAny)
-                    tParamBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(ParamArrayAttribute).GetConstructor(Type.EmptyTypes),new object[]{}));
-               var tDynAttr =(DynamicAttribute)tParam.GetCustomAttributes(typeof(DynamicAttribute), true).FirstOrDefault();
-                if(tDynAttr !=null)
-                {
-                    tParamBuilder.SetCustomAttribute(new CustomAttributeBuilder(typeof(DynamicAttribute).GetConstructor(new[]{typeof(bool[])}
-), new object[] { tDynAttr.TransformFlags.ToArray() }));
-                }
-#endif
+
 
                 }
 
@@ -1357,9 +1323,9 @@ namespace ImpromptuInterface.Build
 
 
                 var tMp = typeBuilder.DefineProperty(tPrefixedName, PropertyAttributes.None,
-#if !SILVERLIGHT
+
                     CallingConventions.HasThis,
-#endif
+
      emitInfo.ResolveReturnType, emitInfo.ResolvedIndexParamTypes);
 
 
@@ -1680,8 +1646,7 @@ namespace ImpromptuInterface.Build
                         tHash = TypeHash.Create(strictOrder: true, moreTypes: tList.Concat(new[] { returnType }).ToArray());
                     }
 
-                    Type tType = null;
-                    if (_delegateCache.TryGetValue(tHash, out tType))
+                    if (_delegateCache.TryGetValue(tHash, out var tType))
                     {
                         return tType;
                     }
@@ -1723,7 +1688,7 @@ namespace ImpromptuInterface.Build
             // ReSharper restore UnusedParameter.Local
             {
                 var tBuilder = Builder.DefineType(
-                    string.Format("Impromptu_{0}_{1}", "Delegate", Guid.NewGuid().ToString("N")),
+                    $"Impromptu_{"Delegate"}_{Guid.NewGuid():N}",
                     TypeAttributes.Class | TypeAttributes.AnsiClass | TypeAttributes.Sealed | TypeAttributes.Public,
                     typeof(MulticastDelegate));
 
@@ -1784,27 +1749,9 @@ namespace ImpromptuInterface.Build
             public AssemblyBuilderAccess AssemblyAccess { get; private set; }
 
 
-            ///<summary>
-            /// Module Builder for buiding proxies
-            ///</summary>
-            internal ModuleBuilder Builder
-            {
-                get
-                {
-                    if (_builder == null)
-                    {
+      
 
-                        var access = AssemblyBuilderAccess.Run;
-                        var tPlainName = "ImpromptuInterfaceDynamicAssembly";
-
-
-                        GenerateAssembly(tPlainName, access, ref _ab, ref _builder);
-                    }
-                    return _tempBuilder ?? _builder;
-                }
-            }
-
-            private void GenerateAssembly(string name, AssemblyBuilderAccess access, ref AssemblyBuilder ab, ref ModuleBuilder mb)
+            private static void GenerateAssembly(string name, AssemblyBuilderAccess access, ref AssemblyBuilder ab, ref ModuleBuilder mb)
             {
                 var tName = new AssemblyName(name);
 
@@ -1813,12 +1760,14 @@ namespace ImpromptuInterface.Build
                         tName,
                         access);
 
+                mb =
+
 #if NET40
-                if (access == AssemblyBuilderAccess.RunAndSave || access == AssemblyBuilderAccess.Save)
-                    mb = ab.DefineDynamicModule("MainModule", string.Format("{0}.dll", tName.Name));
-                else
+                    access.HasFlag(AssemblyBuilderAccess.Save) 
+                    ? ab.DefineDynamicModule("MainModule", $"{tName.Name}.dll") :
 #endif
-                    mb = ab.DefineDynamicModule("MainModule");
+                    
+                    ab.DefineDynamicModule("MainModule");
             }
         }
 

@@ -192,10 +192,14 @@ namespace ImpromptuInterface.Build
                 }
             }
 #if NET40
-            public void Save(string dirPath)
+            public void Save(string dirPath = null)
             {
                 if (AssemblyAccess.HasFlag(AssemblyBuilderAccess.Save))
                 {
+                    if (dirPath == null)
+                    {
+                        dirPath = "";
+                    }
                     _ab.Save(Path.Combine(dirPath, $"{AssemblyName}.dll"));
                 }
             }

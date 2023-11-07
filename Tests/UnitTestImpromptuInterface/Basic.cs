@@ -14,10 +14,12 @@
 //    limitations under the License.
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.Serialization;
 using Microsoft.CSharp.RuntimeBinder;
 using ImpromptuInterface;
 using System.Dynamic;
+using System.Reflection;
 using Dynamitey;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Optimization;
@@ -435,6 +437,16 @@ namespace UnitTestImpromptuInterface
             tActsLike.OnEvent(null, null);
             Assert.AreEqual(false, tSet);
 
+        }
+
+        [Test]
+        public void PropertyAttributeTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            ISimpeleSetClassProps tActsLike = Impromptu.ActLike<ISimpeleSetClassProps>(tNew);
+            var attribute = (DisplayNameAttribute)tActsLike.GetType().GetProperty(nameof(ISimpeleSetClassProps.Prop1)).GetCustomAttribute(typeof(DisplayNameAttribute), true);
+            Assert.NotNull(attribute);
+            Assert.AreEqual("testDisplayName", attribute.DisplayName);
         }
 
         [Test]

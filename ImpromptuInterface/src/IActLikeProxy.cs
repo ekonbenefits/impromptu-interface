@@ -27,7 +27,7 @@ namespace ImpromptuInterface
         ///</summary>
         dynamic Original { get; }
 
-        AssemblyMaker Maker { get; }
+        ActLikeMaker Maker { get; }
 
     }
 }

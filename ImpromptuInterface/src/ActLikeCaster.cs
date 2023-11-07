@@ -15,7 +15,7 @@ namespace ImpromptuInterface
         public object Target { get; }
         private List<Type> _interfaceTypes;
 
-        public AssemblyMaker Maker {get;set;} = BuildProxy.DefaultMaker;
+        public ActLikeMaker Maker {get;set;} = BuildProxy.DefaultMaker;
 
         public override bool TryConvert(System.Dynamic.ConvertBinder binder, out object result)
         {

@@ -36,7 +36,7 @@ namespace ImpromptuInterface.Build
         ///<param name="original"></param>
         ///<param name="interfaces"></param>
         ///<param name="informalInterface"></param>
-        void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null, AssemblyMaker maker = null);
+        void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null, ActLikeMaker maker = null);
     }
 
 
@@ -51,9 +51,9 @@ namespace ImpromptuInterface.Build
         /// </summary>
         /// <value></value>
         private dynamic ActLikeProxyOriginal { get; set; }
-        private AssemblyMaker ActLikeProxyAssemblyMaker { get; set; }
+        private ActLikeMaker ActLikeProxyActLikeMaker { get; set; }
         dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
-        AssemblyMaker IActLikeProxy.Maker => ActLikeProxyAssemblyMaker;
+        ActLikeMaker IActLikeProxy.Maker => ActLikeProxyActLikeMaker;
         private bool _init = false;
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace ImpromptuInterface.Build
         /// <param name="interfaces"></param>
         /// <param name="informalInterface"></param>
         /// <param name="maker"></param>
-        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface, AssemblyMaker maker)
+        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface, ActLikeMaker maker)
         {
             if(((object)original) == null)
                 throw new ArgumentNullException(nameof(original), "Can't proxy a Null value");
@@ -78,7 +78,7 @@ namespace ImpromptuInterface.Build
                 maker = BuildProxy.DefaultMaker;
             }
 
-            ActLikeProxyAssemblyMaker = maker;
+            ActLikeProxyActLikeMaker = maker;
 
             if (ActLikeProxyOriginal is IEquivalentType dynamicObj)
             {

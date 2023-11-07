@@ -24,7 +24,7 @@ namespace UnitTestImpromptuInterface
         [OneTimeSetUp]
         public void Setup()
         {
-            SaveableMaker = Impromptu.SaveableProxyMaker("II_Generated");
+            SaveableMaker = BuildProxy.SaveableProxyMaker("II_Generated");
         }
 
         [OneTimeTearDown]

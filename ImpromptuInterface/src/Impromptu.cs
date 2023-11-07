@@ -28,12 +28,6 @@ namespace ImpromptuInterface
     public static class Impromptu
     {
 
-        public static AssemblyMaker CollectableProxyMaker() => new AssemblyMaker(AssemblyBuilderAccess.RunAndCollect);
-
-
-#if NET40
-        public static SaveableAssemblyMaker SaveableProxyMaker(string assemblyName = null) => new SaveableAssemblyMaker(AssemblyBuilderAccess.RunAndSave, assemblyName);
-#endif
         /// <summary>
         /// Extension Method that Wraps an existing object with an Explicit interface definition
         /// </summary>

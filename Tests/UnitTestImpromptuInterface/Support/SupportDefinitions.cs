@@ -16,6 +16,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Dynamitey.DynamicObjects;
@@ -103,6 +104,7 @@ namespace UnitTestImpromptuInterface
 
     public interface ISimpeleSetClassProps
     {
+        [DisplayName("testDisplayName")]
         string Prop1 { set ; }
 
         long Prop2 { set; }

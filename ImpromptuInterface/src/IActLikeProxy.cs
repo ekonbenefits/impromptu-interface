@@ -13,6 +13,8 @@
 //    See the License for the specific language governing permissions and
 //    limitations under the License.
 
+using ImpromptuInterface.Build;
+
 namespace ImpromptuInterface
 {
     /// <summary>
@@ -24,6 +26,8 @@ namespace ImpromptuInterface
         /// Returns the proxied object
         ///</summary>
         dynamic Original { get; }
-        
+
+        ActLikeMaker Maker { get; }
+
     }
 }

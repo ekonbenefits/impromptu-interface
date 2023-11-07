@@ -1,26 +1,26 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net462</TargetFrameworks>
-    <OutputType Condition="'$(TargetFramework)'!='netcoreapp2.0'">Exe</OutputType>
-   <IsPackable>false</IsPackable>
+    <TargetFrameworks>net6;net47</TargetFrameworks>
+	  <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.*" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
-    <PackageReference Include="NUnit" Version="3.7.1" />
-    <PackageReference Include="NUnit.Console" Version="3.7.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+    <PackageReference Include="NUnit" Version="3.13.3" />
+    <PackageReference Include="NUnit.Console" Version="3.16.3" />
     <PackageReference Include="Moq" Version="4.*" />
+    <PackageReference Include="IronPython" Version="2.7.*" />
+
+
+
+    <PackageReference Include="NUnit3TestAdapter" Version="4.5.0" />
   </ItemGroup>
 
 
-  <ItemGroup Condition="'$(TargetFramework)'!='netcoreapp2.0'">
-    <PackageReference Include="IronPython" Version="2.7.7" />
-  </ItemGroup>
 
-  <ItemGroup Condition="'$(TargetFramework)'=='netcoreapp2.0'">
-    <PackageReference Include="NUnit3TestAdapter" Version="3.8.*" />
-  </ItemGroup>
+
+
 
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />

@@ -1,0 +1,23 @@
+name: Build .net core
+
+on: [push]
+
+jobs:
+  build:
+    name: Test ${{ matrix.os }} for dotnet ${{ matrix.dotnet }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        dotnet: [ '6.0.x' ]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet }}
+    - name: Build with dotnet core
+      run: dotnet build --configuration Release
+    - name: Tests
+      run: dotnet test Tests/UnitTestImpromptuInterface/UnitTestImpromptuInterface.csproj --configuration Release --no-build --no-restore --filter=TestCategory!=Performance

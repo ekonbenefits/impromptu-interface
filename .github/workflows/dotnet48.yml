@@ -1,0 +1,30 @@
+name: Build CrossComple .net core/.net framework Windows
+
+on: [push]
+
+jobs:
+  build:
+    name: Test Windows .net Framework Only
+    runs-on: windows-2019
+    steps:
+    
+    - uses: actions/checkout@v2
+    
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v1.2.0
+      
+    - name: setup-msbuild
+      uses: microsoft/setup-msbuild@v1.1
+    
+    - name: Restore Packages
+      run: nuget restore ImpromptuInterface.sln
+    - name: Build solution
+      run: msbuild ImpromptuInterface.sln -t:rebuild -property:Configuration=Release
+    - name: Run vstests
+      uses: microsoft/vstest-action@v1.0.0
+      with:
+        testAssembly: UnitTestImpromptuInterface.dll
+        searchFolder: .\Tests\UnitTestImpromptuInterface\bin\Release\*\
+        runInParallel: true
+        otherConsoleOptions: /TestCaseFilter:"(TestCategory!=Performance)"
+        platform: x64

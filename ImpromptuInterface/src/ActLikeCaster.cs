@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.Serialization;
 using System.Text;
+using ImpromptuInterface.Build;
 
 namespace ImpromptuInterface
 {
@@ -13,6 +15,8 @@ namespace ImpromptuInterface
         public object Target { get; }
         private List<Type> _interfaceTypes;
 
+        public ActLikeMaker Maker {get;set;} = BuildProxy.DefaultProxyMaker;
+
         public override bool TryConvert(System.Dynamic.ConvertBinder binder, out object result)
         {
             result = null;
@@ -20,7 +24,7 @@ namespace ImpromptuInterface
             if (binder.Type.IsInterface)
             {
                 _interfaceTypes.Insert(0, binder.Type);
-                result = Impromptu.DynamicActLike(Target, _interfaceTypes.ToArray());
+                result = Maker.DynamicActLike(Target, _interfaceTypes.ToArray());
                 return true;
             }
 

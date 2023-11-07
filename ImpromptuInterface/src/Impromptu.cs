@@ -36,7 +36,7 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">Optional other interfaces.</param>
         /// <returns></returns>
         public static TInterface ActLike<TInterface>(this object originalDynamic, params Type[] otherInterfaces) where TInterface : class
-         => BuildProxy.DefaultMaker.ActLike<TInterface>(originalDynamic, otherInterfaces);
+         => BuildProxy.DefaultProxyMaker.ActLike<TInterface>(originalDynamic, otherInterfaces);
 
 
         /// <summary>
@@ -63,14 +63,14 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
         public static dynamic ActLike(this object originalDynamic, params Type[] otherInterfaces)
-            => BuildProxy.DefaultMaker.ActLike(originalDynamic, otherInterfaces);
+            => BuildProxy.DefaultProxyMaker.ActLike(originalDynamic, otherInterfaces);
 
 
         public static TInterface Create<TTarget, TInterface>() where TTarget : new() where TInterface : class 
-            => BuildProxy.DefaultMaker.Create<TTarget, TInterface>();
+            => BuildProxy.DefaultProxyMaker.Create<TTarget, TInterface>();
 
         public static TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class 
-            => BuildProxy.DefaultMaker.Create<TTarget, TInterface>(args);
+            => BuildProxy.DefaultProxyMaker.Create<TTarget, TInterface>(args);
 
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace ImpromptuInterface
         /// <param name="propertySpec">The property spec.</param>
         /// <returns></returns>
         public static dynamic ActLikeProperties(this object originalDynamic, IDictionary<string, Type> propertySpec)
-         => BuildProxy.DefaultMaker.ActLikeProperties(originalDynamic, propertySpec);
+         => BuildProxy.DefaultProxyMaker.ActLikeProperties(originalDynamic, propertySpec);
 
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
         public static IEnumerable<TInterface> AllActLike<TInterface>(this IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class 
-            => BuildProxy.DefaultMaker.AllActLike<TInterface>(originalDynamic, otherInterfaces);
+            => BuildProxy.DefaultProxyMaker.AllActLike<TInterface>(originalDynamic, otherInterfaces);
 
         /// <summary>
         /// 
@@ -101,7 +101,7 @@ namespace ImpromptuInterface
         /// <param name="otherInterfaces">The other interfaces.</param>
         /// <returns></returns>
         public static dynamic DynamicActLike(object originalDynamic, params Type[] otherInterfaces)
-            => BuildProxy.DefaultMaker.DynamicActLike(originalDynamic, otherInterfaces);
+            => BuildProxy.DefaultProxyMaker.DynamicActLike(originalDynamic, otherInterfaces);
 
 
 

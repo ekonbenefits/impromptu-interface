@@ -44,8 +44,8 @@ namespace ImpromptuInterface.Build
         public object GetRealObject(StreamingContext context)
         {
 		   var tInterfaces = Interfaces ?? MonoInterfaces.Select(it=>Type.GetType(it)).ToArray();
-           var tType =BuildProxy.DefaultMaker.BuildType(Context, tInterfaces.First(), tInterfaces.Skip(1).ToArray());
-           return ActLikeMaker.InitializeProxy(tType, Original, tInterfaces, maker:BuildProxy.DefaultMaker);
+           var tType =BuildProxy.DefaultProxyMaker.BuildType(Context, tInterfaces.First(), tInterfaces.Skip(1).ToArray());
+           return ActLikeMaker.InitializeProxy(tType, Original, tInterfaces, maker:BuildProxy.DefaultProxyMaker);
         }
 
     }

@@ -75,7 +75,7 @@ namespace ImpromptuInterface.Build
 
             if (maker == null)
             {
-                maker = BuildProxy.DefaultMaker;
+                maker = BuildProxy.DefaultProxyMaker;
             }
 
             ActLikeProxyActLikeMaker = maker;

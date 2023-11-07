@@ -1579,9 +1579,13 @@ namespace ImpromptuInterface.Build
                     tMp.SetSetMethod(setMethodBuilder);
                 }
 
-                foreach (var attrData in info.GetCustomAttributesData())
+                if (info != null)
                 {
-                    tMp.SetCustomAttribute(ToCustomAttributeBuilder(attrData));
+
+                    foreach (var attrData in info.GetCustomAttributesData())
+                    {
+                        tMp.SetCustomAttribute(ToCustomAttributeBuilder(attrData));
+                    }
                 }
             }
 

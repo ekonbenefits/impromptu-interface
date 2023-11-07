@@ -58,26 +58,6 @@ namespace ImpromptuInterface.Build
     {
         public static readonly AssemblyMaker DefaultMaker = new AssemblyMaker();
 
-        internal static Type DefineCallsiteFieldForMethod(this TypeBuilder builder, AssemblyMaker maker, string name, Type returnType, IEnumerable<Type> argTypes, MethodInfo info)
-        {
-            Type tFuncType = maker.GenerateCallSiteFuncType(argTypes, returnType, info, builder);
-            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
-
-            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
-            return tFuncType;
-
-        }
-
-        internal static Type DefineCallsiteField(this TypeBuilder builder, AssemblyMaker maker, string name, Type returnType, params Type[] argTypes)
-        {
-            Type tFuncType = maker.GenerateCallSiteFuncType(argTypes, returnType);
-            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
-
-            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
-            return tFuncType;
-
-        }
-
     }
 
 #if NET40
@@ -109,6 +89,8 @@ namespace ImpromptuInterface.Build
 
     public class AssemblyMaker
     {
+
+
         public dynamic ActLike(object originalDynamic, params Type[] otherInterfaces)
         {
             return new ActLikeCaster(originalDynamic, otherInterfaces) {Maker = this};
@@ -395,6 +377,27 @@ namespace ImpromptuInterface.Build
             MakePropertyHelper(builder, typeBuilder, tEmitInfo);
         }
 
+        private static Type DefineCallsiteFieldForMethod(TypeBuilder builder, AssemblyMaker maker, string name, Type returnType, IEnumerable<Type> argTypes, MethodInfo info)
+        {
+            Type tFuncType = maker.GenerateCallSiteFuncType(argTypes, returnType, info, builder);
+            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+
+            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
+            return tFuncType;
+
+        }
+
+
+        internal static Type DefineCallsiteField(TypeBuilder builder, AssemblyMaker maker, string name, Type returnType, params Type[] argTypes)
+        {
+            Type tFuncType = maker.GenerateCallSiteFuncType(argTypes, returnType);
+            Type tReturnType = typeof(CallSite<>).MakeGenericType(tFuncType);
+
+            builder.DefineField(name, tReturnType, FieldAttributes.Static | FieldAttributes.Public);
+            return tFuncType;
+
+        }
+
         private class MethodSigHash
         {
             public readonly string Name;
@@ -678,11 +681,11 @@ namespace ImpromptuInterface.Build
             Type tConvertFuncType = null;
             if (tReturnType != typeof(void))
             {
-                tConvertFuncType = tCStp.DefineCallsiteField(this, tConvert, tReturnType);
+                tConvertFuncType = DefineCallsiteField(tCStp, this, tConvert, tReturnType);
             }
 
             var tInvokeMethod = tEmitInfo.CallSiteInvokeName;
-            var tInvokeFuncType = tCStp.DefineCallsiteFieldForMethod(this, tInvokeMethod, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes, info);
+            var tInvokeFuncType = DefineCallsiteFieldForMethod(tCStp, this, tInvokeMethod, tReturnType != typeof(void) ? typeof(object) : typeof(void), tParamTypes, info);
 
 
 
@@ -988,22 +991,22 @@ namespace ImpromptuInterface.Build
             var tCStp = DefineBuilderForCallSite(builder, tEmitInfo.CallSiteName);
 
 
-            tEmitInfo.CallSiteIsEventFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteIsEventName, typeof(bool));
+            tEmitInfo.CallSiteIsEventFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteIsEventName, typeof(bool));
 
 
-            tEmitInfo.CallSiteAddAssignFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteAddAssignName, typeof(object), tEmitInfo.ResolveReturnType);
+            tEmitInfo.CallSiteAddAssignFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteAddAssignName, typeof(object), tEmitInfo.ResolveReturnType);
 
-            tEmitInfo.CallSiteSubtractAssignFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteSubtractAssignName, typeof(object), tEmitInfo.ResolveReturnType);
+            tEmitInfo.CallSiteSubtractAssignFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteSubtractAssignName, typeof(object), tEmitInfo.ResolveReturnType);
 
             tEmitInfo.ResolvedAddParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
-            tEmitInfo.CallSiteAddFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteAddName, typeof(object), tEmitInfo.ResolvedAddParamTypes);
+            tEmitInfo.CallSiteAddFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteAddName, typeof(object), tEmitInfo.ResolvedAddParamTypes);
 
             tEmitInfo.ResolvedRemoveParamTypes = tRemoveMethod.GetParameters().Select(it => it.ParameterType).ToArray();
-            tEmitInfo.CallSiteRemoveFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteRemoveName, typeof(object), tEmitInfo.ResolvedRemoveParamTypes);
+            tEmitInfo.CallSiteRemoveFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteRemoveName, typeof(object), tEmitInfo.ResolvedRemoveParamTypes);
 
-            tEmitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteInvokeGetName, typeof(object));
+            tEmitInfo.CallSiteInvokeGetFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteInvokeGetName, typeof(object));
 
-            tEmitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(this, tEmitInfo.CallSiteInvokeSetName, typeof(object), typeof(object));
+            tEmitInfo.CallSiteInvokeSetFuncType = DefineCallsiteField(tCStp, this, tEmitInfo.CallSiteInvokeSetName, typeof(object), typeof(object));
 
             tEmitInfo.CallSiteType = tCStp.CreateTypeInfo();
 
@@ -1314,10 +1317,9 @@ namespace ImpromptuInterface.Build
 
             emitInfo.ResolvedIndexParamTypes = new Type[] { };
             if (info != null)
-                emitInfo.ResolvedIndexParamTypes = info.GetIndexParameters().Select(it => it.ParameterType).ToArray();
-
-
-
+            {
+                emitInfo.ResolvedIndexParamTypes = Enumerable.Select(info.GetIndexParameters(), it => it.ParameterType).ToArray();
+            }
 
 
             var tCallSiteInvokeName = emitInfo.CallSiteName;
@@ -1326,12 +1328,12 @@ namespace ImpromptuInterface.Build
 
             var tConvertGet = emitInfo.CallSiteConvertName;
 
-            emitInfo.CallSiteConvertFuncType = tCStp.DefineCallsiteField(this, tConvertGet, emitInfo.ResolveReturnType);
+            emitInfo.CallSiteConvertFuncType = DefineCallsiteField(tCStp, this, tConvertGet, emitInfo.ResolveReturnType);
 
             var tInvokeGet = emitInfo.CallSiteInvokeGetName;
             if (info == null || info.CanRead)
             {
-                emitInfo.CallSiteInvokeGetFuncType = tCStp.DefineCallsiteField(this, tInvokeGet, typeof(object), emitInfo.ResolvedIndexParamTypes);
+                emitInfo.CallSiteInvokeGetFuncType = DefineCallsiteField(tCStp, this, tInvokeGet, typeof(object), emitInfo.ResolvedIndexParamTypes);
             }
 
             var tInvokeSet = emitInfo.CallSiteInvokeSetName;
@@ -1339,7 +1341,7 @@ namespace ImpromptuInterface.Build
             {
                 emitInfo.ResolvedParamTypes = info.GetSetMethod().GetParameters().Select(it => it.ParameterType).ToArray();
 
-                emitInfo.CallSiteInvokeSetFuncType = tCStp.DefineCallsiteField(this, tInvokeSet, typeof(object), emitInfo.ResolvedParamTypes);
+                emitInfo.CallSiteInvokeSetFuncType = DefineCallsiteField(tCStp, this, tInvokeSet, typeof(object), emitInfo.ResolvedParamTypes);
             }
 
             emitInfo.CallSiteType = tCStp.CreateTypeInfo();

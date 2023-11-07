@@ -19,7 +19,7 @@ namespace UnitTestImpromptuInterface
     public class Saveable : Helper
     {
 
-        public static BuildProxy.SaveableAssemblyMaker SaveableMaker;
+        public static SaveableAssemblyMaker SaveableMaker;
 
         [OneTimeSetUp]
         public void Setup()

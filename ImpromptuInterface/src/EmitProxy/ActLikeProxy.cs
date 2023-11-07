@@ -36,7 +36,7 @@ namespace ImpromptuInterface.Build
         ///<param name="original"></param>
         ///<param name="interfaces"></param>
         ///<param name="informalInterface"></param>
-        void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null, BuildProxy.AssemblyMaker maker = null);
+        void Initialize(dynamic original, IEnumerable<Type> interfaces =null, IDictionary<string, Type> informalInterface = null, AssemblyMaker maker = null);
     }
 
 
@@ -51,9 +51,9 @@ namespace ImpromptuInterface.Build
         /// </summary>
         /// <value></value>
         private dynamic ActLikeProxyOriginal { get; set; }
-        private BuildProxy.AssemblyMaker ActLikeProxyAssemblyMaker { get; set; }
+        private AssemblyMaker ActLikeProxyAssemblyMaker { get; set; }
         dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
-        BuildProxy.AssemblyMaker IActLikeProxy.Maker => ActLikeProxyAssemblyMaker;
+        AssemblyMaker IActLikeProxy.Maker => ActLikeProxyAssemblyMaker;
         private bool _init = false;
 
         /// <summary>
@@ -63,7 +63,7 @@ namespace ImpromptuInterface.Build
         /// <param name="interfaces"></param>
         /// <param name="informalInterface"></param>
         /// <param name="maker"></param>
-        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface, BuildProxy.AssemblyMaker maker)
+        void IActLikeProxyInitialize.Initialize(dynamic original, IEnumerable<Type> interfaces, IDictionary<string, Type> informalInterface, AssemblyMaker maker)
         {
             if(((object)original) == null)
                 throw new ArgumentNullException(nameof(original), "Can't proxy a Null value");

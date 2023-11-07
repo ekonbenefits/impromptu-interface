@@ -45,7 +45,7 @@ namespace ImpromptuInterface.Build
         {
 		   var tInterfaces = Interfaces ?? MonoInterfaces.Select(it=>Type.GetType(it)).ToArray();
            var tType =BuildProxy.DefaultMaker.BuildType(Context, tInterfaces.First(), tInterfaces.Skip(1).ToArray());
-           return BuildProxy.AssemblyMaker.InitializeProxy(tType, Original, tInterfaces, maker:BuildProxy.DefaultMaker);
+           return AssemblyMaker.InitializeProxy(tType, Original, tInterfaces, maker:BuildProxy.DefaultMaker);
         }
 
     }

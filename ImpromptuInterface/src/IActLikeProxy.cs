@@ -27,7 +27,7 @@ namespace ImpromptuInterface
         ///</summary>
         dynamic Original { get; }
 
-        BuildProxy.AssemblyMaker Maker { get; }
+        AssemblyMaker Maker { get; }
 
     }
 }

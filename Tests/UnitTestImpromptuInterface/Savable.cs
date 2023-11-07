@@ -19,7 +19,7 @@ namespace UnitTestImpromptuInterface
     public class Saveable : Helper
     {
 
-        public static SaveableAssemblyMaker SaveableMaker;
+        public static SaveableActLikeMaker SaveableMaker;
 
         [OneTimeSetUp]
         public void Setup()

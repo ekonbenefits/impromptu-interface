@@ -19,7 +19,7 @@ namespace UnitTestImpromptuInterface
     public class Collectable : Helper
     {
 
-        public static AssemblyMaker CollectableMaker;
+        public static ActLikeMaker CollectableMaker;
 
         [OneTimeSetUp]
         public void Setup()

@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Dynamic;
 using Dynamitey.DynamicObjects;
 using ImpromptuInterface;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace UnitTestImpromptuInterface
 
@@ -128,6 +130,17 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(tNew.NameLevel1, tActsLike.NameLevel1);
             Assert.AreEqual(tNew.Nested.NameLevel2, tActsLike.Nested.NameLevel2);
 
+        }
+
+
+        [Test]
+        public void PropertyAttributeTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            ISimpeleSetClassProps tActsLike = CollectableMaker.ActLike<ISimpeleSetClassProps>(tNew);
+            var attribute = (DisplayNameAttribute)tActsLike.GetType().GetProperty(nameof(ISimpeleSetClassProps.Prop1)).GetCustomAttribute(typeof(DisplayNameAttribute), true);
+            Assert.NotNull(attribute);
+            Assert.AreEqual("testDisplayName", attribute.DisplayName);
         }
     }
 

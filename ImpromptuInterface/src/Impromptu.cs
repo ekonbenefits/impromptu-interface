@@ -14,6 +14,7 @@
 //    limitations under the License.
 
 using System.Collections.Generic;
+using System.Reflection.Emit;
 using ImpromptuInterface.Build;
 
 namespace ImpromptuInterface
@@ -27,6 +28,12 @@ namespace ImpromptuInterface
     public static class Impromptu
     {
 
+        public static BuildProxy.AssemblyMaker CollectableProxyMaker() => new BuildProxy.AssemblyMaker(AssemblyBuilderAccess.RunAndCollect);
+
+
+#if NET40
+        public static BuildProxy.SaveableAssemblyMaker SaveableProxyMaker(string assemblyName = null) => new BuildProxy.SaveableAssemblyMaker(AssemblyBuilderAccess.RunAndSave, assemblyName);
+#endif
         /// <summary>
         /// Extension Method that Wraps an existing object with an Explicit interface definition
         /// </summary>

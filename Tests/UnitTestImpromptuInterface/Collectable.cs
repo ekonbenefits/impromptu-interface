@@ -24,7 +24,7 @@ namespace UnitTestImpromptuInterface
         [OneTimeSetUp]
         public void Setup()
         {
-            CollectableMaker = new BuildProxy.AssemblyMaker(AssemblyBuilderAccess.RunAndCollect);
+            CollectableMaker = Impromptu.CollectableProxyMaker();
         }
 
 

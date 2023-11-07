@@ -58,6 +58,34 @@ namespace ImpromptuInterface.Build
     {
         public static readonly AssemblyMaker DefaultMaker = new AssemblyMaker();
 
+
+#if NET40
+        public class SaveableAssemblyMaker : AssemblyMaker
+        {
+            public SaveableAssemblyMaker(AssemblyBuilderAccess access, string assemblyName = null) : base(access, assemblyName)
+            {
+
+            }
+
+            public void Save(string dirPath = null)
+            {
+                if (AssemblyAccess.HasFlag(AssemblyBuilderAccess.Save))
+                {
+                    if (dirPath == null)
+                    {
+                        dirPath = "";
+                    }
+                    _ab.Save(Path.Combine(dirPath, $"{AssemblyName}.dll"));
+                }
+                else
+                {
+                    throw new InvalidOperationException("AssemblyBuilder not set to be saveable");
+                }
+            }
+        }
+
+#endif
+
         public class AssemblyMaker
         {
             public dynamic ActLike(object originalDynamic, params Type[] otherInterfaces)
@@ -139,16 +167,16 @@ namespace ImpromptuInterface.Build
 
 
 
-            private ModuleBuilder _builder;
+            protected ModuleBuilder _builder;
  
-            private AssemblyBuilder _ab;
-            private readonly IDictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
-            private readonly object TypeCacheLock = new object();
+            protected AssemblyBuilder _ab;
+            protected readonly IDictionary<TypeHash, Type> _typeHash = new Dictionary<TypeHash, Type>();
+            protected readonly object TypeCacheLock = new object();
 
-            private readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
-            private readonly object DelegateCacheLock = new object();
+            protected readonly IDictionary<TypeHash, Type> _delegateCache = new Dictionary<TypeHash, Type>();
+            protected readonly object DelegateCacheLock = new object();
 
-            private readonly MethodInfo ActLikeRec = typeof(AssemblyMaker).GetMethod(nameof(RecursiveActLikeForProxy),
+            protected readonly MethodInfo ActLikeRec = typeof(AssemblyMaker).GetMethod(nameof(RecursiveActLikeForProxy),
                                                                                       new[] {typeof(AssemblyMaker), typeof(object) });
 
             public static TInterface RecursiveActLikeForProxy<TInterface>(AssemblyMaker maker, object target) where TInterface : class
@@ -191,19 +219,7 @@ namespace ImpromptuInterface.Build
                     return _builder;
                 }
             }
-#if NET40
-            public void Save(string dirPath = null)
-            {
-                if (AssemblyAccess.HasFlag(AssemblyBuilderAccess.Save))
-                {
-                    if (dirPath == null)
-                    {
-                        dirPath = "";
-                    }
-                    _ab.Save(Path.Combine(dirPath, $"{AssemblyName}.dll"));
-                }
-            }
-#endif
+
 
 
 

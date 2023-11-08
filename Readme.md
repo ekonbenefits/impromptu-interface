@@ -6,8 +6,8 @@ You can find the latest bleed edge on MyGet [![MyGet Pre Release](https://img.sh
 
 Platform | Status
 -------- | ------
-NET4 (Win)    | ![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml/badge.svg)
-NETSTD (Win/Mac/Linux)  | ![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml/badge.svg)
+NET4 (Win)    | [![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml/badge.svg)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml?query=branch%3Amaster)
+NETSTD (Win/Mac/Linux)  | [![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml?query=branch%3Amaster)
  
 
 Some of the features of `ImpromptuInterface` have been moved into another library called [Dynamitey](https://github.com/ekonbenefits/dynamitey), `ImpromptuInterface` depends on `Dynamitey`.

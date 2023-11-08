@@ -6,9 +6,8 @@ You can find the latest bleed edge on MyGet [![MyGet Pre Release](https://img.sh
 
 Platform | Status
 -------- | ------
-Windows | [![Build status](https://ci.appveyor.com/api/projects/status/36mhw90u9d7gmohb/branch/master?svg=true)](https://ci.appveyor.com/project/jbtule/impromptu-interface/branch/master)
-Mac     | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/ekonbenefits/impromptu-interface/branches/master/2)](https://travis-ci.org/ekonbenefits/impromptu-interface)
-Linux   | [![Build Status](https://travis-matrix-badges.herokuapp.com/repos/ekonbenefits/impromptu-interface/branches/master/1)](https://travis-ci.org/ekonbenefits/impromptu-interface)
+NET4 (Win)    | ![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml/badge.svg)
+NETSTD (Win/Mac/Linux)  | ![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml/badge.svg)
  
 
 Some of the features of `ImpromptuInterface` have been moved into another library called [Dynamitey](https://github.com/ekonbenefits/dynamitey), `ImpromptuInterface` depends on `Dynamitey`.

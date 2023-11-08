@@ -142,7 +142,7 @@ namespace ImpromptuInterface.Build
         }
 
 
-        public ActLikeMaker()
+        internal ActLikeMaker()
         {
             AssemblyAccess = AssemblyBuilderAccess.Run;
             AssemblyName = $"{nameof(ImpromptuInterface)}DynamicAssembly";

@@ -46,7 +46,7 @@ namespace ImpromptuInterface.Build
     ///</summary>
     public static class BuildProxy
     {
-        public static readonly ActLikeMaker DefaultProxyMaker = new ActLikeMaker();
+        public static ActLikeMaker DefaultProxyMaker { get; } = new ActLikeMaker();
 
         public static ActLikeMaker CollectableProxyMaker() => new ActLikeMaker(AssemblyBuilderAccess.RunAndCollect);
 

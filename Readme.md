@@ -2,7 +2,6 @@ net4.0/netstd2.0 framework to allow you to wrap any object (static or dynamic) w
 
 ImpromptuInterface is available Nuget [![NuGet](https://img.shields.io/nuget/dt/ImpromptuInterface.svg)](https://www.nuget.org/packages/ImpromptuInterface/)
 
-You can find the latest bleed edge on MyGet [![MyGet Pre Release](https://img.shields.io/myget/dynamitey-ci/vpre/ImpromptuInterface.svg)](https://www.myget.org/feed/dynamitey-ci/package/nuget/ImpromptuInterface)
 
 Platform | Status
 -------- | ------

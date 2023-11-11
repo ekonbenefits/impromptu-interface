@@ -654,6 +654,15 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(true, tOut);
             Assert.AreEqual(4, tResult2);
         }
+
+        [Test]
+        public void GenericStructInNullableContextTest()
+        {
+            var result = new
+            {
+                SomeOtherProperty = "test"
+            }.ActLike<IInterfaceWithGenericStructProperty>();
+        }
     }
 }
 

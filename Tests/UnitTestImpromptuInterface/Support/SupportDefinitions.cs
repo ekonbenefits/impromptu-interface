@@ -577,4 +577,27 @@ namespace UnitTestImpromptuInterface
         }
     }
 
+#if NET6_0_OR_GREATER
+#nullable enable
+#endif
+    public struct GenericStruct<T>
+    {
+        public string Something { get; }
+
+        public GenericStruct(string something)
+        {
+            Something = something;
+        }
+    }
+
+    public interface IInterfaceWithGenericStructProperty
+    {
+        GenericStruct<IInterfaceWithGenericStructProperty> StructProperty { get; }
+
+        string SomeOtherProperty { get; }
+    }
+#if NET6_0_OR_GREATER
+#nullable restore
+#endif
+
 }

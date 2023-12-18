@@ -102,11 +102,22 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public class DisplayNamesAttribute : Attribute
+    {
+        public string[] DisplayNames { get; }
+
+        public DisplayNamesAttribute(params string[] displayNames)
+        {
+            DisplayNames = displayNames;
+        }
+    }
+
     public interface ISimpeleSetClassProps
     {
         [DisplayName("testDisplayName")]
         string Prop1 { set ; }
 
+        [DisplayNames("testDisplayName1", "testDisplayName2")]
         long Prop2 { set; }
 
         Guid Prop3 { set; }

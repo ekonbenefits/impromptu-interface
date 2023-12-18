@@ -444,9 +444,28 @@ namespace UnitTestImpromptuInterface
         {
             dynamic tNew = new ExpandoObject();
             ISimpeleSetClassProps tActsLike = Impromptu.ActLike<ISimpeleSetClassProps>(tNew);
-            var attribute = (DisplayNameAttribute)tActsLike.GetType().GetProperty(nameof(ISimpeleSetClassProps.Prop1)).GetCustomAttribute(typeof(DisplayNameAttribute), true);
+            var attribute = (DisplayNameAttribute)
+                tActsLike
+                    .GetType()
+                    .GetProperty(nameof(ISimpeleSetClassProps.Prop1))
+                    .GetCustomAttribute(typeof(DisplayNameAttribute), true);
             Assert.NotNull(attribute);
             Assert.AreEqual("testDisplayName", attribute.DisplayName);
+        }
+
+        [Test]
+        public void PropertyAttributeWithArrayArgumentTest()
+        {
+            dynamic tNew = new ExpandoObject();
+            ISimpeleSetClassProps tActsLike = Impromptu.ActLike<ISimpeleSetClassProps>(tNew);
+            var attribute = (DisplayNamesAttribute)
+                tActsLike
+                    .GetType()
+                    .GetProperty(nameof(ISimpeleSetClassProps.Prop2))
+                    .GetCustomAttribute(typeof(DisplayNamesAttribute), true);
+            Assert.NotNull(attribute);
+            Assert.AreEqual("testDisplayName1", attribute.DisplayNames[0]);
+            Assert.AreEqual("testDisplayName2", attribute.DisplayNames[1]);
         }
 
         [Test]

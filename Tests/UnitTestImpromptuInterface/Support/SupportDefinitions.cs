@@ -102,11 +102,22 @@ namespace UnitTestImpromptuInterface
         Guid Prop3 { get; }
     }
 
+    public class DisplayNamesAttribute : Attribute
+    {
+        public string[] DisplayNames { get; }
+
+        public DisplayNamesAttribute(params string[] displayNames)
+        {
+            DisplayNames = displayNames;
+        }
+    }
+
     public interface ISimpeleSetClassProps
     {
         [DisplayName("testDisplayName")]
         string Prop1 { set ; }
 
+        [DisplayNames("testDisplayName1", "testDisplayName2")]
         long Prop2 { set; }
 
         Guid Prop3 { set; }
@@ -576,5 +587,28 @@ namespace UnitTestImpromptuInterface
             get { throw new NotImplementedException(); }
         }
     }
+
+#if NET6_0_OR_GREATER
+#nullable enable
+#endif
+    public struct GenericStruct<T>
+    {
+        public string Something { get; }
+
+        public GenericStruct(string something)
+        {
+            Something = something;
+        }
+    }
+
+    public interface IInterfaceWithGenericStructProperty
+    {
+        GenericStruct<IInterfaceWithGenericStructProperty> StructProperty { get; }
+
+        string SomeOtherProperty { get; }
+    }
+#if NET6_0_OR_GREATER
+#nullable restore
+#endif
 
 }

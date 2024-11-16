@@ -15,7 +15,7 @@ using Microsoft.CSharp.RuntimeBinder;
 namespace ImpromptuInterface.Build
 {
 
-#if NET40
+#if NETFRAMEWORK
     public class SaveableActLikeMaker : ActLikeMaker
     {
         public SaveableActLikeMaker(AssemblyBuilderAccess access, string assemblyName = null) : base(access, assemblyName)
@@ -1800,7 +1800,7 @@ namespace ImpromptuInterface.Build
 
             mb =
 
-#if NET40
+#if NETFRAMEWORK
                 access.HasFlag(AssemblyBuilderAccess.Save) 
                     ? ab.DefineDynamicModule("MainModule", $"{tName.Name}.dll") :
 #endif

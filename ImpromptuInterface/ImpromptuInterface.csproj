@@ -8,8 +8,8 @@
     <Authors> jbtule </Authors>
     <Copyright>Copyright © Contributors 2010-2017</Copyright>
     <PackageProjectUrl>https://github.com/ekonbenefits/impromptu-interface</PackageProjectUrl>
-    <PackageLicenseUrl>https://github.com/ekonbenefits/impromptu-interface/blob/master/License.txt</PackageLicenseUrl>
-    <PackageIconUrl>https://raw.githubusercontent.com/ekonbenefits/impromptu-interface/master/graphics/ImpromptuInterface-Icon.png</PackageIconUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <PackageIcon>ImpromptuInterface-Icon.png</PackageIcon>
     <PackageTags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr currying</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <IncludeSource>True</IncludeSource>
@@ -17,6 +17,7 @@
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
   <Import Project="..\Version.props" />
+  
   <ItemGroup>
     <PackageReference Include="Dynamitey" Version="3.0.3" />
   </ItemGroup>
@@ -27,4 +28,13 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.*" />
     <PackageReference Include="Microsoft.CSharp" Version="4.*" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="../graphics/ImpromptuInterface-Icon.png" Pack="true" PackagePath="\"/>
+  </ItemGroup>
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <Copy
+            SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg"
+            DestinationFolder="$(SolutionDir)\publish"
+    />
+  </Target>
 </Project>

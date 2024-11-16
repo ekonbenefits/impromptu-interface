@@ -16,8 +16,11 @@ namespace UnitTestImpromptuInterface
             Console.WriteLine(format,args);
         }
     }
-
+    
+    //Not rewriting test for no good reason
+#pragma warning disable CS0618 // Type or member is obsolete
     public class Helper:AssertionHelper
+#pragma warning restore CS0618 // Type or member is obsolete
     {
         public WriteLineContext TestContext
         {

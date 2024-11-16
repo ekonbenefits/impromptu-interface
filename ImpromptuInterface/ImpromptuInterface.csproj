@@ -27,4 +27,10 @@
     <PackageReference Include="System.Reflection.Emit" Version="4.*" />
     <PackageReference Include="Microsoft.CSharp" Version="4.*" />
   </ItemGroup>
+  <Target Name="CopyPackage" AfterTargets="Pack">
+    <Copy
+            SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg"
+            DestinationFolder="$(SolutionDir)\publish"
+    />
+  </Target>
 </Project>

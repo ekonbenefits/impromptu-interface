@@ -14,6 +14,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{87291621-4395-4EFE-A070-9A007B26EF6D}"
 	ProjectSection(SolutionItems) = preProject
 		Version.props = Version.props
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Global

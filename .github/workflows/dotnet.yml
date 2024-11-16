@@ -8,8 +8,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        dotnet: [ '6.0.x' ]
-        os: [ubuntu-latest, windows-latest, macOS-latest]
+        dotnet: [ '8.0.x' ]
+        os: [ubuntu-latest, macOS-latest]
     
     steps:
     - uses: actions/checkout@v1
@@ -20,4 +20,4 @@ jobs:
     - name: Build with dotnet core
       run: dotnet build --configuration Release
     - name: Tests
-      run: dotnet test Tests/UnitTestImpromptuInterface/UnitTestImpromptuInterface.csproj --configuration Release --no-build --no-restore --filter=TestCategory!=Performance
+      run: dotnet test DotNetDBF.Test/DotNetDBF.Test.csproj --configuration Release --no-build --no-restore

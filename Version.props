@@ -1,5 +1,6 @@
 <Project>
     <PropertyGroup>
-        <VersionPrefix>8.0.5</VersionPrefix>
+        <VersionPrefix>8.0.6</VersionPrefix>
+        <VersionSuffix Condition=" '$(GITHUB_RUN_NUMBER)' != '' ">preview$(GITHUB_RUN_NUMBER)</VersionSuffix>
     </PropertyGroup>
 </Project>

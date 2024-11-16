@@ -22,7 +22,7 @@ namespace ImpromptuInterface.Build
     using System.Reflection.Emit;
 
 
-#if NET40
+#if NETFRAMEWORK
     internal static class CompatHelper
     {
         public static Type GetTypeInfo(this Type type) => type;
@@ -50,7 +50,7 @@ namespace ImpromptuInterface.Build
 
         public static ActLikeMaker CollectableProxyMaker() => new ActLikeMaker(AssemblyBuilderAccess.RunAndCollect);
 
-#if NET40
+#if NETFRAMEWORK
         public static SaveableActLikeMaker SaveableProxyMaker(string assemblyName = null) => new SaveableActLikeMaker(AssemblyBuilderAccess.RunAndSave, assemblyName);
 #endif
     }

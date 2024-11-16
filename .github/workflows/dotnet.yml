@@ -20,4 +20,4 @@ jobs:
     - name: Build with dotnet core
       run: dotnet build --configuration Release
     - name: Tests
-      run: dotnet test DotNetDBF.Test/DotNetDBF.Test.csproj --configuration Release --no-build --no-restore
+      run: dotnet test Tests/UnitTestImpromptuInterface/UnitTestImpromptuInterface.csproj --configuration Release --no-build --no-restore --filter=TestCategory!=Performance

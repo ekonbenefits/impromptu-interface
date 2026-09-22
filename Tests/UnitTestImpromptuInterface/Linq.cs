@@ -26,6 +26,11 @@ namespace UnitTestImpromptuInterface.Silverlight
 namespace UnitTestImpromptuInterface
 #endif
 {
+    /// <summary>
+    /// ActLike over a Dynamitey Linq proxy, including driven from IronPython — a proxy called
+    /// through a foreign DLR binder, which nothing else here covers. Tests of `Dynamic.Linq`
+    /// itself belong to Dynamitey and are not kept here.
+    /// </summary>
     [TestFixture]
     public class Linq : Helper
     {
@@ -45,27 +50,6 @@ namespace UnitTestImpromptuInterface
             var expected = Enumerable.Range(1, 10).Select(i=> Tuple.Create(1,i)).Aggregate(0,(accum,each)=> each.Item2);
             ILinq<int> linq = Impromptu.ActLike(Dynamic.Linq(Enumerable.Range(1, 10)));
             var actual = linq.Select(i => Tuple.Create(1, i)).Aggregate(0, (accum, each) => each.Item2);
-
-            Assert.AreEqual(expected, actual);
-
-        }
-
-        [Test]
-        public void SimpleLinqDynamicLinq()
-        {
-
-            var expected = Enumerable.Range(1, 10).Where(i => i > 5).Skip(1).Take(2).Max();
-            var actual = Dynamic.Linq(Enumerable.Range(1, 10)).Where(new Func<int,bool>(i => i > 5)).Skip(1).Take(2).Max();
-
-            Assert.AreEqual(expected, actual);
-        }
-            [Test]
-        public void MoreGenericsDynamicLinq()
-        {
-            var expected = Enumerable.Range(1, 10).Select(i => Tuple.Create(1, i)).Aggregate(0, (accum, each) => each.Item2);
-            var actual = Dynamic.Linq(Enumerable.Range(1, 10))
-                .Select(new Func<int,Tuple<int,int>>(i => Tuple.Create(1, i)))
-                .Aggregate(0, new Func<int,Tuple<int,int>,int>((accum, each) => each.Item2));
 
             Assert.AreEqual(expected, actual);
 
@@ -96,7 +80,7 @@ namespace UnitTestImpromptuInterface
               ILinq<int> linq = Impromptu.ActLike(Dynamic.Linq(Enumerable.Range(1, 10)));
               var actual = RunPythonHelper(linq,@"
 import System
-result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
+result = linq.Where.Overloads[System.Func[System.Int32, System.Boolean]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
 
 ");
               Assert.AreEqual( expected,actual);
@@ -114,36 +98,6 @@ result = linq.OfType[System.Int32]().Skip(1).First()
 
 ");
               Assert.AreEqual(expected,actual);
-          }
-
-          [Test]
-          public void PythonDynamicLinqGenericArgs()
-          {
-              var start = new Object[] { 1, "string", 4, Guid.Empty, 6 };
-              var expected = start.OfType<int>().Skip(1).First();
-              var actual = RunPythonHelper(Dynamic.Linq(start), @"
-import System
-result = linq.OfType[System.Int32]().Skip(1).First()
-
-");
-              Assert.AreEqual(expected, actual);
-          }
-
-
-          [Test]
-          public void PythonDynamicLinq()
-          {
-              var expected = Enumerable.Range(1, 10).Where(x => x < 5).OrderBy(x => 10 - x).First();
-
-
-              var actual = RunPythonHelper(Dynamic.Linq(Enumerable.Range(1, 10)),
-                                           @"
-import System
-result = linq.Where.Overloads[System.Func[int, bool]](lambda x: x < 5).OrderBy(lambda x: 10-x).First()
-
-");
-
-              Assert.AreEqual(expected, actual);
           }
 
 

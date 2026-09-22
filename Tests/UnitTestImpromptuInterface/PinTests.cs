@@ -1,9 +1,8 @@
-// Candidate pin tests for ekonbenefits/impromptu-interface.
-// Naming is intentionally generic (no calling-application terms) so these
-// can live directly in Tests/UnitTestImpromptuInterface alongside Basic.cs / Generics.cs.
+// Gaps found in downstream usage: the runtime-Type entry point, a generic collection
+// interface synthesized over a dynamic object that implements none of it, and combining a
+// proxy interface with an empty marker interface.
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
@@ -19,7 +18,7 @@ using AnyUnit.Constraints.Pieces;
 
 namespace UnitTestImpromptuInterface
 {
-    // ---- Support types (would go in Support/SupportDefinitions.cs) ----
+    // ---- Support types, local to these tests ----
 
     public interface ITaggedProps
     {
@@ -36,30 +35,21 @@ namespace UnitTestImpromptuInterface
     /// operation to a target that is only materialized on first access, and only
     /// implements the dynamic-dispatch protocol (TryGetMember/TryInvokeMember/etc.)
     /// -- it does NOT itself implement IList/IEnumerable/generic collection interfaces.
+    /// Materializes its target on first use; the factory counts its own calls, since a count
+    /// kept behind this class's own `_target == null` guard could never exceed 1 whatever the
+    /// proxy did, and asserting on it would pin nothing.
     /// </summary>
     public class LazyForwarder : DynamicObject
     {
         private readonly Func<object> _factory;
         private object _target;
-        public int FactoryCallCount { get; private set; }
 
         public LazyForwarder(Func<object> factory)
         {
             _factory = factory;
         }
 
-        private object Target
-        {
-            get
-            {
-                if (_target == null)
-                {
-                    _target = _factory();
-                    FactoryCallCount++;
-                }
-                return _target;
-            }
-        }
+        private object Target => _target ?? (_target = _factory());
 
         public override bool TryGetMember(GetMemberBinder binder, out object result)
         {
@@ -94,8 +84,8 @@ namespace UnitTestImpromptuInterface
     [TestFixture]
     public class PinTests : Helper
     {
-        // 1. Impromptu.DynamicActLike(obj, Type) -- the runtime-Type overload has
-        //    no existing coverage anywhere in the suite.
+        // 1. Impromptu.DynamicActLike(obj, Type): the behaviour is covered indirectly through
+        //    ActLikeCaster, but this public static entry point had no test of its own.
         [Test]
         public void DynamicActLikeWithRuntimeTypeTest()
         {
@@ -131,6 +121,14 @@ namespace UnitTestImpromptuInterface
 
             Assert.AreEqual("a", tActsLikeA.Name);
             Assert.AreEqual("b", tActsLikeB.Name);
+
+            // Each call really produced a proxy, not the object handed in...
+            Assert.IsInstanceOf<ITaggedProps>(tActsLikeA);
+            Assert.IsInstanceOf<ITaggedProps>(tActsLikeB);
+            Assert.AreNotSame(tActsLikeA, tActsLikeB);
+
+            // ...and the second reused the first's proxy type, which is the transparency claimed.
+            Assert.AreEqual(((object)tActsLikeA).GetType(), ((object)tActsLikeB).GetType());
         }
 
         // 2. ActLike<IList<T>> proxied over a lazily-populated dynamic object that
@@ -140,26 +138,30 @@ namespace UnitTestImpromptuInterface
         public void GenericListInterfaceOverLazyDynamicTest()
         {
             var tBacking = new List<int> { 1, 2, 3 };
-            var tForwarder = new LazyForwarder(() => tBacking);
+            var tCalls = 0;
+            var tForwarder = new LazyForwarder(() => { tCalls++; return tBacking; });
 
             IList<int> tActsLike = Impromptu.ActLike<IList<int>>(tForwarder);
 
-            // Not yet materialized.
-            Assert.AreEqual(0, tForwarder.FactoryCallCount);
+            // Not yet materialized: ActLike does not touch the target.
+            Assert.AreEqual(0, tCalls);
 
             Assert.AreEqual(3, tActsLike.Count);
             Assert.AreEqual(2, tActsLike[1]);
             Assert.IsTrue(tActsLike.Contains(3));
+
+            tActsLike[0] = 9;                    // TrySetIndex, through the synthesized setter
+            Assert.AreEqual(9, tBacking[0]);
 
             tActsLike.Add(4);
             Assert.AreEqual(4, tBacking.Count);
             Assert.AreEqual(4, tBacking[3]);
 
             var tCollected = tActsLike.ToList(); // exercises GetEnumerator()
-            Assert.AreEqual(new List<int> { 1, 2, 3, 4 }, tCollected);
+            Assert.AreEqual(new List<int> { 9, 2, 3, 4 }, tCollected);
 
-            // Only materialized once despite multiple member calls above.
-            Assert.AreEqual(1, tForwarder.FactoryCallCount);
+            // Materialized once across every member call above, not once per call.
+            Assert.AreEqual(1, tCalls);
         }
 
         // 3. Combining a real proxy interface with an empty marker/tag interface via

@@ -40,6 +40,7 @@
     <Compile Include="..\UnitTestImpromptuInterface\Generics.cs" Link="Generics.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\ImpromptuDynamic.cs" Link="ImpromptuDynamic.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\MimicTest.cs" Link="MimicTest.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\PinTests.cs" Link="PinTests.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\PrivateTest.cs" Link="PrivateTest.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\Savable.cs" Link="Savable.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\Support\FixtureSetup.cs" Link="Support\FixtureSetup.cs" />

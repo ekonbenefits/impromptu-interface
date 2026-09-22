@@ -178,6 +178,58 @@ jobs:
           name: coverage
           path: coverage/report/Cobertura.xml
 
+  # After a green master run, rewrite the README's test and coverage badges from that run's own
+  # numbers, and commit only if one changed. [skip ci] so the badge commit starts no new run.
+  # No external badge service and no GitHub Pages: the shields URLs are static text in the
+  # README, and this edits them.
+  badges:
+    name: badges
+    needs: [build, wasm, coverage]
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: results-ubuntu-latest
+          path: results
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: coverage
+          path: coverage
+
+      - name: Rewrite badges
+        shell: bash
+        run: |
+          set -e
+          tests=$(python3 - <<'PY'
+          import json, glob
+          d = json.load(open(glob.glob('results/**/net10.0.json', recursive=True)[0]))
+          print(sum(1 for a in d['Assemblies'] for f in a['Fixtures'] for t in f['Tests']
+                      for r in t['Results'] if r['Kind'] == 'Success'))
+          PY
+          )
+          read line branch < <(python3 - <<'PY'
+          import glob, xml.etree.ElementTree as ET
+          t = ET.parse(glob.glob('coverage/**/Cobertura.xml', recursive=True)[0]).getroot()
+          print(round(float(t.get('line-rate')) * 100), round(float(t.get('branch-rate')) * 100))
+          PY
+          )
+          color() { if [ "$1" -ge 90 ]; then echo brightgreen; elif [ "$1" -ge 75 ]; then echo green; else echo yellow; fi; }
+          sed -i -E "s|tests-[0-9]+%20passed-[a-z]+|tests-${tests}%20passed-brightgreen|" Readme.md
+          sed -i -E "s|line%20coverage-[0-9]+%25-[a-z]+|line%20coverage-${line}%25-$(color $line)|" Readme.md
+          sed -i -E "s|branch%20coverage-[0-9]+%25-[a-z]+|branch%20coverage-${branch}%25-$(color $branch)|" Readme.md
+          git diff --quiet Readme.md && { echo "badges unchanged"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Readme: badges from the latest master run (${tests} tests, ${line}% line, ${branch}% branch) [skip ci]"
+          git push
+
   publish:
     name: publish prerelease
     needs: [build, wasm]

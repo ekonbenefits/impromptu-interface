@@ -437,6 +437,18 @@ namespace ImpromptuInterface.Build
 
                 var tNonRecursive = tInterface.GetCustomAttributes(typeof(NonRecursiveInterfaceAttribute), true).Any();
 
+                // The accessors that the properties and events below will emit, so the method
+                // loop can skip exactly those. Filtering on IsSpecialName instead would also
+                // drop an ordinary method that happens to carry [SpecialName] - which COM
+                // interop interfaces do, EnvDTE.Property.let_Value among them - and the proxy
+                // type would then fail to load for a method it never implemented.
+                var tAccessors = new HashSet<MethodInfo>(
+                    tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance)
+                        .SelectMany(it => it.GetAccessors(nonPublic: true))
+                    .Concat(tInterface.GetEvents(BindingFlags.Public | BindingFlags.Instance)
+                        .SelectMany(it => new[] { it.GetAddMethod(true), it.GetRemoveMethod(true), it.GetRaiseMethod(true) }))
+                    .Where(it => it != null));
+
                 foreach (var tInfo in tInterface.GetProperties(BindingFlags.Public | BindingFlags.Instance))
                 {
                     var tNonRecursiveProp = tNonRecursive ||
@@ -444,7 +456,7 @@ namespace ImpromptuInterface.Build
 
                     MakeProperty(builder, tInfo, tB, contextType, nonRecursive: tNonRecursiveProp, defaultImp: tPropertyNameHash.Add(tInfo.Name));
                 }
-                foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !it.IsSpecialName))
+                foreach (var tInfo in tInterface.GetMethods(BindingFlags.Public | BindingFlags.Instance).Where(it => !tAccessors.Contains(it)))
                 {
                     var tNonRecursiveMeth = tNonRecursive ||
                                             tInfo.GetCustomAttributes(typeof(NonRecursiveInterfaceAttribute), true).Any();

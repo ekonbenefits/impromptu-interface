@@ -173,6 +173,32 @@ namespace UnitTestImpromptuInterface
             Assert.IsFalse(Util.IsAnonymousType(null));
         }
 
+        // --- [SpecialName] on something that is not an accessor ---------------------------
+
+        [Test]
+        public void A_SpecialName_method_is_implemented_like_any_other()
+        {
+            // #15: the method loop used to skip everything marked IsSpecialName, so a method
+            // like COM's let_Value was never emitted and the proxy type failed to load.
+            var target = new SpecialNamedTarget();
+            var proxy = target.ActLike<ISpecialNamed>();
+
+            Assert.AreEqual("let:1", proxy.let_Value(1));
+            Assert.AreEqual("ordinary:2", proxy.Ordinary(2));
+        }
+
+        [Test]
+        public void A_SpecialName_property_is_still_a_property()
+        {
+            // The flag on a property must keep behaving as a property, not become a method.
+            var target = new SpecialNamedTarget();
+            var proxy = target.ActLike<ISpecialNamed>();
+
+            Assert.AreEqual("tagged", proxy.Tagged);
+            proxy.Tagged = "written";
+            Assert.AreEqual("written", target.Tagged);
+        }
+
         // --- casting between interfaces ---------------------------------------------------
 
         [Test]

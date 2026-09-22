@@ -115,6 +115,30 @@ namespace UnitTestImpromptuInterface
     }
 
 
+    /// <summary>
+    /// A method carrying [SpecialName] without being a property or event accessor. COM interop
+    /// interfaces have these - EnvDTE.Property.let_Value is the one from #15 - and a proxy has
+    /// to implement them like any other method.
+    /// </summary>
+    public interface ISpecialNamed
+    {
+        [SpecialName]
+        string let_Value(object value);
+
+        string Ordinary(object value);
+
+        [SpecialName]
+        string Tagged { get; set; }
+    }
+
+    public class SpecialNamedTarget
+    {
+        public string Value { get; set; } = "unset";
+        public string let_Value(object value) => "let:" + value;
+        public string Ordinary(object value) => "ordinary:" + value;
+        public string Tagged { get; set; } = "tagged";
+    }
+
     /// <summary>A second interface PropPoco satisfies, for casting a proxy on to another one.</summary>
     public interface IPropPocoGet
     {

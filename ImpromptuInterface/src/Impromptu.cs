@@ -51,7 +51,8 @@ namespace ImpromptuInterface
             if (actLikeProxy != null)
             {
                 object original = actLikeProxy.Original;
-                // The one place the stand-in target would be handed out rather than used.
+                // Where the stand-in would be handed out rather than used; Initialize
+                // guards the way back in.
                 Build.NoTarget.ThrowIfAbsent(original);
                 return original;
             }

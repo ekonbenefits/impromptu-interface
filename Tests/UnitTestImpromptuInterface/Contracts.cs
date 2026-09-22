@@ -113,6 +113,36 @@ namespace UnitTestImpromptuInterface
             Assert.Throws<InvalidOperationException>(() => Impromptu.UndoActLike(orphan));
         }
 
+        [Test]
+        public void An_orphan_proxy_does_not_break_a_healthy_one_it_is_compared_to()
+        {
+            // object.Equals dispatches on its first argument, so asking the other proxy's target
+            // to answer made a perfectly good proxy fail on the orphan's behalf - and a Contains
+            // over a list of good proxies threw mid-scan because the needle was an orphan.
+            var proxy = new PropPoco { Prop1 = "one" }.ActLike<ISimpeleClassProps>();
+            var orphan = (ISimpeleClassProps)Activator.CreateInstance(proxy.GetType());
+
+            Assert.IsFalse(proxy.Equals(orphan));
+            Assert.IsFalse(Equals(proxy, orphan));
+            Assert.IsFalse(new List<ISimpeleClassProps> { proxy }.Contains(orphan));
+
+            // The orphan itself still explains itself when it is the one being asked.
+            Assert.Throws<InvalidOperationException>(() => orphan.Equals(proxy));
+        }
+
+        [Test]
+        public void A_proxy_cannot_be_initialized_with_the_stand_in_target()
+        {
+            var proxy = new PropPoco { Prop1 = "one" }.ActLike<ISimpeleClassProps>();
+            var orphan = (ISimpeleClassProps)Activator.CreateInstance(proxy.GetType());
+
+            object standIn = null;
+            try { var ignored = ((IActLikeProxy)orphan).Original; standIn = ignored; } catch { }
+
+            var fresh = (IActLikeProxyInitialize)Activator.CreateInstance(proxy.GetType());
+            Assert.Throws<InvalidOperationException>(() => fresh.Initialize(standIn));
+        }
+
         // --- getting back out -------------------------------------------------------------
 
         [Test]

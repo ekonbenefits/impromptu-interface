@@ -55,8 +55,9 @@ namespace ImpromptuInterface.Build
         // fails on first use with "Cannot perform runtime binding on a null reference", which
         // names neither the cause nor the cure. A checked getter would work for the emitted
         // members, which all read through IActLikeProxy.Original - but Equals, GetHashCode,
-        // ToString and GetObjectData read this field directly, and the check costs ~10% of a
-        // forwarded property set, measured. The stand-in covers every reader and costs nothing.
+        // ToString and GetObjectData read this field directly, and the check cost about 10% of
+        // the time of a forwarded property set, measured. The stand-in covers every reader and
+        // costs nothing.
         private dynamic ActLikeProxyOriginal { get; set; } = NoTarget.Instance;
         private ActLikeMaker ActLikeProxyActLikeMaker { get; set; }
         dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
@@ -74,6 +75,10 @@ namespace ImpromptuInterface.Build
         {
             if(((object)original) == null)
                 throw new ArgumentNullException(nameof(original), "Can't proxy a Null value");
+
+            // Not a hot path, and it is the one way the stand-in could be taken back in as a
+            // real target - through a hand-built ActLikeProxySerializationHelper, say.
+            NoTarget.ThrowIfAbsent((object)original);
 
             if (_init)
                 throw new MethodAccessException("Initialize should not be called twice!");
@@ -135,7 +140,10 @@ namespace ImpromptuInterface.Build
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
             if (ReferenceEquals(ActLikeProxyOriginal, other.ActLikeProxyOriginal)) return true;
-            return Equals(other.ActLikeProxyOriginal, ActLikeProxyOriginal);
+            // This proxy's target first: object.Equals dispatches on its first argument, and
+            // asking the *other* one to answer means a healthy proxy compared against a proxy
+            // with no target fails on the other's behalf rather than answering false.
+            return Equals((object)ActLikeProxyOriginal, (object)other.ActLikeProxyOriginal);
         }
 
         /// <summary>

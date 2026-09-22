@@ -27,9 +27,9 @@ namespace ImpromptuInterface.Build
     /// <remarks>
     /// A stand-in rather than a check on the way in: the emitted members all read the target
     /// through <see cref="IActLikeProxy.Original"/> and would be covered by a check there, but
-    /// <c>Equals</c>, <c>GetHashCode</c> and <c>ToString</c> read the field directly, and a
-    /// branch on that property costs about a tenth of a forwarded property set. One shared
-    /// instance, so an un-initialized proxy allocates nothing extra.
+    /// <c>Equals</c>, <c>GetHashCode</c>, <c>ToString</c> and <c>GetObjectData</c> read the
+    /// field directly, and a branch on that property cost about 10% of the time of a forwarded
+    /// property set. One shared instance, so an un-initialized proxy allocates nothing extra.
     /// </remarks>
     internal sealed class NoTarget : DynamicObject
     {

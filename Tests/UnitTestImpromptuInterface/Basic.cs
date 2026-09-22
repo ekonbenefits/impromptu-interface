@@ -25,7 +25,11 @@ using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Optimization;
 
 #if !SELFRUNNER
-using NUnit.Framework;
+using AnyUnit;
+using AnyUnit.Run;
+using AnyUnit.Style.Nunit;
+using AnyUnit.Constraints;
+using AnyUnit.Constraints.Pieces;
 #endif
 
 

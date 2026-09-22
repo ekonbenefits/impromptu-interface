@@ -1335,6 +1335,23 @@ namespace UnitTestImpromptuInterface
 
        
 
+        /// <summary>Whether the dynamic operation actually reached the mock's TryBinaryOperation.</summary>
+        private bool WasCalled(DynamicObject mock, ExpressionType op)
+        {
+            object ignored;
+            try
+            {
+                Mock.Get(mock).Verify(
+                    s => s.TryBinaryOperation(It.Is<BinaryOperationBinder>(b => b.Operation == op), It.IsAny<object>(), out ignored),
+                    Times.AtLeastOnce);
+                return true;
+            }
+            catch (MockException)
+            {
+                return false;
+            }
+        }
+
         private DynamicObject CreateMock(ExpressionType op)
         {
             var tMock = new Mock<DynamicObject>() { CallBase = true };
@@ -1356,6 +1373,7 @@ namespace UnitTestImpromptuInterface
         {
             var tMock = CreateMock(ExpressionType.Add);
             Dynamic.InvokeBinaryOperator(tMock, ExpressionType.Add, 4);
+            Assert.IsTrue(WasCalled(tMock, ExpressionType.Add));   // the operator reached TryBinaryOperation
         }
              
         
@@ -1372,6 +1390,7 @@ namespace UnitTestImpromptuInterface
             var tType = ExpressionType.Subtract;
             var tMock = CreateMock(tType);
             Dynamic.InvokeBinaryOperator(tMock, tType, 4);
+            Assert.IsTrue(WasCalled(tMock, tType));               // the operator reached TryBinaryOperation
         }
 
     

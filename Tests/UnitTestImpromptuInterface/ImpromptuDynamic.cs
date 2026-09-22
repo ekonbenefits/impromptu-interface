@@ -79,6 +79,7 @@ namespace UnitTestImpromptuInterface
             dynamic tTest = new Get(tPoco);
 
             tTest.Action();
+            Assert.IsTrue(tPoco.Ran);                    // the void call reached the target
         }
 
         [Test]
@@ -156,6 +157,7 @@ namespace UnitTestImpromptuInterface
             dynamic tTest = new TestForwarder(tPoco);
 
             tTest.Action();
+            Assert.IsTrue(tPoco.Ran);                    // the void call reached the target
         }
 
 

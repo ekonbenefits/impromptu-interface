@@ -138,6 +138,20 @@ result = linq.OfType[System.Int32]().Skip(1).First()
             Console.WriteLine("}");
             Console.WriteLine();
 
+            // The members this generation produces are how ILinq<T> was authored in the first
+            // place, so assert it still produces them rather than only printing: an empty or
+            // shapeless run means the reflection below stopped matching.
+            var generated = tList
+                .Where(it => it.GetParameters().Any()
+                    && (HelperIsGenericExtension(it, typeof(IEnumerable<>))
+                        || it.GetParameters().First().ParameterType == typeof(IEnumerable)))
+                .Select(HelperMakeName)
+                .ToList();
+
+            Assert.IsNotEmpty(generated);
+            foreach (var expected in new[] { "Where", "Select", "First" })
+                Assert.IsTrue(generated.Any(it => it.Contains(expected)), "generated ILinq<T> declares " + expected);
+
             Console.WriteLine("//Skipped Methods");
             foreach (var line in tList
             .Where(it => it.GetParameters().Any()

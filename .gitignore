@@ -157,3 +157,6 @@ Icon
 
 # BenchmarkDotNet writes its reports here on every run.
 BenchmarkDotNet.Artifacts/
+
+# Savable.cs emits this into the working directory when the tests run.
+II_Generated.dll

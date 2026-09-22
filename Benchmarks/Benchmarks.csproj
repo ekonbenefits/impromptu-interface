@@ -11,6 +11,8 @@
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.14.*" />
+    <!-- The other run-time proxy generator, for scale. -->
+    <PackageReference Include="Castle.Core" Version="5.2.*" />
   </ItemGroup>
 
   <ItemGroup>

@@ -73,7 +73,7 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
-        public void ToString_is_the_target_s()
+        public void ToString_forwards_to_the_target()
         {
             var poco = new PropPoco { Prop1 = "one" };
             var proxy = poco.ActLike<ISimpeleClassProps>();

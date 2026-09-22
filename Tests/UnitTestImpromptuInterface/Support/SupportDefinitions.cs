@@ -115,6 +115,12 @@ namespace UnitTestImpromptuInterface
     }
 
 
+    /// <summary>A second interface PropPoco satisfies, for casting a proxy on to another one.</summary>
+    public interface IPropPocoGet
+    {
+        string Prop1 { get; }
+    }
+
     public interface IPropPocoProp
     {
         PropPoco ReturnProp { get; set; }

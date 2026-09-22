@@ -16,7 +16,10 @@ using Microsoft.Scripting;
 
 #if !SELFRUNNER
 
-using NUnit.Framework;
+using AnyUnit.Run;
+using AnyUnit.Style.Nunit;
+using AnyUnit.Constraints;
+using AnyUnit.Constraints.Pieces;
 #endif
 
 

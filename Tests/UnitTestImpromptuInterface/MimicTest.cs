@@ -1,7 +1,10 @@
 ﻿using System;
 using Dynamitey.DynamicObjects;
 #if !SELFRUNNER
-using NUnit.Framework;
+using AnyUnit.Run;
+using AnyUnit.Style.Nunit;
+using AnyUnit.Constraints;
+using AnyUnit.Constraints.Pieces;
 #endif
 
 
@@ -15,7 +18,7 @@ namespace UnitTestImpromptuInterface
     /// This is the craziest set of tests I've ever written in my life...
     /// </summary>
     [TestFixture]
-    public class MimicTest
+    public class MimicTest : Helper
     {
         private class SubMimic : Mimic
         {

@@ -75,7 +75,6 @@ jobs:
       - name: Build
         run: dotnet build Tests/UnitTestImpromptuInterface.Wasm --configuration Release
 
-      # The Blazor SDK copies the project's wwwroot into the output, harness included.
       - name: Test
         working-directory: Tests/UnitTestImpromptuInterface.Wasm/bin/Release/net10.0-browser/wwwroot
         run: bun runtests.mjs

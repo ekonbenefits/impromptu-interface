@@ -47,6 +47,11 @@
     <Compile Include="..\UnitTestImpromptuInterface\Support\TestTypes.cs" Link="Support\TestTypes.cs" />
   </ItemGroup>
 
+  <!-- The Blazor SDK does not copy wwwroot to the build output, only to a publish. -->
+  <ItemGroup>
+    <None Include="wwwroot/runtests.mjs" CopyToOutputDirectory="PreserveNewest" Link="wwwroot/runtests.mjs" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />
     <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj" />

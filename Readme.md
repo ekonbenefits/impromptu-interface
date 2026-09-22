@@ -7,9 +7,10 @@ net4.0/netstd2.0 framework to allow you to wrap any object (static or dynamic) w
 [![NuGet](https://img.shields.io/nuget/dt/ImpromptuInterface.svg)](https://www.nuget.org/packages/ImpromptuInterface/)
 
 Available on [NuGet](https://www.nuget.org/packages/ImpromptuInterface/). One workflow covers
-`net40`, `netstandard2.0` and `net10.0` on Windows, macOS and Linux, plus a browser-wasm leg;
-each run's summary carries the per-platform test table, and the full HTML report is on the run
-as a `test-report` artifact.
+`net40`, `netstandard2.0` and `net10.0` on Windows, macOS and Linux, plus a browser-wasm leg.
+From the latest master build: [test results](https://ekonbenefits.github.io/impromptu-interface/tests/)
+and [coverage](https://ekonbenefits.github.io/impromptu-interface/coverage/). Every run also
+carries its own per-platform table in the run summary.
 
 
 Some of the features of `ImpromptuInterface` have been moved into another library called [Dynamitey](https://github.com/ekonbenefits/dynamitey), `ImpromptuInterface` depends on `Dynamitey`.

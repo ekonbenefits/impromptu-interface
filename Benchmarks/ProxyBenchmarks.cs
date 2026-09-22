@@ -2,6 +2,7 @@ using System;
 using System.Reflection;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Configs;
+using Castle.DynamicProxy;
 using ImpromptuInterface;
 
 namespace Benchmarks
@@ -24,6 +25,8 @@ namespace Benchmarks
         private PropertyInfo _prop1;
         private MethodInfo _func;
         private dynamic _dynamic;
+        private ProxyGenerator _castleGenerator;
+        private IPoco _castleProxy;
 
         [GlobalSetup]
         public void Setup()
@@ -33,6 +36,8 @@ namespace Benchmarks
             _prop1 = typeof(Poco).GetProperty(nameof(Poco.Prop1));
             _func = typeof(Poco).GetMethod(nameof(Poco.Func));
             _dynamic = _poco;
+            _castleGenerator = new ProxyGenerator();
+            _castleProxy = _castleGenerator.CreateInterfaceProxyWithoutTarget<IPoco>(new DuckInterceptor(_poco));
         }
 
         // --- making one -----------------------------------------------------------------------
@@ -40,6 +45,9 @@ namespace Benchmarks
         /// <summary>ActLike with the proxy type already built - the cost every call after the first.</summary>
         [Benchmark(Description = "ActLike<IPoco>() (type cached)"), BenchmarkCategory("create")]
         public IPoco ActLike_Cached() => _poco.ActLike<IPoco>();
+
+        [Benchmark(Description = "Castle CreateInterfaceProxyWithoutTarget"), BenchmarkCategory("create")]
+        public IPoco ActLike_Castle() => _castleGenerator.CreateInterfaceProxyWithoutTarget<IPoco>(new DuckInterceptor(_poco));
 
         [Benchmark(Baseline = true, Description = "new Direct() (no proxy)"), BenchmarkCategory("create")]
         public IPoco Create_Declared() => new Direct();
@@ -51,6 +59,9 @@ namespace Benchmarks
 
         [Benchmark(Baseline = true, Description = "declared.Prop1"), BenchmarkCategory("get")]
         public string Get_Declared() => _declared.Prop1;
+
+        [Benchmark(Description = "Castle proxy.Prop1"), BenchmarkCategory("get")]
+        public string Get_Castle() => _castleProxy.Prop1;
 
         [Benchmark(Description = "dynamic .Prop1"), BenchmarkCategory("get")]
         public string Get_Dynamic() => _dynamic.Prop1;
@@ -76,6 +87,9 @@ namespace Benchmarks
 
         [Benchmark(Baseline = true, Description = "declared.Func(arg)"), BenchmarkCategory("call")]
         public string Call_Declared() => _declared.Func("a");
+
+        [Benchmark(Description = "Castle proxy.Func(arg)"), BenchmarkCategory("call")]
+        public string Call_Castle() => _castleProxy.Func("a");
 
         [Benchmark(Description = "dynamic .Func(arg)"), BenchmarkCategory("call")]
         public string Call_Dynamic() => _dynamic.Func("a");

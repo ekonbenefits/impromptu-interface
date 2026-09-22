@@ -36,6 +36,7 @@
   <ItemGroup>
     <Compile Include="..\UnitTestImpromptuInterface\Basic.cs" Link="Basic.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\Collectable.cs" Link="Collectable.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Contracts.cs" Link="Contracts.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\Generics.cs" Link="Generics.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\ImpromptuDynamic.cs" Link="ImpromptuDynamic.cs" />
     <Compile Include="..\UnitTestImpromptuInterface\MimicTest.cs" Link="MimicTest.cs" />

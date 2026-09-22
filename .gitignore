@@ -154,3 +154,6 @@ Icon
 #new ide folders
 .vs/
 .idea/
+
+# BenchmarkDotNet writes its reports here on every run.
+BenchmarkDotNet.Artifacts/

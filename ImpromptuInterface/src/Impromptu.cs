@@ -50,7 +50,10 @@ namespace ImpromptuInterface
             var actLikeProxy = proxiedObject as IActLikeProxy;
             if (actLikeProxy != null)
             {
-                return actLikeProxy.Original;
+                object original = actLikeProxy.Original;
+                // The one place the stand-in target would be handed out rather than used.
+                Build.NoTarget.ThrowIfAbsent(original);
+                return original;
             }
             return proxiedObject;
         }

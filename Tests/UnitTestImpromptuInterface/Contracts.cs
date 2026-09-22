@@ -98,6 +98,21 @@ namespace UnitTestImpromptuInterface
             Assert.IsTrue(error.Message.Contains("ActLike"), "says what to do instead");
         }
 
+        [Test]
+        public void An_orphan_proxy_says_so_for_every_member_not_only_the_forwarded_ones()
+        {
+            // Equals, GetHashCode and ToString read the target directly rather than through
+            // IActLikeProxy.Original, and printing one in a log or putting it in a dictionary
+            // is at least as likely as calling a member. They explain themselves too.
+            var proxyType = new PropPoco { Prop1 = "one" }.ActLike<ISimpeleClassProps>().GetType();
+            var orphan = (ISimpeleClassProps)Activator.CreateInstance(proxyType);
+
+            Assert.Throws<InvalidOperationException>(() => orphan.ToString());
+            Assert.Throws<InvalidOperationException>(() => orphan.GetHashCode());
+            Assert.Throws<InvalidOperationException>(() => orphan.Equals(new PropPoco()));
+            Assert.Throws<InvalidOperationException>(() => Impromptu.UndoActLike(orphan));
+        }
+
         // --- getting back out -------------------------------------------------------------
 
         [Test]
@@ -186,7 +201,10 @@ namespace UnitTestImpromptuInterface
         {
             // A dynamic invocation cannot see a value type's parameterless constructor, so that
             // case goes through Activator instead. Both paths land in the same place.
-            var withoutArgs = Impromptu.Create<TallyStruct, ITally>();
+            // Through the params overload deliberately: Create<TTarget, TInterface>() with no
+            // arguments binds to the `where TTarget : new()` overload, which is `new TTarget()`
+            // and never reaches DynamicConstructor at all.
+            var withoutArgs = Impromptu.Create<TallyStruct, ITally>(new object[0]);
             Assert.AreEqual(0, withoutArgs.Count);
 
             var withArgs = Impromptu.Create<TallyStruct, ITally>(7);
@@ -219,7 +237,7 @@ namespace UnitTestImpromptuInterface
         // --- casting between interfaces ---------------------------------------------------
 
         [Test]
-        public void A_caster_does_not_convert_to_a_non_interface_type()
+        public void A_caster_currently_discards_a_non_interface_conversion()   // pinned, see #80
         {
             // TryConvert's second branch assigns `result = Target` when the target already is
             // the requested type, and then returns false regardless - so the conversion is

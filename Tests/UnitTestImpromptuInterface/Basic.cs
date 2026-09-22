@@ -685,6 +685,11 @@ namespace UnitTestImpromptuInterface
             {
                 SomeOtherProperty = "test"
             }.ActLike<IInterfaceWithGenericStructProperty>();
+
+            // The point is that building the proxy does not blow up on the generic struct
+            // property in a nullable context; the proxy itself should still work.
+            Assert.IsNotNull(result);
+            Assert.AreEqual("test", result.SomeOtherProperty);
         }
     }
 }

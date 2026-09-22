@@ -38,6 +38,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic mimic = new Mimic();
             dynamic result = mimic.I.Can.Get.Any.Property.I.Want.And.It.Wont.Blow.Up;
+            Assert.IsInstanceOf<Mimic>(result);          // every member is another Mimic
         }
 
         [Test]
@@ -45,6 +46,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic mimic = new Mimic();
             dynamic result = mimic.I.Can.Set.Any.Property.I.Want.And.It.Wont.Blow = "Up";
+            Assert.AreEqual("Up", result);               // an assignment's value is what was assigned
         }
 
         [Test]
@@ -52,6 +54,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic mimic = new Mimic();
             dynamic result = mimic.I.Can.Call.Any.Method.I.Want.And.It.Wont.Blow.Up();
+            Assert.IsInstanceOf<Mimic>(result);
         }
 
         [Test]
@@ -59,6 +62,7 @@ namespace UnitTestImpromptuInterface
         {
             dynamic mimic = new Mimic();
             dynamic result = mimic.I().Can().Call().Any().Method().I().Want().And().It().Wont().Blow().Up("And", "Any", "Parameter", "I", "Want", 1, 2, 3, 44.99m);
+            Assert.IsInstanceOf<Mimic>(result);
         }
 
         [Test]
@@ -66,13 +70,14 @@ namespace UnitTestImpromptuInterface
         {
             dynamic mimic = new Mimic();
             dynamic result = mimic["I"]["Can"]["Get"]["Indexes"]["All"]["Day"]["Like"]["It"]["Aint"]["No"]["Thang"];
+            Assert.IsInstanceOf<Mimic>(result);
         }
 
         [Test]
         public void Set_Index()
         {
             dynamic mimic = new Mimic();
-            mimic["I"]["Can"]["Set"]["Indexes"]["All"]["Day"]["Like"]["It"]["Aint"]["No"] = "Thang";
+            Assert.DoesNotThrow(() => mimic["I"]["Can"]["Set"]["Indexes"]["All"]["Day"]["Like"]["It"]["Aint"]["No"] = "Thang");
         }
 
         [Test]
@@ -86,6 +91,14 @@ namespace UnitTestImpromptuInterface
             object Object = mimic;
             Guid Guid = mimic;
             DateTime DateTime = mimic;
+
+            // A conversion gives the target type's default-constructed value.
+            Assert.AreEqual(0, Int32);
+            Assert.AreEqual(0d, Double);
+            Assert.AreEqual(0f, Float);
+            Assert.IsNotNull(Object);
+            Assert.AreEqual(Guid.Empty, Guid);
+            Assert.AreEqual(default(DateTime), DateTime);
         }
 
         [Test]
@@ -107,6 +120,7 @@ namespace UnitTestImpromptuInterface
             result = mimic |= true;
             result = mimic &= false;
             result = mimic %= 5;
+            Assert.IsInstanceOf<Mimic>(result);          // an operator on a Mimic is a Mimic
         }
 
         [Test]
@@ -124,6 +138,7 @@ namespace UnitTestImpromptuInterface
             result = thing1 & thing2;
             result = thing1 ^ thing2;
             result = thing1 % thing2;
+            Assert.IsInstanceOf<Mimic>(result);
         }
 
         [Test]

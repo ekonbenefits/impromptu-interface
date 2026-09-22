@@ -305,8 +305,12 @@ namespace UnitTestImpromptuInterface
 
     public class VoidMethodPoco
     {
+        /// <summary>So a test of a void call can assert the call arrived, not merely that it did not throw.</summary>
+        public bool Ran { get; private set; }
+
         public void Action()
         {
+           Ran = true;
            Console.WriteLine("VoidFunc");
         }
     }

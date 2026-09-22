@@ -160,3 +160,7 @@ BenchmarkDotNet.Artifacts/
 
 # Savable.cs emits this into the working directory when the tests run.
 II_Generated.dll
+
+# Test results and coverage, written by a local run.
+results/
+coverage/

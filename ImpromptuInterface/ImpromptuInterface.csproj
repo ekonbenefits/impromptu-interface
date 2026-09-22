@@ -1,6 +1,10 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net40;netstandard2.0</TargetFrameworks>
+    <!-- net40 and netstandard2.0 stay: dropping either is a breaking change for
+         consumers, and NuGet hands every .NET Framework consumer the net40 asset
+         regardless of how new their framework is. net10.0 is additive - a .NET 10
+         consumer gets it instead of falling back to netstandard2.0. -->
+    <TargetFrameworks>net40;netstandard2.0;net10.0</TargetFrameworks>
     <SignAssembly>True</SignAssembly>
     <AssemblyOriginatorKeyFile>sn.snk</AssemblyOriginatorKeyFile>
     <Description>A Lightweight Duck Casting Framework for dynamic C#</Description>
@@ -13,17 +17,26 @@
     <PackageTags>ducktyping duckcasting dynamic .net40 Silverlight proxy impromptu interface reflection dlr currying</PackageTags>
     <IncludeSymbols>True</IncludeSymbols>
     <IncludeSource>True</IncludeSource>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
   </PropertyGroup>
-  <Import Project="..\Version.props" />
-  
   <ItemGroup>
     <PackageReference Include="Dynamitey" Version="3.0.3" />
   </ItemGroup>
   <ItemGroup Condition="'$(TargetFramework)'=='net40'">
     <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
+  <!--
+    Binary serialization is obsolete from .NET 8 (SYSLIB0050/SYSLIB0051), but ISerializable is
+    on the public ActLikeProxy base that every emitted proxy derives from, and IObjectReference
+    on the public ActLikeProxySerializationHelper. Dropping them on this leg alone would make
+    the public surface differ per target framework; keeping them costs nothing at run time,
+    since a consumer there has no BinaryFormatter to reach them with anyway.
+  -->
+  <PropertyGroup Condition="'$(TargetFramework)'=='net10.0'">
+    <NoWarn>$(NoWarn);SYSLIB0050;SYSLIB0051</NoWarn>
+  </PropertyGroup>
+
+  <!-- Both are inbox on net10.0; referencing them there is NU1510. -->
   <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
     <PackageReference Include="System.Reflection.Emit" Version="4.*" />
     <PackageReference Include="Microsoft.CSharp" Version="4.*" />
@@ -31,10 +44,4 @@
   <ItemGroup>
     <None Include="../graphics/ImpromptuInterface-Icon.png" Pack="true" PackagePath="\"/>
   </ItemGroup>
-  <Target Name="CopyPackage" AfterTargets="Pack">
-    <Copy
-            SourceFiles="$(OutputPath)$(PackageId).$(PackageVersion).nupkg"
-            DestinationFolder="$(SolutionDir)\publish"
-    />
-  </Target>
 </Project>

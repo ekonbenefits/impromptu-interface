@@ -1,0 +1,29 @@
+<Project>
+
+  <!--
+    Version comes from git tags, through MinVer, rather than a hand-maintained Version.props.
+    The old file carried <VersionPrefix>8.0.6</VersionPrefix> plus a VersionSuffix built from
+    GITHUB_RUN_NUMBER, so a local build and a CI build of the same commit disagreed, and the
+    prefix had to be remembered by hand at release time.
+
+    MinVerMinimumMajorMinor is the floor for untagged builds, and so is where "what is the next
+    release" gets declared. Without it, MinVer increments the patch instead: sitting on v8.0.6
+    would make every untagged build read 8.0.7-alpha.<height>, i.e. claim to be heading for a
+    patch release. Raise it whenever the next intended release changes; the tag itself is only
+    cut when actually releasing.
+  -->
+  <PropertyGroup>
+    <MinVerTagPrefix>v</MinVerTagPrefix>
+    <MinVerMinimumMajorMinor>8.1</MinVerMinimumMajorMinor>
+  </PropertyGroup>
+
+  <!-- A warning that reaches CI is a warning nobody is going to fix. -->
+  <PropertyGroup Condition="'$(CI)' == 'true'">
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="MinVer" Version="6.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
+</Project>

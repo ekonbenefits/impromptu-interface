@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>Benchmarks.ProxyBenchmarks-20260922-115534</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.14.0, macOS 27.0 (26A428) [Darwin 27.0.0]
+Apple M1 Pro, 1 CPU, 10 logical and 10 physical cores
+.NET SDK 10.0.400
+  [Host]   : .NET 8.0.8 (8.0.824.36612), Arm64 RyuJIT AdvSIMD
+  ShortRun : .NET 8.0.8 (8.0.824.36612), Arm64 RyuJIT AdvSIMD
+</code></pre>
+<pre><code>Job=ShortRun  IterationCount=3  LaunchCount=1  
+WarmupCount=3  
+</code></pre>
+
+<table>
+<thead><tr><th>Method                    </th><th>Categories</th><th>Mean </th><th>Error</th><th>StdDev</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>proxy.Func(arg)</td><td>call</td><td>12.6107 ns</td><td>0.3760 ns</td><td>0.0206 ns</td><td>1.72</td><td>0.01</td><td>0.0051</td><td>32 B</td><td>1.00</td>
+</tr><tr><td>declared.Func(arg)</td><td>call</td><td>7.3218 ns</td><td>0.5879 ns</td><td>0.0322 ns</td><td>1.00</td><td>0.01</td><td>0.0051</td><td>32 B</td><td>1.00</td>
+</tr><tr><td>&#39;dynamic .Func(arg)&#39;</td><td>call</td><td>11.0369 ns</td><td>0.0566 ns</td><td>0.0031 ns</td><td>1.51</td><td>0.01</td><td>0.0051</td><td>32 B</td><td>1.00</td>
+</tr><tr><td>MethodInfo.Invoke</td><td>call</td><td>32.0110 ns</td><td>4.3380 ns</td><td>0.2378 ns</td><td>4.37</td><td>0.03</td><td>0.0102</td><td>64 B</td><td>2.00</td>
+</tr><tr><td>&#39;ActLike&lt;IPoco&gt;() (type cached)&#39;</td><td>create</td><td>561.8601 ns</td><td>11.7317 ns</td><td>0.6431 ns</td><td>129.62</td><td>1.73</td><td>0.1516</td><td>952 B</td><td>29.75</td>
+</tr><tr><td>&#39;new Direct() (no proxy)&#39;</td><td>create</td><td>4.3355 ns</td><td>1.2244 ns</td><td>0.0671 ns</td><td>1.00</td><td>0.02</td><td>0.0051</td><td>32 B</td><td>1.00</td>
+</tr><tr><td>proxy.Prop1</td><td>get</td><td>5.2981 ns</td><td>0.0775 ns</td><td>0.0042 ns</td><td>6.39</td><td>0.09</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>declared.Prop1</td><td>get</td><td>0.8293 ns</td><td>0.2359 ns</td><td>0.0129 ns</td><td>1.00</td><td>0.02</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>&#39;dynamic .Prop1&#39;</td><td>get</td><td>2.7250 ns</td><td>0.1193 ns</td><td>0.0065 ns</td><td>3.29</td><td>0.04</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>PropertyInfo.GetValue</td><td>get</td><td>8.3386 ns</td><td>1.6267 ns</td><td>0.0892 ns</td><td>10.06</td><td>0.16</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>&#39;proxy.Prop1 = v&#39;</td><td>set</td><td>3.9849 ns</td><td>0.2447 ns</td><td>0.0134 ns</td><td>1.71</td><td>0.01</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>&#39;declared.Prop1 = v&#39;</td><td>set</td><td>2.3270 ns</td><td>0.0184 ns</td><td>0.0010 ns</td><td>1.00</td><td>0.00</td><td>-</td><td>-</td><td>NA</td>
+</tr><tr><td>PropertyInfo.SetValue</td><td>set</td><td>15.4092 ns</td><td>0.1478 ns</td><td>0.0081 ns</td><td>6.62</td><td>0.00</td><td>-</td><td>-</td><td>NA</td>
+</tr></tbody></table>
+</body>
+</html>

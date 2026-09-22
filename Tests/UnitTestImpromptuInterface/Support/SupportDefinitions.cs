@@ -25,21 +25,6 @@ using ImpromptuInterface;
 namespace UnitTestImpromptuInterface
 {
 
-    public static class TimeIt
-    {
-        public static Stopwatch Go(Action action, int interation = 1000000)
-        {
-            var tStopwatch = new Stopwatch();
-            tStopwatch.Start();
-            for (int i = 0; i < interation; i++)
-            {
-                action();
-            }
-            tStopwatch.Stop();
-            return tStopwatch;
-        }
-    }
-
     public class TestForwarder:BaseForwarder
     {
         public TestForwarder(object target) : base(target)

@@ -81,6 +81,23 @@ namespace UnitTestImpromptuInterface
             Assert.AreEqual(poco.ToString(), proxy.ToString());
         }
 
+        // --- a proxy with no target -------------------------------------------------------
+
+        [Test]
+        public void A_proxy_built_without_a_target_says_so()
+        {
+            // #37: Activator.CreateInstance on a proxy *type* gives a proxy with nothing to
+            // forward to. It used to fail on first use with "Cannot perform runtime binding on
+            // a null reference", which names neither the cause nor the cure.
+            var proxyType = new PropPoco { Prop1 = "one" }.ActLike<ISimpeleClassProps>().GetType();
+            var orphan = (ISimpeleClassProps)Activator.CreateInstance(proxyType);
+
+            var error = Assert.Throws<InvalidOperationException>(() => { var ignored = orphan.Prop1; });
+
+            Assert.IsTrue(error.Message.Contains("no target"), "says what is wrong");
+            Assert.IsTrue(error.Message.Contains("ActLike"), "says what to do instead");
+        }
+
         // --- getting back out -------------------------------------------------------------
 
         [Test]
@@ -162,6 +179,32 @@ namespace UnitTestImpromptuInterface
             Assert.AreNotEqual(one, without);                // an informal interface is part of the key
         }
 
+        // --- constructing the target ------------------------------------------------------
+
+        [Test]
+        public void Create_constructs_a_struct_target()
+        {
+            // A dynamic invocation cannot see a value type's parameterless constructor, so that
+            // case goes through Activator instead. Both paths land in the same place.
+            var withoutArgs = Impromptu.Create<TallyStruct, ITally>();
+            Assert.AreEqual(0, withoutArgs.Count);
+
+            var withArgs = Impromptu.Create<TallyStruct, ITally>(7);
+            Assert.AreEqual(7, withArgs.Count);
+        }
+
+        [Test]
+        public void Create_chooses_a_constructor_by_the_arguments_runtime_types()
+        {
+            // Not Activator.CreateInstance: the overload is picked from what the arguments
+            // actually are, as C#'s `new T(dynamicArg)` does.
+            var fromInt = Impromptu.Create<TallyClass, ITally>(3);
+            var fromString = Impromptu.Create<TallyClass, ITally>("12");
+
+            Assert.AreEqual(3, fromInt.Count);
+            Assert.AreEqual(12, fromString.Count);   // the string overload parsed it
+        }
+
         // --- anonymous types --------------------------------------------------------------
 
         [Test]
@@ -174,6 +217,33 @@ namespace UnitTestImpromptuInterface
         }
 
         // --- casting between interfaces ---------------------------------------------------
+
+        [Test]
+        public void A_caster_does_not_convert_to_a_non_interface_type()
+        {
+            // TryConvert's second branch assigns `result = Target` when the target already is
+            // the requested type, and then returns false regardless - so the conversion is
+            // reported as failed and the assignment is discarded. See #80.
+            var poco = new PropPoco { Prop1 = "one" };
+            dynamic caster = Impromptu.ActLike(poco, typeof(ISimpeleClassProps));
+
+            Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(() =>
+            {
+                PropPoco asTarget = caster;
+            });
+        }
+
+        [Test]
+        public void A_caster_will_not_convert_to_an_unrelated_type()
+        {
+            var poco = new PropPoco { Prop1 = "one" };
+            dynamic caster = Impromptu.ActLike(poco, typeof(ISimpeleClassProps));
+
+            Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(() =>
+            {
+                Guid unrelated = caster;
+            });
+        }
 
         [Test]
         public void One_caster_converts_to_each_interface_it_was_given()

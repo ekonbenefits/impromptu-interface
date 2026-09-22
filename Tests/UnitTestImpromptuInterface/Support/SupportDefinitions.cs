@@ -115,6 +115,26 @@ namespace UnitTestImpromptuInterface
     }
 
 
+    public interface ITally
+    {
+        int Count { get; }
+    }
+
+    /// <summary>A value type, whose parameterless constructor a dynamic invocation cannot see.</summary>
+    public struct TallyStruct
+    {
+        public TallyStruct(int count) { Count = count; }
+        public int Count { get; }
+    }
+
+    /// <summary>Two constructors, so the overload has to be chosen by the argument's runtime type.</summary>
+    public class TallyClass
+    {
+        public TallyClass(int count) { Count = count; }
+        public TallyClass(string count) { Count = int.Parse(count); }
+        public int Count { get; }
+    }
+
     /// <summary>A second interface PropPoco satisfies, for casting a proxy on to another one.</summary>
     public interface IPropPocoGet
     {

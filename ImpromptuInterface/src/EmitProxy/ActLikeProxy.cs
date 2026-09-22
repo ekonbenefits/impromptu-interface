@@ -52,7 +52,26 @@ namespace ImpromptuInterface.Build
         /// <value></value>
         private dynamic ActLikeProxyOriginal { get; set; }
         private ActLikeMaker ActLikeProxyActLikeMaker { get; set; }
-        dynamic IActLikeProxy.Original => ActLikeProxyOriginal;
+        dynamic IActLikeProxy.Original
+        {
+            get
+            {
+                // Every emitted member reads the target through here, so this is the one place
+                // an un-initialized proxy can be caught. Without it the first forwarded call
+                // binds against null and reports "Cannot perform runtime binding on a null
+                // reference", which says nothing about the actual mistake.
+                if (!_init)
+                {
+                    throw new InvalidOperationException(
+                        $"This {GetType().Name} has no target. A proxy wraps an object and forwards to it, " +
+                        "so it cannot be constructed on its own - Activator.CreateInstance on a proxy type " +
+                        "produces one with nothing to forward to. Use ActLike on the object you want wrapped. " +
+                        "For an object with storage of its own, ActLike over an ExpandoObject.");
+                }
+
+                return ActLikeProxyOriginal;
+            }
+        }
         ActLikeMaker IActLikeProxy.Maker => ActLikeProxyActLikeMaker;
         private bool _init = false;
 

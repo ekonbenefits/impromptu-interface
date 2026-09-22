@@ -70,10 +70,19 @@ namespace ImpromptuInterface.Optimization
                 arguments.Add(Expression.ArrayIndex(argsParameter, Expression.Constant(i)));
             }
 
-            var call = Expression.Dynamic(
+            // The site's result type has to be one the binder can produce. For a value type the
+            // binder produces the value type itself, and asking for object instead fails with
+            // "The result type ... is not compatible with the result type ... expected by the
+            // call site" - so ask for the type and box afterwards.
+            var resultType = type.IsValueType ? type : typeof(object);
+
+            Expression call = Expression.Dynamic(
                 Binder.InvokeConstructor(CSharpBinderFlags.None, type, infos),
-                typeof(object),
+                resultType,
                 arguments);
+
+            if (resultType != typeof(object))
+                call = Expression.Convert(call, typeof(object));
 
             return Expression.Lambda<Func<object[], object>>(call, argsParameter).Compile();
         }

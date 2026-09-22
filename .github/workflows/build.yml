@@ -1,0 +1,65 @@
+name: build
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+env:
+  # Warnings are errors in CI only, so a local build stays workable.
+  CI: true
+
+jobs:
+  build:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # MinVer reads the tags to compute the version.
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Build
+        run: dotnet build ImpromptuInterface.sln --configuration Release
+
+      # net47 needs the .NET Framework, so that leg only runs on Windows;
+      # elsewhere the net8.0 leg stands for the library.
+      - name: Test (net8.0)
+        run: dotnet test Tests/UnitTestImpromptuInterface/UnitTestImpromptuInterface.csproj --configuration Release --no-build --framework net8.0
+
+      - name: Test (net47, Windows only)
+        if: runner.os == 'Windows'
+        run: dotnet test Tests/UnitTestImpromptuInterface/UnitTestImpromptuInterface.csproj --configuration Release --no-build --framework net47
+
+      - name: Benchmarks build only
+        run: dotnet build Benchmarks/Benchmarks.csproj --configuration Release
+
+  publish:
+    name: publish prerelease
+    needs: build
+    if: github.ref == 'refs/heads/master' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Pack
+        run: dotnet pack ImpromptuInterface/ImpromptuInterface.csproj --configuration Release --output packages
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push 'packages/*.nupkg' --source https://nuget.pkg.github.com/ekonbenefits/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate

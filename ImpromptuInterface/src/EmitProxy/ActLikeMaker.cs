@@ -8,7 +8,6 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
-using Dynamitey;
 using ImpromptuInterface.Optimization;
 using Microsoft.CSharp.RuntimeBinder;
 
@@ -57,7 +56,7 @@ namespace ImpromptuInterface.Build
 
         public TInterface Create<TTarget, TInterface>(params object[] args) where TInterface : class
         {
-            return this.ActLike(Dynamic.InvokeConstructor(typeof(TTarget), args));
+            return this.ActLike(DynamicConstructor.Invoke(typeof(TTarget), args));
         }
 
         public IEnumerable<TInterface> AllActLike<TInterface>(IEnumerable<object> originalDynamic, params Type[] otherInterfaces) where TInterface : class
@@ -543,6 +542,43 @@ namespace ImpromptuInterface.Build
             return argument.Value;
         }
 
+
+        private static readonly Type[] FuncKinds =
+        {
+            typeof(Func<>), typeof(Func<,>), typeof(Func<,,>), typeof(Func<,,,>), typeof(Func<,,,,>),
+            typeof(Func<,,,,,>), typeof(Func<,,,,,,>), typeof(Func<,,,,,,,>), typeof(Func<,,,,,,,,>),
+            typeof(Func<,,,,,,,,,>), typeof(Func<,,,,,,,,,,>), typeof(Func<,,,,,,,,,,,>),
+            typeof(Func<,,,,,,,,,,,,>), typeof(Func<,,,,,,,,,,,,,>), typeof(Func<,,,,,,,,,,,,,,>),
+            typeof(Func<,,,,,,,,,,,,,,,>), typeof(Func<,,,,,,,,,,,,,,,,>)
+        };
+
+        private static readonly Type[] ActionKinds =
+        {
+            typeof(Action), typeof(Action<>), typeof(Action<,>), typeof(Action<,,>), typeof(Action<,,,>),
+            typeof(Action<,,,,>), typeof(Action<,,,,,>), typeof(Action<,,,,,,>), typeof(Action<,,,,,,,>),
+            typeof(Action<,,,,,,,,>), typeof(Action<,,,,,,,,,>), typeof(Action<,,,,,,,,,,>),
+            typeof(Action<,,,,,,,,,,,>), typeof(Action<,,,,,,,,,,,,>), typeof(Action<,,,,,,,,,,,,,>),
+            typeof(Action<,,,,,,,,,,,,,,>), typeof(Action<,,,,,,,,,,,,,,,>)
+        };
+
+        /// <summary>
+        /// The open `Func`/`Action` of that shape. `paramCount` counts the return type for a
+        /// `Func`, as the caller's list does.
+        /// </summary>
+        private static Type GenericDelegateType(int paramCount, bool returnVoid = false)
+        {
+            var count = returnVoid ? paramCount : paramCount - 1;
+            if (count > 16)
+                throw new ArgumentException(
+                    $"{(returnVoid ? "Action" : "Func")} only handles at most {(returnVoid ? 16 : 17)} parameters",
+                    nameof(paramCount));
+            if (count < 0)
+                throw new ArgumentException(
+                    $"{(returnVoid ? "Action" : "Func")} must have at least {(returnVoid ? 0 : 1)} parameter(s)",
+                    nameof(paramCount));
+
+            return returnVoid ? ActionKinds[count] : FuncKinds[count];
+        }
 
         private CustomAttributeBuilder GetAttributeBuilder(CustomAttributeData data)
         {
@@ -1705,7 +1741,7 @@ namespace ImpromptuInterface.Build
                 if (tIsFunc)
                     tList.Add(returnType);
 
-                var tFuncGeneric = Dynamitey.Dynamic.GenericDelegateType(tList.Count, !tIsFunc);
+                var tFuncGeneric = GenericDelegateType(tList.Count, !tIsFunc);
 
 
                 var tFuncType = tFuncGeneric.MakeGenericType(tList.ToArray());

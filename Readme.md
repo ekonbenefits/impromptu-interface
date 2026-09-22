@@ -1,13 +1,17 @@
 net4.0/netstd2.0 framework to allow you to wrap any object (static or dynamic) with a static interface even though it didn't inherit from it. It does this by emitting cached dynamic binding code inside a proxy.
 
-ImpromptuInterface is available Nuget [![NuGet](https://img.shields.io/nuget/dt/ImpromptuInterface.svg)](https://www.nuget.org/packages/ImpromptuInterface/)
+[![build](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/build.yml?query=branch%3Amaster)
+[![Tests](https://img.shields.io/badge/tests-190%20passed-brightgreen.svg?style=flat)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/build.yml?query=branch%3Amaster)
+[![Line coverage](https://img.shields.io/badge/line%20coverage-84%25-green.svg?style=flat)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/build.yml?query=branch%3Amaster)
+[![Branch coverage](https://img.shields.io/badge/branch%20coverage-70%25-yellow.svg?style=flat)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/build.yml?query=branch%3Amaster)
+[![NuGet](https://img.shields.io/nuget/dt/ImpromptuInterface.svg)](https://www.nuget.org/packages/ImpromptuInterface/)
 
+Available on [NuGet](https://www.nuget.org/packages/ImpromptuInterface/). One workflow covers
+`net40`, `netstandard2.0` and `net10.0` on Windows, macOS and Linux, plus a browser-wasm leg.
+From the latest master build: [test results](https://ekonbenefits.github.io/impromptu-interface/tests/)
+and [coverage](https://ekonbenefits.github.io/impromptu-interface/coverage/). Every run also
+carries its own per-platform table in the run summary.
 
-Platform | Status
--------- | ------
-NET4 (Win)    | [![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml/badge.svg)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet48.yml?query=branch%3Amaster)
-NETSTD (Win/Mac/Linux)  | [![Build status](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml/badge.svg)](https://github.com/ekonbenefits/impromptu-interface/actions/workflows/dotnet.yml?query=branch%3Amaster)
- 
 
 Some of the features of `ImpromptuInterface` have been moved into another library called [Dynamitey](https://github.com/ekonbenefits/dynamitey), `ImpromptuInterface` depends on `Dynamitey`.
 

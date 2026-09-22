@@ -32,13 +32,13 @@ namespace ImpromptuInterface.Optimization
     /// The call site is built once per (type, argument count) and cached: the shape is what a
     /// site is compiled for, and the arguments' runtime types are what it dispatches on.
     /// </remarks>
-    public static class DynamicConstructor
+    internal static class DynamicConstructor
     {
         private static readonly ConcurrentDictionary<Tuple<Type, int>, Func<object[], object>> _sites =
             new ConcurrentDictionary<Tuple<Type, int>, Func<object[], object>>();
 
         /// <summary>Constructs <paramref name="type"/> with <paramref name="args"/>.</summary>
-        public static object Invoke(Type type, params object[] args)
+        internal static object Invoke(Type type, params object[] args)
         {
             if (type == null) throw new ArgumentNullException(nameof(type));
             args = args ?? new object[0];

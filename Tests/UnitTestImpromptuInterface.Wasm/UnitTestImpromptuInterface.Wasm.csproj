@@ -52,6 +52,12 @@
     <None Include="wwwroot/runtests.mjs" CopyToOutputDirectory="PreserveNewest" Link="wwwroot/runtests.mjs" />
   </ItemGroup>
 
+  <!-- Generates ClassicAssert: instance methods over AnyUnit's IAssert extensions, since
+       C# will not dispatch an extension method when an argument is dynamic (CS1973). -->
+  <ItemGroup>
+    <ProjectReference Include="..\AssertShimGenerator\AssertShimGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />
     <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj" />

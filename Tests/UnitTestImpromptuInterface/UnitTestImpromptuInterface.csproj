@@ -19,6 +19,12 @@
     <PackageReference Include="IronPython" Version="3.4.*" />
   </ItemGroup>
 
+  <!-- Generates ClassicAssert: instance methods over AnyUnit's IAssert extensions, since
+       C# will not dispatch an extension method when an argument is dynamic (CS1973). -->
+  <ItemGroup>
+    <ProjectReference Include="..\AssertShimGenerator\AssertShimGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />
     <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj" />

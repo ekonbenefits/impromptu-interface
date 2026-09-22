@@ -100,7 +100,7 @@ namespace UnitTestImpromptuInterface
             => args == null || args.Length == 0 ? message : string.Format(message, args);
     }
 
-    public class Helper : AnyUnit.AssertionHelper
+    public class Helper : AnyUnit.Run.AssertionHelper
     {
         private ClassicAssert _classic;
 

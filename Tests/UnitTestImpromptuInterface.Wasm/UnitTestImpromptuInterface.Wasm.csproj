@@ -1,0 +1,56 @@
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+
+  <!--
+    The same test sources as a browser-wasm build, run through Microsoft.Testing.Platform under
+    bun (or node) — no browser, no web server. dotnet.js boots the runtime and runs the tests in
+    this assembly. The same AssemblyName as the desktop project, so results merge into that
+    assembly's row of a combined report as another platform.
+
+    What this answers: ImpromptuInterface emits proxy types at run time, and whether that works
+    on wasm used to be a bug report rather than a known boundary (#43, #48). It does work —
+    interpreted and AOT-published alike — and this leg keeps it that way.
+  -->
+  <PropertyGroup>
+    <TargetFramework>net10.0-browser</TargetFramework>
+    <RuntimeIdentifier>browser-wasm</RuntimeIdentifier>
+    <AssemblyName>UnitTestImpromptuInterface</AssemblyName>
+    <RootNamespace>UnitTestImpromptuInterface</RootNamespace>
+    <IsPackable>false</IsPackable>
+    <EnableAnyUnitRunner>true</EnableAnyUnitRunner>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.*" />
+    <PackageReference Include="AnyUnit.TestingPlatform" Version="1.3.0" />
+    <PackageReference Include="AnyUnit.Style.Nunit" Version="1.3.0" />
+    <PackageReference Include="AnyUnit.Constraints" Version="1.3.0" />
+    <!-- Satisfies Sdk.BlazorWebAssembly's build; nothing here builds a WebAssemblyHostBuilder. -->
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.*" />
+  </ItemGroup>
+
+  <!--
+    Linked, not copied: one set of sources. Two files stay out, for their dependencies rather
+    than for anything about the proxies:
+      Linq.cs              — IronPython, a desktop-only hosting stack
+      SingleMethodInvoke.cs — Moq, whose Castle DynamicProxy is a second run-time emitter
+  -->
+  <ItemGroup>
+    <Compile Include="..\UnitTestImpromptuInterface\Basic.cs" Link="Basic.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Collectable.cs" Link="Collectable.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Generics.cs" Link="Generics.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\ImpromptuDynamic.cs" Link="ImpromptuDynamic.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\MimicTest.cs" Link="MimicTest.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\PrivateTest.cs" Link="PrivateTest.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Savable.cs" Link="Savable.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Support\FixtureSetup.cs" Link="Support\FixtureSetup.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Support\Helper.cs" Link="Support\Helper.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Support\SupportDefinitions.cs" Link="Support\SupportDefinitions.cs" />
+    <Compile Include="..\UnitTestImpromptuInterface\Support\TestTypes.cs" Link="Support\TestTypes.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ImpromptuInterface\ImpromptuInterface.csproj" />
+    <ProjectReference Include="..\UnitTestSupportLibrary\UnitTestSupportLibrary.csproj" />
+  </ItemGroup>
+
+</Project>

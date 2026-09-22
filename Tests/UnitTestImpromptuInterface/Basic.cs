@@ -25,6 +25,7 @@ using Dynamitey.DynamicObjects;
 using ImpromptuInterface.Optimization;
 
 #if !SELFRUNNER
+using AnyUnit;
 using AnyUnit.Run;
 using AnyUnit.Style.Nunit;
 using AnyUnit.Constraints;
@@ -385,8 +386,8 @@ namespace UnitTestImpromptuInterface
 
 
 
-            AssertException<AnyUnit.AssertionException>(tActsLike.Action1);
-            AssertException<AnyUnit.AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
 
             Assert.AreEqual("test", tActsLike.Action3());
 
@@ -407,8 +408,8 @@ namespace UnitTestImpromptuInterface
 
 
 
-            AssertException<AnyUnit.AssertionException>(tActsLike.Action1);
-            AssertException<AnyUnit.AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
 
             Assert.AreEqual("test", tActsLike.Action3());
 

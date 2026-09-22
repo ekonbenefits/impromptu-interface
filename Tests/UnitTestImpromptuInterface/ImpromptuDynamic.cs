@@ -11,6 +11,7 @@ using Dynamitey.DynamicObjects;
 
 #if !SELFRUNNER
 
+using AnyUnit;
 using AnyUnit.Run;
 using AnyUnit.Style.Nunit;
 using AnyUnit.Constraints;
@@ -190,8 +191,8 @@ namespace UnitTestImpromptuInterface
 
 
 
-            AssertException<AnyUnit.AssertionException>(tActsLike.Action1);
-            AssertException<AnyUnit.AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
 
             Assert.AreEqual("test", tActsLike.Action3());
 
@@ -213,8 +214,8 @@ namespace UnitTestImpromptuInterface
 
 
 
-            AssertException<AnyUnit.AssertionException>(()=> tFwd.Action1());
-            AssertException<AnyUnit.AssertionException>(() => tFwd.Action2(true));
+            AssertException<AssertionException>(()=> tFwd.Action1());
+            AssertException<AssertionException>(() => tFwd.Action2(true));
 
             Assert.AreEqual("test", tFwd.Action3());
 
@@ -280,8 +281,8 @@ namespace UnitTestImpromptuInterface
 
 
 
-            AssertException<AnyUnit.AssertionException>(tActsLike.Action1);
-            AssertException<AnyUnit.AssertionException>(() => tActsLike.Action2(true));
+            AssertException<AssertionException>(tActsLike.Action1);
+            AssertException<AssertionException>(() => tActsLike.Action2(true));
 
             Assert.AreEqual("Cat-test", tActsLike.Action3());
 

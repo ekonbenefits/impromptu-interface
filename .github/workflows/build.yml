@@ -49,6 +49,38 @@ jobs:
       - name: Benchmarks build only
         run: dotnet build Benchmarks/Benchmarks.csproj --configuration Release
 
+  # The same tests as a browser-wasm build, run under bun. Its own job: it needs the
+  # wasm-tools workload and a JS runtime, and one platform is enough to know the proxy
+  # emit still works there.
+  wasm:
+    name: browser-wasm
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: |
+            8.0.x
+            10.0.x
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Install the wasm workload
+        run: dotnet workload install wasm-tools
+
+      - name: Build
+        run: dotnet build Tests/UnitTestImpromptuInterface.Wasm --configuration Release
+
+      - name: Test
+        working-directory: Tests/UnitTestImpromptuInterface.Wasm/bin/Release/net10.0-browser/wwwroot
+        run: |
+          cp ../../../wwwroot/runtests.mjs .
+          bun runtests.mjs
+
   publish:
     name: publish prerelease
     needs: build

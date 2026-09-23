@@ -115,6 +115,17 @@ namespace UnitTestImpromptuInterface
     }
 
 
+    /// <summary>Value semantics of its own, so two distinct instances can be equal.</summary>
+    public class ValuePoco
+    {
+        public string Prop1 { get; set; }
+        public long Prop2 { get; set; }
+        public Guid Prop3 { get; set; }
+
+        public override bool Equals(object obj) => obj is ValuePoco other && other.Prop1 == Prop1;
+        public override int GetHashCode() => Prop1?.GetHashCode() ?? 0;
+    }
+
     public interface ITally
     {
         int Count { get; }

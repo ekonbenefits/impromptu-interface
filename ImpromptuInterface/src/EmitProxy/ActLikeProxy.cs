@@ -115,8 +115,17 @@ namespace ImpromptuInterface.Build
 
 
         /// <summary>
-        /// Determines whether the specified <see cref="System.Object"/> is equal to this instance.
+        /// Two proxies are equal when the objects they wrap are. That comparison is symmetric
+        /// and agrees with <see cref="GetHashCode"/>, so proxies work as dictionary keys and
+        /// find each other there.
         /// </summary>
+        /// <remarks>
+        /// Comparing a proxy against a *raw* object is a convenience on top of that, and only
+        /// works with the proxy as the receiver: <c>proxy.Equals(target)</c> is <c>true</c>,
+        /// <c>target.Equals(proxy)</c> is not, because the target is an ordinary object that
+        /// knows nothing of proxies. A hash lookup asks the stored key, so a dictionary keyed
+        /// by the target will not find the proxy - key it by the proxy, or unwrap first.
+        /// </remarks>
         /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
         /// <returns>
         /// 	<c>true</c> if the specified <see cref="System.Object"/> is equal to this instance; otherwise, <c>false</c>.
@@ -131,8 +140,13 @@ namespace ImpromptuInterface.Build
         }
 
         /// <summary>
-        /// Actlike proxy should be equivalent to the objects they proxy
+        /// Two proxies are equal when the objects they wrap are - including two proxies over
+        /// distinct but equal targets, which compare by the targets' own equality.
         /// </summary>
+        /// <remarks>
+        /// The interfaces each proxy was built for take no part in this, so two proxies over one
+        /// target compare equal even when they present different interfaces.
+        /// </remarks>
         /// <param name="other">The other.</param>
         /// <returns></returns>
         public bool Equals(ActLikeProxy other)

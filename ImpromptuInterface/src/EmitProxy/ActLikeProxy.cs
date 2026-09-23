@@ -115,9 +115,9 @@ namespace ImpromptuInterface.Build
 
 
         /// <summary>
-        /// Two proxies are equal when the objects they wrap are. That comparison is symmetric
-        /// and agrees with <see cref="GetHashCode"/>, so proxies work as dictionary keys and
-        /// find each other there.
+        /// Two proxies that have targets are equal when the objects they wrap are. That
+        /// comparison is symmetric and agrees with <see cref="GetHashCode"/>, so such proxies
+        /// work as dictionary keys and find each other there.
         /// </summary>
         /// <remarks>
         /// Comparing a proxy against a *raw* object is a convenience on top of that, and only
@@ -125,6 +125,11 @@ namespace ImpromptuInterface.Build
         /// <c>target.Equals(proxy)</c> is not, because the target is an ordinary object that
         /// knows nothing of proxies. A hash lookup asks the stored key, so a dictionary keyed
         /// by the target will not find the proxy - key it by the proxy, or unwrap first.
+        ///
+        /// A proxy with no target is outside all of this: every member of one throws, including
+        /// <see cref="GetHashCode"/>, so it cannot be a key at all. Two of them do compare equal
+        /// to each other, since they share the one stand-in - a quirk of an object that is
+        /// already an error, not a case to rely on.
         /// </remarks>
         /// <param name="obj">The <see cref="System.Object"/> to compare with this instance.</param>
         /// <returns>
@@ -140,8 +145,9 @@ namespace ImpromptuInterface.Build
         }
 
         /// <summary>
-        /// Two proxies are equal when the objects they wrap are - including two proxies over
-        /// distinct but equal targets, which compare by the targets' own equality.
+        /// Two proxies that have targets are equal when the objects they wrap are - including
+        /// two proxies over distinct but equal targets, which compare by the targets' own
+        /// equality.
         /// </summary>
         /// <remarks>
         /// The interfaces each proxy was built for take no part in this, so two proxies over one

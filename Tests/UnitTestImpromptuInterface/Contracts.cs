@@ -142,6 +142,13 @@ namespace UnitTestImpromptuInterface
             Assert.Throws<InvalidOperationException>(() => orphan.GetHashCode());
             Assert.Throws<InvalidOperationException>(() => orphan.Equals(new PropPoco()));
             Assert.Throws<InvalidOperationException>(() => Impromptu.UndoActLike(orphan));
+
+            // Two of them do compare equal, sharing the one stand-in, while hashing throws - so
+            // an orphan cannot be a dictionary key at all. A quirk of an object that is already
+            // an error rather than a contract; #83 would make the proxy type count here.
+            var secondOrphan = (ISimpeleClassProps)Activator.CreateInstance(proxyType);
+            Assert.IsTrue(orphan.Equals(secondOrphan));
+            Assert.Throws<InvalidOperationException>(() => secondOrphan.GetHashCode());
         }
 
         [Test]

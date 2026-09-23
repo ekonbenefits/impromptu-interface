@@ -1,0 +1,93 @@
+# Publishes to nuget.org when a v* tag is pushed, and creates the GitHub Release.
+#
+# It republishes the packages build.yml's own prerelease job produced for that commit rather
+# than packing a second time, so what reaches nuget.org is the artifact that run's tests passed
+# against - not a separately-produced, almost-certainly-identical set that never went through
+# them. That is why it triggers off build.yml completing rather than off the tag directly.
+#
+# A workflow_run trigger is always read from the default branch, whatever is in the tag being
+# released, so this file has to be on master before it will fire for any future tag.
+#
+# Authentication is nuget.org Trusted Publishing (OIDC): no long-lived API key in a secret,
+# only NUGET_USER, which is a plain account name rather than a credential. It requires a
+# Trusted Publishing policy on nuget.org for this exact repository AND this exact workflow
+# filename - so renaming this file breaks publishing until the policy is updated to match.
+name: release
+
+on:
+  workflow_run:
+    workflows: [build]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    name: publish to nuget.org
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+       github.event.workflow_run.event == 'push' &&
+       startsWith(github.event.workflow_run.head_branch, 'v'))
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write   # the OIDC token Trusted Publishing exchanges for a temporary key
+      contents: write   # creating the Release
+
+    steps:
+      # head_branch is the ref name for either kind of push, so a *branch* called "v-something"
+      # would otherwise satisfy the condition above. Publishing is irreversible; check.
+      - name: Verify the triggering ref is a real tag
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -euo pipefail
+          if ! gh api "repos/${{ github.repository }}/git/ref/tags/$REF_NAME" >/dev/null 2>&1; then
+            echo "::error::'$REF_NAME' is not a tag in this repository - refusing to publish."
+            exit 1
+          fi
+          echo "Confirmed '$REF_NAME' is a tag."
+
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Download the packages that run's tests passed against
+        uses: actions/download-artifact@v4
+        with:
+          name: nuget-packages
+          path: packages
+          github-token: ${{ github.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Show what is about to be published
+        run: ls -l packages
+
+      - name: NuGet login (OIDC -> temporary API key)
+        uses: NuGet/login@v1
+        id: login
+        with:
+          user: ${{ secrets.NUGET_USER }}
+
+      - name: Push to nuget.org
+        shell: bash
+        run: |
+          set -e
+          for pkg in packages/*.nupkg; do
+            dotnet nuget push "$pkg" \
+              --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" \
+              --source https://api.nuget.org/v3/index.json \
+              --skip-duplicate
+          done
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REF_NAME: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          set -e
+          gh release create "$REF_NAME" packages/*.nupkg \
+            --repo "${{ github.repository }}" \
+            --title "$REF_NAME" \
+            --generate-notes \
+            --verify-tag

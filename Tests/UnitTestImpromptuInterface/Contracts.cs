@@ -43,6 +43,37 @@ namespace UnitTestImpromptuInterface
         }
 
         [Test]
+        public void Proxies_over_distinct_but_equal_targets_are_equal_and_interchangeable_as_keys()
+        {
+            // The contract proper: two proxies compare by their targets' own equality, in both
+            // directions, and agree with GetHashCode - so one finds the other in a dictionary.
+            var first = new ValuePoco { Prop1 = "same" }.ActLike<ISimpeleClassProps>();
+            var second = new ValuePoco { Prop1 = "same" }.ActLike<ISimpeleClassProps>();
+
+            Assert.IsTrue(first.Equals(second));
+            Assert.IsTrue(second.Equals(first));
+            Assert.AreEqual(first.GetHashCode(), second.GetHashCode());
+
+            var keyed = new Dictionary<object, string> { { first, "found" } };
+            Assert.IsTrue(keyed.ContainsKey(second));
+            Assert.AreEqual("found", keyed[second]);
+        }
+
+        [Test]
+        public void Proxies_over_one_target_are_equal_even_when_they_present_different_interfaces()
+        {
+            // The interfaces take no part in the comparison, so two different views of one
+            // object compare equal. Pinned as it is; see #83 for making the proxy type count.
+            var poco = new PropPoco { Prop1 = "one" };
+            var asProps = poco.ActLike<ISimpeleClassProps>();
+            var asGet = poco.ActLike<IPropPocoGet>();
+
+            Assert.AreNotEqual(((object)asProps).GetType(), ((object)asGet).GetType());
+            Assert.IsTrue(asProps.Equals(asGet));
+            Assert.IsTrue(asGet.Equals(asProps));
+        }
+
+        [Test]
         public void Proxies_over_different_objects_are_not_equal()
         {
             var first = new PropPoco { Prop1 = "one" }.ActLike<ISimpeleClassProps>();
@@ -111,6 +142,13 @@ namespace UnitTestImpromptuInterface
             Assert.Throws<InvalidOperationException>(() => orphan.GetHashCode());
             Assert.Throws<InvalidOperationException>(() => orphan.Equals(new PropPoco()));
             Assert.Throws<InvalidOperationException>(() => Impromptu.UndoActLike(orphan));
+
+            // Two of them do compare equal, sharing the one stand-in, while hashing throws - so
+            // an orphan cannot be a dictionary key at all. A quirk of an object that is already
+            // an error rather than a contract; #83 would make the proxy type count here.
+            var secondOrphan = (ISimpeleClassProps)Activator.CreateInstance(proxyType);
+            Assert.IsTrue(orphan.Equals(secondOrphan));
+            Assert.Throws<InvalidOperationException>(() => secondOrphan.GetHashCode());
         }
 
         [Test]

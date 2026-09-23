@@ -324,13 +324,14 @@ jobs:
       - name: Pack
         run: dotnet pack ImpromptuInterface/ImpromptuInterface.csproj --configuration Release --output packages
 
-      - name: Push to GitHub Packages
-        run: dotnet nuget push 'packages/*.nupkg' --source https://nuget.pkg.github.com/ekonbenefits/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
-
-      # release.yml republishes exactly these to nuget.org when the commit is tagged, rather
-      # than packing again, so what ships is the artifact this run's tests passed against.
+      # Before the push, not after: release.yml republishes exactly these to nuget.org when the
+      # commit is tagged, rather than packing again, so what ships is the artifact this run's
+      # tests passed against - and a failed push to GitHub Packages must not cost it that.
       - name: Upload the packages
         uses: actions/upload-artifact@v4
         with:
           name: nuget-packages
           path: packages/*.nupkg
+
+      - name: Push to GitHub Packages
+        run: dotnet nuget push 'packages/*.nupkg' --source https://nuget.pkg.github.com/ekonbenefits/index.json --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate

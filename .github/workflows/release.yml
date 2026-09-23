@@ -14,39 +14,53 @@
 # filename - so renaming this file breaks publishing until the policy is updated to match.
 name: release
 
+# Not workflow_dispatch: every step here reads github.event.workflow_run, which a manual run
+# does not have. Re-run this workflow from the failed run's own page instead.
 on:
   workflow_run:
     workflows: [build]
     types: [completed]
-  workflow_dispatch:
 
 jobs:
   publish:
     name: publish to nuget.org
     if: >-
-      github.event_name == 'workflow_dispatch' ||
-      (github.event.workflow_run.conclusion == 'success' &&
-       github.event.workflow_run.event == 'push' &&
-       startsWith(github.event.workflow_run.head_branch, 'v'))
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      startsWith(github.event.workflow_run.head_branch, 'v')
     runs-on: ubuntu-latest
     permissions:
       id-token: write   # the OIDC token Trusted Publishing exchanges for a temporary key
       contents: write   # creating the Release
+      actions: read     # reading the build run's artifact; an explicit map makes the rest none
 
     steps:
       # head_branch is the ref name for either kind of push, so a *branch* called "v-something"
       # would otherwise satisfy the condition above. Publishing is irreversible; check.
-      - name: Verify the triggering ref is a real tag
+      - name: Verify the ref is a tag, still pointing at the commit that was tested
         env:
           GH_TOKEN: ${{ github.token }}
           REF_NAME: ${{ github.event.workflow_run.head_branch }}
+          TESTED_SHA: ${{ github.event.workflow_run.head_sha }}
         run: |
           set -euo pipefail
-          if ! gh api "repos/${{ github.repository }}/git/ref/tags/$REF_NAME" >/dev/null 2>&1; then
+          if ! tag_sha=$(gh api "repos/${{ github.repository }}/git/ref/tags/$REF_NAME" --jq '.object.sha' 2>/dev/null); then
             echo "::error::'$REF_NAME' is not a tag in this repository - refusing to publish."
             exit 1
           fi
-          echo "Confirmed '$REF_NAME' is a tag."
+
+          # An annotated tag's ref points at the tag object; dereference to the commit.
+          type=$(gh api "repos/${{ github.repository }}/git/ref/tags/$REF_NAME" --jq '.object.type')
+          if [ "$type" = "tag" ]; then
+            tag_sha=$(gh api "repos/${{ github.repository }}/git/tags/$tag_sha" --jq '.object.sha')
+          fi
+
+          if [ "$tag_sha" != "$TESTED_SHA" ]; then
+            echo "::error::'$REF_NAME' now points at $tag_sha, but the tested build was $TESTED_SHA."
+            echo "The tag moved after the build; refusing to publish packages under it."
+            exit 1
+          fi
+          echo "Confirmed '$REF_NAME' is a tag at the tested commit $TESTED_SHA."
 
       - uses: actions/setup-dotnet@v4
         with:
@@ -80,14 +94,22 @@ jobs:
               --skip-duplicate
           done
 
-      - name: Create the GitHub Release
+      # Idempotent, so re-running a release after a partial failure works: --skip-duplicate
+      # covers the pushes, and this covers the Release.
+      - name: Create or update the GitHub Release
         env:
           GH_TOKEN: ${{ github.token }}
           REF_NAME: ${{ github.event.workflow_run.head_branch }}
         run: |
           set -e
-          gh release create "$REF_NAME" packages/*.nupkg \
-            --repo "${{ github.repository }}" \
-            --title "$REF_NAME" \
-            --generate-notes \
-            --verify-tag
+          if gh release view "$REF_NAME" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+            echo "Release $REF_NAME exists; refreshing its assets."
+            gh release upload "$REF_NAME" packages/*.nupkg \
+              --repo "${{ github.repository }}" --clobber
+          else
+            gh release create "$REF_NAME" packages/*.nupkg \
+              --repo "${{ github.repository }}" \
+              --title "$REF_NAME" \
+              --generate-notes \
+              --verify-tag
+          fi
